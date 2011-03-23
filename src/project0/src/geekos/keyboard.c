@@ -178,8 +178,11 @@ static void Keyboard_Interrupt_Handler(struct Interrupt_State* state)
  */
 
 	if (scanCode & KB_KEY_RELEASE) {
+/*
 	    release = true;
 	    scanCode &= ~(KB_KEY_RELEASE);
+*/
+	    goto done;
 	}
 
 	if (scanCode >= SCAN_TABLE_SIZE) {

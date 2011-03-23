@@ -22,6 +22,7 @@
 #include <geekos/keyboard.h>
 
 
+static void LeerTeclado(ulong_t);
 
 
 /*
@@ -48,9 +49,9 @@ void Main(struct Boot_Info* bootInfo)
     Set_Current_Attr(ATTRIB(BLACK, GRAY));
 
 
-    TODO("Start a kernel thread to echo pressed keys and print counts");
+//    TODO("Start a kernel thread to echo pressed keys and print counts");
 
-
+    Start_Kernel_Thread(LeerTeclado, 0, PRIORITY_NORMAL, 0);
 
     /* Now this thread is done. */
     Exit(0);
@@ -58,6 +59,21 @@ void Main(struct Boot_Info* bootInfo)
 
 
 
+static void LeerTeclado(ulong_t arg)
+{
+    Keycode tecla;
+
+    Print("\n\nHello from Roberto.\n");
+ 
+    do {
+        tecla = Wait_For_Key();
+        if ((tecla & KEY_SPECIAL_FLAG) == 0)
+            Put_Char((int) (tecla & 0x00FF));
+    } while (!((tecla & KEY_CTRL_FLAG) && ((tecla & 0x00FF) == 'd')));
+
+    Print("\nFinalizado.\n");
+    return;
+}
 
 
 
