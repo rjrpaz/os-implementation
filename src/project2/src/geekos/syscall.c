@@ -59,7 +59,7 @@ static int Sys_Exit(struct Interrupt_State* state)
  */
 static int Sys_PrintString(struct Interrupt_State* state)
 {
-    TODO("PrintString system call");
+//    TODO("PrintString system call");
     return 0;
 }
 
@@ -175,3 +175,13 @@ const Syscall g_syscallTable[] = {
  * Number of system calls implemented.
  */
 const int g_numSyscalls = sizeof(g_syscallTable) / sizeof(Syscall);
+
+
+
+
+
+
+
+
+
+

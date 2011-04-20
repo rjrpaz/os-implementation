@@ -27,6 +27,12 @@
 #include <geekos/vfs.h>
 #include <geekos/user.h>
 
+// #define COMMAND "/c/b.exe";
+// #define COMMAND "/c/c.exe";
+#define COMMAND "/c/null.exe";
+// #define COMMAND "/c/long.exe";
+// #define COMMAND "/c/shell.exe";
+    
 
 /*
  * Define this for a self-contained boot floppy
@@ -105,5 +111,17 @@ static void Mount_Root_Filesystem(void)
 
 static void Spawn_Init_Process(void)
 {
-    TODO("Spawn the init process");
+    int pid = 0;
+    struct Kernel_Thread *pThread = NULL;
+    const char *pathname = COMMAND;
+    
+    pid = Spawn(pathname, "", &pThread);
+    if (pid < 0) {
+        Print ("Spawn error. RetCode: %d\n", pid);
+        return;
+    } else {
+        Print ("PID: %d\n", pid);
+    }    
+
+
 }

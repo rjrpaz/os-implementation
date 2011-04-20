@@ -18,6 +18,10 @@
 #include <geekos/tss.h>
 #include <geekos/user.h>
 
+#define EPARSEELF -30
+#define ELOADUSERPROGRAM -31
+#define ESTARTUSERTHREAD -32
+
 /*
  * This module contains common functions for implementation of user
  * mode processes.
@@ -85,6 +89,11 @@ void Detach_User_Context(struct Kernel_Thread* kthread)
  */
 int Spawn(const char *program, const char *command, struct Kernel_Thread **pThread)
 {
+    int retCode = 0;
+    char *exeFileData = NULL;
+    ulong_t exeFileLength;
+    struct Exe_Format exeFormat;
+    struct User_Context *context = NULL;
     /*
      * Hints:
      * - Call Read_Fully() to load the entire executable into a memory buffer
@@ -98,7 +107,45 @@ int Spawn(const char *program, const char *command, struct Kernel_Thread **pThre
      * If all goes well, store the pointer to the new thread in
      * pThread and return 0.  Otherwise, return an error code.
      */
-    TODO("Spawn a process by reading an executable from a filesystem");
+
+    /*
+     * Call Read_Fully() to load the entire executable into a memory buffer
+     */
+    retCode = Read_Fully(program, (void**) &exeFileData, &exeFileLength);
+    if (retCode != 0) {
+        Print("Read_Fully failed to read %s from disk\n", program);
+        return retCode;
+    }
+
+    /*
+     * Call Parse_ELF_Executable() to verify that the executable is
+     * valid, and to populate an Exe_Format data structure describing
+     * how the executable should be loaded
+     */
+    if (Parse_ELF_Executable(exeFileData, exeFileLength, &exeFormat) != 0) {
+        Print("Parse_ELF_Executable failed\n");
+        return EPARSEELF;
+    }
+
+    /*
+     * Call Load_User_Program() to create a User_Context with the loaded
+     * program
+     */
+    if (Load_User_Program(exeFileData, exeFileLength, &exeFormat, command, &context) != 0) {
+        Print("Load_User_Program failed\n");
+        return ELOADUSERPROGRAM;
+    }
+
+    /*
+     * Call Start_User_Thread() with the new User_Context
+     */
+    (*pThread) = Start_User_Thread(context, false);
+    if (pThread == NULL) {
+        Print("Start_User_Thread failed\n");
+        return ESTARTUSERTHREAD;
+    }
+
+    return (*pThread)->pid;
 }
 
 /*
@@ -117,6 +164,11 @@ void Switch_To_User_Context(struct Kernel_Thread* kthread, struct Interrupt_Stat
      * the Set_Kernel_Stack_Pointer() and Switch_To_Address_Space()
      * functions.
      */
-    TODO("Switch to a new user address space, if necessary");
+    /* Segun http://www.cs.umd.edu/class/fall2004/cmsc412/proj2/ */
+    if (kthread->userContext != NULL) {
+        Set_Kernel_Stack_Pointer(((ulong_t)kthread->stackPage) + PAGE_SIZE);
+        Switch_To_Address_Space(kthread->userContext);
+    }
+    return;
 }
 

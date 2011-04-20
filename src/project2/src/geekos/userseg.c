@@ -25,8 +25,15 @@
  * Variables
  * ---------------------------------------------------------------------- */
 
-#define DEFAULT_USER_STACK_SIZE 8192
+//#define DEBUG 1
+#undef DEBUG
 
+#define DEFAULT_USER_STACK_SIZE 8192
+#define EUSERCONTEXT    -20  /* Create_User_Context error */
+#define ENOARGVPOINTER  -21  /* No se asgino puntero al bloque de argumentos */
+
+
+void memDump(const void * src, size_t length);
 
 /* ----------------------------------------------------------------------
  * Private functions
@@ -37,10 +44,7 @@
  * Create a new user context of given size
  */
 
-/* TODO: Implement
-static struct User_Context* Create_User_Context(ulong_t size)
-*/
-
+static struct User_Context* Create_User_Context(ulong_t size);
 
 static bool Validate_User_Memory(struct User_Context* userContext,
     ulong_t userAddr, ulong_t bufSize)
@@ -98,6 +102,12 @@ int Load_User_Program(char *exeFileData, ulong_t exeFileLength,
     struct Exe_Format *exeFormat, const char *command,
     struct User_Context **pUserContext)
 {
+    unsigned long virtSize, argBlockSize, progSegmentSize;
+    int i;
+    ulong_t maxva = 0;
+    unsigned int numArgs = 0, blockAddress = 0, stackAddress = 0;
+    char *argBlock = NULL;
+
     /*
      * Hints:
      * - Determine where in memory each executable segment will be placed
@@ -109,7 +119,142 @@ int Load_User_Program(char *exeFileData, ulong_t exeFileLength,
      *   address, argument block address, and initial kernel stack pointer
      *   address
      */
-    TODO("Load a user executable into a user memory space using segmentation");
+
+    /*
+     * Determina dirección máxima de los segmentos del programa.
+     * Inspirado del proyecto 1.
+     */
+    for (i = 0; i < exeFormat->numSegments; ++i) {
+        struct Exe_Segment *segment = &exeFormat->segmentList[i];
+        ulong_t topva = segment->startAddress + segment->sizeInMemory; 
+
+        if (topva > maxva)
+            maxva = topva;
+    }
+
+    /*
+     * Determina tamaño del bloque de argumentos.
+     */
+    Get_Argument_Block_Size(command, &numArgs, &argBlockSize);
+#ifdef DEBUG
+    Print("Command: %s\n", command);
+    Print("numArgs: %d\n", numArgs);
+    Print("argBlockSize: %lu\n", argBlockSize);
+#endif
+
+    /*
+     * Determina tamaño en memoria que ocupan: segmentos de
+     * programa, bloques de argumento y stack.
+     * Reserva memoria para almacenar todo.
+     */
+    progSegmentSize = Round_Up_To_Page(maxva);
+    virtSize = progSegmentSize + Round_Up_To_Page(DEFAULT_USER_STACK_SIZE+argBlockSize);
+    /* La reserva de memoria la hace en Create_User_Context */
+
+    /*
+     * Crea contexto de usuario.
+     */
+    *pUserContext = Create_User_Context(virtSize);
+    if (!(pUserContext)) {
+        Print("Create_User_Context error");
+        return (EUSERCONTEXT);
+    }
+
+    /*
+     * Copia los segmentos de programa en memoria.
+     * Inspirado del proyecto 1.
+     */
+    for (i = 0; i < exeFormat->numSegments; ++i) {
+        struct Exe_Segment *segment = &exeFormat->segmentList[i];
+        memcpy((*pUserContext)->memory + segment->startAddress, exeFileData + segment->offsetInFile, segment->lengthInFile);
+    }
+
+    /*
+     * - Format argument block in memory
+     */
+    blockAddress = progSegmentSize;
+    stackAddress = virtSize;
+#ifdef DEBUG
+    Print("argBlock: %c\n", *argBlock);
+    Print("argBlockSize: %lu\n", argBlockSize);
+    // Print("Tamaño de 1 página: %lu\n", Round_Up_To_Page(1)); 4096 bytes = 2^12.
+    // Print("Cantidad de segmentos de programa: %lu\n", Round_Up_To_Page(maxva)); // 4 Paginas
+    // DEFAULT_USER_STACK_SIZE = 2 Paginas
+    // Print("Cantidad de segmentos de argv y stack: %lu\n", Round_Up_To_Page(DEFAULT_USER_STACK_SIZE+argBlockSize)); // 3 Paginas
+    Print("programAddress: %p\n", (*pUserContext)->memory);
+    Print("blockAddress: %ul\n", blockAddress);
+    Print("stackAddress: %ul\n", stackAddress);
+#endif
+
+    argBlock = (*pUserContext)->memory + progSegmentSize;
+    Format_Argument_Block(argBlock, numArgs, blockAddress, command);
+    if (argBlock == NULL) {
+        Print("No se asigno puntero al bloque de argumentos.\n");
+        return (ENOARGVPOINTER);
+    }
+#ifdef DEBUG
+    memDump(argBlock, 25);
+#endif
+
+    /*
+     * - In the created User_Context object, set code entry point
+     *   address, argument block address, and initial kernel stack pointer
+     *   address
+     *  ______________________________________
+     * | Seg. Programa        | Arg | Stack   |
+     * |______________________|_____|_________|
+     *
+     * \---- N segmentos ----\\- 3 segmentos -\
+     */
+    (*pUserContext)->entryAddr = exeFormat->entryAddr;
+    (*pUserContext)->argBlockAddr = blockAddress;
+    (*pUserContext)->stackPointerAddr = stackAddress;
+
+    return 0;
+}
+
+static struct User_Context* Create_User_Context(ulong_t size)
+{
+    int index = 0;
+    struct User_Context *userContext = Malloc(sizeof(struct User_Context));
+
+    /* Reserva memoria y blanquea contenido */
+    userContext->memory = Malloc(size);
+    memset(userContext->memory, '\0', size);
+    userContext->size = size;
+
+    /*
+     * Crea una LDT para el proceso
+     * "Inspirado en" ("Robado de") http://www.cs.umd.edu/~hollings/cs412/s02/hotNews/
+     */
+    /* Crea un local descriptor table para el proceso */
+    userContext->ldtDescriptor = Allocate_Segment_Descriptor();
+    /*
+     * Inicializa la LDT en la GDT, o sea, agrega un descriptor en la GDT que
+     * apunta a la ubicación del descriptor de la LDT dentro de la GDT.
+     */
+    Init_LDT_Descriptor(userContext->ldtDescriptor, userContext->ldt, NUM_USER_LDT_ENTRIES);
+    /* Crea un selector que contiene la ubicación del LDT dentro de la GDT */
+    index = Get_Descriptor_Index(userContext->ldtDescriptor);
+    userContext->ldtSelector = Selector(KERNEL_PRIVILEGE, true, index);
+
+    /*
+     * Crea descriptores para los segmentos de código y datos del programa,
+     * y agrega estos descriptores a la LDT. ¿Cantidad de páginas del segmento?
+     */
+    Init_Code_Segment_Descriptor(&userContext->ldt[0], (ulong_t)userContext->memory, size/PAGE_SIZE, USER_PRIVILEGE);
+    Init_Data_Segment_Descriptor(&userContext->ldt[1], (ulong_t)userContext->memory, size/PAGE_SIZE, USER_PRIVILEGE);
+
+    /*
+     * Crea selectores que contienen la ubicación de los dos descriptores
+     * dentro de la LDT.
+     */
+    userContext->csSelector = Selector(USER_PRIVILEGE, false, 0);
+    userContext->dsSelector = Selector(USER_PRIVILEGE, false, 1);
+
+    /* ¿refCount? */
+    userContext->refCount = 0;
+    return userContext;
 }
 
 /*
@@ -135,8 +280,14 @@ bool Copy_From_User(void* destInKernel, ulong_t srcInUser, ulong_t bufSize)
      * - make sure the user buffer lies entirely in memory belonging
      *   to the process
      */
-    TODO("Copy memory from user buffer to kernel buffer");
-    Validate_User_Memory(NULL,0,0); /* delete this; keeps gcc happy */
+
+    struct User_Context *userContext = g_currentThread->userContext;
+    if (Validate_User_Memory(userContext, srcInUser, bufSize)) {
+        memcpy(destInKernel, (userContext->memory)+srcInUser, bufSize);
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /*
@@ -156,7 +307,14 @@ bool Copy_To_User(ulong_t destInUser, void* srcInKernel, ulong_t bufSize)
     /*
      * Hints: same as for Copy_From_User()
      */
-    TODO("Copy memory from kernel buffer to user buffer");
+
+    struct User_Context *userContext = g_currentThread->userContext;
+    if (Validate_User_Memory(userContext, destInUser, bufSize)) {
+        memcpy((userContext->memory)+destInUser, srcInKernel, bufSize);
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /*
@@ -171,6 +329,30 @@ void Switch_To_Address_Space(struct User_Context *userContext)
      * Hint: you will need to use the lldt assembly language instruction
      * to load the process's LDT by specifying its LDT selector.
      */
-    TODO("Switch to user address space using segmentation/LDT");
+    __asm__ __volatile__ ("lldt %0" :: "a" (userContext->ldtSelector));
 }
 
+void memDump(const void * src, size_t length)
+{
+    char* address = (char*)src;
+    int i = 0; //used to keep track of line lengths
+    char *line = (char*)address; //used to print char version of data
+    unsigned char ch; // also used to print char version of data
+
+    Print("%p| ", address); //Print the address we are pulling from
+    while (length-- > 0) {
+        Print("%02X ", (unsigned char)*address++); //Print each char
+        if (!(++i % 16) || (length == 0 && i % 16)) { //If we come to the end of a line...
+            //If this is the last line, print some fillers.
+            if (length == 0) { while (i++ % 16) { Print("__ "); } }
+            Print("| ");
+            while (line < address) {  // Print the character version
+                ch = *line++;
+                Print("%c", (ch < 33 || ch == 255) ? 0x2E : ch);
+            }
+            // If we are not on the last line, prefix the next line with the address.
+            if (length > 0) { Print("\n%p| ", address); }
+        }
+    }
+    Print("\n");
+}

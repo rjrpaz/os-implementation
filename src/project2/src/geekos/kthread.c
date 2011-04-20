@@ -16,6 +16,7 @@
 #include <geekos/string.h>
 #include <geekos/kthread.h>
 #include <geekos/malloc.h>
+#include <geekos/user.h>
 
 
 /* ----------------------------------------------------------------------
@@ -313,7 +314,65 @@ static void Setup_Kernel_Thread(
      * - The esi register should contain the address of
      *   the argument block
      */
-    TODO("Create a new thread to execute in user mode");
+
+    /*
+     * Call Attach_User_Context() to attach the user context
+     * to the Kernel_Thread
+     */
+    Attach_User_Context(kthread, userContext);
+
+    /*
+     * Set up initial thread stack to make it appear that
+     * the thread was interrupted while in user mode
+     * just before the entry point instruction was executed
+     */
+
+    /*
+     * Según el punto 28.4.1 del manual de Intel:
+     * 
+     * If a stack switch does occur, the processor does the following:
+     * 1. Temporarily saves (internally) the current contents of the SS, ESP, EFLAGS, CS, and EIP
+     *    registers.
+     * 2. Loads the segment selector and stack pointer for the new stack (that is, the stack for
+     *    the privilege level being called) from the TSS into the SS and ESP registers and switches
+     *    to the new stack.
+     * 3. Pushes the temporarily saved SS, ESP, EFLAGS, CS, and EIP values for the interrupted
+     *    procedure’s stack onto the new stack.
+     * 4. Pushes an error code on the new stack (if appropriate).
+     * 5. Loads the segment selector for the new code segment and the new instruction pointer
+     *    (from the interrupt gate or trap gate) into the CS and EIP registers, respectively.
+     * 6. If the call is through an interrupt gate, clears the IF flag in the EFLAGS register.
+     * 7. Begins execution of the handler procedure at the new privilege level.
+     */
+
+    /*
+     * Según la estructura "User_Interrupt_State"
+     */
+    Push(kthread, userContext->dsSelector); /* ssUser, punto 2 del manual de Intel */
+    Push(kthread, userContext->stackPointerAddr); /* espUser, punto 2 del manual de Intel */
+
+    Push(kthread, EFLAGS_IF); /* eflags, punto 6 del manual de Intel */
+    Push(kthread, userContext->csSelector); /* cs, punto 5 del manual de Intel */
+    Push(kthread, userContext->entryAddr); /* eip, punto 5 del manual de Intel */
+
+    Push(kthread, 0); /* errorCode, punto 4 del manual de Intel */
+
+    Push(kthread, 0); /* intNum - ??*/
+
+    Push(kthread, 0); /* eax */
+    Push(kthread, 0); /* ebx */
+    Push(kthread, 0); /* ecx */
+    Push(kthread, 0); /* edx */
+    Push(kthread, userContext->argBlockAddr); /* esi, según "Hint" */
+    Push(kthread, 0); /* edi */
+    Push(kthread, 0); /* ebp */
+    /* Según http://www.cs.umd.edu/class/fall2004/cmsc412/proj2/ */
+    Push(kthread, userContext->dsSelector); /* ds */
+    Push(kthread, userContext->dsSelector); /* es */
+    Push(kthread, userContext->dsSelector); /* fs */
+    Push(kthread, userContext->dsSelector); /* gs */
+
+    return;
 }
 
 
@@ -507,6 +566,7 @@ struct Kernel_Thread* Start_Kernel_Thread(
 struct Kernel_Thread*
 Start_User_Thread(struct User_Context* userContext, bool detached)
 {
+    struct Kernel_Thread* uthread = NULL;
     /*
      * Hints:
      * - Use Create_Thread() to create a new "raw" thread object
@@ -515,7 +575,28 @@ Start_User_Thread(struct User_Context* userContext, bool detached)
      * - Call Make_Runnable_Atomic() to schedule the process
      *   for execution
      */
-    TODO("Start user thread");
+
+    /*
+     * Use Create_Thread() to create a new "raw" thread object
+     */
+    uthread = Create_Thread(PRIORITY_USER, detached);
+    if (uthread == NULL) {
+        return NULL;
+    }
+
+    /*
+     * Call Setup_User_Thread() to get the thread ready to
+     * execute in user mode
+     */
+    Setup_User_Thread(uthread, userContext);
+
+    /*
+     * Call Make_Runnable_Atomic() to schedule the process
+     * for execution
+     */
+    Make_Runnable_Atomic(uthread);
+
+    return uthread;
 }
 
 /*
