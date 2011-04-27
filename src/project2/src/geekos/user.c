@@ -113,7 +113,8 @@ int Spawn(const char *program, const char *command, struct Kernel_Thread **pThre
      */
     retCode = Read_Fully(program, (void**) &exeFileData, &exeFileLength);
     if (retCode != 0) {
-        Print("Read_Fully failed to read %s from disk\n", program);
+        if (retCode != ENOTFOUND)
+            Print("Read_Fully failed to read %s from disk\n", program);
         return retCode;
     }
 

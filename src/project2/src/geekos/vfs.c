@@ -15,6 +15,7 @@
 #include <geekos/malloc.h>
 #include <geekos/synch.h>
 #include <geekos/vfs.h>
+#include <geekos/int.h>
 
 /*
  * Notes:

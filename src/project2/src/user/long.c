@@ -9,8 +9,9 @@ int main(int argc, char **argv)
 
   for (i=0; i < 400; i++) {
       for (j=0 ; j < 10000 ; j++) ;
-      Get_PID();
+          Get_PID();
   }
+//  Print("PID: %d\n", Get_PID());
   Print("End Long\n");
 
   return 0;

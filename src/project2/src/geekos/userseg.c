@@ -77,7 +77,17 @@ void Destroy_User_Context(struct User_Context* userContext)
      * - don't forget to free the segment descriptor allocated
      *   for the process's LDT
      */
-    TODO("Destroy a User_Context");
+//    TODO("Destroy a User_Context");
+
+    /* you need to free the memory allocated for the user process */
+    Free(userContext->memory);
+
+    /*
+     * don't forget to free the segment descriptor allocated
+     * for the process's LDT
+     */
+    Free_Segment_Descriptor(userContext->ldtDescriptor);
+    return;
 }
 
 /*

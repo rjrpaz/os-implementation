@@ -29,10 +29,12 @@
 
 // #define COMMAND "/c/b.exe";
 // #define COMMAND "/c/c.exe";
-#define COMMAND "/c/null.exe";
+// #define COMMAND "/c/null.exe";
 // #define COMMAND "/c/long.exe";
-// #define COMMAND "/c/shell.exe";
+#define COMMAND "/c/shell.exe";
     
+//#define DEBUG 1
+#undef DEBUG
 
 /*
  * Define this for a self-contained boot floppy
@@ -120,7 +122,9 @@ static void Spawn_Init_Process(void)
         Print ("Spawn error. RetCode: %d\n", pid);
         return;
     } else {
+#ifdef DEBUG
         Print ("PID: %d\n", pid);
+#endif
     }    
 
 

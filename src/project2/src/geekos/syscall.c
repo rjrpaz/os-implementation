@@ -21,6 +21,9 @@
 #include <geekos/timer.h>
 #include <geekos/vfs.h>
 
+// #define DEBUG 1
+#undef DEBUG
+
 /*
  * Null system call.
  * Does nothing except immediately return control back
@@ -33,6 +36,9 @@
  */
 static int Sys_Null(struct Interrupt_State* state)
 {
+#ifdef DEBUG
+    Print("Sys_Null ha sido invocado\n");
+#endif
     return 0;
 }
 
@@ -46,7 +52,7 @@ static int Sys_Null(struct Interrupt_State* state)
  */
 static int Sys_Exit(struct Interrupt_State* state)
 {
-    TODO("Exit system call");
+    Exit(state->ebx);
     return 0;
 }
 
@@ -59,7 +65,18 @@ static int Sys_Exit(struct Interrupt_State* state)
  */
 static int Sys_PrintString(struct Interrupt_State* state)
 {
-//    TODO("PrintString system call");
+    unsigned int largo = state->ecx;
+    char *cadena = NULL;
+
+    cadena = Malloc(largo);
+
+    if (! Copy_From_User(cadena, state->ebx, largo)) {
+        Print("Error al invocar Copy_From_User\n");
+        Free(cadena);
+        return -1;
+    }
+    Put_Buf(cadena, largo);
+    Free(cadena);
     return 0;
 }
 
@@ -72,8 +89,8 @@ static int Sys_PrintString(struct Interrupt_State* state)
  */
 static int Sys_GetKey(struct Interrupt_State* state)
 {
-    TODO("GetKey system call");
-    return 0;
+    int keyCode = Wait_For_Key();
+    return keyCode;
 }
 
 /*
@@ -84,7 +101,7 @@ static int Sys_GetKey(struct Interrupt_State* state)
  */
 static int Sys_SetAttr(struct Interrupt_State* state)
 {
-    TODO("SetAttr system call");
+    Set_Current_Attr(state->ebx);
     return 0;
 }
 
@@ -97,7 +114,16 @@ static int Sys_SetAttr(struct Interrupt_State* state)
  */
 static int Sys_GetCursor(struct Interrupt_State* state)
 {
-    TODO("GetCursor system call");
+    int y=0, x=0;
+    Get_Cursor(&y, &x);
+    if (! Copy_To_User(state->ebx, &y, sizeof(int))) {
+        Print("Error al invocar Copy_To_User para almacenar la fila\n");
+        return -1;
+    }
+    if (! Copy_To_User(state->ecx, &x, sizeof(int))) {
+        Print("Error al invocar Copy_To_User para almacenar la columna\n");
+        return -1;
+    }
     return 0;
 }
 
@@ -110,8 +136,10 @@ static int Sys_GetCursor(struct Interrupt_State* state)
  */
 static int Sys_PutCursor(struct Interrupt_State* state)
 {
-    TODO("PutCursor system call");
-    return 0;
+    if (Put_Cursor(state->ebx, state->ecx))
+        return 0;
+    else
+        return -1;
 }
 
 /*
@@ -125,8 +153,39 @@ static int Sys_PutCursor(struct Interrupt_State* state)
  */
 static int Sys_Spawn(struct Interrupt_State* state)
 {
-    TODO("Spawn system call");
-    return 0;
+    char *pathname=NULL;
+    char *command=NULL;
+    struct Kernel_Thread *pThread = NULL;
+    int pid=0;
+
+    pathname=Malloc(state->ecx+1);
+    memset(pathname, 0x0, state->ecx+1);
+    if (! Copy_From_User(pathname, state->ebx, state->ecx)) {
+        Print("Error al invocar Copy_From_User para el pathname\n");
+        Free(pathname);
+        return -1;
+    }
+
+    command=Malloc(state->esi+1);
+    memset(command, 0x0, state->ecx+1);
+    if (! Copy_From_User(command, state->edx, state->esi)) {
+        Print("Error al invocar Copy_From_User para el comando\n");
+        Free(pathname);
+        Free(command);
+        return -1;
+    }
+
+#ifdef DEBUG
+    Print("PATH: %s\n", pathname);
+    Print("COMM: %s\n", command);
+#endif
+
+//    Enable_Interrupts();
+    pid = Spawn(pathname, command, &pThread);
+//    Disable_Interrupts();
+    Free(pathname);
+    Free(command);
+    return pid;
 }
 
 /*
@@ -138,8 +197,10 @@ static int Sys_Spawn(struct Interrupt_State* state)
  */
 static int Sys_Wait(struct Interrupt_State* state)
 {
-    TODO("Wait system call");
-    return 0;
+    struct Kernel_Thread *wThread = Lookup_Thread(state->ebx);
+
+    int exit_code = Join(wThread);
+    return exit_code;
 }
 
 /*
@@ -150,8 +211,7 @@ static int Sys_Wait(struct Interrupt_State* state)
  */
 static int Sys_GetPID(struct Interrupt_State* state)
 {
-    TODO("GetPID system call");
-    return 0;
+    return(g_currentThread->pid);
 }
 
 
