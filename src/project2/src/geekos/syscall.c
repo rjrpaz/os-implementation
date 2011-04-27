@@ -180,9 +180,9 @@ static int Sys_Spawn(struct Interrupt_State* state)
     Print("COMM: %s\n", command);
 #endif
 
-//    Enable_Interrupts();
+    Enable_Interrupts();
     pid = Spawn(pathname, command, &pThread);
-//    Disable_Interrupts();
+    Disable_Interrupts();
     Free(pathname);
     Free(command);
     return pid;
@@ -199,7 +199,9 @@ static int Sys_Wait(struct Interrupt_State* state)
 {
     struct Kernel_Thread *wThread = Lookup_Thread(state->ebx);
 
+    Enable_Interrupts();
     int exit_code = Join(wThread);
+    Disable_Interrupts();
     return exit_code;
 }
 
