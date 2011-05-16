@@ -16,7 +16,14 @@
 #include <geekos/string.h>
 #include <geekos/kthread.h>
 #include <geekos/malloc.h>
+#include <geekos/user.h>
 
+/*
+ * Variable que define la politica del scheduler:
+ * 0: Round Robin
+ * 1: MLFQ
+ */
+int g_schedPolicy = 0;
 
 /* ----------------------------------------------------------------------
  * Private data
@@ -30,7 +37,7 @@ static struct All_Thread_List s_allThreadList;
 /*
  * Run queues.  0 is the highest priority queue.
  */
-static struct Thread_Queue s_runQueue[MAX_QUEUE_LEVEL];
+struct Thread_Queue s_runQueue[MAX_QUEUE_LEVEL];
 
 /*
  * Current thread.
@@ -100,6 +107,7 @@ static void Init_Thread(struct Kernel_Thread* kthread, void* stackPage,
     Clear_Thread_Queue(&kthread->joinQueue);
     kthread->pid = nextFreePid++;
 
+    /* Inicializa en la cola de mayor prioridad */
     kthread->currentReadyQueue = 0;
     kthread->blocked = false;
 }
@@ -315,7 +323,48 @@ static void Setup_Kernel_Thread(
      * - The esi register should contain the address of
      *   the argument block
      */
-    TODO("Create a new thread to execute in user mode");
+
+    Attach_User_Context(kthread, userContext);
+
+    /* ushort_t dsSelector */
+    Push(kthread, userContext->dsSelector);
+
+    /* Stack pointer */
+    Push(kthread, (userContext->stackPointerAddr));
+    /*
+     * The EFLAGS register will have all bits clear.
+     * The important constraint is that we want to have the IF
+     * bit clear, so that interrupts are disabled when the
+     * thread starts.
+     */
+    Push(kthread, 0UL); /* EFLAGS */
+
+    /* ushort_t csSelector */
+    Push(kthread, userContext->csSelector);
+
+    /* Push the address of the start function. */
+    Push(kthread, userContext->entryAddr);
+
+    /* Push fake error code and interrupt number. */
+    Push(kthread, 0UL);
+    Push(kthread, 0UL);
+
+    /* Push initial values for general-purpose registers. */
+    Push(kthread, 0UL); /* eax */
+    Push(kthread, 0UL); /* ebx */
+    Push(kthread, 0UL); /* ecx */
+    Push(kthread, 0UL); /* edx */
+    Push(kthread, userContext->argBlockAddr); /* esi */
+    Push(kthread, 0UL); /* edi */
+    Push(kthread, 0UL); /* ebp */
+    /*
+     * Push values for saved segment registers.
+     * Only the ds and es registers will contain valid selectors.
+     */
+    Push(kthread, (ulong_t)userContext->dsSelector); /* ds */
+    Push(kthread, (ulong_t)userContext->dsSelector); /* es */
+    Push(kthread, (ulong_t)userContext->dsSelector); /* fs */
+    Push(kthread, (ulong_t)userContext->dsSelector); /* gs */
 }
 
 
@@ -509,6 +558,7 @@ struct Kernel_Thread* Start_Kernel_Thread(
 struct Kernel_Thread*
 Start_User_Thread(struct User_Context* userContext, bool detached)
 {
+    KASSERT(userContext != NULL);
     /*
      * Hints:
      * - Use Create_Thread() to create a new "raw" thread object
@@ -517,7 +567,19 @@ Start_User_Thread(struct User_Context* userContext, bool detached)
      * - Call Make_Runnable_Atomic() to schedule the process
      *   for execution
      */
-    TODO("Start user thread");
+    struct Kernel_Thread* kthread = Create_Thread(PRIORITY_USER, detached);
+    if (kthread != 0) {
+        /*
+         * Create the initial context for the thread to make
+         * it schedulable.
+         */
+        Setup_User_Thread(kthread, userContext);
+
+        /* Atomically put the thread on the run queue. */
+        Make_Runnable_Atomic(kthread);
+    }
+
+    return kthread;
 }
 
 /*
@@ -531,6 +593,15 @@ void Make_Runnable(struct Kernel_Thread* kthread)
     { int currentQ = kthread->currentReadyQueue;
       KASSERT(currentQ >= 0 && currentQ < MAX_QUEUE_LEVEL);
       kthread->blocked = false;
+
+      /*
+       * Si un hilo tiene la prioridad de Idle,
+       * lo mando a la cola de menor prioridad
+       */
+      if (kthread->priority == PRIORITY_IDLE) {
+        currentQ = MAX_QUEUE_LEVEL-1;
+        kthread->currentReadyQueue = currentQ;
+      }
       Enqueue_Thread(&s_runQueue[currentQ], kthread);
     }
 }
@@ -560,10 +631,41 @@ struct Kernel_Thread* Get_Current(void)
  */
 struct Kernel_Thread* Get_Next_Runnable(void)
 {
-    struct Kernel_Thread* best = 0;
+    struct Kernel_Thread *best = 0, *maybeBest = 0;
+    unsigned int i = 0, currentQ = 0;
 
     /* Find the best thread from the highest-priority run queue */
-    TODO("Find a runnable thread from run queues");
+//    TODO("Find a runnable thread from run queues");
+
+    KASSERT((g_schedPolicy>=0) && (g_schedPolicy<=1));
+
+    /*
+     * Cualquiera sea el algoritmo de scheduling empleado,
+     * utilizo el array de colas en ambos casos. Lo único
+     * que varía, es la forma en que realizo el recorrido
+     */
+
+    /* Round Robin */
+    if (g_schedPolicy == 0) {
+        for (i=0; i<MAX_QUEUE_LEVEL; i++) {
+            maybeBest = Find_Best(&s_runQueue[i]);
+            if ((maybeBest != 0) && ((best == 0) || maybeBest->priority > best->priority)) {
+                best = maybeBest;
+                currentQ=i;
+            }
+        }
+    /* MLFQ */
+    } else {
+        do {
+            best = Find_Best(&s_runQueue[currentQ]);
+            currentQ++;
+        } while ((best == 0) && (currentQ < MAX_QUEUE_LEVEL));
+        currentQ--;
+    }
+
+//Print("PID B: %d currentQ: %d Priority: %d\n", (int) (best->pid), currentQ, best->priority);
+    KASSERT(best != 0);
+    Remove_Thread(&s_runQueue[currentQ], best);
 
 /*
  *    Print("Scheduling %x\n", best);
@@ -730,6 +832,10 @@ void Wait(struct Thread_Queue* waitQueue)
 
     /* Add the thread to the wait queue. */
     current->blocked = true;
+
+    /* Si la politica de sched es MLFQ, promociona al hilo */
+    if ((g_schedPolicy == 1) && (current->priority != PRIORITY_IDLE) && (current->currentReadyQueue > 0))
+        current->currentReadyQueue--;
     Enqueue_Thread(waitQueue, current);
 
     /* Find another thread to run. */

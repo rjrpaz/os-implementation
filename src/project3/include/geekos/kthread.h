@@ -12,6 +12,7 @@
 
 #include <geekos/ktypes.h>
 #include <geekos/list.h>
+//#include <geekos/sem.h>
 
 struct Kernel_Thread;
 struct User_Context;
@@ -143,6 +144,8 @@ extern struct Kernel_Thread* g_currentThread;
  * Boolean flag indicating that we need to choose a new runnable thread.
  */
 extern int g_needReschedule;
+
+extern int g_schedPolicy;
 
 /*
  * Boolean flag indicating that preemption should be disabled.

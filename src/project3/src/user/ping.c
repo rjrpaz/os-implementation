@@ -16,6 +16,8 @@ int main(int argc , char ** argv)
   ping = Create_Semaphore ("ping" , 1) ;   
   pong = Create_Semaphore ("pong" , 0) ;  
 
+Print("Sem IDs. Screen: %d, Ping: %d, Pong: %d\n", scr_sem, ping, pong);
+
   for (i=0; i < 5; i++) {
        P(pong);
        for (j=0; j < 35; j++);

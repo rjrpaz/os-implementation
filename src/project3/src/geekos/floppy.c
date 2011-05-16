@@ -175,10 +175,9 @@ struct Floppy_Drive {
 struct Floppy_Drive s_driveTable[2];
 
 /*
- * Thread queue where a thread can wait to be notified that
- * a floppy interrupt has occurred.
+ * Flag to indicate that a floppy interrupt occurred.
  */
-static struct Thread_Queue s_floppyInterruptWaitQueue;
+static volatile int s_interruptOccurred;
 
 /*
  * Page of memory used for floppy DMA.
@@ -251,12 +250,14 @@ static struct Block_Device_Ops s_floppyDeviceOps = {
  * to notify the driver of the completion of a command.
  */
 /*
- * Wake up any threads in the floppy wait queue.
+ * For now, we just set a flag that the driver
+ * can busy-wait for.
  */
 static void Floppy_Interrupt_Handler(struct Interrupt_State* state)
 {
     Begin_IRQ(state);
-    Wake_Up(&s_floppyInterruptWaitQueue);
+    Debug("Floppy_Interrupt_Handler!\n");
+    s_interruptOccurred = 1;
     End_IRQ(state);
 }
 
@@ -344,8 +345,14 @@ static void Wait_For_Interrupt(void)
 {
     KASSERT(!Interrupts_Enabled());
 
-    /* Wait for interrupt */
-    Wait(&s_floppyInterruptWaitQueue);
+    /* Spin wait */
+
+    s_interruptOccurred = 0;
+    Enable_Interrupts();
+    while (!s_interruptOccurred) {
+	/* FIXME: Could sleep here */
+    }
+    Disable_Interrupts();
 }
 
 static void Sense_Interrupt_Status(uchar_t* st0, uchar_t *pcn)

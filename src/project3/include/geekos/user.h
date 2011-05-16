@@ -68,9 +68,9 @@ struct User_Context {
      */
     int refCount;
 
-#if 0
+//#if 0
     int *semaphores;
-#endif
+//#endif
 };
 
 struct Kernel_Thread;
