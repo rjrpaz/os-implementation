@@ -22,11 +22,14 @@
 #include <geekos/vfs.h>
 #include <geekos/sem.h>
 
-#define DEBUG 1
-//#undef DEBUG
+//#define DEBUG 1
+#undef DEBUG
 
 extern struct Semaphore_List s_semList;
 extern struct Thread_Queue s_runQueue[MAX_QUEUE_LEVEL];
+
+//extern void listTest();
+//extern void Dump_All_Semaphore_List();
 
 /*
  * Null system call.
@@ -316,9 +319,8 @@ static int Sys_GetTimeOfDay(struct Interrupt_State* state)
 static int Sys_CreateSemaphore(struct Interrupt_State* state)
 {
     char *semName = NULL;
-//    struct Semaphore *semTmp = NULL;
     int id = -1;
-//    int *semaphores = NULL;
+    int *semaphores = NULL;
 
 //    TODO("CreateSemaphore system call");
     ulong_t semNameLen = state->ecx + 1;
@@ -336,34 +338,12 @@ static int Sys_CreateSemaphore(struct Interrupt_State* state)
     Print("semName: %s\n", semName);
 #endif
 
-    /*
-     * Obtiene el primer elemento de la lista y lo
-     * recorre hasta el final para ver que ID le asigna
-     * al semáforo solicitado (poco eficiente).
-     */
-/*
-    semTmp = Get_Front_Of_Semaphore_List(&s_semList);
-    while (semTmp != NULL) {
-        KASSERT(semTmp != Get_Next_In_Semaphore_List(semTmp));
-        if (strcmp(semTmp->name, semName) == 0) {
-            id = semTmp->id;
-            semTmp->nref++;
-            break;
-        }
-        semTmp = Get_Next_In_Semaphore_List(semTmp);
-    }
+//Dump_All_Semaphore_List();
+    id = Create_Semaphore (semName, state->edx);
 
-    if (id < 0) {
-#ifdef DEBUG
-        Print("Semaforo %s no existe. Lo crea.\n", semName);
-#endif
-        id = Create_Semaphore (semName, state->edx);
-    }
-*/
-        id = Create_Semaphore (semName, state->edx);
-
+//Dump_All_Semaphore_List();
+//Print("Saliendo de Create\n");
     /* Se obtuvo un id válido. Se asocia el id al contexto del proceso */
-/*
     if (id >= 0) {
         semaphores = g_currentThread->userContext->semaphores;
         while (*semaphores != -1) {
@@ -373,7 +353,7 @@ static int Sys_CreateSemaphore(struct Interrupt_State* state)
         semaphores++;
         *semaphores = -1;
     }
-*/
+
     return id;
 }
 
@@ -389,18 +369,26 @@ static int Sys_CreateSemaphore(struct Interrupt_State* state)
 static int Sys_P(struct Interrupt_State* state)
 {
     struct Semaphore *sem = NULL;
+//    struct Semaphore sem;
     int id = 0;
 //    TODO("P (semaphore acquire) system call");
 
+//Print("semaforo en direccion A %p\n", sem);
+//    sem = Malloc(sizeof(struct Semaphore));
+//Print("semaforo en direccion B %p\n", sem);
     id = state->ebx;
-    if (Get_Sem_By_Id(id, sem) < 0)
+//    if (Get_Sem_By_Id(id, sem) < 0)
+    sem = Get_Sem_By_Id(id);
+    if (sem == NULL)
         return -1;
 
+Print("semaforo en direccion %p se llama %s y vale %d\n", sem, sem->name, sem->value);
     while (sem->value <= 0)
         ;
 
     sem->value--; 
 
+    Free(sem);
     return 0;
 }
 
@@ -418,9 +406,13 @@ static int Sys_V(struct Interrupt_State* state)
 //    TODO("V (semaphore release) system call");
 
     id = state->ebx;
-    if (Get_Sem_By_Id(id, sem) < 0)
+    sem = Get_Sem_By_Id(id);
+
+Print("semaforo en direccion %p se llama %s y vale %d\n", sem, sem->name, sem->value);
+    if (sem == NULL)
         return -1;
 
+Print("semaforo en direccion %p se llama %s y ahora vale %d\n", sem, sem->name, sem->value);
     sem->value++; 
 
     return 0;

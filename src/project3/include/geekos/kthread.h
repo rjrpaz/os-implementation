@@ -12,7 +12,6 @@
 
 #include <geekos/ktypes.h>
 #include <geekos/list.h>
-//#include <geekos/sem.h>
 
 struct Kernel_Thread;
 struct User_Context;

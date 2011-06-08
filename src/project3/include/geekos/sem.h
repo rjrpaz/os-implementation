@@ -39,6 +39,6 @@ IMPLEMENT_LIST(Semaphore_List, Semaphore);
 
 int Create_Semaphore (const char *name, int ival);
 int Destroy_Semaphore (int id);
-int Get_Sem_By_Id(int id, struct Semaphore *sem);
+struct Semaphore *Get_Sem_By_Id(int id);
 
 #endif  /* GEEKOS_SEM_H */
