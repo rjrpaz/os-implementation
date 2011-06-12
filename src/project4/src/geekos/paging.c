@@ -114,8 +114,7 @@ static void Print_Fault_Info(uint_t address, faultcode_t faultCode)
 void Init_VM(struct Boot_Info *bootInfo)
 {
     int i = 0, j = 0;
-//    uint_t pageNumber = 0, numberOfPages = 0;
-    uint_t pageNumber = 0;
+    uint_t pageNumber = 0, numberOfPages = 0;
 
     /*
      * Hints:
@@ -127,13 +126,12 @@ void Init_VM(struct Boot_Info *bootInfo)
      *   null pointer references
      */
 
-/*
     numberOfPages = (bootInfo->memSizeKB * 1024) / PAGE_SIZE;
     if (((bootInfo->memSizeKB * 1024) % PAGE_SIZE) > 0)
         numberOfPages++;
 
     Debug("# de paginas: %d\n", numberOfPages);
-*/
+
 
     /* Crea page directory */
     pde_t *pageDirectory = (pde_t *)Alloc_Page();
@@ -147,7 +145,7 @@ void Init_VM(struct Boot_Info *bootInfo)
          * GeekOS, y por ende son los únicos que están presente.
          * Los 8Mb se corresponden a las primeras 2 entradas del PDE.
          */
-        (i<2) ? (ppde->present = 1) : (ppde->present = 0);
+        (pageNumber<numberOfPages) ? (ppde->present = 1) : (ppde->present = 0);
 
         /*
          * De los 32 bits de memoria direccionables, la primera mitad
@@ -162,7 +160,7 @@ void Init_VM(struct Boot_Info *bootInfo)
         memset(ppte, 0x0, PAGE_SIZE);
         ppde->pageTableBaseAddr = PAGE_ALLIGNED_ADDR(ppte);
         for (j=0; j<NUM_PAGE_TABLE_ENTRIES; j++) {
-            (i<2) ? (ppte->present = 1) : (ppte->present = 0);
+            (pageNumber<numberOfPages) ? (ppte->present = 1) : (ppte->present = 0);
             if ((i==0) && (j==0)) ppte->present = 0;
 //            (i<512) ? (ppte->flags = VM_WRITE) : (ppte->flags = VM_WRITE | VM_USER);
             ppte->flags = VM_READ | VM_WRITE | VM_USER;
