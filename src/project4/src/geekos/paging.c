@@ -32,11 +32,12 @@
  * ---------------------------------------------------------------------- */
 
 #define SECTORS_PER_PAGE (PAGE_SIZE / SECTOR_SIZE)
+#define PG_IRQ 14
 
 /*
  * flag to indicate if debugging paging code
  */
-int debugFaults = 0;
+int debugFaults = 1;
 #define Debug(args...) if (debugFaults) Print(args)
 
 
@@ -112,6 +113,10 @@ static void Print_Fault_Info(uint_t address, faultcode_t faultCode)
  */
 void Init_VM(struct Boot_Info *bootInfo)
 {
+    int i = 0, j = 0;
+//    uint_t pageNumber = 0, numberOfPages = 0;
+    uint_t pageNumber = 0;
+
     /*
      * Hints:
      * - Build kernel page directory and page tables
@@ -121,7 +126,65 @@ void Init_VM(struct Boot_Info *bootInfo)
      * - Do not map a page at address 0; this will help trap
      *   null pointer references
      */
-    TODO("Build initial kernel page directory and page tables");
+
+/*
+    numberOfPages = (bootInfo->memSizeKB * 1024) / PAGE_SIZE;
+    if (((bootInfo->memSizeKB * 1024) % PAGE_SIZE) > 0)
+        numberOfPages++;
+
+    Debug("# de paginas: %d\n", numberOfPages);
+*/
+
+    /* Crea page directory */
+    pde_t *pageDirectory = (pde_t *)Alloc_Page();
+    memset(pageDirectory, 0x0, PAGE_SIZE);
+    pde_t *ppde = pageDirectory;
+//    Print("PD Antes: %p\n", pageDirectory);
+
+    for (i=0; i<NUM_PAGE_DIR_ENTRIES; i++) {
+        /*
+         * Los primeros 8 Mb son los que puede realmente accede
+         * GeekOS, y por ende son los únicos que están presente.
+         * Los 8Mb se corresponden a las primeras 2 entradas del PDE.
+         */
+        (i<2) ? (ppde->present = 1) : (ppde->present = 0);
+
+        /*
+         * De los 32 bits de memoria direccionables, la primera mitad
+         * se reserva para el kernel. La segunda mitad, es para la
+         * memoria de usuario.
+         */
+//        (i<512) ? (ppde->flags = VM_WRITE) : (ppde->flags = VM_WRITE | VM_USER);
+        ppde->flags = VM_READ | VM_WRITE | VM_USER;
+
+        /* Reserva página para la tabla de páginas */
+        pte_t *ppte = (pte_t *)Alloc_Page();
+        memset(ppte, 0x0, PAGE_SIZE);
+        ppde->pageTableBaseAddr = PAGE_ALLIGNED_ADDR(ppte);
+        for (j=0; j<NUM_PAGE_TABLE_ENTRIES; j++) {
+            (i<2) ? (ppte->present = 1) : (ppte->present = 0);
+            if ((i==0) && (j==0)) ppte->present = 0;
+//            (i<512) ? (ppte->flags = VM_WRITE) : (ppte->flags = VM_WRITE | VM_USER);
+            ppte->flags = VM_READ | VM_WRITE | VM_USER;
+            ppte->pageBaseAddr = pageNumber;
+            pageNumber++;
+            ppte++;
+        }
+
+        ppde++;
+    }
+
+
+    Debug("# de paginas: %d\n", pageNumber);
+
+    checkPaging();
+    Enable_Paging(pageDirectory);
+    checkPaging();
+
+    Install_Interrupt_Handler(PG_IRQ, &Page_Fault_Handler);
+
+//    TODO("Build initial kernel page directory and page tables");
+    return;
 }
 
 /**

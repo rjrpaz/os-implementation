@@ -45,6 +45,7 @@ struct User_Context;
  */
 typedef struct {
     uint_t present:1;
+    /* 1:Read/Write, 2:User/Supervisor, 3:Write-through, 4:Cache disabled */
     uint_t flags:4;
     uint_t accesed:1;
     uint_t reserved:1;
