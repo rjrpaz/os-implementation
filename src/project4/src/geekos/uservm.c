@@ -27,6 +27,9 @@
  * Private functions
  * ---------------------------------------------------------------------- */
 
+int debugVM = 0;
+#define DebugVM(args...) if (debugVM) Print(args)
+
 // TODO: Add private functions
 /* ----------------------------------------------------------------------
  * Public functions
@@ -146,10 +149,13 @@ int Load_User_Program(char *exeFileData, ulong_t exeFileLength,
 
     /* Crea las Page Tables del proceso */
     pde_t *ppde = userContext->pageDir + (NUM_PAGE_DIR_ENTRIES / 2);
+DebugVM("Direccion de la pagedir: @%lx\n", (unsigned long) ppde);
     numberOfPages = virtSize / PAGE_SIZE;
+DebugVM("Cant. de paginas necesarias para paginar: %d\n", numberOfPages);
     vaddr = 0x8000000;
     for (i=0; i<NUM_PAGE_DIR_ENTRIES/2; i++) {
-        if (pageNumber > numberOfPages) {
+DebugVM("Direccion de la entrada %i de la pagedir: @%lx\n", i, (unsigned long) ppde);
+        if (pageNumber >= numberOfPages) {
             ppde->present = 0;
         } else {
             ppde->present = 1;
@@ -157,6 +163,7 @@ int Load_User_Program(char *exeFileData, ulong_t exeFileLength,
 
             /* Reserva pÃ¡gina para la tabla de pÃ¡ginas */
             pte_t *ppte = (pte_t *)Alloc_Page();
+DebugVM("Direccion de la primer entrada en la tabla de paginas @%lx. PageNumber %d\n", (unsigned long) ppte, pageNumber);
             memset(ppte, 0x0, PAGE_SIZE);
             ppde->pageTableBaseAddr = PAGE_ALLIGNED_ADDR(ppte);
             for (j=0; j<NUM_PAGE_TABLE_ENTRIES; j++) {
@@ -165,15 +172,19 @@ int Load_User_Program(char *exeFileData, ulong_t exeFileLength,
                     ppte->present = 0;
                 else {
                     (pageNumber<numberOfPages) ? (ppte->present = 1) : (ppte->present = 0);
+                    if (ppte->present == 1) {
                     ppte->flags = VM_READ | VM_WRITE | VM_USER;
 
                     void *page = Alloc_Pageable_Page(ppte, vaddr);
+DebugVM("Direccion de la pagina nro. %d asignada al programa @%lx\n", pageNumber, (unsigned long) page);
                     ppte->pageBaseAddr = PAGE_ALLIGNED_ADDR(page);
 
                     /* Copia el programa desde la memoria temporal a la pÃ¡gina */
                     memcpy(page, mem+(pageNumber*PAGE_SIZE), PAGE_SIZE);
 
                     pageNumber++;
+                    }
+
                     ppte++;
                 }
                 vaddr += PAGE_SIZE;
@@ -185,8 +196,10 @@ int Load_User_Program(char *exeFileData, ulong_t exeFileLength,
 
     /* Crea entrada de tabla de pÃ¡ginas para stack y argumentos */
     ppde = userContext->pageDir + NUM_PAGE_DIR_ENTRIES - 1; // Ultima entrada del Page Directory
+DebugVM("Ultima direccion de la tabla de paginas @%lx\n", (unsigned long) ppde);
     /* No estÃ¡ presente. La habilito */
     if (ppde->present == 0) {
+DebugVM("Ultima direccion no está presente. La habilito\n");
         ppde->present = 1;
         ppde->flags = VM_READ | VM_WRITE | VM_USER;
 
@@ -196,20 +209,24 @@ int Load_User_Program(char *exeFileData, ulong_t exeFileLength,
         ppde->pageTableBaseAddr = PAGE_ALLIGNED_ADDR(ppte);
     }
     /* Obtengo direccion de la tabla de paginas de la Ãºltima entrada del page directory */
-    ulong_t ultima = PAGE_ADDR(ppde->pageTableBaseAddr);
+    ulong_t ultima = ppde->pageTableBaseAddr << 12;
+DebugVM("Dirección de la tabla de páginas de la última entrada del page directory @%lx @%lx\n", ultima, (unsigned long) ppde->pageTableBaseAddr);
 
     /* Obtengo penÃºltima entrada del page table - STACK */
-    pte_t *ppte = (pte_t *) (ultima + NUM_PAGE_TABLE_ENTRIES - 2);
+    pte_t *ppte = (pte_t *) (ultima) + NUM_PAGE_TABLE_ENTRIES - 2;
+DebugVM("Dirección de penultima entrada en la tabla de páginas asociada a la última entrada del page directory @%lx\n", (unsigned long) ppte);
     /* El programa es muy grande */
     KASSERT(ppte->present != 1);
     
     ppte->present = 1;
     ppte->flags = VM_READ | VM_WRITE | VM_USER;
     void *page = Alloc_Pageable_Page(ppte, 0xFFFFE000);
+DebugVM("Direccion de la pagina asignada al stack @%lx\n", (unsigned long) page);
     ppte->pageBaseAddr = PAGE_ALLIGNED_ADDR(page);
 
     /* Obtengo Ãºltima entrada del page table - ARGS */
-    ppte = (pte_t *) (ultima + NUM_PAGE_TABLE_ENTRIES - 1);
+    ppte++;
+DebugVM("Dirección de ultima entrada en la tabla de páginas asociada a la última entrada del page directory @%lx\n", (unsigned long) ppte);
     /* El programa es muy grande */
     KASSERT(ppte->present != 1);
     Get_Argument_Block_Size(command, &numArgs, &argBlockSize);
@@ -217,7 +234,8 @@ int Load_User_Program(char *exeFileData, ulong_t exeFileLength,
  
     ppte->present = 1;
     ppte->flags = VM_READ | VM_WRITE | VM_USER;
-    page = Alloc_Pageable_Page(ppte, 0xFFFFEF00);
+    page = Alloc_Pageable_Page(ppte, 0xFFFFF000);
+DebugVM("Direccion de la pagina asignada a los args @%lx\n", (unsigned long) page);
     ppte->pageBaseAddr = PAGE_ALLIGNED_ADDR(page);
 
     Format_Argument_Block(page, numArgs, stackAddr, command);
