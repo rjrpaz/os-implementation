@@ -17,6 +17,11 @@
 #include <geekos/range.h>
 #include <geekos/vfs.h>
 #include <geekos/user.h>
+#include <geekos/errno.h>
+#include <geekos/paging.h>
+#include <geekos/gdt.h>
+
+#define DEFAULT_USER_STACK_SIZE 8192
 
 /* ----------------------------------------------------------------------
  * Private functions
@@ -26,6 +31,7 @@
 /* ----------------------------------------------------------------------
  * Public functions
  * ---------------------------------------------------------------------- */
+
 
 /*
  * Destroy a User_Context object, including all memory
@@ -76,7 +82,157 @@ int Load_User_Program(char *exeFileData, ulong_t exeFileLength,
      * - Fill in initial stack pointer, argument block address,
      *   and code entry point fields in User_Context
      */
-    TODO("Load user program into address space");
+//    TODO("Load user program into address space");
+
+    KASSERT(exeFileData != NULL);
+    KASSERT(command != NULL);
+    KASSERT(exeFormat != NULL);
+                
+    /* Por Victor Rosales */
+    int i = 0;
+    int ret = 0;
+    ulong_t maxva = 0;
+    ulong_t argBlockSize = 0;
+    ulong_t stackAddr = 0;
+    unsigned numArgs = 0;
+    unsigned long virtSize;
+    struct User_Context *userContext = 0;
+
+    int j = 0;
+    uint_t pageNumber = 0, numberOfPages = 0;
+    ulong_t vaddr = 0;
+
+    /* Find maximum virtual address */
+    for (i = 0; i < exeFormat->numSegments; ++i) {
+        struct Exe_Segment *segment = &exeFormat->segmentList[i];
+        ulong_t topva = segment->startAddress + segment->sizeInMemory;
+
+        if (topva > maxva)
+            maxva = topva;
+    }
+
+    virtSize = Round_Up_To_Page(maxva);
+
+    /*
+     * memoria para almacenar temporalmente los segmentos del programa,
+     * antes de copiarlos a las páginas.
+     */
+    char *mem = (char *) Malloc(virtSize);
+    if (mem == NULL)
+        return -1;
+//        goto error;
+
+    /* Reset memory with zeros */
+    memset(mem, '\0', virtSize);
+ 
+    /* Copia segmentos en la memoria temporal */
+    for (i = 0; i < exeFormat->numSegments; i++) {
+        struct Exe_Segment *segment = &exeFormat->segmentList[i];
+
+        memcpy(mem + segment->startAddress,
+            exeFileData + segment->offsetInFile,
+            segment->lengthInFile);
+    }
+
+    /* Pido memoria para el User_Context */
+    userContext = Malloc(sizeof(struct User_Context));
+    if (userContext ==  NULL)
+        return -1;
+//        goto error;
+
+    /* Copia Page Directory de kernel al proceso */
+    userContext->pageDir = Alloc_Page();
+    memcpy(userContext->pageDir, pageDirectory, PAGE_SIZE);
+
+    /* Crea las Page Tables del proceso */
+    pde_t *ppde = userContext->pageDir + (NUM_PAGE_DIR_ENTRIES / 2);
+    numberOfPages = virtSize / PAGE_SIZE;
+    vaddr = 0x8000000;
+    for (i=0; i<NUM_PAGE_DIR_ENTRIES/2; i++) {
+        if (pageNumber > numberOfPages) {
+            ppde->present = 0;
+        } else {
+            ppde->present = 1;
+            ppde->flags = VM_READ | VM_WRITE | VM_USER;
+
+            /* Reserva página para la tabla de páginas */
+            pte_t *ppte = (pte_t *)Alloc_Page();
+            memset(ppte, 0x0, PAGE_SIZE);
+            ppde->pageTableBaseAddr = PAGE_ALLIGNED_ADDR(ppte);
+            for (j=0; j<NUM_PAGE_TABLE_ENTRIES; j++) {
+                /* Evita posición 0 para NULL pointer */
+                if ((i==0) && (j==0))
+                    ppte->present = 0;
+                else {
+                    (pageNumber<numberOfPages) ? (ppte->present = 1) : (ppte->present = 0);
+                    ppte->flags = VM_READ | VM_WRITE | VM_USER;
+
+                    void *page = Alloc_Pageable_Page(ppte, vaddr);
+                    ppte->pageBaseAddr = PAGE_ALLIGNED_ADDR(page);
+
+                    /* Copia el programa desde la memoria temporal a la página */
+                    memcpy(page, mem+(pageNumber*PAGE_SIZE), PAGE_SIZE);
+
+                    pageNumber++;
+                    ppte++;
+                }
+                vaddr += PAGE_SIZE;
+            }
+        }
+        ppde++;
+    }
+    Free(mem);
+
+    /* Crea entrada de tabla de páginas para stack y argumentos */
+    ppde = userContext->pageDir + NUM_PAGE_DIR_ENTRIES - 1; // Ultima entrada del Page Directory
+    /* No está presente. La habilito */
+    if (ppde->present == 0) {
+        ppde->present = 1;
+        ppde->flags = VM_READ | VM_WRITE | VM_USER;
+
+        /* Reserva página para la tabla de páginas */
+        pte_t *ppte = (pte_t *)Alloc_Page();
+        memset(ppte, 0x0, PAGE_SIZE);
+        ppde->pageTableBaseAddr = PAGE_ALLIGNED_ADDR(ppte);
+    }
+    /* Obtengo direccion de la tabla de paginas de la última entrada del page directory */
+    ulong_t ultima = PAGE_ADDR(ppde->pageTableBaseAddr);
+
+    /* Obtengo penúltima entrada del page table - STACK */
+    pte_t *ppte = (pte_t *) (ultima + NUM_PAGE_TABLE_ENTRIES - 2);
+    /* El programa es muy grande */
+    KASSERT(ppte->present != 1);
+    
+    ppte->present = 1;
+    ppte->flags = VM_READ | VM_WRITE | VM_USER;
+    void *page = Alloc_Pageable_Page(ppte, 0xFFFFE000);
+    ppte->pageBaseAddr = PAGE_ALLIGNED_ADDR(page);
+
+    /* Obtengo última entrada del page table - ARGS */
+    ppte = (pte_t *) (ultima + NUM_PAGE_TABLE_ENTRIES - 1);
+    /* El programa es muy grande */
+    KASSERT(ppte->present != 1);
+    Get_Argument_Block_Size(command, &numArgs, &argBlockSize);
+    KASSERT(argBlockSize <= PAGE_SIZE);
+ 
+    ppte->present = 1;
+    ppte->flags = VM_READ | VM_WRITE | VM_USER;
+    page = Alloc_Pageable_Page(ppte, 0xFFFFEF00);
+    ppte->pageBaseAddr = PAGE_ALLIGNED_ADDR(page);
+
+    Format_Argument_Block(page, numArgs, stackAddr, command);
+
+    /* Create the user context */
+    userContext->entryAddr          = exeFormat->entryAddr;
+    userContext->argBlockAddr       = 0xFFFFF000;
+    userContext->stackPointerAddr   = 0xFFFFE000;
+
+    if (userContext == NULL)
+        ret = ENOMEM;
+
+    *pUserContext = userContext;
+
+    return ret;
 }
 
 /*

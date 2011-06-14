@@ -71,6 +71,8 @@ typedef struct {
     uint_t pageBaseAddr:20;
 } pte_t;
 
+pde_t *pageDirectory;
+
 /*
  * Datatype representing the hardware error code
  * pushed onto the stack by the processor on a page fault.
