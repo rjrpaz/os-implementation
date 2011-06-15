@@ -356,7 +356,7 @@ void Switch_To_Address_Space(struct User_Context *userContext)
         : "a" (userContext->ldtSelector)
     );
 
+//    Set_PDBR(userContext->pageDir);
 return;
 }
-
 
