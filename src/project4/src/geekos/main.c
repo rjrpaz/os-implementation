@@ -109,5 +109,7 @@ static void Mount_Root_Filesystem(void)
 static void Spawn_Init_Process(void)
 {
     struct Kernel_Thread *userThread = NULL;
+//    Dump_All_Thread_List();
     Spawn(INIT_PROGRAM, INIT_PROGRAM, &userThread);
+//    Dump_All_Thread_List();
 }

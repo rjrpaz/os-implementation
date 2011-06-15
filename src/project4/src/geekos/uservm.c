@@ -150,7 +150,7 @@ int Load_User_Program(char *exeFileData, ulong_t exeFileLength,
     DebugVM("Direccion de la pagedir: @%lx\n", (unsigned long) ppde);
     numberOfPages = virtSize / PAGE_SIZE;
     DebugVM("Cant. de paginas necesarias para paginar: %d\n", numberOfPages);
-    vaddr = 0x8000000;
+    vaddr = USER_VM_START;
     for (i=0; i<NUM_PAGE_DIR_ENTRIES/2; i++) {
 //        DebugVM("Direccion de la entrada %i de la pagedir: @%lx\n", i, (unsigned long) ppde);
         if (pageNumber >= numberOfPages) {
@@ -239,9 +239,9 @@ int Load_User_Program(char *exeFileData, ulong_t exeFileLength,
     Format_Argument_Block(page, numArgs, stackAddr, command);
 
     /* Create the user context */
-    userContext->entryAddr          = exeFormat->entryAddr;
-    userContext->argBlockAddr       = 0xFFFFF000;
-    userContext->stackPointerAddr   = 0xFFFFE000;
+    userContext->entryAddr          = USER_VM_START + exeFormat->entryAddr;
+    userContext->argBlockAddr       = USER_VM_END - PAGE_SIZE;
+    userContext->stackPointerAddr   = USER_VM_END - 2 * PAGE_SIZE;
 
     /* Completo la información para segmentación, con los valores virtuales */
 
@@ -255,8 +255,8 @@ int Load_User_Program(char *exeFileData, ulong_t exeFileLength,
     ushort_t ldt_selector = Selector(KERNEL_PRIVILEGE, true, Get_Descriptor_Index(ldt_desc)); 
 
     /* Inicializo los segmentos */
-    Init_Code_Segment_Descriptor(&(userContext->ldt[0]), (ulong_t)mem, 0x8000000/PAGE_SIZE, USER_PRIVILEGE);
-    Init_Data_Segment_Descriptor(&(userContext->ldt[1]), (ulong_t)mem, 0x8000000/PAGE_SIZE, USER_PRIVILEGE);
+    Init_Code_Segment_Descriptor(&(userContext->ldt[0]), (ulong_t)mem, (USER_VM_END-USER_VM_START)/PAGE_SIZE, USER_PRIVILEGE);
+    Init_Data_Segment_Descriptor(&(userContext->ldt[1]), (ulong_t)mem, (USER_VM_END-USER_VM_START)/PAGE_SIZE, USER_PRIVILEGE);
 
     /* Creo los selectores */
     ushort_t cs_selector = Selector(USER_PRIVILEGE, false, 0);
@@ -358,5 +358,4 @@ void Switch_To_Address_Space(struct User_Context *userContext)
 
 return;
 }
-
 

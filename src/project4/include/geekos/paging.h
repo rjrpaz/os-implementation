@@ -19,6 +19,9 @@
 struct Page;
 struct User_Context;
 
+#define USER_VM_START 0x80000000
+#define USER_VM_END   0xFFFFFFFF
+
 #define NUM_PAGE_TABLE_ENTRIES	1024
 #define NUM_PAGE_DIR_ENTRIES	1024
 
