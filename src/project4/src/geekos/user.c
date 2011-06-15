@@ -125,6 +125,9 @@ int Spawn(const char *program, const char *command, struct Kernel_Thread **pThre
         goto error;
     }
 
+    if (userContext == NULL)
+        Print("UserContext IS NULL\n");
+
     process = Start_User_Thread(userContext, false);
     if (process == NULL) {
         ret = -1;
