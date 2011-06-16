@@ -109,10 +109,11 @@ int Load_User_Program(char *exeFileData, ulong_t exeFileLength,
     for (i = 0; i < exeFormat->numSegments; ++i) {
         struct Exe_Segment *segment = &exeFormat->segmentList[i];
         ulong_t topva = segment->startAddress + segment->sizeInMemory;
-if (i==0) {
-    DebugVM("Asi arrancar el programa: %s\n", (char *) segment->startAddress);
-}
-
+/*
+        if (i==0) {
+            DebugVM("Asi arrancar el programa: %s\n", (char *) segment->startAddress);
+        }
+*/
         if (topva > maxva)
             maxva = topva;
     }
@@ -255,8 +256,10 @@ if (i==0) {
     /* Create the user context */
     userContext->entryAddr          = USER_VM_START + exeFormat->entryAddr;
     DebugVM("Direccion de entrada del programa: @%lx\n", (unsigned long) userContext->entryAddr);
-    userContext->argBlockAddr       = USER_VM_END - PAGE_SIZE;
-    userContext->stackPointerAddr   = USER_VM_END - 2*PAGE_SIZE;
+//    userContext->argBlockAddr       = USER_VM_END - PAGE_SIZE;
+    userContext->argBlockAddr       = 0xFFFFF000;
+//    userContext->stackPointerAddr   = USER_VM_END - 2*PAGE_SIZE;
+    userContext->stackPointerAddr   = 0xFFFFEF00;
 
     /* Completo la información para segmentación, con los valores virtuales */
 
@@ -270,8 +273,11 @@ if (i==0) {
     ushort_t ldt_selector = Selector(KERNEL_PRIVILEGE, true, Get_Descriptor_Index(ldt_desc)); 
 
     /* Inicializo los segmentos */
-    Init_Code_Segment_Descriptor(&(userContext->ldt[0]), (ulong_t)USER_VM_START, (USER_VM_END-USER_VM_START)/PAGE_SIZE, USER_PRIVILEGE);
-    Init_Data_Segment_Descriptor(&(userContext->ldt[1]), (ulong_t)USER_VM_START, (USER_VM_END-USER_VM_START)/PAGE_SIZE, USER_PRIVILEGE);
+    Init_Code_Segment_Descriptor(&(userContext->ldt[0]), USER_VM_START, Round_Up_To_Page(USER_VM_END-USER_VM_START)/PAGE_SIZE, USER_PRIVILEGE);
+//    Init_Code_Segment_Descriptor(&(userContext->ldt[0]), (ulong_t)USER_VM_START, 2*(Round_Up_To_Page(USER_VM_END-USER_VM_START)/PAGE_SIZE), USER_PRIVILEGE);
+//    Init_Code_Segment_Descriptor(&(userContext->ldt[0]), (unsigned long)0, 2, USER_PRIVILEGE);
+    Init_Data_Segment_Descriptor(&(userContext->ldt[1]), (ulong_t)USER_VM_START, Round_Up_To_Page(USER_VM_END-USER_VM_START)/PAGE_SIZE, USER_PRIVILEGE);
+//    Init_Data_Segment_Descriptor(&(userContext->ldt[1]), (ulong_t)USER_VM_START, USER_VM_START/PAGE_SIZE, USER_PRIVILEGE);
 
     /* Creo los selectores */
     ushort_t cs_selector = Selector(USER_PRIVILEGE, false, 0);
@@ -282,8 +288,10 @@ if (i==0) {
     userContext->ldtSelector = ldt_selector;
     userContext->csSelector = cs_selector;
     userContext->dsSelector = ds_selector;
-    userContext->size = (USER_VM_END-USER_VM_START);
-    userContext->memory = (char *) USER_VM_START;
+    userContext->size = Round_Up_To_Page(USER_VM_END-USER_VM_START);
+//    userContext->size = USER_VM_START;
+//    userContext->memory = (char *) USER_VM_START;
+    userContext->memory = (char *) 0x80000000;
     userContext->refCount = 0;
 
     if (userContext == NULL)
@@ -371,7 +379,7 @@ void Switch_To_Address_Space(struct User_Context *userContext)
         : "a" (userContext->ldtSelector)
     );
 
-Set_PDBR(userContext->pageDir);
-return;
+    Set_PDBR(userContext->pageDir);
+    return;
 }
 
