@@ -73,6 +73,7 @@ void Init_Code_Segment_Descriptor(
 {
     KASSERT(privilegeLevel >= 0 && privilegeLevel <= 3);
 
+    Print("BASEADDR: %lx, NumPages: %lx\n", (unsigned long) baseAddr, (unsigned long) numPages);
     Set_Size_And_Base_Pages(desc, baseAddr, numPages);
     desc->type     = 0x0A;   /* 1010b: code, !conforming, readable, !accessed */
     desc->system   = 1;
@@ -94,6 +95,9 @@ void Init_Data_Segment_Descriptor(
 {
     KASSERT(privilegeLevel >= 0 && privilegeLevel <= 3);
 
+    Set_Size_And_Base_Pages(desc, baseAddr, numPages);
+    desc->type     = 0x0A;   /* 1010b: code, !conforming, readable, !accessed */
+    desc->system   = 1;
     Set_Size_And_Base_Pages(desc, baseAddr, numPages);
     desc->type     = 0x02;  /* 0010b: data, expand-up, writable, !accessed */
     desc->system   = 1;

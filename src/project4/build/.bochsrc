@@ -13,13 +13,14 @@ ata0-master: type=disk, path=diskc.img, cylinders=40, heads=8, spt=64
 floppya: 1_44=fd.img, status=inserted
 #floppya: 1_44=fd_aug.img, status=inserted
 
-#log: ./bochs.out
+log: ./bochs.out
 log: /dev/stdout
 panic: action=ask
 error: action=report
 info: action=report
 debug: action=ignore
 debugger_log: -
+#port_e9_hack:enabled=1
 
 keyboard_serial_delay: 200
 #floppy_command_delay: 500
