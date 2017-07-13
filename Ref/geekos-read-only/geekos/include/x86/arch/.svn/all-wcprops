@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/65/trunk/geekos/include/x86/arch
+END
+int.h
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/5/trunk/geekos/include/x86/arch/int.h
+END
+irq.h
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/5/trunk/geekos/include/x86/arch/irq.h
+END
+ioport.h
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/4/trunk/geekos/include/x86/arch/ioport.h
+END
+mem.h
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/4/trunk/geekos/include/x86/arch/mem.h
+END
+vm.h
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/65/trunk/geekos/include/x86/arch/vm.h
+END
+boot.h
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/4/trunk/geekos/include/x86/arch/boot.h
+END
+version.h
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/5/trunk/geekos/include/x86/arch/version.h
+END
+thread.h
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/5/trunk/geekos/include/x86/arch/thread.h
+END
+cpu.h
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/64/trunk/geekos/include/x86/arch/cpu.h
+END

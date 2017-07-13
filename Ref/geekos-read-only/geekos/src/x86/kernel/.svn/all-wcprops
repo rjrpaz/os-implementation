@@ -1,0 +1,83 @@
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/68/trunk/geekos/src/x86/kernel
+END
+x86_int_asm.S
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/5/trunk/geekos/src/x86/kernel/x86_int_asm.S
+END
+x86_int.c
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/62/trunk/geekos/src/x86/kernel/x86_int.c
+END
+x86_irq.c
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/5/trunk/geekos/src/x86/kernel/x86_irq.c
+END
+x86_ioport.c
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/!svn/ver/5/trunk/geekos/src/x86/kernel/x86_ioport.c
+END
+x86_mem.c
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/43/trunk/geekos/src/x86/kernel/x86_mem.c
+END
+x86_timer.c
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/5/trunk/geekos/src/x86/kernel/x86_timer.c
+END
+x86_cons.c
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/40/trunk/geekos/src/x86/kernel/x86_cons.c
+END
+x86_vm.c
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/66/trunk/geekos/src/x86/kernel/x86_vm.c
+END
+x86_boot_asm.S
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/5/trunk/geekos/src/x86/kernel/x86_boot_asm.S
+END
+x86_cpu_asm.S
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/5/trunk/geekos/src/x86/kernel/x86_cpu_asm.S
+END
+x86_thread_asm.S
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/5/trunk/geekos/src/x86/kernel/x86_thread_asm.S
+END
+x86_cpu.c
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/68/trunk/geekos/src/x86/kernel/x86_cpu.c
+END
+x86_thread.c
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/!svn/ver/5/trunk/geekos/src/x86/kernel/x86_thread.c
+END

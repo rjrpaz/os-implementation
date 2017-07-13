@@ -1,0 +1,34 @@
+9
+
+dir
+69
+http://geekos.googlecode.com/svn/trunk/geekos/src
+http://geekos.googlecode.com/svn
+
+
+
+2008-05-02T20:06:04.220079Z
+68
+david.hovemeyer
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+71cfba67-164b-0410-a1c2-b903225493e6
+
+kernel
+dir
+
+x86
+dir
+

@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/!svn/ver/62/trunk/geekos/build/x86
+END
+bochsrc.txt
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/4/trunk/geekos/build/x86/bochsrc.txt
+END
+cdmenu.lst
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/4/trunk/geekos/build/x86/cdmenu.lst
+END
+.cvsignore
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/4/trunk/geekos/build/x86/.cvsignore
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/62/trunk/geekos/build/x86/Makefile
+END
