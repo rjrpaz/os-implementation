@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Lecture 18</title>
+</head>
+<body>
+<h1>CS 420 - Lecture 18<br>
+</h1>
+<h2>Bootstrapping, Address space organization</h2>
+<p>The kernel must have a private address space that is not accessible
+by user processes.<br>
+</p>
+<p>But: the kernel must be able to access user space memory in order to
+copy data between user buffers and kernel data structures.<br>
+</p>
+<p>How can we allow the kernel to access user memory, but prevent user
+processes from accessing kernel memory?<br>
+</p>
+<p>Many possible solutions:<br>
+</p>
+<p style="margin-left: 40px;">1. Separate address spaces.&nbsp; The
+kernel has its own address space (page directory + page tables).&nbsp;
+In order for the kernel to access user memory, it must create a
+temporary mapping of the frame into its own address space.<br>
+</p>
+<p style="margin-left: 80px;">Advantages: both kernel and user process
+have entirely disjoint address spaces, so they can each fully utilize
+the entire address space.<br>
+</p>
+<p style="margin-left: 80px;">Disadvantages: User/kernel mode switches
+require an address space switch: This may require a complete TLB
+flush.&nbsp; Also, there is some overhead associated with creating and
+removing temporary mappings.<br>
+</p>
+<p style="margin-left: 40px;">2. Part or all of the kernel address
+space is mapped into each user address space, and page level protection
+is used to keep user processes from accessing kernel memory.<br>
+</p>
+<p style="margin-left: 80px;">Advantages: User-&gt;kernel mode switch
+NEVER requires an address space switch.&nbsp; Kernel-&gt;user mode
+switch only requres an address space switch if a new process (address
+space) is being selected.&nbsp; Copyin/copyout is just a direct
+memory/memory copy.<br>
+</p>
+<p style="margin-left: 80px;">Disadvantages: The range of virtual
+addresses used by the kernel cannot be used by user processes.&nbsp;
+Depending on how much of the kernel space is mapped into each user
+address space, this can remove a sizable chunk of the user address
+space.<br>
+</p>
+<p>GeekOS:<br>
+</p>
+<p style="margin-left: 40px;">Low 2GB of each user address space is
+devoted to the kernel.&nbsp; This region is a <span
+ style="font-style: italic;">direct</span> mapping of physical
+addresses, because each virtual address corresponds exactly to a
+physical address.&nbsp; This makes bootstrapping easier, and also
+allows GeekOS to directly access all physical memory (up to 2GB).<br>
+</p>
+<p style="margin-left: 40px;">Upper 2GB of each address space is
+devoted to user space.<br>
+</p>
+<p style="margin-left: 40px;"><img alt=""
+ src="figures/geekosAddressSpace.png" style="width: 40%;"><br>
+</p>
+<h2>Frame meta-information, frame alloaction, the freelist<br>
+</h2>
+<p>When the OS kernel boots, it takes an inventory of physical memory
+to find out how much RAM (main memory) is available.<br>
+</p>
+<p>Example: on an x86 PC, physical memory is organized like this:<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/pcPhysMemMap.png"
+ style="width: 35%;"><br>
+</p>
+<p>Note that physical addresses between 640K and 1M are labeled as the
+"ISA hole".&nbsp; This region exists as a legacy from the original IBM
+PC, which used a bus called "ISA" to connect peripherals.&nbsp; The ISA
+hole is a range of physical addresses in which memory mapped I/O
+devices and ROM are connected.&nbsp; For example, the video memory used
+by the VGA card is mapped in this region.&nbsp; The OS must be aware
+that this range of the physical address space does not contain RAM.<br>
+</p>
+<p>Once the OS kernel has determined the configuration of physical
+memory, it creates data structures to allow allocation and freeing of
+physical frames of memory.<br>
+</p>
+<p>A typical strategy is to associate a small data structure with each
+frame of physical memory.&nbsp; In GeekOS, this is <span
+ style="font-weight: bold;">struct Page</span>.&nbsp; The Page struct
+is used to keep track of <br>
+</p>
+<p style="margin-left: 40px;">Link fields (ptr to next Page, ptr to
+previous Page) so that Page structs can be stored in a linked list<br>
+</p>
+<p style="margin-left: 40px;">Meta-information about the corresponding
+frame, such as whether or not the frame has been allocated<br>
+</p>
+<p style="margin-left: 40px;">If the frame is mapped into an address
+space, which address space and where in the address space it is mapped<br>
+</p>
+<p style="margin-left: 40px;">How recently the frame was referenced<br>
+</p>
+<p>In GeekOS, the array of Page data structures is referred to by the <span
+ style="font-weight: bold;">s_pageList</span> pointer variable in <span
+ style="font-weight: bold;">src/geekos/mem.c</span>.<br>
+</p>
+<p>The OS kernel needs to <span style="font-style: italic;">allocate</span>
+frames to map into user address spaces.&nbsp; A frame is allocated
+using the <span style="font-weight: bold;">Alloc_Page()</span>
+function.<br>
+</p>
+<p>When a frame is no longer needed by any address space (for example,
+when a process exits), the frame can be freed using the <span
+ style="font-weight: bold;">Free_Page()</span> function.&nbsp; It is
+important to be able to allocate and free frames quickly, so GeekOS
+uses a <span style="font-style: italic;">freelist</span> to store the
+Page structs corresponding to all available frames of memory.&nbsp; <span
+ style="font-weight: bold;">Alloc_Page()</span> works by removing a
+frame from the freelist, marking it as allocated, and returning a
+pointer to the physical address of the corresponding frame.&nbsp; <span
+ style="font-weight: bold;">Free_Page()</span> works by finding the
+Page struct corresponding to the frame being freed, marking it as
+available, and retuning it to the freelist.&nbsp; This is a simple and
+effective strategy, and most OS kernels use some variation of it.<br>
+</p>
+<p>What happens when <span style="font-weight: bold;">Alloc_Page()</span>
+is called, but the freelist is empty?&nbsp; That is when page stealing
+happens.<br>
+</p>
+<h2>Virtual Memory, Page Replacement<br>
+</h2>
+<p>We have seen that physical frames of memory are allocated as needed
+to virtual memory objects.&nbsp; We have also seen that when a page
+fault occurs and there are no available memory frames, then the
+operating system may need to steal a frame currently allocated to some
+VM object.&nbsp; When a page fault causes a frame to be stolen:<br>
+</p>
+<p style="margin-left: 40px;">If dirty, its data are paged out using
+the pageout method of the VM object from which the frame was stolen<br>
+</p>
+<p style="margin-left: 40px;">The frame is unmapped from any address
+space (page tables) currently mapping it<br>
+</p>
+<p style="margin-left: 40px;">The data for the faulting page is copied
+into the frame using the pagein method of the VM object backing the
+region where the page fault occurred<br>
+</p>
+<p style="margin-left: 40px;">The frame is mapped into the address
+space (page tables) of the faulting process<br>
+</p>
+<p>In this way, physical frames of memory bounce around between VM
+objects and address spaces as needed.&nbsp; Because this all happens
+transparently as far as the user processes are concerned, it creates
+the illusion of <span style="font-style: italic;">virtual memory</span>:
+processes can use more memory in their address space than is physically
+installed in the computer.<br>
+</p>
+<h2>Pageouts and Pageins are slow<br>
+</h2>
+<p>We have seen that the most common persistent backing store used by
+VM objects is the hard drive.&nbsp; The backing store is where data
+belonging to pages that are not currently in a physical frame of memory
+are stored.&nbsp; Examples of VM objects that use disk as their backing
+store are swap-backed VM objects (used for things like heap memory,
+stack memory, and anonymous shared memory), and also ordinary disk
+files in the filesystem.<br>
+</p>
+<p>More exotic backing stores are possible: for example, it is
+conceivable that a VM object could use storage space on a network
+server as its backing store.<br>
+</p>
+<p>The important thing to understand here is that<br>
+</p>
+<p style="margin-left: 40px;">disks are VERY, VERY slow compared to the
+CPU and RAM<br>
+</p>
+<p>For example, a typical disk seek might take 5 ms.&nbsp; Assuming a 3
+GHz CPU, during those 5 ms the CPU can execute 15,000,000 clock
+cycles.&nbsp; That's a lot of instructions.<br>
+</p>
+<p>So, even though using disk space as virtual memory works and is
+transparent to processes, it is far, far slower than physical
+memory.&nbsp; If a process causes a page fault on each instruction or
+memory reference that requires disk I/O to service, the slowdown factor
+is likely to be in the hundreds of thousands or millions.&nbsp; In
+other words, a program that would ordinarily complete in 1 second might
+take 27 days to finish (100,000 times slowdown) if every memory
+reference causes a page fault.<br>
+</p>
+<p>The slowness of disks means that the OS should try as hard as it can
+to make sure that page faults are infrequent once a process has
+established its <span style="font-style: italic;">working set</span>.&nbsp;
+A process's working set is the set of pages that are referenced
+recently.<br>
+</p>
+<h2>Page replacement<br>
+</h2>
+<p>There is one important question in a virtual memory system: when a
+frame is required but no unused frame is available, which frame should
+the OS kernel steal?&nbsp; The answer to this question defines the OS
+kernel's <span style="font-style: italic;">page replacement</span>
+algorithm.<br>
+</p>
+<p>Ideal algorithm:<br>
+</p>
+<p style="margin-left: 40px;">Steal the page that will not be
+referenced again for the longest period of time.<br>
+</p>
+<p>This is provably optimal.&nbsp; Of course, it cannot be implemented
+in practice because it requires knowledge of the future.&nbsp; So, the
+OS kernel must try to predict future memory references based on the
+process's past behavior.&nbsp; (This should remind you of process
+scheduling.)<br>
+</p>
+<p>Abstractly, we can define the problem of page replacement this way:<br>
+</p>
+<p style="margin-left: 40px;">A process, over its lifetime, will
+generate a series of memory references.&nbsp; From this series of
+memory references we can extract a series of page references.&nbsp; (An
+uninterrupted sequence of addresses falling within a single page can be
+condensed into a single page reference.)<br>
+</p>
+<p style="margin-left: 40px;">The series of page refererences over the
+lifetime of a process is the <span style="font-style: italic;">page
+reference string</span>.<br>
+</p>
+<p>We can evaluate different page replacement algorithms by considering
+how many page faults will occur for a given reference string and a
+fixed number of frames of memory.<br>
+</p>
+<p>Following the examples in Silberschatz, ch 9, we will consider the
+reference string<br>
+</p>
+<p style="margin-left: 40px;">7 0 1 2 0 3 0 4 2 3 0 3 2 1 2 0 1 7 0 1<br>
+</p>
+<p>with 3 frames of physical memory.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Critical
+Point to Understand</span>: When evaluating page replacement
+algorithms, it is crucial to understand that they are better and worse
+than other algorithms for a given kind of workload.&nbsp; Or, in other
+words, one algorithm may work well for one kind of workload, but
+perform poorly on another kind of workload.<br>
+</p>
+<p style="margin-left: 40px;">That means that there is no "best" page
+replacement algorithm for all workloads.&nbsp; We cross our fingers and
+hope that we will choose a algorithm that works well for "typical"
+workloads.<br>
+</p>
+<h3>FIFO<br>
+</h3>
+<p>Steal the frame containing the page that was paged in earlier than
+those in all other frames.<br>
+</p>
+<p>Not so great if there are frames that are brought in early and used
+frequently for long periods.<br>
+</p>
+<p>[Demonstrate.]</p>
+</body>
+</html>

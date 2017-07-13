@@ -1,0 +1,13 @@
+#include "../fileio.h"
+
+// project 5
+int Mount(char *name, int drive, char *fstype);
+int Open(char *name, int permissions);
+int Close(int fd);
+int Delete(char *name);
+int Read(int fd, char *buffer, int length);
+int Write(int fd, char *buffer, int length);
+int Stat(int fd, fileStat *stat);
+int Seek(int fd, int offset);
+int CreateDirectory(char *name);
+int Format(int drive);

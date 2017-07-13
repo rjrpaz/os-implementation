@@ -1,0 +1,283 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Lecture 6</title>
+</head>
+<body>
+<h1>CS 420 - Lecture 6</h1>
+<h2>Process queues<br>
+</h2>
+<p>The main data structure used in process scheduling is the process
+queue:&nbsp; this is simply a queue of PCBs:<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/processQueue.png"
+ style="width: 616px; height: 218px;"><br>
+</p>
+<p>The <span style="font-style: italic;">run queue</span> is a queue
+of processes that are in the ready state, meaning that they are ready
+to run on the CPU.&nbsp; When a fresh time slice is available, the
+kernel removes one of the processes from the run queue and <span
+ style="font-style: italic;">schedules</span> it.&nbsp; The algorithm
+the kernel uses to pick the process to schedule is the scheduling
+algorithm.l<br>
+</p>
+<p>When a process is suspended the kernel puts it in a wait
+queue.&nbsp; A common strategy is to associate one wait queue with each
+I/O resource:<br>
+</p>
+<p style="margin-left: 40px;"><img alt=""
+ src="figures/runQueueAndIOQueues.png"
+ style="width: 718px; height: 547px;"><br>
+</p>
+<p>When the event associated with the wait queue takes place---e.g.,
+input is available---the kernel wakes up (one or more) processes in the
+wait queue and moves them to the run queue.<br>
+</p>
+<p>Process operations<br>
+</p>
+<ul>
+  <li>Create</li>
+  <li>Exit</li>
+  <li>Kill</li>
+  <li>Wait for child<br>
+  </li>
+</ul>
+<h2>Process creation</h2>
+<p>Each process (except for the first process in the system) has a
+parent: the process that created it.<br>
+</p>
+<p>This means that there is a tree of processes:<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/processTree.png"
+ style="width: 732px; height: 376px;"><br>
+</p>
+<p>Each process is assigned a unique identifier (generally an integer):
+this is the <span style="font-style: italic;">process identifier</span>
+or <span style="font-style: italic;">pid</span>.<br>
+</p>
+<p>The parent/child relationship can be important.&nbsp; For example,
+consider a shell (command interpreter) process.&nbsp; Each program you
+run from the shell is a child process of the shell.&nbsp; Typically,
+the shell will wait for the current child to exit before reading
+another command (and starting another process).&nbsp; However, if you
+run a process in the background, then the shell may have several
+children running simultaneously.<br>
+</p>
+<p style="margin-left: 40px;"><img alt=""
+ src="figures/shellAndChildProcesses.png"
+ style="width: 622px; height: 264px;"><br>
+</p>
+<p>Generally, only a parent process is allowed to wait for a child
+process to exit.<br>
+</p>
+<p style="margin-left: 40px;">Waiting for a child to exit allows the
+parent to receive the child's <span style="font-style: italic;">exit
+status</span>, which records the child's exit code, and other
+information, such as whether the child terminated normally or
+abnormally.&nbsp; (E.g., if the process died because of a memory error,
+that is generally recorded as an abnormal termination.)<br>
+</p>
+<p>Inheritance of resources: a child will generally inherit some of the
+resources that the parent is using.&nbsp; For example, some of the file
+handles that the parent has open may be inherited by the child.&nbsp;
+The parent can control which resources it wants the child to inherit.<br>
+</p>
+<p>Example of inheritance: every process (in Unix and also in Windows)
+has three standard file handles: standard output, error output, and
+standard input.&nbsp; You have seen these as stdout/stderr/stdin in C
+and cout/cerr/cin in C++.&nbsp; By default, child processes inherit
+each of these file handles.&nbsp; Let's say you have a shell running in
+a terminal window.&nbsp; The shell's standard file handles are
+connected to the terminal window.&nbsp; When you run a program within
+the shell---a child process----it inherits the same standard file
+handles as its parent, meaning that its input and output are connected
+to the same terminal window.<br>
+</p>
+<h2>fork/exec vs. spawn<br>
+</h2>
+<p>There are two common models for system-level process creation APIs.<br>
+</p>
+<p>The simplest is to support a spawn operation.&nbsp; The spawn system
+takes the name of an executable file containing the program to run, and
+any additional information (such as command-line arguments) to be
+passed to the new process.&nbsp; The Win32 CreateProcess API function
+is an example of the spawn model.<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/spawn.png"
+ style="width: 681px; height: 291px;"><br>
+</p>
+<p>Unix (and Linux, etc.) uses a different model for process creation:
+fork/exec.&nbsp; Basically, fork and exec split the overall spawn into
+two separate operations.<br>
+</p>
+<p>fork creates a new child process that runs within the same memory
+space as the parent.&nbsp; Essentially, after the fork operation, there
+are now two processes whose program counters are positioned at the same
+instruction.&nbsp; The only difference is that the return value from
+the call to fork returns 0 in the child process and the process
+identifier (pid) in the parent's address space.<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/forkExec.png"
+ style="width: 649px; height: 312px;"><br>
+</p>
+<p>exec replaces the currently program with a new program within the
+context (address space) of a running process.<br>
+</p>
+<h2>Process termination<br>
+</h2>
+<p>Process can exit voluntarily: e.g., on Unix the exit API function,
+on Win32 the ExitProcess API function.&nbsp; (Both functions correspond
+directly to a system call.)&nbsp; The <span style="font-style: italic;">exit
+code</span> that the process passes to the function as an argument is
+communicated to the parent.&nbsp; A voluntary exit is <span
+ style="font-style: italic;">normal</span> process termination.<br>
+</p>
+<p>A process can be killed by the OS kernel if it violates a resource
+allocation limit (e.g., it used too much CPU time), or if it does
+something illegal (such as trying to execute an illegal instruction,
+dereferencing a null pointer, etc.)&nbsp; This is abnormal termination.<br>
+</p>
+<p>A process can be killed by another process.&nbsp; For example, the
+parent can kill a child.&nbsp; An unrelated process on the system can
+kill an arbitrary process if it has sufficient privilege.&nbsp; This is
+also abnormal termination.<br>
+</p>
+<h2>Inter-process communication<br>
+</h2>
+<p>There are many reasons why processes may need to communicate with
+each other:<br>
+</p>
+<ol>
+  <li>Parallel execution: if the system has multiple CPUs, each process
+can execute on a different CPU and work together to solve a problem</li>
+  <li>Client/server: e.g., sending a file to a print server process<br>
+  </li>
+  <li>Sending data from one application to another</li>
+</ol>
+<p>There are lots of mechanisms for IPC.&nbsp; Three broad categories:<br>
+</p>
+<ol>
+  <li>I/O channels (pipes, sockets)</li>
+  <li>Shared memory</li>
+  <li>Message passing</li>
+</ol>
+<h2>Pipes<br>
+</h2>
+<p>An I/O-based IPC mechanism.<br>
+</p>
+<p>A pipe is a one-way channel between processes.&nbsp; One process
+writes to the pipe, one process reads from the pipe.&nbsp; You will
+sometimes see pipes described as a FIFO because of the first-in,
+first-out nature of sending information.&nbsp; (The order in which
+bytes are written is the same as the order in which they are removed.)<br>
+</p>
+<p>Will talk more about pipes and their implementation later in the
+semester.<br>
+</p>
+<p>Example of pipes: Unix processes<br>
+</p>
+<p>Count all of the lines of "Pride and Prejudice" containing the word
+"marriage" (ignoring capitalization).<br>
+</p>
+<p style="margin-left: 40px;">cat pandp.txt | tr 'A-Z' 'a-z' | grep
+marriage | wc -l<br>
+</p>
+<p>The overall comand is constructed out of a collection of processes
+in a <span style="font-style: italic;">pipeline</span>.&nbsp; The
+first process sends data to the second process, the second reads from
+the first and sends to the third, etc.&nbsp; Pipes are used to connect
+the processes.<br>
+</p>
+<p>Pipes are implemented using a data structure in the kernel.&nbsp;
+The data structure contains a pipe buffer: a fixed size chunk of
+memory.&nbsp; The writing process copies data into the data buffer
+(copyin), the reading process copies data out of the pipe buffer:<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/pipe.png"
+ style="width: 658px; height: 477px;"><br>
+</p>
+<p>Because the pipe buffer is limited size, the writing process may be
+blocked (suspended) if the pipe buffer is full.<br>
+</p>
+<h2>Shared Memory<br>
+</h2>
+<p>Processes can request that a region of <span
+ style="font-style: italic;">shared memory</span> be mapped into their
+address space.&nbsp; It's just what it sounds like: a chunk of memory
+that two or more processes share.<br>
+</p>
+<p>The processes communicate using a shared data structure residing in
+shared memory.<br>
+</p>
+<p>The processes must agree to use a synchronization mechanism to
+ensure that two processes are not trying to access and/or modify the
+data structure at the same time.&nbsp; The synchronization mechanism
+may be provided by the OS, or it can be implemented entirely by the
+cooperating processes without help from the OS.<br>
+</p>
+<p>Example synchronization mechanisms:<br>
+</p>
+<p style="margin-left: 40px;">semaphores<br>
+mutex locks<br>
+</p>
+<h2>Message Passing</h2>
+<p>IPC using fixed-size messages.&nbsp; A process can create a mailbox
+if it wishes to receive messages from other processes.&nbsp; It can
+send a message to a mailbox .&nbsp; Thus, two processes involved: the
+sender and the receiver.<br>
+</p>
+<p>The mailbox is (generally) a kernel data structure.<br>
+</p>
+<p>An obvious feature of message-passing IPC mechanisms is that the
+receiver will be blocked (suspended) until a message is available.<br>
+</p>
+<p>Messages may be queued in a mailbox, or the mailbox might only be
+capable of storing one message at a time.&nbsp; If the mailbox is too
+full to store a message at a particular moment, the process trying to
+send the message may be blocked (same as a writer to a pipe when the
+pipe buffer is full).<br>
+</p>
+<p>It is even possible to design a message-passing system where the
+mailbox does not buffer messages in any way.&nbsp; In this case, a
+sender cannot proceed until the receiver explicitly tries to receive a
+message.<br>
+</p>
+<p>One of the nice properties of message-passing is that they do not
+require any explicit synchronization by the sending and receiving
+processes: the act of sending or receiving a message is itself a form
+of synchronization.<br>
+</p>
+<h2>Client/Server Systems, Sockets<br>
+</h2>
+<p>IPC is possible between processes on different computers attached to
+a network.<br>
+</p>
+<p>E.g., TCP/IP networks (the internet)<br>
+</p>
+<p>The operating system allows processes to create <span
+ style="font-style: italic;">sockets</span>.&nbsp; A socket is a kernel
+data structure much like a pipe or mailbox, but it is associated with
+local and (possibly) remote addresses and ports.&nbsp; An address is a
+unique identifier of a computer on the network.&nbsp; A port identifies
+a particular socket on the computer.<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/sockets.png"
+ style="width: 784px; height: 370px;"><br>
+</p>
+<p>There are two main kinds of sockets.<br>
+</p>
+<p>Stream sockets: these are like two-way pipes (or a pair of
+pipes).&nbsp; Send and receive arbitrary sequences of bytes.<br>
+</p>
+<p>Datagram sockets: these are mailboxes for message passing.<br>
+</p>
+<p>Network sockets can be used for inter-process communication between
+processes on the same machine.&nbsp; Example: a print server:<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/printServer.png"
+ style="width: 80%;"><br>
+</p>
+</body>
+</html>

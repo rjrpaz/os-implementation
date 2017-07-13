@@ -1,0 +1,10 @@
+#include "syscallnos.h"
+
+unsigned long Sys_Get_Time( struct Interrupt_State* state );
+int           Sys_Set_Scheduling_Policy( struct Interrupt_State* state );
+int           Sys_Init_Semaphore( struct Interrupt_State* state );
+int           Sys_P( struct Interrupt_State* state );
+int           Sys_V( struct Interrupt_State* state );
+int           Sys_Finish_Semaphore( struct Interrupt_State* state );
+
+

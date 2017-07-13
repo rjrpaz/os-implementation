@@ -1,0 +1,150 @@
+<!-- Page title (begin it with "15-410") ===== -->
+
+
+
+
+
+<!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 3.2//EN&quot;>
+<html>
+<head><title>15-410 Crash Machine</title>
+</head>
+<body bgcolor=white>
+<table width="100%" height="100%">
+
+<tr><td valign=top width=132>
+<table width=132 bgcolor=#cccccc height="100%">
+<tr><td height=140><center><font size=-1><b>Carnegie Mellon</b></font><br>
+<img alt="SCS logo" src="/~410/img/scslogo.gif"><br>
+<font size=-1><b>Computer Science Department</b></font></center></td></tr>
+<tr><td height=30><a href="/~410"><img alt="home" src="/~410/img/home.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/syllabus.html"><img alt="syllabus" src="/~410/img/syllabus.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/staff.html"><img alt="staff" src="/~410/img/staff.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/schedule.html"><img alt="schedule" src="/~410/img/schedule.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/lecture.html"><img alt="lecture" src="/~410/img/lecture.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/projects.html"><img alt="projects" src="/~410/img/projects.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/homeworks.html"><img alt="homeworks" src="/~410/img/homeworks.gif" border=0></a></td></tr>
+<tr><td>&nbsp;</td></tr></table>
+
+</td>
+
+<td width=10>&nbsp;</td>
+
+<td height="100%" valign=top>
+<br>
+
+<H1 ALIGN=CENTER>15-410 Crash Machine</H1>
+<HR>
+<!-- Body goes here. -->
+ 
+
+<!-- Content Begins ========================== -->
+
+<h2>The Crash Machine</h2>
+
+<P>On an experimental basis
+<A HREF="http://www.cmu.edu/computing/clusters/">Cluster Services</A>
+is hosting
+a PC designed for 15-410 kernel testing.  The machine
+(CMU asset #101038) contains two 400 MHz Pentium-II Xeon
+processors,
+512 megabytes of RAM, a floppy drive, and a CD-ROM
+(no disk or network).
+The boot process runs on only one processor and the
+second processor remains inactive unless explicitly
+enabled
+(see
+<A HREF="http://en.wikipedia.org/wiki/Intel_APIC_Architecture">
+Wikipedia: Intel APIC Architecture</A>).
+</P>
+
+<P>The machine also contains a POST card, a device which
+can be (ab)used for low-level kernel debugging
+(see
+<A HREF="http://en.wikipedia.org/wiki/POST_card">
+Wikipedia: POST card</A>).
+Basically, <CODE>outb()</CODE>'s directed to port
+<CODE>0x80</CODE> will be displayed in hexadecimal
+on the front of the machine.
+This particular card has the following features:
+</P>
+
+<OL>
+<LI>The most recent two bytes of status are displayed.
+The most recent byte is on the left, and
+the byte before that is on the right.  So if you
+<CODE>outb(0x80,0xce)</CODE> and then later
+<CODE>outb(0x80,0xfa)</CODE> the display will
+read <CODE>face</CODE>.
+<LI>The card can't accept multiple status bytes in
+rapid succession; if you send values too quickly
+the card will "catch" only the last.  Empirically
+it seems to work if 512 <CODE>inb(0x80)</CODE>'s
+appear between two <CODE>outb()</CODE>'s.
+<LI>The two buttons on the display allow you to
+scroll forward and back through the <CODE>outb()</CODE>
+stream.  If you hold both of them down for a while
+odd things which aren't very useful will happen.
+</OL>
+
+<P>The crash machine is located in GHC 5205.
+Support for the machine will be provided by
+<img src="/~410/img/staff-410.gif" alt="staff-410 at the CS domain">.
+</P>
+
+<h2>Running Your Kernel</h2>
+
+<P>Since this machine is too old to boot from USB media,
+you have two options for running your kernel.</P>
+
+<P>Note that your kernel won't work on machines with USB
+keyboards... except that some such machines have a "Legacy
+USB" option you can enable in the BIOS.
+If you enable this, you probably want to remember to
+disable it again later.</P>
+
+<h3>Booting from a floppy disc</h3>
+
+<OL>
+<LI>Obtain a floppy disc.  The machine will be deployed
+with some; please try not to walk off with them.
+<LI>Run: <KBD>dd if=bootfd.img of=/dev/fd0 bs=1440k</KBD>
+(if for some reason you need to use a Windows machine to
+write a floppy, try
+<A HREF="http://en.wikipedia.org/wiki/RaWrite">RaWrite</A>).
+</OL>
+
+<h3>Booting from an optical (CD-R/CD-RW) disc</h3>
+
+<OL>
+<LI>Obtain a CD-R or a CD-RW.  The machine will be deployed with a CD-RW; please try not to walk off with it.  If somebody else has walked off with (or scratched to death) the CD-RW deployed with the machine, send mail to the staff mailing list.
+<LI><KBD>mkdir burn</KBD>
+<LI><KBD>cp bootfd.img burn</KBD>
+<LI><KBD>mkisofs -r -b bootfd.img -o bootcd.iso burn</KBD>
+<LI><KBD>cdrecord blank=fast dev=/dev/cdwriter bootcd.iso</KBD> (if you are using a CD-R instead of a CD-RW, skip the <KBD>blank=fast</KBD> parameter).
+</OL>
+
+<P>If you run into trouble burning your CD, try adding
+<KBD>speed=0</KBD> and/or <KBD>driveropts=burnfree</KBD>.</P>
+
+<h2>How Mandatory Is This?</h2>
+
+<P>We will grade your kernel based on its performance in
+Simics.  However, the crash box is a useful diagnostic
+tool you will probably wish to take advantage of.
+</P>
+
+<!-- Content Ends ============================ -->
+
+<!-- End body. -->
+
+
+</td></tr>
+<tr><td></td><td></td><td align=center>
+
+<HR>
+<P ALIGN=CENTER>[Last modified Thursday September 09, 2010]</P></td></tr>
+</table>
+
+</body>
+</html>
+ 

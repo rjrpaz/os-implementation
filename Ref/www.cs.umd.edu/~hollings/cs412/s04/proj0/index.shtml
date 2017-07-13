@@ -1,0 +1,81 @@
+
+<HTML>
+
+<HEAD>
+<script language="JavaScript">                                                  
+          <!---//hide script from old browsers                                  
+          var theDate = new Date(document.lastModified);                        
+          var theLocalDate = theDate.toLocaleString();                          
+          document.write( "<i>Last updated: "+ theLocalDate +"</i><hr>");       
+          //end hiding contents --->                                            
+</script>  
+<TITLE>CMSC 412 - Project #0</TITLE>
+
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#D7D3D2" LINK="#78021C" VLINK="#7F6666" ALINK="#FFFFFF" BACKGROUND="../marble.gif">
+
+<center>
+<h1>
+CMSC412 - Project #0 
+</h1>
+</center>
+
+<font color=red>
+<h2>
+<a href="grading_criteria.html">Grading Criteria</a>
+</h2>
+</font>
+
+<h2>Handouts</h2>
+<menu>
+    <li><a href="proj0.shtml">Programming Assignment</a>
+    <li><a href="running.shtml">Running GeekOS</a>
+</menu>
+
+<p>
+<p>
+<h2>
+Submitting your code
+</h2>
+<P>
+The submit program is in ~hollings/bin/submit on the class Linux cluster.
+You should do your submit as follows:
+<pre>
+cd ~/prog0
+gmake clean
+cd ..
+tar cvf proj0.tar prog0
+gzip proj0.tar
+~hollings/bin/submit 0 proj0.tar.gz
+</pre>
+<font color=red>Checking your submission</font>
+<br>Use the command:
+<pre>
+ls -l /afs/csic.umd.edu/users/hollings/Class/MP0/cs412XYZ*
+</pre>
+where XYZ is of course your account number.
+
+<p>
+<p>
+It is important to cleanup .o's before submitting and to make sure
+you submit a tar file that contains proj0 as the directory it creates.
+
+<h2>
+Header, Source, Object, and Sample Data Files
+</h2>
+<P>
+<menu>
+<li>Bochs Files and GeeksOS kernel
+<menu>
+<li><a href="proj0.tar.gz">proj0.tar.gz</a>
+<li><a href="bochsrc">Updated .bochsrc</a>
+<li><a href="fonts.tar.gz">fonts</a> (These need to be on your glue/wam account if your are logging in remotely)
+</menu>
+
+<p>
+There is info about running the development environment on Windows 
+availalbe on the <a href="http://geekos.sourceforge.net/docs/building.html">GeekOS</a> web site.  For the purposes of this class, this is an unsopported
+configuration. The professors and TAs do not have the time to help
+students getting this environment to run.
+</HTML>
+

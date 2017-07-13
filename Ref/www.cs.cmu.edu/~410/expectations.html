@@ -1,0 +1,268 @@
+<!-- ========================================= -->
+<!-- Page title (begin it with "15-410") ===== -->
+<!-- ========================================= -->
+
+
+
+
+
+<!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 3.2//EN&quot;>
+<html>
+<head><title>15-410 Expectations</title>
+</head>
+<body bgcolor=white>
+<table width="100%" height="100%">
+
+<tr><td valign=top width=132>
+<table width=132 bgcolor=#cccccc height="100%">
+<tr><td height=140><center><font size=-1><b>Carnegie Mellon</b></font><br>
+<img alt="SCS logo" src="/~410/img/scslogo.gif"><br>
+<font size=-1><b>Computer Science Department</b></font></center></td></tr>
+<tr><td height=30><a href="/~410"><img alt="home" src="/~410/img/home.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/syllabus.html"><img alt="syllabus" src="/~410/img/syllabus.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/staff.html"><img alt="staff" src="/~410/img/staff.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/schedule.html"><img alt="schedule" src="/~410/img/schedule.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/lecture.html"><img alt="lecture" src="/~410/img/lecture.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/projects.html"><img alt="projects" src="/~410/img/projects.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/homeworks.html"><img alt="homeworks" src="/~410/img/homeworks.gif" border=0></a></td></tr>
+<tr><td>&nbsp;</td></tr></table>
+
+</td>
+
+<td width=10>&nbsp;</td>
+
+<td height="100%" valign=top>
+<br>
+
+<H1 ALIGN=CENTER>15-410 Expectations</H1>
+<HR>
+<!-- Body goes here. -->
+ 
+
+<!-- ========================================= -->
+<!-- Content Begins ========================== -->
+<!-- ========================================= -->
+
+<H2>Course objectives</H2>
+
+<P>15-410, Operating System Design &amp; Implementation, 
+is a programming-intensive OS class.  The core experience
+is writing a small Unix-inspired OS kernel, in C with some x86
+assembly language, which runs on a PC hardware simulator called
+Simics (and on actual PC hardware if you wish).  Work is done in
+two-person teams, and "team programming" skills (source control,
+modularity, documentation) are emphasized.  Core concepts include
+the process model, virtual memory, threads, synchronization, and
+deadlock.  The course includes one medium-sized non-textbook reading
+assignment with a writing component.  If you have already completed
+an implementation-intensive OS class (one based on, e.g., NACHOS),
+ECE's Embedded Systems class might be a better opportunity for
+growth.  Finally, past experience suggests that 15-410 is a
+challenging class.  Students who successfully complete it will
+learn a lot, but it will not be easy.</P>
+
+<H2>About This Document</H2>
+
+<P>This document sets forth our high-level expectations for the class.
+You must also read the companion document on
+<A HREF="policies.html">Policies &amp; Mechanisms</A>.</P>
+
+<H2>Textbook</H2>
+
+<P>The textbook is <Cite>Operating System Concepts</Cite>, by 
+Silberschatz, Galvin, and Gagne. 
+It is available in CMU's bookstore.
+While the official text will be the eighth edition,
+you should be able to get by with the seventh or sixth editions.
+We will not
+cover all of the text, and some topics (such as synchronization)
+will be taught in a different manner.</P>
+
+<P>You may also find useful the 15-213 textbook, <CITE>Computer Systems:
+A Programmer's Perspective</CITE>; the K&amp;R C book; and perhaps
+<CITE>C Traps and Pitfalls</CITE>.
+An excellent source of suggestions for programming style and structure
+is
+Rob Pike and Brian Kernigan's
+<a href="http://cm.bell-labs.com/cm/cs/tpop/">The Practice of Programming</a>,
+especially the first few chapters.
+</P>
+
+<H2>Prerequisites</H2>
+
+<P>According to the 
+<A HREF="http://www.csd.cs.cmu.edu/education/bscs/ugcourses.html">SCS
+Undergraduate Courses</A> page,
+the official prerequisite for this class is
+15-213 (Introduction to Computer Systems).
+We expect students to have taken 15-213 before taking 15-410
+(be sure to read the <A HREF="policies.html#prerequisites">Prerequisities</A>
+section of the
+<A HREF="policies.html">Policies &amp; Mechanisms</A> document for
+further details).</P>
+
+<P>Furthermore, please be aware that this course <STRONG>relies</STRONG>
+on skills acquired in 15-213.
+This means you'll be in trouble if much of what was covered there has
+been forgotten, or if finishing it was a significant struggle.
+You should recall what
+a byte is, what a register is, the meaning of "1<<2", the difference
+between a process and a thread, roughly what goes in a stack frame,
+what virtual memory is, what a cache is, etc.  You should be proficient
+in C programming on UNIX systems,
+including the use of <TT>make</TT> and a source-level debugger such as
+<TT>gdb</TT> or <TT>dbx</TT>.  The class will require
+writing small amounts of x86 assembly language,
+and debugging your OS will require you to be able to map back and
+forth between C and assembly language, so it is <EM>very important</EM>
+that you are have retained these skills.
+</P>
+
+
+
+<H2>Course Activity</H2>
+
+<P>While we do not take attendance in class, we expect
+students to attend lectures.  If you miss a lecture,
+we expect you to arrange for a fellow student
+who was in class to teach you what you missed by going
+over the lecture slides with you.  When possible, it
+is probably wise for you to obtain the agreement of
+a particular fellow student before the class you
+miss.
+Our model for the lecture slides is that they
+<EM>support</EM> the lecture and can also support
+a student-led recapitulation, but that they do not
+<EM>replace</EM> the lecture.
+</P>
+
+<P>While some material will not be covered fully
+by the textbook, the text will expand on some material
+covered only partially in class.  Thus, reading the
+relevant sections of the text is wise, and some
+people will find a second or third reading of some
+sections useful.</P>
+
+<P>In general, most students who do well in the class
+will attend lectures regularly and read the textbook
+thoroughly.</P>
+
+
+
+<P>We will grade homeworks, a "book report" assignment, several
+programming assignments, a mid-term exam, and a final exam.</P>
+
+<P>In slightly more detail:
+<DL>
+
+<DT>Homework assignments
+<DD>
+<P>Homework assignments are individual assignments designed to 
+reinforce class material through design, analysis, restatement, 
+or simple practice. Although each student should do his/her own
+homework, students are certainly encouraged to discuss the course 
+material related to the homework to develop a better understanding.</P>
+
+<DT>Team Projects
+<DD>
+<P>Projects (other than the first two) are designed for two person teams.
+When choosing a partner, try to ensure that the relationship will
+last for the remainder of the semester.  We will allow changes
+if the situation merits it and if alternative partners are available.
+While some people end up working by themselves, we actively discourage
+this and generally don't view it as a reason for relaxed deadlines
+or grading.</P>
+
+<P>Both partners 
+should work cooperatively on the design, implementation, and 
+testing of their solutions.</P>
+
+<P>The programming assignments, especially the kernel
+assignment, are <STRONG>not easy</STRONG>.  It is far from
+unusual for a single one-line bug to take <STRONG>two days</STRONG>
+to track down.  You should plan to finish each project 10%-20%
+early.</P>
+
+<DT>Exams
+<DD>
+<P>The exams may cover any material covered in the course. This 
+includes the material from the lectures, from the assigned sections 
+of the textbook, from the additional reading assignments handed out, 
+from the programming projects, or from the homework.</P>
+</DL>
+
+<H2>Team Programming</H2>
+
+<P>Most of the programming effort will be in a team-programming context,
+to give you experience with the design strategies, coding standards,
+documentation practices, source control techniques, and people
+skills you are likely to need in both industry and academia.
+Here we differentiate between team programming and software engineering
+in that we will not cover requirements analysis, release staging,
+defect management, and other life-cycle issues.</P>
+
+<P>You may experiment with various development styles.  Some students
+explore "Extreme Programming", and others have had good experiences with
+<CITE>Pair Programming</CITE> (Williams &amp; Kessler).</P>
+
+<P>You should probably discuss your committment to the class with potential
+partners.  For example, if it is spring semester and you are planning to
+graduate, a first-year drama student auditing the class
+might not make the best partner for you.</P>
+
+<H2>Grades</H2>
+
+<P>Our overall expectation on grades is:
+<DL COMPACT>
+<DT>C<DD>All parts of problem addressed
+<DT>B<DD>Solution is complete, stable, robust; no major design flaws, etc.
+<DT>A<DD>Excellent:  design is clean, documentation is complete,
+error handling and logging are good.  Probably one or more "good-quality"
+algorithms are used (as appropriate); it should be credible that
+somebody might want to re-use some of your code; often you will
+have done a little bit more than what we asked in a couple of areas.
+</DL>
+
+<H2>Academic Conduct</H2>
+
+<P>In general, collaboration is good when it furthers genuine
+learning and bad when it doesn't.  Meanwhile, plagiarism
+(using the work
+of others without giving them appropriate credit) is definitely
+bad.  This principle can often help you decide between good
+collaboration and bad collaboration:  if you would feel bad
+about accurately giving credit for part of your program,
+then it probably shouldn't have been created however it was.
+Another good rule is that if you're not sure whether something
+is ok, you should ask the course staff.</P>
+
+<P>Also, in general, we expect you to behave honestly and
+according to high standards of academic conduct.</P>
+
+<H2>Reminder About This Document</H2>
+
+<P>This document sets forth our high-level expectations for the class.
+You must also read the companion document on
+<A HREF="policies.html">Policies &amp; Mechanisms</A>.</P>
+
+<H2>Acknowledgements</H2>
+<P>Ideas (and even some text) were stolen from Greg Kesden's 15-412 syllabus and Randy Bryant &amp;
+Hui Zhang's 15-441 syllabus.</P>
+
+<!-- ========================================= -->
+<!-- Content Ends ============================ -->
+<!-- ========================================= -->
+
+<!-- End body. -->
+
+
+</td></tr>
+<tr><td></td><td></td><td align=center>
+
+<HR>
+<P ALIGN=CENTER>[Last modified Friday January 09, 2009]</P></td></tr>
+</table>
+
+</body>
+</html>
+ 

@@ -1,0 +1,34 @@
+9
+
+dir
+6
+http://svn2.assembla.com/svn/a3K6KsNpqr3lphabIlDkbG/project2/include
+http://svn2.assembla.com/svn/a3K6KsNpqr3lphabIlDkbG
+
+
+
+2007-11-27T17:59:23.515832Z
+6
+mradling
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+c3d1530f-68f5-4bd0-87dc-8ef779617e40
+
+libc
+dir
+
+geekos
+dir
+

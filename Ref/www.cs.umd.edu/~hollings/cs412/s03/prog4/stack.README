@@ -1,0 +1,12 @@
+
+If you add stackHelper.c into mem.c and change the calls to
+allocate/free stack pages to be the ones defined in that file,
+it will cause a page fault when the kernel stack overflows.
+
+However, this is not a graceful event. The page fault
+interrupt will try to put context on the kernel stack that
+has just overflowed (causing an infinite sequence of interrupts)
+which will eventually cause bochs to terminate.
+
+This is still useful in debugging stack problems, but you need 
+to be aware of the resulting fault's behavior.

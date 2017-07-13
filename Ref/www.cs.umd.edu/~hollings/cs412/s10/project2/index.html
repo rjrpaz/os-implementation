@@ -1,0 +1,564 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 11 (filtered)">
+<title>CMSC 412, Spring 2010</title>
+
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:"MS Mincho";
+	panose-1:2 2 6 9 4 2 5 8 3 4;}
+@font-face
+	{font-family:"\@MS Mincho";
+	panose-1:0 0 0 0 0 0 0 0 0 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	font-family:"Times New Roman";}
+h1
+	{margin-right:0pt;
+	margin-left:0pt;
+	font-size:24.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+h2
+	{margin-right:0pt;
+	margin-left:0pt;
+	font-size:18.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+h3
+	{margin-right:0pt;
+	margin-left:0pt;
+	font-size:13.5pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+h4
+	{margin-right:0pt;
+	margin-left:0pt;
+	font-size:11.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+p
+	{margin-right:0pt;
+	margin-left:0pt;
+	font-size:11.0pt;
+	font-family:"Times New Roman";}
+tt
+	{font-family:"Courier New";}
+@page Section1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 54.0pt 72.0pt 54.0pt;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0pt;}
+ul
+	{margin-bottom:0pt;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US link=blue vlink=purple>
+
+<div class=Section1>
+
+<h1 align=center style='margin:0pt;margin-bottom:.0001pt;text-align:center'><span
+style='font-size:16.0pt'>CMSC 412, Spring 2010</span></h1>
+
+<h1 align=center style='margin:0pt;margin-bottom:.0001pt;text-align:center'><span
+style='font-size:14.0pt'>Project 1<br>
+Due: Friday, March 5th, 2010 6:00 pm</span></h1>
+
+<h2><span style='font-size:12.0pt'>Overview</span></h2>
+
+<p>Project 2 requires you to implement signals and signal handlers. A signal
+delivered to a process will interrupt what it is doing to process the event.</p>
+
+<h2><span style='font-size:12.0pt'>Quick Links</span></h2>
+
+<ul type=disc>
+ <li class=MsoNormal>Download Project Source: <br>
+     <tt><span style='font-size:10.0pt'>svn co
+     https://svn.cs.umd.edu/repos/geekos/project2</span></tt> </li>
+ <li class=MsoNormal><a href="grading.html">Grading Criteria</a> </li>
+ <li class=MsoNormal><a href="proj2-black.pdf">Discussion Section Notes</a> </li>
+ <li class=MsoNormal>Submission: run make submit.</li>
+</ul>
+
+<h2><span style='font-size:12.0pt'>Signals</span></h2>
+
+<p class=MsoNormal>A signal is an inter-process communication mechanism that
+involves causing one of a small array of functions to be invoked in another
+process. Each process can use the &quot;signal&quot; system call to manipulate
+a table that lists signal handlers (function pointers) to be invoked at the
+request of another process. To send a signal, a process calls the
+&quot;kill&quot; system call with the pid of the target and the signal number
+to send. The signal number represents the index into the table of signal
+handlers in the target process. The kernel will then arrange for the signal handler
+function to be called within the process. The slightly tricky part is to ensure
+that when the signal handler returns, control is passed back to the kernel and
+the process can resume from wherever it was. To accomplish this task, we define
+a &quot;return signal&quot; call that will be invoked as the signal handler
+returns. In implementing signals, you will need to arrange for the process to
+have both a context when executing the signal handler and a saved context that
+the signal handler will return to after execution. In preparation, we describe
+context switching next. </p>
+
+<h2><span style='font-size:12.0pt'>1. Background</span></h2>
+
+<h3>1.2. The Kernel Stack (Thread Stack) </h3>
+
+<p>The <i>kernel stack</i> is the stack used by a Geekos kernel thread while it
+is executing in the kernel.&nbsp; As usual, the kernel stack stores the local variables
+used by the kernel thread while running GeekOS kernel routines.&nbsp; This
+could be for kernel threads performing system processes, like the reaper
+thread, or it could be for kernel threads implementing user processes,
+executing system calls on their behalf.</p>
+
+<p>When performing a context switch, the current state (or &quot;context&quot;)
+of a thread is saved on its kernel stack.&nbsp; This state consists of the
+current values of (most of) the registers.&nbsp; The fields <i>stackPage</i>
+and <i>esp</i> defined in the Kernel_Thread structure, specify where the
+thread's kernel stack is (<i>esp</i> is the kernel stack pointer).&nbsp; This
+way, when a thread is to be context-switched to, the current thread switches to
+the new thread's stack, and then restores the context.</p>
+
+<p>Stacks grow downward, from numerically higher addresses to numerically lower
+addresses.</p>
+
+<h3>1.3. User Processes</h3>
+
+<p>User processes have a kernel stack, for calls within the kernel when the
+kernel is running on the process's behalf, and a user stack, for local
+variables while running user-level code.</p>
+
+<p>To prepare a user process to be run for the first time, GeekOS pushes the
+same state on the kernel stack that it would have had, if it has been
+previously running and interrupted in a systme call or by being preempted. The
+state pushed onto the kernel stack includes the following: </p>
+
+<ol start=1 type=1>
+ <li class=MsoNormal>Context Information: this includes (almost) all the
+     registers used by the user (GS, FS, ES, DS, EBP, EDI, ESI, EDX, ECX, EBX,
+     EAX) </li>
+ <li class=MsoNormal>Error code and Interrupt number. </li>
+ <li class=MsoNormal>Program counter: this contains the value that should be
+     loaded into the instruction pointer register (EIP). Initially, when the
+     user process is about to run, GeekOS pushes the entry point for the
+     process and this value will be subsequently loaded into EIP. </li>
+ <li class=MsoNormal>Text selector: this is the selector corresponding to the
+     code segment (CS) of the process. </li>
+ <li class=MsoNormal>The EFlags register. </li>
+ <li class=MsoNormal>User stack data selector and user stack pointer: these
+     point to the location of the <i>user stack</i>.&nbsp; </li>
+</ol>
+
+<p>When the thread is scheduled for the first time, these initial values will
+be loaded into the corresponding processor registers and the thread can run.
+The initial stack state for a user thread is described in the following figure
+(check <tt><span style='font-size:10.0pt'>Setup_User_Thread()</span></tt> in <tt><span
+style='font-size:10.0pt'>src/geekos/kthread.c</span></tt>): </p>
+
+<div align=center>
+
+<table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0 width=547
+ style='width:410.35pt'>
+ <tr>
+  <td width=347 style='width:260.5pt;padding:0pt 0pt 0pt 0pt'>
+  <p>User Stack Data Selector (data selector)</p>
+  </td>
+  <td width=200 rowspan=2 style='width:149.85pt;padding:0pt 0pt 0pt 0pt'>
+  <p align=center style='text-align:center'><b>User Stack Location</b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=347 style='width:260.5pt;padding:0pt 0pt 0pt 0pt'>
+  <p>User Stack Pointer (to end of user's data segment)</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=347 style='width:260.5pt;padding:0pt 0pt 0pt 0pt'>
+  <p>Eflags </p>
+  </td>
+  <td width=200 rowspan=16 style='width:149.85pt;padding:0pt 0pt 0pt 0pt'>
+  <p align=center style='text-align:center'><b>Interrupt_State</b> </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=347 style='width:260.5pt;padding:0pt 0pt 0pt 0pt'>
+  <p>Text Selector (code selector) </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=347 style='width:260.5pt;padding:0pt 0pt 0pt 0pt'>
+  <p><b><span style='color:red'>Program Counter (entry addr)</span></b> </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=347 style='width:260.5pt;padding:0pt 0pt 0pt 0pt'>
+  <p>Error Code (0) </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=347 style='width:260.5pt;padding:0pt 0pt 0pt 0pt'>
+  <p>Interrupt Number (0) </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=347 style='width:260.5pt;padding:0pt 0pt 0pt 0pt'>
+  <p>EAX (0) </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=347 style='width:260.5pt;padding:0pt 0pt 0pt 0pt'>
+  <p>EBX (0) </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=347 style='width:260.5pt;padding:0pt 0pt 0pt 0pt'>
+  <p>ECX (0) </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=347 style='width:260.5pt;padding:0pt 0pt 0pt 0pt'>
+  <p>EDX (0) </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=347 style='width:260.5pt;padding:0pt 0pt 0pt 0pt'>
+  <p>ESI (Argument Block address) </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=347 style='width:260.5pt;padding:0pt 0pt 0pt 0pt'>
+  <p>EDI (0) </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=347 style='width:260.5pt;padding:0pt 0pt 0pt 0pt'>
+  <p>EBP (0) </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=347 style='width:260.5pt;padding:0pt 0pt 0pt 0pt'>
+  <p>DS (data selector) </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=347 style='width:260.5pt;padding:0pt 0pt 0pt 0pt'>
+  <p>ES (data selector) </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=347 style='width:260.5pt;padding:0pt 0pt 0pt 0pt'>
+  <p>FS (data selector) </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=347 style='width:260.5pt;padding:0pt 0pt 0pt 0pt'>
+  <p>GS (data selector) </p>
+  </td>
+ </tr>
+</table>
+
+</div>
+
+<p>The items at the top of this diagram (in high memory) are pushed first, the
+items at the bottom (in lower memory) are pushed last (i.e., the stack grows
+downward). In this figure, the contents of the stack, not including the user
+stack location, are defined in <tt><span style='font-size:10.0pt'>struct
+Interrupt_State</span></tt> in <tt><span style='font-size:10.0pt'>geekos/int.h</span></tt>.
+This is the structure you're familiar with from modifying system calls in <tt><span
+style='font-size:10.0pt'>syscall.c</span></tt>.</p>
+
+<h3><span style='font-size:12.0pt'>1.4. The User Stack</span></h3>
+
+<p>The user stack selector is the same as the data selector: both the stack and
+the data segment occupy the same memory segment. The user stack starts at the
+high end of the data segment and grows downward. Initially, the user stack
+pointer should indicate an empty stack. So it points to the end of the data
+segment. </p>
+
+<p>When switching from kernel mode to user mode, the kernel calls <tt><span
+style='font-size:10.0pt'>Switch_To_User_Context()</span></tt> in <tt><span
+style='font-size:10.0pt'>src/geekos/user.c</span></tt>. Switching the context
+includes the following steps: </p>
+
+<ul type=disc>
+ <li class=MsoNormal>Save the context of the currently executing thread</li>
+ <li class=MsoNormal>Switch to a new address space by loading the LDT of the
+     new thread (<tt><span style='font-size:10.0pt'>ldtSelector</span></tt> of
+     User_Context) using the <tt><span style='font-size:10.0pt'>lldt</span></tt>
+     assembly instruction (see <tt><span style='font-size:10.0pt'>Switch_To_Address_Space()</span></tt>
+     in <tt><span style='font-size:10.0pt'>src/geekos/userseg.c</span></tt>). </li>
+ <li class=MsoNormal>Move the stack pointer up one page via <tt><span
+     style='font-size:10.0pt'>Set_Kernel_Stack_Pointer()</span></tt>.</li>
+</ul>
+
+<h2><a name=ProjectReqs></a><span style='font-size:12.0pt'>2. Project
+Requirements </span></h2>
+
+<p>This project will require you to make changes to several files. In general,
+look for the calls to the <tt><span style='font-size:10.0pt'>TODO()</span></tt>
+macro. These are places where you will need to add code, and they will
+generally contain a comment giving you some hints on how to proceed. There are
+three primary goals of this project: </p>
+
+<ul type=disc>
+ <li class=MsoNormal>Add the code necessary to handle signals </li>
+ <li class=MsoNormal>Implement a collection of system calls to setup and call
+     the signals. </li>
+ <li class=MsoNormal>Modify the background processes to no longer be orphaned
+     on startup: they must retain the correct owner (parent) information. (This
+     will permit SIGCHLD.)</li>
+</ul>
+
+<h2><span style='font-size:12.0pt'>2.1. Signals</span></h2>
+
+<p>In this project, you must implement signal handling and delivery for the
+following four signals (defined in include/geekos/signal.h):</p>
+
+<p class=MsoNormal>SIGKILL:</p>
+
+<p class=MsoNormal style='margin-left:36.0pt'>This is is the signal sent to a
+process to kill it. You should write the handler for this signal such that it
+results in the same behavior as in project 1's Sys_Kill. The process is not
+permitted to install a signal handler for SIGKILL. </p>
+
+<p class=MsoNormal>SIGUSR1, SIGUSR2:</p>
+
+<p class=MsoNormal style='margin-left:36.0pt'>&quot;User-defined&quot; signals
+with no pre-determined purpose. These will be sent only by other processes. </p>
+
+<p class=MsoNormal>SIGCHLD:</p>
+
+<p class=MsoNormal style='margin-left:36.0pt'>When a child process dies, if its
+parent is not already blocked Wait()ing for it, a SIGCHLD signal should be sent
+to the parent process. For this project, a &quot;background&quot; process must
+keep its parent (owner points where it belongs and the initial refCount should
+be 2). When a background process dies, the parent can be informed of this fact
+by SIGCHLD, and thus can reap the child, using the <tt><span style='font-size:
+10.0pt'>Sys_WaitNoPID</span></tt> system call, defined below. </p>
+
+<p><i>Further Reading:</i> More information about signal handling can be found
+in Chapter 4 of the text.&nbsp; </p>
+
+<h2><span style='font-size:12.0pt'>2.2. System Calls</span></h2>
+
+<p>In this project, you will implement five system calls; the user-space
+portion of these calls is defined for you in <tt><span style='font-size:10.0pt'>src/libc/signal.c:</span></tt></p>
+
+<p class=MsoNormal><a name="Sys_Signal"></a>Sys_Signal:</p>
+
+<p class=MsoNormal style='margin-left:36.0pt'>This system call registers a
+signal handler for a given signal number. The signal handler is a function that
+takes the signal number as an argument (it may not be useful to it), processes
+the signal in some way, then returns nothing (void). If called with SIGKILL,
+return an error (EINVALID). The handler may be set as the pre-defined
+&quot;SIG_DFL&quot; or &quot;SIG_IGN&quot; handlers. SIG_IGN tells the kernel
+that the process wants to ignore the signal (it need not be delivered). SIG_DFL
+tells the kernel to revert to its default behavior, which is to terminate the
+process on KILL, USR1, and USR2, and to discard (ignore) SIGCHLD. A process may
+need to set SIG_DFL after setting the handler to something else.</p>
+
+<p class=MsoNormal><a name="Sys_RegDeliver"></a>Sys_RegDeliver:</p>
+
+<p class=MsoNormal style='margin-left:36.0pt'>The signal handling infrastructure
+requires a special &quot;trampoline&quot; function to be implemented. This
+&quot;trampoline&quot; invokes the system call <tt><span style='font-size:10.0pt'>Sys_ReturnSignal</span></tt>
+(see below) at the conclusion of signal handler. This system call is invoked by
+<tt><span style='font-size:10.0pt'>Sig_Init</span></tt> when called by the
+_Entry function in <tt><span style='font-size:10.0pt'>src/libc/entry.c</span></tt>;
+this function is invoked prior to running the user program's main().</p>
+
+<p class=MsoNormal>Sys_Kill:</p>
+
+<p class=MsoNormal style='margin-left:36.0pt'>In project 1, this system call
+took as its argument the PID of a process to kill. In this project, it will be
+used to send a signal to a certain process. So in addition to the PID, <tt><span
+style='font-size:10.0pt'>Sys_Kill</span></tt> will take a signal number: one of
+the four defined above. It should be implemented as setting a flag in the
+process to which the signal is to be delivered, so that when the given process
+is about to start executing in user space again, rather than returning to where
+it left off, it will execute the appropriate signal handler instead.</p>
+
+<p class=MsoNormal>Sys_ReturnSignal:</p>
+
+<p class=MsoNormal style='margin-left:36.0pt'>This system call is not invoked
+by user-space programs directly, but rather is executed by some stub code at
+the completion of a signal handler. That is, <span style='color:blue'>Sys_Kill/Send_Signal</span>
+sends process P a signal, which causes it to run its signal handler. When this
+handler completes, we will have set up its stack so that it will
+&quot;return&quot; to the trampoline registered by <tt><span style='font-size:
+10.0pt'>Sys_RegDeliver</span></tt>. This trampoline wil invoke <tt><span
+style='font-size:10.0pt'>Sys_ReturnSignal</span></tt> to indicate that signal
+handling is complete.</p>
+
+<p class=MsoNormal><a name="Sys_WaitNoPID"></a>Sys_WaitNoPID:</p>
+
+<p class=MsoNormal style='margin-left:36.0pt'>The <tt><span style='font-size:
+10.0pt'>Sys_Wait</span></tt> system call takes as its argument the PID of the
+child process to wait for, and returns when that process dies. The <tt><span
+style='font-size:10.0pt'>Sys_WaitNoPID</span></tt> call, in contrast, takes a
+pointer to an integer as its argument, and reaps any zombie child process that
+happens to have terminated. It places the exit status in the memory location
+the argument points to and returns the pid of the zombie. If there are no dead
+child process, then the system call should return ENOZOMBIES.</p>
+
+<h4>Termination</h4>
+
+<p class=MsoNormal>If the default handler is invoked for SIGKILL, SIGUSR1, or
+SIGUSR2, <tt><span style='font-size:10.0pt'>Print(&quot;Terminated %d.\n&quot;,
+g_currentThread-&gt;pid);</span></tt> and invoke Exit. </p>
+
+<h4>Reentrancy and Preemption</h4>
+
+<p class=MsoNormal>Sending a signal should appear as if setting a flag in the
+PCB about the pending signal; the signal handler should not necessarily be
+executed immediately. In particular, if the process is executing a signal
+handler, it cannot start executing another signal handler. Further, multiple invocations
+of kill() to send the same signal to the same process before it has a chance to
+handle even one will have the same effect as just one invocation of kill().
+Concretely, if two children finish while a handler is executing (and blocked),
+the SIGCHLD handler will be called only once. The delivery order of pending
+signals is not specified (they need not be queued). </p>
+
+<h2><span style='font-size:12.0pt'>2.3. Signal Delivery</span></h2>
+
+<p>To implement signal delivery, you will need to implement (at least) five
+routines in <tt><span style='font-size:10.0pt'>src/geekos/signal.c</span></tt>:</p>
+
+<p class=MsoNormal>Send_Signal:</p>
+
+<p class=MsoNormal style='margin-left:36.0pt'>this takes as its arguments a
+pointer to the kernel thread to which to deliver the signal, and the signal
+number to deliver. This should set a flag in the given thread to indicate that
+a signal is pending. This flag is used by <tt><span style='font-size:10.0pt'>Check_Pending_Signal</span></tt>,
+described next.</p>
+
+<p class=MsoNormal>Check_Pending_Signal:</p>
+
+<p class=MsoNormal style='margin-left:36.0pt'>this routine is called by code in
+<tt><span style='font-size:10.0pt'>lowlevel.asm</span></tt> when a kernel
+thread is about to be context-switched to.&nbsp; It returns true if the
+following THREE conditions hold:</p>
+
+<ol start=1 type=1>
+ <li class=MsoNormal>A signal is pending for that user process.</li>
+ <li class=MsoNormal>The process is about to start executing in user space.
+     This can be determined by checking the <tt><span style='font-size:10.0pt'>Interrupt_State</span></tt>'s
+     CS register: if it is not the kernel's CS register (see <tt><span
+     style='font-size:10.0pt'>include/geekos/defs.h</span></tt>), then the
+     process is about to return to user space. </li>
+ <li class=MsoNormal>The process is not currently handling another signal
+     (recall that signal handling is non-reentrant).</li>
+</ol>
+
+<p class=MsoNormal>Set_Handler:</p>
+
+<p class=MsoNormal style='margin-left:36.0pt'>use this routine to register a
+signal handler provided by the <tt><span style='font-size:10.0pt'>Sys_Signal</span></tt>
+system call.</p>
+
+<p class=MsoNormal>Setup_Frame:</p>
+
+<p class=MsoNormal style='margin-left:36.0pt'>this routine is called when <tt><span
+style='font-size:10.0pt'>Check_Pending_Signal</span></tt> returns true, to set
+up a user process's user stack and kernel stack so that when it starts
+executing, it will execute the correct signal handler, and when that handler
+completes, the process will invoke the <tt><span style='font-size:10.0pt'>Sys_ReturnSignal</span></tt>
+system call to go back to what it was doing. IF instead the process is relying
+on SIG_IGN or SIG_DFL, handle the signal within the kernel. IF the process has
+defined a signal handler for this signal, this function will have to do the
+following: </p>
+
+<p class=MsoNormal style='margin-left:72.0pt;text-indent:-18.0pt'>1.<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+dir=LTR>Choose the correct handler to invoke.</span></p>
+
+<p class=MsoNormal style='margin-left:72.0pt;text-indent:-18.0pt'>2.<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+dir=LTR>Acquire the pointer to the top of the <i>user stack</i>. This is below
+the saved interrupt state stored on the <i>kernel stack</i> as shown in the
+figure above.</span></p>
+
+<p class=MsoNormal style='margin-left:72.0pt;text-indent:-18.0pt'>3.<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+dir=LTR>Push onto the <i>user stack</i> a snapshot of the interrupt state that
+is currently stored at the top of the <i>kernel stack</i>.&nbsp; The interrupt
+state is the topmost portion of the kernel stack, defined in </span><tt><span
+style='font-size:10.0pt'>include/geekos/int.h</span></tt> in struct <tt><span
+style='font-size:10.0pt'>Interrupt_State</span></tt>, shown above.</p>
+
+<p class=MsoNormal style='margin-left:72.0pt;text-indent:-18.0pt'>4.<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+dir=LTR>Push onto the <i>user stack</i> the number of the signal being
+delivered. </span></p>
+
+<p class=MsoNormal style='margin-left:72.0pt;text-indent:-18.0pt'>5.<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+dir=LTR>Push onto the <i>user stack</i> the address of the &quot;signal
+trampoline&quot; that invokes the </span><tt><span style='font-size:10.0pt'>Sys_ReturnSignal</span></tt>
+system call, and was registered by the <tt><span style='font-size:10.0pt'>Sys_RegDeliver</span></tt>
+system call, mentioned above.</p>
+
+<p class=MsoNormal style='margin-left:72.0pt;text-indent:-18.0pt'>6.<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+dir=LTR>Change the current <i>kernel stack</i> such that (notice that you
+already saved a copy in the <i>user stack</i>) </span></p>
+
+<p style='margin-left:96.0pt;text-align:justify;text-justify:inter-ideograph'>(1)
+The <i>user stack</i> pointer is updated to reflect the changes made in step 3
+&amp; 4.<br>
+(2) The saved program counter (eip) points to the signal handler.</p>
+
+<p class=MsoNormal>Complete_Handler:</p>
+
+<p class=MsoNormal style='margin-left:36.0pt'>this routine should be called (by
+your code) when the <tt><span style='font-size:10.0pt'>Sys_ReturnSignal</span></tt>
+call is invoked, to indicate a signal handler has completed. It needs to
+restore back on the top of the kernel stack the snapshot of the interrupt state
+currently on the top of the user stack.</p>
+
+<h1><span style='font-size:14.0pt'>Notes</span></h1>
+
+<p>You may build this project directly from the kernel we provide here, or
+merge the provided kernel with your project 1 solution.&nbsp; The advantage of
+merging is that you will get a more full-featured kernel, which may make things
+easier to test.&nbsp; For example, the <tt><span style='font-size:10.0pt'>Sys_PS</span></tt>
+system call will be handy for testing. We will not subtract points from your
+project 2 score for features implemented in project 1.&nbsp; In particular:</p>
+
+<ul type=disc>
+ <li class=MsoNormal>We will not test that background processes (and their
+     children) in project 2 return -1 for <tt><span style='font-size:10.0pt'>GetKey</span></tt>.&nbsp;
+     However, you must implement background processes in the way we have
+     described here (i.e., so they can be reaped via <tt><span
+     style='font-size:10.0pt'>Sys_WaitNoPID</span></tt> inside of the SIGCHLD
+     handler).</li>
+</ul>
+
+<p class=MsoNormal>&nbsp;</p>
+
+</div>
+
+</body>
+
+</html>

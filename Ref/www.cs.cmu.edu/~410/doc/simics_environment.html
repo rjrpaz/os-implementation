@@ -1,0 +1,228 @@
+<!-- Page title (begin it with "15-410") ===== -->
+
+
+
+
+
+<!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 3.2//EN&quot;>
+<html>
+<head><title>15-410 Simics Environment Guide</title>
+</head>
+<body bgcolor=white>
+<table width="100%" height="100%">
+
+<tr><td valign=top width=132>
+<table width=132 bgcolor=#cccccc height="100%">
+<tr><td height=140><center><font size=-1><b>Carnegie Mellon</b></font><br>
+<img alt="SCS logo" src="/~410/img/scslogo.gif"><br>
+<font size=-1><b>Computer Science Department</b></font></center></td></tr>
+<tr><td height=30><a href="/~410"><img alt="home" src="/~410/img/home.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/syllabus.html"><img alt="syllabus" src="/~410/img/syllabus.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/staff.html"><img alt="staff" src="/~410/img/staff.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/schedule.html"><img alt="schedule" src="/~410/img/schedule.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/lecture.html"><img alt="lecture" src="/~410/img/lecture.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/projects.html"><img alt="projects" src="/~410/img/projects.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/homeworks.html"><img alt="homeworks" src="/~410/img/homeworks.gif" border=0></a></td></tr>
+<tr><td>&nbsp;</td></tr></table>
+
+</td>
+
+<td width=10>&nbsp;</td>
+
+<td height="100%" valign=top>
+<br>
+
+<H1 ALIGN=CENTER>15-410 Simics Environment Guide</H1>
+<HR>
+<!-- Body goes here. -->
+ 
+
+<!-- Content Begins ========================== -->
+
+Getting to know your debugger is a deeply useful skill.  This documentation
+intends to expose some of the internal knobs, bells, and whistles of the
+Simics environment for 15-410 for "advanced" use cases of varying kinds.
+
+<h2>Invoking Simics</h2>
+
+The usual simics command, <tt>simics4</tt> has many variants and
+silent features.  In particular, there is something of a tradition that
+the TAs will create <tt>simics4-$TA.sh</tt> which may contain
+debugging, testing, or experimental code.  If you encounter a problem, one or
+more TAs may try writing code to help out and may ask you to run their version
+of the simics environment for a while. <p/>
+
+Most features of the Simics environment are controlled by knobs in the
+environment at time of invocation:
+<DL>
+  <DT><TT>SIMICS_TEXT_CONSOLE</TT></DT>
+    <DD>If this environment variable contains a nonempty string, Simics will
+        spawn an xterm for a text console rather than its graphic console.
+        This may speed simulations where the X display is remote.
+		<EM>Because this console is low-fidelity, it is usable for the
+		thread library and kernel projects, but not for the game project!</EM></DD>
+  <DT><TT>SIMICS_CPU_COUNT</TT></DT>
+    <DD>If the value of this environment variable can be converted to an
+        integer, simics will attempt to run with that many CPUs.  Results
+        are not necessarily well behaved for values outside of 1 to 15.</DD>
+  <DT><TT>SIMICS_AMD_SIXTYFOUR</TT></DT>
+    <DD>If this environment variable is nonempty, Simics will instead simulate
+        an amd64 ("hammer") system.  The default is a Pentium 4 system.</DD>
+  <DT><TT>SIMICS_REALTIME</TT></DT>
+    <DD>If this environment variable is nonempty, Simics will watch the wall
+        clock and attempt to keep the system elapsed time equal to the wall
+        clock elapsed time, rather than allowing events to happen as fast as
+        possible.  This is generally only useful for simulations which are
+        mostly idle, notably during Project 1.</DD>
+  <DT><TT>SIMICS_DISK_IMAGE</TT></DT>
+    <DD>Names a file to use as the backing store of the primary IDE bus's
+        master disk.</DD>
+  <DT><TT>SIMICS_DISK_SIZE</TT></DT>
+    <DD>The size of the primary disk image</DD>
+</DL>
+
+Essentially any other knob of the simics environment can (though may not be,
+obviously... no, we won't give you a PPC core) be added on reasonable request.
+
+<h2>Adding Code To The Simics Environment</h2>
+
+<h3>Disclaimer</h3>
+
+You <em>MUST NOT</em> (let's say that again: <FONT size="+1"><EM>MUST
+NOT</EM></FONT>) depend on code you add to the simics environment for the
+correctness of your kernel (except under very, very rare exception which must
+be confirmed by the professor(s)), as the graders will <em>disable</em> your
+modifications before invoking simics to grade your code.  However, we will read
+this code, as with the rest of your handin.  Landing malicious code in a handin
+via this mechanism, as any other, is a breach of academic conduct and will be
+handled as such. <p/>
+
+On an only <em>slightly</em> less dire note, you should make an effort not to
+get lost in this.  Simics is really, really big, and contains tons and tons of
+features, nooks, crannies, and traps.  Remember that your objective is to write
+a 410 assignment, which is probably not a Simics module.  This is intended as
+debugging tool, and like any tool, it should not be used when inappropriate.
+Moreover, as the power of this tool comes from its flexibility and therefore
+bestowes upon this tool a very steep learning curve, it should only be used
+when lesser tools are in some way inadequate for the job at hand.
+
+<h3>Where do I do this</h3>
+
+The 410 Simics environment will slurp in all python (<tt>*.py</tt>) files in
+the root of your project directory (alongside your <tt>README.dox</tt>, that
+is) that begin with "<tt>410mods-dynamic-</tt>".  These files are loaded in
+alphabetical order and <em>after</em> the core 410 environment is up and
+running.  If it all goes well, you'll see a message like <br/>
+"<tt>--&gt; Working directory dynamic modifications loaded from 
+$PATH/410mods-dynamic-my_awesome_debugging_tools.py</tt>" <br/>
+This is a natural extension of the same mechanism applied to <tt>410mods-dynamic-*.py</tt>
+files in the simics environment directory and is new this semester for student usage.
+
+<h3>What do I do?</h3>
+
+Step one, as always, is to familiarize yourself with the contents of the
+manual.  However, as the reference manual is nearly 3000 pages long, it may
+help to use these examples as a starting off point and see where this takes
+you.  Your TAs will, in general, assist you when they can, but it is remarkably
+easy to fall beyond the local-knowledge horizon and end up forging on alone.
+
+<h3>Adding a custom breakpoint</h3>
+
+<P/>Breakpoint handler functions take four parameters:
+  <TABLE>
+    <TR> <TD>arg</TD> <TD>Per-HAP callback data, unused in the current 410 environment</TD></TR>
+    <TR> <TD>obj</TD> <TD>The configuration object which caused this breakpoint</TD></TR>
+    <TR> <TD>brknum</TD> <TD>The breakpoint number</TD></TR>
+    <TR> <TD>m</TD> <TD>The memory transaction associated with this breakpoint.  See the Simics reference manual for more information.</TD></TR>
+  </TABLE>
+
+Here's a way to add a breakpoint that stops only when the address it is
+watching takes on any of a set of values and traces all values except a
+specified set.  It demos how to add breakpoints to the simulation environment
+within the breakpoint routing feature provided by the 410 environment.
+
+<TT><PRE>
+single_address = 0x01234567             # Breakpoint address
+watch_size = 4                          # Breakpoint size
+trace_silence_values = [ 0x00c0ffee ]   # Don't show these values
+break_on_values = [ 0xfeedface ]        # Stop the simulation on these values
+
+def handle_my_breakpoint(arg, obj, brknum, m):
+  # Filter out control messages
+  if SIM_mem_op_is_control(m) :
+    print "Custom breakpoint got a control transaction, ignoring!"
+    return
+  
+  # Extract the CPU
+  if not SIM_mem_op_is_from_cpu(m) :
+    print "Custom breakpoint got a non-CPU initiator!"
+    return
+  cpu = m.ini_ptr
+  
+  ### This depends on 410 segmentation!  The correct way is, much like x86,
+  ### a lot more putrid.
+  pa = SIM_logical_to_physical(cpu, Sim_DI_Data, m.logical_address)
+  
+  # Get size of transaction or fall back
+  size = m.size
+  if size == 0 :
+    print "WARNING: Zero size memory transaction is not a control transaction!"
+    size = watch_size
+  
+  # Read out the current value at that physical address
+  # which we assume to be a 32 bit value (thus the 4)
+  cur_dat = SIM_read_phys_memory(cpu, pa, size)
+  
+  # Construct informative message
+  str = "Custom breakpoint %d hit at l:0x%x with size %d, saw there %x" \
+      % (brknum, m.logical_address, m.size, cur_dat)
+  
+  # If the value read matches our break-on value, then stop the world.
+  if cur_dat in break_on_values :
+    SIM_break_simulation(str)
+  elif not cur_dat in trace_silence_values :
+    print str
+
+nbp = SIM_breakpoint(conf.primary_context,  # Watch the primary context
+                      Sim_Break_Virtual,    # We're interested in Virtual addr
+                      Sim_Access_Read,      # Read access
+                      single_address,       # The address in question, above
+                      watch_size,           # How big of an area are we watching?
+                      Sim_Breakpoint_Simulation # This breakpoint is part of
+                                                # the simulation environment.
+                    )
+
+# Register this with the 410mods-core.py breakpoint dispatch system
+breakpoint_handlers[ nbp ] = handle_my_breakpoint
+</PRE>
+
+<PRE>
+# Inform the user of our decision
+print("Custom breakpoint registered on p:%x with break values %s as %d"
+        % (single_address, break_on_values, nbp) )
+</PRE>
+
+<h3>Adding a custom HAP handler</h3>
+
+<P/>HAP handler functions take tree parameters:
+  <TABLE>
+    <TR> <TD>arg</TD> <TD>Per-HAP callback data, unused in the current 410 environment</TD></TR>
+    <TR> <TD>cpu</TD> <TD>The current CPU of the environment</TD></TR>
+    <TR> <TD>param</TD> <TD>On X86 this is always zero</TD></TR>
+  </TABLE>
+
+<!-- Content Ends ============================ -->
+
+<!-- End body. -->
+
+
+</td></tr>
+<tr><td></td><td></td><td align=center>
+
+<HR>
+<P ALIGN=CENTER>[Last modified Tuesday January 26, 2010]</P></td></tr>
+</table>
+
+</body>
+</html>
+ 

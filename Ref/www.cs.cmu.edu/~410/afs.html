@@ -1,0 +1,207 @@
+<!-- ========================================= -->
+<!-- Page title (begin it with "15-410") ===== -->
+<!-- ========================================= -->
+
+
+
+
+
+<!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 3.2//EN&quot;>
+<html>
+<head><title>15-410 AFS space</title>
+</head>
+<body bgcolor=white>
+<table width="100%" height="100%">
+
+<tr><td valign=top width=132>
+<table width=132 bgcolor=#cccccc height="100%">
+<tr><td height=140><center><font size=-1><b>Carnegie Mellon</b></font><br>
+<img alt="SCS logo" src="/~410/img/scslogo.gif"><br>
+<font size=-1><b>Computer Science Department</b></font></center></td></tr>
+<tr><td height=30><a href="/~410"><img alt="home" src="/~410/img/home.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/syllabus.html"><img alt="syllabus" src="/~410/img/syllabus.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/staff.html"><img alt="staff" src="/~410/img/staff.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/schedule.html"><img alt="schedule" src="/~410/img/schedule.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/lecture.html"><img alt="lecture" src="/~410/img/lecture.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/projects.html"><img alt="projects" src="/~410/img/projects.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/homeworks.html"><img alt="homeworks" src="/~410/img/homeworks.gif" border=0></a></td></tr>
+<tr><td>&nbsp;</td></tr></table>
+
+</td>
+
+<td width=10>&nbsp;</td>
+
+<td height="100%" valign=top>
+<br>
+
+<H1 ALIGN=CENTER>15-410 AFS space</H1>
+<HR>
+<!-- Body goes here. -->
+ 
+
+<!-- ========================================= -->
+<!-- Content Begins ========================== -->
+<!-- ========================================= -->
+
+<H2>Beforehand</H2>
+
+<P>If you are getting AFS permission errors <STRONG>before</STRONG>
+your personal volume has been created, try this:
+<BR>% aklog cs.cmu.edu
+<BR>% pts createuser $USER@andrew.cmu.edu -cell cs.cmu.edu
+<BR>% aklog cs.cmu.edu
+</P>
+
+<H2>Location</H2>
+
+<P>Your AFS volume for 15-410 is located at <TT>/afs/cs.cmu.edu/academic/class/15410-s11/usr/$USER</TT>.
+Since this volume is in the CS cell, you will need to use cross-cell authentication.
+Luckily, this is easy.
+Whenever you log in to an Andrew machine, or use <TT>kinit</TT> to get new tickets,
+run <TT>aklog cs.cmu.edu</TT>.  You may wish to arrange that this command is executed
+each time you log in.</P>
+
+<H2>I deleted my files--Help!!</H2>
+
+<P>Your <EM>backup</EM> AFS volume is a snapshot of your live volume,
+taken some time around midnight.  So if it's noon and you just deleted
+an important file, you might be in luck.  If it's Fall of 2006 and
+your username is xyzzy, then:</P>
+
+<OL>
+<LI>The true name of your regular AFS volume is /afs/cs.cmu.edu/academic/class/15410-f06-users/xyzzy
+<LI>Your backup AFS volume is therefore /afs/.cs.cmu.edu/.BACKUP/academic/class/15410-f06-users/xyzzy
+</OL>
+
+<P>You will need to edit the pathname as appropriate...note that the backup pathname contains two more dots than the pathname of your regular volume.
+Also note that symbolic links in your backup volume point to live volumes,
+so the mygroup/ symbolic link in your backup volume will point to your
+group's <EM>live</EM> volume (the one you just deleted the file from) and
+you will need to manually construct the pathname to your group's backup
+volume.</P>
+
+<H2>AFS problems</H2>
+
+<P>If you have <STRONG>permission problems</STRONG> with your AFS space, 
+please try the program we have developed to diagnose them:
+<BR><BLOCKQUOTE><TT>% /afs/cs.cmu.edu/academic/class/15410-s11/pub/access_scratch</TT></BLOCKQUOTE><BR></P>
+
+<P><STRONG>DO NOT SEND US MAIL</STRONG> saying "I am having trouble accessing my AFS space".
+You <STRONG>must always</STRONG> provide us with a <EM>detailed</EM> explanation of the
+problem, such as a transcript of your session showing what you tried.  Of course, you
+<STRONG>should not mail us</STRONG> the transcript; as with anything else, you should
+place it in a location where we can access it and tell us where that is.</P>
+
+<P>If <TT>access_scratch</TT> <EM>does</EM> fix things for you, its output should
+give you a clue as to what you could do in the future to avoid the trouble.</P>
+
+<P>Please note that AFS, like anything else, may break from time to time.  If you
+receive errors such as <TT>Connection timed out</TT> or <TT>No such device</TT>,
+please wait at least one hour before contacting course staff--these outages frequently
+resolve themselves (or are resolved by elves).  In the other direction, once two to four
+hours have gone by, please send us mail (and post to the .qa bboard so fellow
+students know mail has been sent).</P>
+
+<H2>AFS layout</H2>
+
+<P>Inside your volume you will see multiple directories.  With a few exceptions,
+these are your hand-in directories (p0, p1, ... are for projects; hw0, hw1, etc.
+are for homeworks).  We have provided two directories for you
+to use while you are preparing your assignments:
+<DL COMPACT>
+<DT><TT>REPOSITORY</TT><DD>You may place a CVS or PRCS repository here for Project 0 and/or Project 1 if you wish.
+<DT><TT>scratch</TT><DD>You may organize this directory tree any way you find convenient.
+</DL>
+You should probably <STRONG>not</STRONG> prepare your work in your hand-in directories, since
+that would preclude you having a "safe" turned-in version while making changes to a version
+under (perish the thought!) last-minute development.
+</P>
+
+<H2>Avoid non-Unix File-Transfer Tools</H2>
+
+<P>Any time you move 410-related files around with non-Unix
+utilities such as <CMD>WinSCP</CMD> or <CMD>SftpDrive</CMD>
+you will probably regret it.  Here's why.</P>
+
+<P>If you use a non-Unix file-transfer tool to copy a file
+from one part of your AFS space to another, any time you copy
+an executable program file it will probably stop being
+executable.  This is because on Windows files are considered
+executable when the file's <EM>name</EM> ends in <CMD>.EXE</CMD>,
+but on Unix any file of any name is executable as a function of
+its <EM>permission bits</EM>.  If you drag a file from a window
+showing part of your AFS space to another window showing a different
+part of your AFS space, the file will flow onto your Windows machine,
+merrily losing its executable bits, and then flow back into your AFS
+space a pale shadow of its former self.
+</P>
+
+<P>How <EM>should</EM> you move files around?  The best way is probably
+to use standard Unix
+shell-prompt commands (<CMD>cp</CMD>, <CMD>tar</CMD>, etc.).
+</P>
+
+<H2>Accessing your CS AFS space via scp or sftp</H2>
+
+<P>If you try to use <KBD>scp</KBD> or an <CODE>SFTP</CODE>
+client to access your 15-410 AFS space, you may get a
+"Permission denied" message.  The problem is that your
+client program, speaking some small subset of the gigantic
+SSH protocol suite, is presenting your Andrew password to
+an Andrew Linux machine, which is turning it into an
+authentication token for the Andrew AFS cell.  But that
+token isn't enough to get access to your files in the
+CS AFS cell.  Luckily it's easy to inform your SSH process
+on the Andrew machine to parlay your Andrew-side authentication
+into CS-side authentication.</P>
+
+<P>If your Andrew account already has a <KBD>~/.ssh/rc</KBD>
+file, then you should have enough understanding of ssh to
+merge in our file (see below), so do so.</P>
+
+<P>Otherwise, try this command.  If it asks you to overwrite
+something, then--oops--you <EM>do</EM> already have an ssh
+rc file, so answer "no" and do the merge.</P>
+
+<P><KBD>cp -pi /afs/cs.cmu.edu/academic/class/15410-s11/pub/dotssh-slash-rc ~/.ssh/rc</KBD><BR></P>
+
+<H2>Using your CS AFS space as a remote repository</H2>
+
+<P>Some students 
+doing development on a non-Andrew machine (which we cannot
+in general support) have reported permission problems when
+they try to use ssh to access revision-control repositories
+contained in their 410 AFS space.  The problem is that the
+ssh server on the Andrew Linux machine you contact gets
+AFS tokens for the Andrew AFS cell before executing the
+command you specify, but it doesn't know you will need
+tokens for the CS AFS cell.</P>
+
+<P>We have received a report that the following will
+enable CVS over ssh.</P>
+
+<P><CMD>export CVS_SERVER='aklog cs.cmu.edu;cvs'</CMD></P>
+
+<P>This instructs CVS client programs (on your personal machine)
+to request the Andrew Linux machine providing access to
+your repository to run the indicated sequence of commands;
+the first will acquire CS AFS tokens and the second will
+run the CVS protocol.</P>
+
+<!-- ========================================= -->
+<!-- Content Ends ============================ -->
+<!-- ========================================= -->
+
+<!-- End body. -->
+
+
+</td></tr>
+<tr><td></td><td></td><td align=center>
+
+<HR>
+<P ALIGN=CENTER>[Last modified Thursday August 27, 2009]</P></td></tr>
+</table>
+
+</body>
+</html>
+ 

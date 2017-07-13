@@ -1,0 +1,11 @@
+
+#
+# Add to your kernel's Makefile
+#
+swapfile:
+	$(ZEROFILE) $@ 8192
+
+# Create a nice 10MB hard disk for bochs to use.
+hd.img : swapfile
+	$(ZEROFILE) $@ 20480
+	buildFat/buildFat hd.img swapfile

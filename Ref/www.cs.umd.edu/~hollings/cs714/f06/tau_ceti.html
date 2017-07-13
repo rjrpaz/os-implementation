@@ -1,0 +1,42 @@
+<html>
+<head><title>Instructions for setting up Tau/Ceti</title></head>
+
+<body>
+<h1>Instructions for setting up Tau/Ceti (CMSC 714)</h1>
+
+<h2>1. Login</h2>
+<p>You can login to tau.umiacs.umd.edu with your class account (cs714xx). The remaining steps differ depending on whether you are in a software engineering study.
+</p>
+
+<h2>2. If you are participating in the study (do once)</h2>
+<p>
+Your environment (paths) will be automatically set up with the following steps. Please do not modify it. If you have any questions, please contact hpcs-issues@cs.umd.edu.
+</p>
+<ol>
+<li>You should have already created an account for the study system in the previous assignment. If you have, go to the next step. Otherwise, visit <a href="http://care.cs.umd.edu:8080/umdexpt/cgi-bin/index.cgi">this page</a> and click "enroll HERE". Enter your name, class ID "CMSC714F06", email address, and account name of your choice. You will receive email containing the login password and a "Hackystat key", which you need in the next step.</li>
+<li>Login to tau, and run the following command<pre>
+% /user/nakamura/umdinst/bin/instrument {hackystat_key}
+</pre>where {hackystat_key} is your Haskystat key. It may take a few minutes until the setup process is completed.</li>
+<li>Log out, and log in again. (If you see an error message when your log out for the first time, that's normal.)</li>
+</ol>
+
+<h2>2'. If you are not participating in the study (do once)</h2>
+<p>
+You need to manually set up your environment. Make sure you have /opt/SUNWhpc/bin and /opt/SUNWspro/bin in your path.
+</p>
+
+<h2>3. Basic usage</h2>
+<h3>To compile a program</h3>
+<pre>
+&gt; mpf90 -O3 -xopenmp=parallel -o swim swim.f
+</pre>
+
+<h3>To run a program</h3>
+<pre>
+&gt; setenv OMP_NUM_THREADS 2
+&gt; ./swim < swim.in
+</pre>
+
+</body>
+
+</html>

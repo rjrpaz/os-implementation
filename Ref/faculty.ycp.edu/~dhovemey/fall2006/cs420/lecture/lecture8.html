@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Lecture 8</title>
+</head>
+<body>
+<h1>CS 420 - Lecture 8<br>
+</h1>
+<h2>Thread Programming<br>
+</h2>
+<p>Various user-level APIs exist for writing threaded programs:<br>
+</p>
+<ul>
+  <li>pthreads (Posix threads)</li>
+  <li>Windows Threads (Windows API)</li>
+  <li>Java threads</li>
+  <li>etc.</li>
+</ul>
+<p>They all address the following issues<br>
+</p>
+<p style="margin-left: 40px;">Creating a new threads<br>
+</p>
+<p style="margin-left: 40px;">Synchronizing threads<br>
+</p>
+<p style="margin-left: 40px;">Waiting for a thread to finish<br>
+</p>
+<h2>Synchronization and Mutual Exclusion<br>
+</h2>
+<p>Threads used shared data structures to communicate with each other.<br>
+</p>
+<p>They must use synchronization to ensure that shared data
+structure(s) remain in a consistent state.<br>
+</p>
+<p>Conceptually, each thread is a sequence of instructions being
+executed.&nbsp; An <span style="font-style: italic;">interleaving</span>
+of the instructions in two (or more) threads is simply an overall
+sequential order of the instructions for all threads.<br>
+</p>
+<p>Multithreaded programs are generally nondeterministic because
+essentially any interleaving of the threads is possible.&nbsp;
+Synchronization of threads is the problem of making sure that the
+interleaving that actually occurs does not have undesirable properties.<br>
+</p>
+<p>Example: a counter class.<br>
+</p>
+<pre style="margin-left: 40px;">class PlainCounter {<br>private:<br>	int count;<br><br>	PlainCounter(const PlainCounter&amp; other);<br>	PlainCounter&amp; operator=(const PlainCounter&amp; rhs);<br><br>public:<br>	PlainCounter(int count_)<br>		: count(count_) {<br>	}<br><br>	~PlainCounter() {<br>	}<br><br>	void increment() {<br>		int nextCount = count + 1;<br>		count = nextCount;<br>	}<br><br>	int getCount() {<br>		return count;<br>	}<br><br>	const char *getKind() {<br>		return "plain";<br>	}<br>};</pre>
+<p>Consider two threads running at the same time, both calling the
+increment method on the same Counter object.&nbsp; Let's say that the
+counter starts out with the value zero.&nbsp; Here is one possible
+interleaving:<br>
+</p>
+<pre> Thread 1                         Thread 2<br>----------------------------------------------------------------<br>  int nextCount = count + 1;<br>                                  int nextCount = count + 1;<br>  count = nextCount;<br>                                  count = nextCount;<br></pre>
+<p>Even though there were two calls to the increment method, the final
+value of the counter is 1.<br>
+</p>
+<p>Critical Sections<br>
+</p>
+<p>A critical section is a region of code that must execute <span
+ style="font-style: italic;">atomically</span>.&nbsp; Atomically means
+that the statements in the critical region must not be interrupted by
+another thread that is also executing a critical section (as occurred
+in the interleaving above).<br>
+</p>
+<p>The problem of ensuring that critical sections do not execute
+simultaneously is called mutual exclusion.&nbsp; The most common
+implementation technique is <span style="font-style: italic;">locking</span>.&nbsp;
+A lock data structure, often called a <span style="font-style: italic;">mutual
+exclusion lock</span>, <span style="font-style: italic;">mutex lock</span>,
+or just <span style="font-style: italic;">mutex</span>, is associated
+with the shared resource needing protection.&nbsp; Critical sections
+are guarded by function calls that lock and unlock the mutex.<br>
+</p>
+<p>In Win32: the CRITICAL_SECTION data structure is generally the one
+used to protect critical sections in threads.<br>
+</p>
+<p>A revised counter class that implements mutual exclusion:<br>
+</p>
+<pre style="margin-left: 40px;">class SharedCounter {<br>private:<br>	int count;<br>	CRITICAL_SECTION lock;<br><br>	SharedCounter(const SharedCounter&amp; other);<br>	SharedCounter&amp; operator=(const SharedCounter&amp; rhs);<br><br>public:<br>	SharedCounter(int count_)<br>		: count(count_) {<br>		InitializeCriticalSection(&amp;lock);<br>	}<br><br>	~SharedCounter() {<br>	}<br><br>	void increment() {<br>		EnterCriticalSection(&amp;lock);<br>		int nextCount = count + 1;<br>		count = nextCount;<br>		LeaveCriticalSection(&amp;lock);<br>	}<br><br>	int getCount() {<br>		int value;<br><br>		EnterCriticalSection(&amp;lock);<br>		value = count;<br>		LeaveCriticalSection(&amp;lock);<br><br>		return value;<br>	}<br><br>	const char *getKind() {<br>		return "shared";<br>	}<br>};<br></pre>
+<h2>Windows Thread Programming<br>
+</h2>
+<p>The Windows API supports the following functions for creating,
+synchronizing, and waiting for threads.<br>
+</p>
+<p>Handle type: HANDLE<br>
+</p>
+<p>Creating: CreateThread()<br>
+</p>
+<p>Synchronizing: CRITICAL_SECTION, InitializeCriticalSection(),
+EnterCriticalSection(), LeaveCriticalSection()<br>
+</p>
+<p>Waiting for: WaitForSingleObject()<br>
+</p>
+<p>[Show example program to create two threads incrementing a shared
+counter.]<br>
+</p>
+<h2>POSIX Threads (pthreads)<br>
+</h2>
+<p>Handle type: pthread_t<br>
+</p>
+<p>Creating: pthread_create<br>
+</p>
+<p>Synchronizing: pthread_mutex_t, pthread_mutex_init(),
+pthread_mutex_lock(), pthread_mutex_unlock()<br>
+</p>
+<p>Waiting for: pthread_join()<br>
+</p>
+<p>In general, the Windows Thread API and pthread API are quite similar.<br>
+</p>
+<h2>Threads in GeekOS<br>
+</h2>
+<p>The GeekOS Kernel_Thread API is based on the pthread API.<br>
+</p>
+<p>Handle type: struct Kernel_Thread *<br>
+</p>
+<p>Creating: Start_Kernel_Thread()<br>
+</p>
+<p>Synchronizing:<br>
+</p>
+<p style="margin-left: 40px;">Low-level: struct Thread_Queue, Wait(),
+Wake_Up(), Enable_Interrupts(), Disable_Interrupts()<br>
+</p>
+<p style="margin-left: 40px;">Higher-level: struct Mutex, Mutex_Init(),
+Mutex_Lock(), Mutex_Unlock()<br>
+</p>
+<h3>Enabling and Disabling Interrupts<br>
+</h3>
+<p>In the GeekOS kernel a very simple mechanism exists for protecting
+critical sections: disabling interrupts.<br>
+</p>
+<p>Disabling interrupts means that the CPU stops responding to hardware
+interrupts.&nbsp; This means that the timer interrupt handler will not
+be executed, so whatever kernel thread is running when interrupts are
+disabled is guaranteed not to be interrupted for any reason.&nbsp;
+Therefore, critical sections can be written in the form:<br>
+</p>
+<pre style="margin-left: 40px;">Disable_Interrupts()<br>// ... modify some shared data ...<br>Enable_Interrupts();<br></pre>
+<p>Critical sections written this way guaranteed that while the
+statements in the critical section are executing:<br>
+</p>
+<ol>
+  <li>No other thread will run</li>
+  <li>No interrupt handlers will execute</li>
+</ol>
+<p>This strategy only works for a single-CPU system.<br>
+</p>
+<p>Linux uses similar calls: cli() and sti().<br>
+</p>
+<p>In general, interrupts should only be disabled for a brief period of
+time.&nbsp; [Why?]<br>
+</p>
+<p>One kind of shared data structure in GeekOS that is protected by
+disabling interrupts are thread queues.&nbsp; These include the run
+queue (for threads in the ready state), as well as all wait
+queues.&nbsp; So, if you want to use the following functions:<br>
+</p>
+<p style="margin-left: 40px;">Wait: put the current thread on a wait
+queue<br>
+Wake_Up: wake up all threads on a wait queue<br>
+</p>
+<p>you need to make sure they're called with interrupts disabled.<br>
+</p>
+<p>Issue: critical sections written with
+Disable_Interrupts()/Enable_Interrupts() must not be nested!<br>
+</p>
+<pre style="margin-left: 40px;">Disable_Interrupts();<br>// ... modify shared data ...<br>f();<br>// ... modify shared data ...<br>Enable_Interrupts();<br></pre>
+<pre style="margin-left: 40px;">...<br></pre>
+<pre style="margin-left: 40px;">void f() {<br>&nbsp;&nbsp;&nbsp; Disable_Interrupts();<br>    // ... modify some other shared data<br>    Enable_Interrupts();<br>}<br></pre>
+<p>To solve this problem, use interrupt-atomic regions:<br>
+</p>
+<pre style="margin-left: 40px;">bool iflag = Begin_Int_Atomic();<br>// ... modify shared data ...<br>f();<br>// ... modify shared data ...<br>End_Int_Atomic(iflag);<br><br>...<br><br>void f() {<br>    bool iflag = Begin_Int_Atomic();<br>    // ... modify shared data ...<br>    End_Int_Atomic(iflag);<br>}<br></pre>
+<p>The bool variable (iflag) keeps track of whether or not interrupts
+were enabled or disabled when the region was started.&nbsp;
+End_Int_Atomic() uses this flag to re-enable interrupts IFF they were
+enabled at the call to Begin_Int_Atomic().<br>
+</p>
+<p>Linux supports a similar mechanism: save_flags() and restore_flags().<br>
+</p>
+</body>
+</html>

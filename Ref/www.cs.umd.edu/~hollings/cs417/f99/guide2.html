@@ -1,0 +1,92 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<META NAME="Template" CONTENT="C:\PROGRAM FILES\MICROSOFT OFFICE\OFFICE\html.dot">
+</HEAD>
+<BODY LINK="#0000ff" VLINK="#800080" BACKGROUND="blueback.jpg">
+
+<B><U><FONT SIZE=6><P ALIGN="CENTER">Submission Guidelines </P>
+<P ALIGN="CENTER">Programming Assignment #2</P>
+</U></FONT><FONT FACE="Arial" SIZE=4><P><BR>
+Implementation Requirements</P>
+</B></FONT><FONT SIZE=4><P>1- You should submit a tar file that contains the source code for your implementation of the queue abstraction. The entire implementation should be in the file </FONT><B><FONT SIZE=4 COLOR="#ff0000">queue.c</B></FONT><FONT SIZE=4> if it is written in </FONT><B><FONT SIZE=4 COLOR="#ff0000">C</B></FONT><FONT SIZE=4>, or </FONT><B><FONT SIZE=4 COLOR="#ff0000">queue.C</B></FONT><FONT SIZE=4> (capital letter C) if it is written in </FONT><B><FONT SIZE=4 COLOR="#ff0000">C++</B></FONT><FONT SIZE=4>. You can only add fields (or private member functions if you are doing the project in C++) to the header file we supply, you may not change the existing functions’ parameters or return types. </P>
+<P>2- Like the first program, you should submit a tar file. The tar file should include:</P>
+<OL TYPE="a">
+<OL TYPE="a">
+
+<B><I><LI>Makefile</B></I> that compiles your queue implementation. The executable file should be named "</FONT><B><FONT SIZE=4 COLOR="#ff0000">driver</B></FONT><FONT SIZE=4>"</LI>
+</FONT><B><FONT SIZE=4 COLOR="#ff0000"><LI>driver.c</B></FONT><FONT SIZE=4> (</FONT><B><FONT SIZE=4 COLOR="#ff0000">driver.C</B></FONT><FONT SIZE=4>) that will contain the function main.</LI>
+<LI>The header file (</FONT><B><FONT SIZE=4 COLOR="#ff0000">queue.h</B></FONT><FONT SIZE=4>).</LI>
+<LI>The typescript output of running your version of the driver. </LI></OL>
+</OL>
+<DIR>
+<DIR>
+
+<P>The version of driver that you write should create two new threads and one queue. The first thread should enqueue the numbers 1..10 into the queue, and the second thread should remove the items and print them out as they are removed. When you create the queue, it should have a maximum of 5 items. You should also test the timeout and other features of your program (our test cases will!).</P></DIR>
+</DIR>
+
+</FONT><B><FONT SIZE=5 COLOR="#0000ff"><P ALIGN="CENTER">Since we are going to use UNIX scripts to grade your program, please follow the names mentioned before (queue.C, driver.C in case of C++) and (queue.c, driver.c in case of C)</P>
+<P ALIGN="CENTER">The code has to compile and run on the CSC cluster, i.e. on Alpha stations</B></FONT><FONT COLOR="#0000ff"> </P>
+</FONT><P><HR></P>
+<B><FONT FACE="Arial" SIZE=4><P>Questions</P>
+</FONT><I><FONT SIZE=5><P>1- How are you going to test my program?</B></I></FONT> <BR>
+<FONT SIZE=4>1. First, I'll untar the submitted file. <B><U>Please don't create any directories</B></U>.</P>
+<P>2- Then, replace your driver.C/c with our own version with additional test cases.</P>
+<P>3- Type "<B><I>make</B></I>".</P>
+<P>4- Run your program by typing "<B><I>driver</B></I>".</P>
+</FONT><B><I><FONT SIZE=5><P>2- How do I submit my project?</B></I></FONT> <BR>
+<FONT SIZE=4>You make a tar archive and then call a certain program from my directory called <B><I>submit</B></I>. The exact path is </P>
+</FONT><B><I><FONT SIZE=4 COLOR="#ff0000"><P ALIGN="CENTER">~jh41701/BIN/submit</P>
+</B></I></FONT><FONT SIZE=4><P>Finally to submit your program, type </P>
+</FONT><B><I><FONT SIZE=4 COLOR="#ff0000"><P ALIGN="CENTER">submit 2 filename</P>
+</B></I></FONT><FONT SIZE=4><P>There is only one filename which is the tar file.</P>
+</FONT><B><I><FONT SIZE=5><P>3- When I tried to compile a simple program, I received an error?</P>
+</B></I></FONT><FONT SIZE=4><P>You should link the "<B><I>pthread</B></I>" library explicitly. So your compilation command should include "<B><I>-lpthread</B></I>".</P>
+</FONT><P><HR></P>
+<B><FONT FACE="Arial" SIZE=4><P>Grading Guidelines: </P></B></FONT>
+<TABLE BORDER CELLSPACING=3 CELLPADDING=3 WIDTH=660>
+<TR><TD WIDTH="94%" VALIGN="MIDDLE">
+<P>Proper submission: submitted a tar file containing the files specified above with the <B><FONT SIZE=4 COLOR="#ff0000">exact names</B></FONT>.</TD>
+<TD WIDTH="6%" VALIGN="MIDDLE">
+<P ALIGN="CENTER">10</TD>
+</TR>
+<TR><TD WIDTH="94%" VALIGN="MIDDLE">
+<B><P>Probe</B> function.</TD>
+<TD WIDTH="6%" VALIGN="MIDDLE">
+<P ALIGN="CENTER">10</TD>
+</TR>
+<TR><TD WIDTH="94%" VALIGN="MIDDLE">
+<B><P>Head </B>function.</TD>
+<TD WIDTH="6%" VALIGN="MIDDLE">
+<P ALIGN="CENTER">10</TD>
+</TR>
+<TR><TD WIDTH="94%" VALIGN="MIDDLE">
+<P>Three thread read-write.</TD>
+<TD WIDTH="6%" VALIGN="MIDDLE">
+<P ALIGN="CENTER">10</TD>
+</TR>
+<TR><TD WIDTH="94%" VALIGN="MIDDLE">
+<P>10,000 Read-write.</TD>
+<TD WIDTH="6%" VALIGN="MIDDLE">
+<P ALIGN="CENTER">10</TD>
+</TR>
+<TR><TD WIDTH="94%" VALIGN="MIDDLE">
+<P>Time-outs</TD>
+<TD WIDTH="6%" VALIGN="MIDDLE">
+<P ALIGN="CENTER">10</TD>
+</TR>
+<TR><TD WIDTH="94%" VALIGN="MIDDLE">
+<P>Beauty points: well-documented code, indented lines, …etc.</TD>
+<TD WIDTH="6%" VALIGN="MIDDLE">
+<B><FONT COLOR="#0000ff"><P ALIGN="CENTER">40</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="94%" VALIGN="MIDDLE">
+<P>Total points:&nbsp;</TD>
+<TD WIDTH="6%" VALIGN="MIDDLE">
+<B><FONT COLOR="#ff0000"><P ALIGN="CENTER">100</B></FONT></TD>
+</TR>
+</TABLE>
+
+</BODY>
+</HTML>

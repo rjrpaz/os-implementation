@@ -1,0 +1,548 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 11 (filtered)">
+<title>CMSC 412 Project #4 </title>
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:"MS Mincho";
+	panose-1:2 2 6 9 4 2 5 8 3 4;}
+@font-face
+	{font-family:"\@MS Mincho";
+	panose-1:0 0 0 0 0 0 0 0 0 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	font-family:"Times New Roman";}
+h1
+	{margin-right:0in;
+	margin-left:0in;
+	font-size:24.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+h2
+	{margin-right:0in;
+	margin-left:0in;
+	font-size:18.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+h3
+	{margin-right:0in;
+	margin-left:0in;
+	font-size:13.5pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+h4
+	{margin-right:0in;
+	margin-left:0in;
+	font-size:11.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+p
+	{margin-right:0in;
+	margin-left:0in;
+	font-size:11.0pt;
+	font-family:"Times New Roman";}
+pre
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Courier New";}
+tt
+	{font-family:"Courier New";}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in .75in 1.0in .75in;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US link=blue vlink=purple>
+
+<div class=Section1>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:18.0pt'>CMSC 412 Project #4</span></b><span style='font-size:
+18.0pt'> </span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:13.5pt'>Virtual Memory and Paging</span></b><span
+style='font-size:13.5pt'> </span><span style='font-size:12.0pt'><br>
+<b>Due Sunday, <span style='color:red'>April 11, at 6:00pm</span> </b></span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:12.0pt'>&nbsp;</span></b></p>
+
+<ul type=disc>
+ <li class=MsoNormal><a href="grading.html">Grading Criteria</a> </li>
+ <li class=MsoNormal>Recitation material: <a href="proj4-sect-notes.pdf">pdf</a>
+     </li>
+ <li class=MsoNormal>The IA-32 Intel(R) Architecture Software Developer's <a
+     href="http://www.intel.com/design/processor/manuals/253668.pdf">Manual</a>,Volume
+     3 <br>
+     &nbsp;&nbsp;&nbsp;Sections : 3.1, 3.6 (without subsections 3.6.1 and
+     3.6.2), 3.7.1, 3.7.6 (Figure 3-14 and associated bits only)</li>
+</ul>
+
+<h1>Introduction</h1>
+
+<p>The purpose of this project is to add paging and virtual memory to your
+GeekOS kernel. This will require many small, but difficult changes. More than
+any previous project, it will be important to implement one thing, test it, and
+then move to the next one. A successful implementation of earlier projects is <b>not
+required</b> for this project. You can implement Project 4 on top of any
+earlier version of the kernel (or directly on the provided distribution).</p>
+
+<h2>Background</h2>
+
+<p>In this project you will add paging to the GeekOS kernel, combined with the segmentation
+that is already part of the standard GeekOS kernel. For detailed information on
+paging, segmentation, and how they are combined on the Intel architecture,
+please refer to sections 8.4-8.7 in the text (pps. 288-309), and the Intel
+documentation specified above. </p>
+
+<p>In a system that combines paging and segmentation, there are three kinds of
+addresses: logical addresses, linear addresses, and physical addresses. <i>Logical
+addresses</i> are those issued by a process. Logical addresses are mapped, via
+segmentation, to <i>linear addresses</i> by merely adding the base address of
+the relevant process segment to the logical address. A linear address is mapped
+to a <i>physical address</i>, which will be used by the processor to actually
+read from main memory, by using page tables set up and maintained by the
+operating system.&nbsp; Paging is similar to segmentation because it allows
+each process to run in its own memory space. However, paging allows a much
+finer granularity of control by specifiying per-page mappings rather than a constant
+value offset.</p>
+
+<p>In GeekOS, your paging system will use a <i>page directory</i> and <i>page
+tables</i> which form what as known as a <i>two-level page table scheme</i>
+(see Section 8.5.1, and notably Fig. 8.14, in the text).&nbsp; Each memory
+address in the x86 system is 32 bits long.&nbsp; To translate a linear address
+to a physical one, the processor will refer to the current page directory (this
+is analagous to finding an LDT for a process). It will then use the most
+significant 10 bits to index into the page directory (10 bits allows you to
+write numbers between 0 and 1023 thus the page directory has 1024 entries). The
+page directory entry is used to find the appropriate page table. The next 10
+bits are used to index the page table (again 10 bits allows you to write
+numbers between 0 and 1023 thus the page table has 1024 entries). Finally, the
+page table entry is used to find the base of the physical memory page. The last
+12 bits of the linear memory address is used to index into the physical page
+(12 bits allows you to write numbers between 0 and 4095 thus a page is 4096
+bytes in size). </p>
+
+<p>Each page directory and page table are themselves pages in the system. Each
+page directory/page table entry is 4 bytes and each table contains 1024 entries
+(4096 bytes / 4 bytes). Each page directory contains a pointer to a page table
+which in turn contains pointers to the physical memory. </p>
+
+<h1>Part I</h1>
+
+<p>The first step is to modify your project to use page tables and segmentation
+rather than just segments to provide memory protection. </p>
+
+<h2><a name=KernelMap>Kernel Memory Mapping</a></h2>
+
+<p class=MsoNormal>The kernel starts running without paging enabled, and the
+segmentation hardware maps logical addresses directly to physical
+addresses.&nbsp; Adding paging introduces a level in between: a logical address
+is mapped by segmentation to a linear address, which paging then maps to a
+physical address.&nbsp; As a first step, we will introduce a page table that
+maps all linear addresses to themselves; that is each linear address X is
+mapped to physical address X. </p>
+
+<p>To set up page tables, you will need to allocate a page directory (via <tt><span
+style='font-size:10.0pt'>Alloc_Page</span></tt>) and then allocate page tables
+for the entire region that will be mapped into this memory context. You will
+need to fill out the appropriate fields in the page tables and page
+directories. The definition of paging tables and directories are to be found in
+<tt><span style='font-size:10.0pt'>paging.h</span></tt> (structs <tt><span
+style='font-size:10.0pt'>pte_t</span></tt> and <tt><span style='font-size:10.0pt'>pde_t</span></tt>).
+Finally, to enable paging for the first time, you will need to call the routine
+<tt><span style='font-size:10.0pt'>Enable_Paging(pdbr)</span></tt> which is
+already defined for you in <tt><span style='font-size:10.0pt'>lowlevel.asm</span></tt>.
+It takes the base address of your page directory as a parameter. </p>
+
+<p>The final step of this function is to add a handler for page faults. A
+default one named <tt><span style='font-size:10.0pt'>Page_Fault_Handler</span></tt>
+in <tt><span style='font-size:10.0pt'>paging.c</span></tt> has been provided
+for you. You should install it by calling <tt><span style='font-size:10.0pt'>Install_Interrupt_Handler</span></tt>.
+You need to register this as a handler for interrupt 14. You should then add a
+call the <tt><span style='font-size:10.0pt'>Init_VM</span></tt> function from
+your <tt><span style='font-size:10.0pt'>main.c</span></tt> (after <tt><span
+style='font-size:10.0pt'>Init_Interrupts</span></tt>).</p>
+
+<p>You should be able to do this step and test it by itself by temporarily
+giving user mode access to these pages - set the <tt><span style='font-size:
+10.0pt'>flags</span></tt> fields in the page table entries to include <tt><span
+style='font-size:10.0pt'>VM_USER</span></tt>.&nbsp; Refer to item 1 in the
+grading criteria to understand what you should have running at this
+point.&nbsp; Once you have this running, you can submit it as your intermediate
+submission.</p>
+
+<h1>Part II</h1>
+
+<p class=MsoNormal>The next step is to make user processes have their own
+linear address space. </p>
+
+<h2>User Memory Mapping</h2>
+
+<p class=MsoNormal>We will define a single page directory for all kernel-only
+threads, and a page directory for each user process.&nbsp; The page directory
+and page tables you set up for part I will be used by the kernel.&nbsp; As
+such, you should change the <tt><span style='font-size:10.0pt'>flags</span></tt>
+fields to <i>not</i> include <tt><span style='font-size:10.0pt'>VM_USER</span></tt>.<br>
+<br>
+The page directory for user processes will contain entries mapping user logical
+memory to linear memory, <i>and will also contain entries to address the kernel
+memory</i>.&nbsp; This is not so user processes can access kernel memory
+directly (we will set the access flags of the memory to prevent them from doing
+so), but rather so that when an interrupt occurs the page table does not need
+to be changed for the kernel to access its own memory---it will simply use the
+page table of the user process that was running when the interrupt occurred.</p>
+
+<p style='margin-bottom:12.0pt'>The memory layout for a user process is shown
+below, where the addresses on the left are linear addresses (which are mapped
+to physical addresses by the paging system).&nbsp; User processes still refer
+to logical addresses, which are mapped by the segmentation system to the linear
+addresses shown here.&nbsp; In particular, a user process will still have the
+same addresses just as it has in prior projects.</p>
+
+<table class=MsoNormalTable border=0 cellpadding=0 width="85%"
+ style='width:85.32%'>
+ <tr>
+  <td width="27%" valign=top style='width:27.06%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal><span style='font-family:"Courier New"'>VA 0x0000 0000</span></p>
+  </td>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal>Kernel Memory</p>
+  </td>
+  <td width="55%" valign=top style='width:55.04%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal style='page-break-after:avoid'>Start of kernel memory</p>
+  <p class=MsoNormal style='page-break-after:avoid'>(map all physical memory
+  here)</p>
+  </td>
+ </tr>
+ <tr>
+  <td width="27%" valign=top style='width:27.06%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal><span style='font-family:"Courier New"'>VA 0x8000 0000</span></p>
+  </td>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal>User Memory</p>
+  </td>
+  <td width="55%" valign=top style='width:55.04%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal>Data/Text start here</p>
+  </td>
+ </tr>
+ <tr>
+  <td width="27%" valign=top style='width:27.06%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal><span style='font-family:"Courier New"'>&nbsp;</span></p>
+  </td>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal style='margin-bottom:12.0pt'><br>
+  &lt;gap&gt;</p>
+  </td>
+  <td width="55%" valign=top style='width:55.04%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>&nbsp;</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width="27%" valign=top style='width:27.06%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal><span style='font-family:"Courier New"'>VA 0xFFFF E000</span></p>
+  </td>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal>User Memory</p>
+  </td>
+  <td width="55%" valign=top style='width:55.04%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal>Initial stack at top of this page</p>
+  </td>
+ </tr>
+ <tr>
+  <td width="27%" valign=top style='width:27.06%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal><span style='font-family:"Courier New"'>VA 0xFFFF F000</span></p>
+  </td>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal>User Memory</p>
+  </td>
+  <td width="55%" valign=top style='width:55.04%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal>Args in this page</p>
+  </td>
+ </tr>
+ <tr>
+  <td width="27%" valign=top style='width:27.06%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal><span style='font-family:"Courier New"'>VA 0xFFFF FFFF</span></p>
+  </td>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal>&nbsp;</p>
+  </td>
+  <td width="55%" valign=top style='width:55.04%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt'>Memory space ends here</span></p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p>The next step is to modify your user processes to use pages in the user
+range of memory. To help you do this, there is a new file called <tt><span
+style='font-size:10.0pt'>uservm.c</span></tt> that will replace your <tt><span
+style='font-size:10.0pt'>userseg.c</span></tt> from previous projects. You
+should start by taking the implementations from <tt><span style='font-size:
+10.0pt'>userseg.c</span></tt> and copying them to <tt><span style='font-size:
+10.0pt'>uservm.c</span></tt> and then modifying them for paging. There is a
+line in the <tt><span style='font-size:10.0pt'>Makefile</span></tt> in the
+build directory which specifies whether it should use <tt><span
+style='font-size:10.0pt'>userseg.c</span></tt> or <tt><span style='font-size:
+10.0pt'>uservm.c</span></tt>. You can switch between them by modifying <tt><span
+style='font-size:10.0pt'>USER_IMP_C := uservm.c</span></tt> to be <tt><span
+style='font-size:10.0pt'>USER_IMP_C := userseg.c</span></tt> and vice versa. </p>
+
+<p>Setting up paging for user processes occurs in <tt><span style='font-size:
+10.0pt'>Load_User_Program</span></tt>, and takes two steps.&nbsp; First, you
+need to allocate a page directory for the process. You should copy all of the
+entries from the kernel page directory for the bottom 2 GB of linear memory. </p>
+
+<p>Next you need to allocate page table entries for the user process' text,
+data, and stack regions.&nbsp; Each of these regions will consist of some
+number of pages allocated by the routine <tt><span style='font-size:10.0pt'>Alloc_Pageable_Page</span></tt>.&nbsp;
+This routine differs from <span style='font-family:"Courier New"'>Alloc_Page</span>
+in that the allocated page it returns will have a special flag PAGE_PAGEABLE
+set in the flags field of its entry in the struct Page data structure (see
+mem.h).&nbsp; All pages (but not page directories and page tables) for a user
+space process should be allocated using this routine.</p>
+
+<p>Contrast this with current implementation: for segmentation, one big chunk
+of memory was allocated for the entire user process. Paging allows per-page
+mappings for user memory so that each page of the user process is now allocated
+and mapped individually, and so it need not be contiguous.</p>
+
+<p>As a suggestion, do this as follows: calculate the size of the text and data
+segment of the process as is done now, without including the size of the stack
+(but do round to PAGE_SIZE, though), and <span style='font-family:"Courier New"'>Malloc</span>
+it.&nbsp; Load the program into this memory, as now.&nbsp; Then copy the image,
+page by page into the newly allocated pages.&nbsp; Then allocate two pages of
+memory at the end of the virtual address range (i.e. the last two entries in
+the last page table). One is for the arguments, the other one is for
+stack.&nbsp; Make sure the <tt><span style='font-size:10.0pt'>flags</span></tt>
+bits in both the page directory and page table entries allow user mode access
+(contain <tt><span style='font-size:10.0pt'>VM_USER</span></tt> flag).</p>
+
+<p>Finally, you will need to tweak some aspects of the current segmentation
+implementation so that it works with paging. The base linear address for the
+user mode process (that is, the base address for the code and data segments set
+in <tt><span style='font-size:10.0pt'>Create_User_Context</span></tt>) should
+be 0x80000000 (<tt><span style='font-size:10.0pt'>USER_VM_START</span></tt> in <tt><span
+style='font-size:10.0pt'>paging.h</span></tt>), and the limit should be (0xFFFF
+FFFF (<tt><span style='font-size:10.0pt'>USER_VM_END</span></tt> in <tt><span
+style='font-size:10.0pt'>paging.h</span></tt>) - <tt><span style='font-size:
+10.0pt'>USER_VM_START</span></tt>) / <tt><span style='font-size:10.0pt'>PAGE_SIZE
+</span></tt>. This will allow the user space process to think that its virtual
+location 0 is the 2GB point in the page layout and will greatly simplify your
+kernel compared to traditional paged systems. You will also need to add code to
+switch the PDBR (cr3) register as part of a context switch. For this, in <tt><span
+style='font-size:10.0pt'>Switch_To_Address_Space</span></tt> you should add a
+call to <tt><span style='font-size:10.0pt'>Set_PDBR</span></tt> (provided for
+you in <tt><span style='font-size:10.0pt'>lowlevel.asm</span></tt>), after you
+load the LDT. You will use the <tt><span style='font-size:10.0pt'>pageDir</span></tt>
+field in the <tt><span style='font-size:10.0pt'>userContext</span></tt>
+structure that will store the address of the process's page directory.</p>
+
+<p>At this point, you should test your memory mapping by running qemu. If you
+are able to load and run shell, you have completed this correctly. </p>
+
+<h2>Demand Paging</h2>
+
+<p>A nice benefit of paging is that it is straightforward to add to the memory
+allocation of a process by simply allocating a new (physical) page and mapping
+it into a free region in the process's address space.&nbsp; For example, this
+can be done to allow the process's stack to grow beyond its initial
+allocation.&nbsp; To implement stack growth, you must modify the default page
+fault handler.&nbsp; This handler is called whenever the process tries to
+access an illegal address, and currently it just terminates the process in this
+case, printing out the address that caused the fault.&nbsp; The fault handler
+reads register cr2 to determine the faulting address. It also prints the
+errorCode defined in <span style='font-family:"Courier New"'>InterruptState</span>
+and the fault defined in the struct faultcode_t in <tt><span style='font-size:
+10.0pt'>paging.h.</span></tt></p>
+
+<p>You will modify this page fault handler to determine an appropriate action
+to take based on the address.&nbsp; In the case that the address is within one
+page of the current stack limit, you should allocate a new page, map it into
+the appropriate address, and then return normally from the handler.&nbsp; The
+program will now be able to use the memory that you just allocated for
+it.&nbsp; In order to test your new page fault handler, run the provided
+program <tt><span style='font-size:10.0pt'>rec.c</span></tt>.</p>
+
+<h2>Virtual Memory</h2>
+
+<p>While paging is useful for efficiently managing memory, the processes that
+can be active are still limited by the amount of physical memory.&nbsp; To
+remedy this, you will implement <i>virtual memory</i> as part of GeekOS, in
+which memory pages can be temporarily stored on disk so that the freed physical
+memory can be used by another process.&nbsp; To do this, the OS will need to
+pick a page to evict from memory and write it to the <i>paging file</i>, stored
+on disk. You should implement a version of pseudo-LRU (see section 9.4.5 in
+text, pp. 336). Use the <tt><span style='font-size:10.0pt'>accessed</span></tt>
+bit in the page tables to keep track of how frequently pages are accessed. <span
+style='color:#CCCCCC'>To do this, use the clock field in the struct </span><tt><span
+style='font-size:10.0pt;color:#CCCCCC'>Page</span></tt><span style='color:#CCCCCC'>
+in </span><tt><span style='font-size:10.0pt;color:#CCCCCC'>mem.h</span></tt><span
+style='color:#CCCCCC'>. You should update the clock on every page fault for all
+pages that were accessed since the last fault. <i>Alternatively, you can update
+the clocks in the body of the </i></span><tt><i><span style='font-size:10.0pt;
+color:#CCCCCC'>Idle</span></i></tt><i><span style='color:#CCCCCC'> thread, i.e.
+walk thru the allocated pages and for ones that were accessed, update their
+clocks. This will avoid a heavy-weight page fault handler.</span></i><span
+style='color:#CCCCCC'> </span><span style='color:#330000'>Note: the previous
+section described a moronic version of a clock algorithm that the struct Page
+&quot;clock&quot; field supports. Instead, maintain a global (static) clock
+value that points to a page in memory (a struct Page in the array of pages),
+increment that clock, and clear the accessed bit or claim the page if the
+accessed bit was already clear. Easy. (Fall 2009.)</span> </p>
+
+<p>The paging file consists of a group of consecutive 512 disk blocks of size <tt><span
+style='font-size:10.0pt'>SECTOR_SIZE</span></tt> bytes.&nbsp; Calling the
+routine <tt><span style='font-size:10.0pt'>Get_Paging_Device</span></tt> in <tt><span
+style='font-size:10.0pt'>vfs.h</span></tt> will return a <tt><span
+style='font-size:10.0pt'>Paging_Device</span></tt> structure containing the
+first disk block number of the paging file and the number of disk blocks in the
+paging file.&nbsp; Each page will consume 8 consecutive disk blocks (<tt><span
+style='font-size:10.0pt'>PAGE_SIZE/SECTOR_SIZE</span></tt>). To read/write the
+paging file, use the functions <tt><span style='font-size:10.0pt'>Block_Read</span></tt>
+and <tt><span style='font-size:10.0pt'>Block_Write</span></tt> provided in <tt><span
+style='font-size:10.0pt'>blockdev.h</span></tt>. These functions write <tt><span
+style='font-size:10.0pt'>SECTOR_SIZE</span></tt> bytes at a time. How you
+manage your paging file is completely up to you. A good idea would be to write
+a <tt><span style='font-size:10.0pt'>Init_Pagefile</span></tt> function in <tt><span
+style='font-size:10.0pt'>paging.c</span></tt> and call it from <tt><span
+style='font-size:10.0pt'>main.c</span></tt> </p>
+
+<p>The code to page out a page is implemented for you in <tt><span
+style='font-size:10.0pt'>Alloc_Pageable_Page</span></tt> in <tt><span
+style='font-size:10.0pt'>mem.c</span></tt>, and works as follows: </p>
+
+<ul type=disc>
+ <li class=MsoNormal>Find a page to page out using <tt><span style='font-size:
+     10.0pt'>Find_Page_To_Page_Out</span></tt> which you will implement in <tt><span
+     style='font-size:10.0pt'>mem.c</span></tt>. (This function relies on the <tt><span
+     style='font-size:10.0pt'>clock</span></tt> field in the <tt><span
+     style='font-size:10.0pt'>Page</span></tt> structure which you must
+     manage).</li>
+ <li class=MsoNormal>Find space on the paging file using <tt><span
+     style='font-size:10.0pt'>Find_Space_On_Paging_File</span></tt> which you
+     will implement in <tt><span style='font-size:10.0pt'>paging.c</span></tt></li>
+ <li class=MsoNormal>Write the page to the paging file using <tt><span
+     style='font-size:10.0pt'>Write_To_Paging_File</span></tt> which you will
+     implement in <tt><span style='font-size:10.0pt'>paging.c</span></tt></li>
+ <li class=MsoNormal>Update the page table entry for the page to clear the <tt><span
+     style='font-size:10.0pt'>present</span></tt> bit.</li>
+ <li class=MsoNormal>Update the <tt><span style='font-size:10.0pt'>pageBaseAddr</span></tt>
+     in the page table entry to be the first disk block that contains the page.</li>
+ <li class=MsoNormal>Update the <tt><span style='font-size:10.0pt'>kernelInfo</span></tt>
+     bits (3 bits holding a number from 0-7) in the page table entry to be <tt><span
+     style='font-size:10.0pt'>KINFO_PAGE_ON_DISK</span></tt> (used to indicate
+     that the page is on disk rather than not valid).</li>
+ <li class=MsoNormal>Flush the TLB using <tt><span style='font-size:10.0pt'>Flush_TLB</span></tt>
+     from <tt><span style='font-size:10.0pt'>lowlevel.asm</span></tt></li>
+</ul>
+
+<p>Eventually, the page that was put on disk will be needed by some process
+again. At this point you will have to read it back off disk into memory
+(possibly while paging out another page to fit it into memory). Since the page
+that is paged out has its <tt><span style='font-size:10.0pt'>present</span></tt>
+bit set to 0 in the page table, an access to it will cause a page fault. Your
+page fault handler should then realize that this page is actually stored on
+disk and bring it back from disk (the <tt><span style='font-size:10.0pt'>kernelInfo</span></tt>
+field in the page table entry). When you bring a page in off disk, you may free
+the disk space used by the page. This will simplify your paging system, but
+will require that when a page is removed from memory it must always be written
+to the backing store (since even pages that haven't been written since they
+were last brought into memory from disk are not already on disk). You will rely
+on the information stored when a page is paged out to find it on disk and page
+it back in.</p>
+
+<p>The following table summarizes the actions of your page fault handler.</p>
+
+<table class=MsoNormalTable border=1 cellpadding=0 width="95%"
+ style='width:95.74%'>
+ <tr>
+  <td width="24%" valign=top style='width:24.9%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal><b>Cause</b></p>
+  </td>
+  <td width="33%" valign=top style='width:33.9%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal><b>Indication</b></p>
+  </td>
+  <td width="39%" valign=top style='width:39.96%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal><b>Action</b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width="24%" valign=top style='width:24.9%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal>Stack growing to new page</p>
+  </td>
+  <td width="33%" valign=top style='width:33.9%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal>Fault is within one page of the current stack limit</p>
+  </td>
+  <td width="39%" valign=top style='width:39.96%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal>Allocate a new page and continue.</p>
+  </td>
+ </tr>
+ <tr>
+  <td width="24%" valign=top style='width:24.9%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal>Fault for paged out page</p>
+  </td>
+  <td width="33%" valign=top style='width:33.9%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal>Bits in page table indicate page is on disk</p>
+  </td>
+  <td width="39%" valign=top style='width:39.96%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal>Read page from paging device (sector indicated in PTE) and
+  continue.</p>
+  </td>
+ </tr>
+ <tr>
+  <td width="24%" valign=top style='width:24.9%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal>Fault for invalid address</p>
+  </td>
+  <td width="33%" valign=top style='width:33.9%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal>None of the other conditions apply</p>
+  </td>
+  <td width="39%" valign=top style='width:39.96%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal>Terminate user process</p>
+  </td>
+ </tr>
+</table>
+
+<h2>Process Termination</h2>
+
+<p>As part of process termination, you will need to free the memory associated
+with a process. This includes freeing the pages used by the process, freeing
+the page tables and page directories. In addition, you will need to release the
+backing store space used by any pages of the terminating process. You should
+modify your <tt><span style='font-size:10.0pt'>Destroy_User_Context</span></tt>
+function in <tt><span style='font-size:10.0pt'>uservm.c</span></tt> to do this.</p>
+
+</div>
+
+</body>
+
+</html>

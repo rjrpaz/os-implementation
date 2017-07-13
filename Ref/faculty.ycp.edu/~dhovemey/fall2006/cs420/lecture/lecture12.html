@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Lecture 12</title>
+</head>
+<body>
+<h1>CS 420 - Lecture 12<br>
+</h1>
+<h2>Thread Synchronization Continued<br>
+</h2>
+<h3>Locks and Atomic Instructions<br>
+</h3>
+<p>In general, a solution to the critical section problem will involve
+a <span style="font-style: italic;">lock</span> data structure.&nbsp;
+For example, in Peterson's solution the flag array and the turn
+variable collectively form a lock.<br>
+</p>
+<p>Special hardware instructions can make lock data structures easier
+and more efficient to implement.<br>
+</p>
+<p><span style="font-weight: bold;">Test And Set</span><br>
+</p>
+<p>A Test And Set instruction works like this<br>
+</p>
+<pre style="margin-left: 40px;">   int TestAndSet(int &amp;var) {<br>      int orig;<br>      ATOMIC {<br>1:      orig = var;<br>2:      var = 1;<br>      }<br>      return orig;<br>   }<br></pre>
+<p>where "variable" is a variable being shared by two threads.&nbsp;
+The test and set operation consists of atomically setting the variable
+to 1 and returning its original value.&nbsp; "Atomically" means that no
+other instructions executing in the system, including those on other
+processors, can change the value of the variable between instructions 1
+and 2 above.<br>
+</p>
+<p>Test and set can be used to build a lock as follows.&nbsp; A shared
+lock variable contains the value "1" if any thread is in a critical
+section.&nbsp; It contains the value 0 if no thread is in the critical
+section.<br>
+</p>
+<p>The lock variable is just an int variable;<br>
+</p>
+<pre style="margin-left: 40px;">int lock;</pre>
+<p>Enter a critical section:<br>
+</p>
+<pre style="margin-left: 40px;">while (TestAndSet(lock) == 1) {<br>    // do nothing<br>}<br></pre>
+<p>Leave a critical section:<br>
+</p>
+<pre style="margin-left: 40px;">lock = 0;<br></pre>
+<p>The TestAndSet operation will return 0 only when the lock contains
+the value 0, meaning that no threads are executing a critical section.<br>
+</p>
+<p><span style="font-weight: bold;">Atomic Swap</span><br>
+</p>
+<p>Another instruction that can be used to implement a critical section
+is the atomic swap instruction.<br>
+</p>
+<p>It works like this:<br>
+</p>
+<pre style="margin-left: 40px;">void AtomicSwap(int &amp;a, int &amp;b) {<br>  ATOMIC {<br>     int tmp = a;<br>     a = b;<br>     b = tmp;<br>  }<br>}<br></pre>
+<p>It can also be used to build a lock.&nbsp; A shared lock variable
+contains the value 1 if a thread is executing a critical section, and 0
+if no thread is executing a critical section.<br>
+</p>
+<p>The lock variable is just an int variable:<br>
+</p>
+<pre style="margin-left: 40px;">int lock;</pre>
+<p>Enter a critical section<br>
+</p>
+<pre style="margin-left: 40px;">int key = 1;<br>while (key == 1) {<br>    Swap(lock, key);<br>}<br></pre>
+<p>Leave a critical section<br>
+</p>
+<pre style="margin-left: 40px;">lock = 0;<br></pre>
+<p>The mechanism works because we will only see a key value of 0 if the
+Swap operation observed a 0 in the lock variable.&nbsp; When this
+happens, it is guaranteed that the swap will also have placed a 1 in
+the lock variable, preventing other threads from entering the critical
+section.<br>
+</p>
+<p><span style="font-weight: bold;">Test and Set, Swap, and Unbounded
+Waiting</span><br>
+</p>
+<p>Neither of the simple atomic test and set and atomic swap algorithms
+satisfy the bounded waiting requirement.&nbsp; When multiple threads
+contend for a lock, there is no guarantee about which one will be able
+to acquire it.&nbsp; This might cause a waiting thread to be suspended
+for an unbounded period.</p>
+<h3>Critical Section with Bounded Waiting<br>
+</h3>
+<p>Lock data structure looks like this:<br>
+</p>
+<pre style="margin-left: 40px;">bool waiting[MAX_THREADS];<br>int lock;<br></pre>
+<p>Initially, all elements of waiting are set to false, and lock is set
+to 0.<br>
+</p>
+<p>Enter a critical section (thread i):<br>
+</p>
+<pre style="margin-left: 40px;">waiting[i] = true;<br>int key = 1;<br>while (waiting[i] &amp;&amp; key == 1) {<br>    key = TestAndSet(lock);<br>}<br>waiting[i] = false;<br></pre>
+<p>Leaving a critical section will involve traversing the array in
+circular fashion:<br>
+</p>
+<pre style="margin-left: 40px;">int Next(int id) {<br>    return (id + 1) % MAX_THREADS;<br>}<br></pre>
+<p>Leave a critical section (thread i):<br>
+</p>
+<pre style="margin-left: 40px;">// See if another thread is waiting<br>int j;<br>for (j = Next(i); j != i; j = Next(j)) {<br>    if (waiting[j]) {<br>        break;<br>    }<br>}<br><br>if (waiting[j]) {<br>    // Wake up next waiting thread<br>    waiting[j] = false;<br>} else {<br>    // No one waiting: lock is now available<br>    lock = 0;<br>}<br></pre>
+<p>Does it meet all of our criteria?<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Mutual
+exclusion</span>.&nbsp; Yes.&nbsp; A thread can enter the critical
+section only if<br>
+</p>
+<p style="margin-left: 80px;">1. It enters while the lock contains 0,
+meaning that it has arrived first, or<br>
+</p>
+<p style="margin-left: 80px;">2. It is explicitly alllowed in by the
+thread that is leaving.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Progress</span>.&nbsp;
+Yes.&nbsp; If lock is 0 and any number of threads arrive, one of them
+will win and gain the lock.&nbsp; As the current holder of the lock
+leaves its critical section it will pick one waiting thread.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Bounded
+waiting</span>.&nbsp; Yes.&nbsp; Because the current holder of the lock
+picks the next waiting thread in strict order of thread id (circular),
+each waiting thread will get a chance to execute its critical section
+after at most MAX_THREADS-1 other threads execute their critical
+sections.<br>
+</p>
+<p>One criticism one might make of this scheme is that the waiting
+array takes up a lot of space.&nbsp; (There might be thousands or
+millions of threads active.)<br>
+</p>
+<p>In practice, real lock data structures tend to use queues to record
+which threads are waiting for the lock.<br>
+</p>
+<h2>Avoiding Busy Waiting<br>
+</h2>
+<p>So far we have looked at algorithms that involve <span
+ style="font-style: italic;">busy-waiting</span>: when a thread is
+waiting to acquire a lock, it is not doing anything useful, and is
+essentially wasting CPU cycles.&nbsp; This is also called <span
+ style="font-style: italic;">spin-waiting</span>.<br>
+</p>
+<p>Is this bad?<br>
+</p>
+<p style="margin-left: 40px;">On a single CPU system, yes, it's very
+bad: by definition, spinning will accomplish nothing because the thread
+that has acquired the lock has been suspended.&nbsp; The correct thing
+to do is (at the very least) yield the CPU.<br>
+</p>
+<p style="margin-left: 40px;">On a multiprocessor system, spinning is
+not necessarily bad.&nbsp; The thread that has acquired the lock might
+be actively running on another CPU, which which case the lock may be
+available shortly.<br>
+</p>
+<p>In general, we want to keep CPUs occupied with useful work as much
+as possible.&nbsp; So, we should be able to suspend a thread that is
+waiting to acquire a lock, and wake it up when the lock becomes
+available.<br>
+</p>
+<h3>Mutex Locks with Wait Queues<br>
+</h3>
+<p>Lock data structures for solving the critical section problem are
+generally referred to as mutex locks, for <span
+ style="font-style: italic;">mutual exclusion</span>.<br>
+</p>
+<p>A simple design that avoids busy waiting is the following one.<br>
+</p>
+<p>Lock data structure (struct Mutex):<br>
+</p>
+<pre style="margin-left: 40px;">int lock;<br>struct Thread_Queue waitQueue;<br></pre>
+<p>Enter a critical section (Mutex_Lock):<br>
+</p>
+<pre style="margin-left: 40px;">ATOMIC {<br>  while (lock == 1) {<br>    Wait(&amp;waitQueue);<br>  }<br>  lock = 1;<br>}<br></pre>
+<p>Leave a critical section (Mutex_Unlock):<br>
+</p>
+<pre style="margin-left: 40px;">ATOMIC {<br>    Wake_Up_One(&amp;waitQueue);<br>    lock = 0;<br>}<br></pre>
+<h3>The Missed Notification Problem<br>
+</h3>
+<p>One of the main challenges in the design of a synchronization
+mechanism involving waiting is the <span style="font-style: italic;">missed
+notification</span> problem.&nbsp; Consider in the mutex design above
+what could happen if the steps in the Mutex_Lock operation were not
+performed atomically.<br>
+</p>
+<p>Assume that to start, thread B has acquired the mutex lock and is
+executing its critical section:<br>
+</p>
+<ol>
+  <li>Thread A calls Mutex_Lock and observes that lock == 1, meaning
+the mutex is held by another thread, but a context switch occurs before
+it has a chance to wait.<br>
+  </li>
+  <li>Thread B calls Mutex_Unlock to release the mutex.&nbsp; There are
+no threads in the wait queue.</li>
+  <li>Control returns to thread A, which adds itself to the wait
+queue.&nbsp; Even though the mutex is available, thread A is suspended.</li>
+</ol>
+<p>A variety of strategies can be used to ensure atomicity.&nbsp; On a
+uniprocessor system we can simply disable interrupts.&nbsp; Since there
+are only a small number of steps involved in locking and unlocking the
+mutex, this is a reasonable choice.<br>
+</p>
+<p>On a multiprocessor system, we can use one of the the spin locking
+mechanisms.<br>
+</p>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>CMSC 311-101 (Fall 1995)</TITLE>
+</HEAD>
+<BODY>
+
+<B><FONT SIZE=5><P ALIGN="CENTER">CMSC 412 Sample Final</P>
+<P ALIGN="CENTER">&nbsp;</P>
+<OL>
+
+</B></FONT><FONT FACE="Arial" SIZE=2><P ALIGN="JUSTIFY"><LI> (20 points) Define (or explain) the following terms:</LI></P>
+<OL TYPE="a">
+
+<LI>Display (screen) protection</LI>
+<LI>encapsulation (in computer networks)</LI>
+<LI>server</LI>
+<LI>remote procedure call (RPC)</LI>
+<LI>monitor (as a synchronization abstraction)</LI></OL>
+
+<P ALIGN="JUSTIFY"><LI> (20 points)  In project #5, the waitpid routine blocked waiting for a process to terminate.  A useful extension to this routine would be to have waitpid return the exit code from the process when it terminates.  If you added this extension, what would be required to ensure that a waitpid would be able to get the exit status of a process even if the waitpid call occurs <B>after</B> the process exits.  What would happen if waitpid was never called or called more than once per exited process?</LI></P>
+<P ALIGN="JUSTIFY"><LI> (25 points)  The mailboxes that you implemented as part of project #5 provided a way to send messages between processes.  In the project, you only sent messages between one sender and one receiver per mailbox. For this question, consider the case of multiple producer (send) and consumer (receive) processes all sharing a single mailbox.  A message produced by any producer may be consumed by any consumer.</LI></P>
+<OL TYPE="a">
+
+<LI>If all messages sent are small, the same size, and item potent (don’t depend on other messages) are semaphores required to synchronize access to the mailbox? Explain your answer.</LI>
+<LI>Now consider the case where messages are small and fixed size, but not item potent.  Instead, the first message of a group indicates how many messages are part of the same object being produced.  Is synchronization required for the code shown below?  If so, add the required semaphore operations and initial values for the semaphores used.</LI></OL>
+
+</FONT><FONT FACE="Courier New" SIZE=2><P>Produce(int dest, int count, char **msgs)</P>
+<P>{</P>
+<P>    int i;</P>
+<P>    char header[MSG_SIZE];</P>
+<P>&nbsp;</P>
+<P>    header[0] = (char) count;</P>
+<P>    MQ_send(dest, header);</P>
+<P>    for (i=0; i &lt; count; i++) {</P>
+<P>&#9;MQ_send(dest, msgs[i], MSG_SIZE);</P>
+<P>    }</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>Consume(int src, int *count, char **msgs)</P>
+<P>{</P>
+<P>    int i;</P>
+<P>    char header[MSG_SIZE];</P>
+<P>&nbsp;</P>
+<P>    </P>
+<P>    MQ_receive(src, header, MSG_SIZE);</P>
+<P>    *count = (int) header[0];</P>
+<P>    for (i=0; i &lt; *count; i++) {</P>
+<P>&#9;MQ_send(src, msgs[i], MSG_SIZE);</P>
+<P>    }</P>
+<P>}</P>
+<P>&nbsp;</P>
+</FONT><FONT FACE="Arial" SIZE=2><P ALIGN="JUSTIFY"><LI>(20 points) Consider scheduling the following tasks (which all arrive at time zero in the order P<SUB>1</SUB> to P<SUB>4</SUB>) using: FCFS,  non-preemptive priority (lower priority number is higher priority), RR (quantum = 1).</LI></P></FONT>
+<TABLE CELLSPACING=0 BORDER=0 CELLPADDING=7 WIDTH=206 ALIGN="LEFT" HSPACE=12>
+<TR><TD WIDTH="31%" VALIGN="TOP" HEIGHT=14>
+<FONT SIZE=2><P ALIGN="CENTER">Process</FONT></TD>
+<TD WIDTH="39%" VALIGN="TOP" HEIGHT=14>
+<FONT SIZE=2><P ALIGN="CENTER">Burst Time</FONT></TD>
+<TD WIDTH="30%" VALIGN="TOP" HEIGHT=14>
+<FONT SIZE=2><P ALIGN="CENTER">Priority</FONT></TD>
+</TR>
+<TR><TD WIDTH="31%" VALIGN="TOP" HEIGHT=8>
+<FONT SIZE=2><P ALIGN="CENTER">P<SUB>1</SUB></FONT></TD>
+<TD WIDTH="39%" VALIGN="TOP" HEIGHT=8>
+<FONT SIZE=2><P ALIGN="CENTER">10</FONT></TD>
+<TD WIDTH="30%" VALIGN="TOP" HEIGHT=8>
+<FONT SIZE=2><P ALIGN="CENTER">1</FONT></TD>
+</TR>
+<TR><TD WIDTH="31%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="CENTER">P<SUB>2</SUB></FONT></TD>
+<TD WIDTH="39%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="CENTER"> 2</FONT></TD>
+<TD WIDTH="30%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="CENTER">3</FONT></TD>
+</TR>
+<TR><TD WIDTH="31%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="CENTER">P<SUB>3</SUB></FONT></TD>
+<TD WIDTH="39%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="CENTER"> 1</FONT></TD>
+<TD WIDTH="30%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="CENTER">4</FONT></TD>
+</TR>
+<TR><TD WIDTH="31%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="CENTER">P<SUB>4</SUB></FONT></TD>
+<TD WIDTH="39%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="CENTER"> 5</FONT></TD>
+<TD WIDTH="30%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="CENTER">2</FONT></TD>
+</TR>
+</TABLE>
+
+<OL TYPE="a">
+
+<FONT FACE="Arial" SIZE=2><LI>What is the turnaround time of each process for each of the three scheduling algorithms?</LI></FONT>
+<P ALIGN="CENTER"><CENTER><TABLE BORDER CELLSPACING=1 BORDERCOLOR="#000000" CELLPADDING=7 WIDTH=486>
+<TR><TD WIDTH="21%" VALIGN="TOP" HEIGHT=22>
+<FONT SIZE=2><P ALIGN="CENTER">Process</FONT></TD>
+<TD WIDTH="27%" VALIGN="TOP" HEIGHT=22>
+<FONT SIZE=2><P ALIGN="CENTER">FCFS</FONT></TD>
+<TD WIDTH="26%" VALIGN="TOP" HEIGHT=22>
+<FONT SIZE=2><P ALIGN="CENTER">Priority</FONT></TD>
+<TD WIDTH="26%" VALIGN="TOP" HEIGHT=22>
+<FONT SIZE=2><P ALIGN="CENTER">RR</FONT></TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="CENTER">P<SUB>1</SUB></FONT></TD>
+<TD WIDTH="27%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="CENTER">P<SUB>2</SUB></FONT></TD>
+<TD WIDTH="27%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="CENTER">P<SUB>3</SUB></FONT></TD>
+<TD WIDTH="27%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="CENTER">P<SUB>4</SUB></FONT></TD>
+<TD WIDTH="27%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+</TR>
+</TABLE>
+</CENTER></P>
+
+<FONT FACE="Arial" SIZE=2><LI>Define waiting time (in the context of scheduling algorithms)?</LI>
+<LI>Why might a single system want to have both non-preemptive priority scheduling for some processes and round robin for other?</LI></OL>
+
+<P ALIGN="JUSTIFY"><LI> (20 Points) Network Routing</LI></P>
+<OL TYPE="a">
+
+<LI>Describe one advantage for each of source routing and hop-by-hop routing.</LI>
+<LI>Describe one advantage of per-packet routing and one advantage of per-session routing.</LI></OL>
+
+<P ALIGN="JUSTIFY"><LI>(25 points) Consider writing a filesystem for a write once read many (WORM) drive.  On this type of drive, it is possible to write a sector only once.  Assume that you must write sectors in order starting from sector 0 and that you can identify the last sector written.</LI></P>
+<OL TYPE="a">
+
+<LI>Describe how you might store directory and file information assuming that files and directories are only created and never deleted.</LI>
+</FONT><FONT SIZE=2><P>&nbsp;</P>
+<P>&nbsp;</P>
+</FONT><FONT FACE="Arial" SIZE=2><LI>Describe a way to permit files to be deleted from directories (depending on your answer to part a this may or may not require major changes)</LI>
+<LI>Assuming that price and performance were identical to magnetic drives, give one reason why you still might want to use a WORM drive.</LI></OL>
+
+<P ALIGN="JUSTIFY"><LI> (20 points) Security</LI></P>
+<OL TYPE="a">
+
+<LI>Why is computer security only as good as the physical security of the computer itself?</LI>
+<LI>Why would a user want to have mutual authentication?</LI>
+<LI>Why does presenting a user name and a password not provide mutual authentication?  </LI></OL>
+</OL>
+</FONT></BODY>
+</HTML>

@@ -1,0 +1,163 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.6 [en] (X11; I; SunOS 5.6 sun4u) [Netscape]">
+</head>
+<body background="blueback.jpg">
+
+<center><b><u><font color="#3333FF"><font size=+4>Submission Guidelines
+for Programming Assignment #1</font></font></u></b></center>
+
+<p><br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<p><font face="Times New Roman,Times"><font size=+2>1- The syntax for the
+Server is:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+<b><i><font color="#FF0000">server</font></i></b></font></font>
+<br><font face="Times New Roman,Times"><font size=+2>2- The syntax for
+the Client is:</font></font>
+<center><b><i><font face="Times New Roman,Times"><font color="#FF0000"><font size=+2>client
+&lt;server host machine> &lt;addr/filesize> &lt;string></font></font></font></i></b></center>
+<font face="Times New Roman,Times"><font color="#000000"><font size=+2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+where</font></font></font>
+<blockquote><font face="Times New Roman,Times"><font size=+2><b><i><font color="#FF0000">addr</font></i></b><font color="#000000">
+indicates address request and </font><b><i><font color="#FF0000">filesize</font></i></b><font color="#000000">
+indicates file-size request.</font></font></font>
+<br><font face="Times New Roman,Times"><font size=+2><b><i><font color="#FF0000">string
+</font></i></b><font color="#000000">defines
+the name of the host machine, in case of address request packet, or the
+name of the file, in case of file-size request packet.</font></font></font>
+<p><i><font face="Times New Roman,Times"><font color="#000000"><font size=+2>Example</font></font></font></i></blockquote>
+
+<center><font face="Times New Roman,Times"><font color="#FF0000"><font size=+2>client
+wolfe.umd.edu addr nuts.cs.umd.edu</font></font></font></center>
+
+<blockquote><font face="Times New Roman,Times"><font color="#000000"><font size=+2>This
+means that we want to run a client that generates a request to a server
+running on machine called <i>wolfe.umd.edu</i> and we want to ask about
+the IP address of a machine called <i>nuts.cs.umd.edu</i></font></font></font></blockquote>
+<font face="Times New Roman,Times"><font size=+2>3- Makefile:</font></font>
+<br><font face="Times New Roman,Times"><font size=+2>You should have the
+following option in your makefile:</font></font>
+<blockquote><font face="Times New Roman,Times"><font size=+2>make clean
+(removes *.o, core, server, client, etc.)</font></font>
+<br><font face="Times New Roman,Times"><font size=+2>make server (makes
+the server)</font></font>
+<br><font face="Times New Roman,Times"><font size=+2>make client (makes
+the client)</font></font>
+<br><font face="Times New Roman,Times"><font size=+2>make all (makes both
+server and client)</font></font></blockquote>
+
+<center><b><font face="Times New Roman,Times"><font color="#CC0000"><font size=+2>The
+code has to compile and run on the CSC cluster, i.e. on Alpha stations</font></font></font></b>
+<p>
+<hr WIDTH="100%"></center>
+<b><font face="Times New Roman,Times"><font color="#3333FF"><font size=+3>Questions:</font></font></font></b>
+<p><b><i><font face="Times New Roman,Times"><font color="#660000"><font size=+2>1-
+What should I submit?</font></font></font></i></b>
+<br><font size=+2>The TA is expecting the following files to be tarred
+and submitted:</font>
+<br><font size=+2>&nbsp;&nbsp;&nbsp; a- Server program.</font>
+<br><font size=+2>&nbsp;&nbsp;&nbsp; b- Client program.</font>
+<br><font size=+2>&nbsp;&nbsp;&nbsp; c- makefile.</font>
+<br><font size=+2>&nbsp;&nbsp;&nbsp; d- Header file (s).</font>
+<br><font size=+2>&nbsp;&nbsp;&nbsp; e- Transcripts demonstrating that
+your client and server programs are working properly.</font>
+<p><b><i><font face="Times New Roman,Times"><font color="#660000"><font size=+2>2-
+How do I submit my project?</font></font></font></i></b>
+<br><font face="Times New Roman,Times"><font size=+2>You make a tar archive
+and then call a certain program from my directory called submit . The exact
+path is</font></font>
+<center><b><i><font face="Times New Roman,Times"><font color="#FF0000"><font size=+2>~jh41701/BIN/submit</font></font></font></i></b></center>
+
+<p><font face="Times New Roman,Times"><font size=+2>You can actually create
+a symbolic link called submit from your directory to the above path, so
+that you don't have to type it all the time. To create a symbolic link,
+type the following</font></font>
+<center><b><i><font face="Times New Roman,Times"><font color="#FF0000"><font size=+2>ln
+-s ~jh41701/BIN/submit submit</font></font></font></i></b></center>
+
+<p><font face="Times New Roman,Times"><font size=+2>Finally to submit your
+program, type</font></font>
+<center><b><i><font face="Times New Roman,Times"><font color="#FF0000"><font size=+2>submit
+proj_number filename</font></font></font></i></b></center>
+
+<p><font face="Times New Roman,Times"><font size=+2>There is only one filename
+which is the tar file. Project numbers start from 1 for the first assignment.</font></font>
+<p><b><i><font face="Times New Roman,Times"><font color="#660000"><font size=+2>3-
+Does the server stay running forever in order to answer multiple requests?</font></font></font></i></b>
+<br><font face="Times New Roman,Times"><font size=+2>Yes. The server should
+not terminate in order to be able to answer multiple requests. In order
+to terminate the server, you must press <b><i><font color="#FF0000">Esc</font></i></b>
+character (ASCII = 27).</font></font>
+<p>
+<hr WIDTH="100%">
+<br><b><font face="Times New Roman,Times"><font color="#3333FF"><font size=+3>Grading
+Guidelines:</font></font></font></b>
+<table BORDER=3 CELLSPACING=3 CELLPADDING=3 >
+<tr>
+<td><font face="Times New Roman,Times"><font size=+2>Proper submission:
+submitted a tar file containing the files specified above.</font></font></td>
+
+<td><font face="Times New Roman,Times"><font size=+2>10</font></font></td>
+</tr>
+
+<tr>
+<td><font size=+2>Command line syntax: correct parsing of the command line
+arguments passed to the client as explained on the web page .</font></td>
+
+<td><font size=+2>15</font></td>
+</tr>
+
+<tr>
+<td><font size=+2>Infinite loop on server .</font></td>
+
+<td><font size=+2>10</font></td>
+</tr>
+
+<tr>
+<td><font size=+2>Case 1: Handle request for an existent hostname .</font></td>
+
+<td><font size=+2>15&nbsp;</font></td>
+</tr>
+
+<tr>
+<td><font size=+2>Case 2: Handle request for an inexistent hostname .</font></td>
+
+<td><font size=+2>10</font></td>
+</tr>
+
+<tr>
+<td><font size=+2>Case 3: Handle request for an existent file .</font></td>
+
+<td><font size=+2>15</font></td>
+</tr>
+
+<tr>
+<td><font size=+2>Case 4: Handle request for an inexistent file .</font></td>
+
+<td><font size=+2>10</font></td>
+</tr>
+
+<tr>
+<td><font size=+2>Documentation : well-documented code.</font></td>
+
+<td><font size=+2>15</font></td>
+</tr>
+
+<tr>
+<td><font size=+2>Total points:&nbsp;</font></td>
+
+<td><b><font color="#FF0000"><font size=+2>100</font></font></b></td>
+</tr>
+</table>
+
+</body>
+</html>

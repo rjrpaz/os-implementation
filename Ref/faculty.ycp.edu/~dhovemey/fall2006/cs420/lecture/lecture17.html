@@ -1,0 +1,234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Lecture 17</title>
+</head>
+<body>
+<h1>CS 420 - Lecture 17<br>
+</h1>
+<h2>Virtual Memory (Continued)<br>
+</h2>
+<h3>Shared Memory<br>
+</h3>
+<p>One important use of virtual memory is to support <span
+ style="font-style: italic;">shared memory</span>.&nbsp; Shared memory
+is simply a situation where regions of more than one address space use
+the same VM object as a backing store, and (importantly) uses the same
+physical frames of memory in reach region that maps the object:<br>
+</p>
+<p style="margin-left: 40px;"><img alt=""
+ src="file:///H:/work/fall2006/cs420/html/lecture/figures/sharedMemoryConcept.png"
+ style="width: 338px; height: 316px;"><br>
+</p>
+<p>Bear in mind that we have discovered a very important property of VM
+objects:<br>
+</p>
+<p style="margin-left: 40px;">Each VM object has a set of frames being
+used as a cache for the data of the VM object.&nbsp; If more than one
+address space maps a VM object, the same physical frames are mapped
+into each address space.<br>
+</p>
+<p>There are quite a few situations where shared memory is useful.<br>
+</p>
+<p>An obvious use is for inter-process communication.&nbsp; Two
+processes have separate address spaces, but one region in each process
+maps the same VM object (usually an anonymous swap-backed
+object).&nbsp; Any stores to memory in the shared region is visible to
+both processes.<br>
+</p>
+<p>Another use is <span style="font-style: italic;">shared code regions</span>.&nbsp;
+The code in executable files are memory-mapped read-only into a
+process's address space when the process starts.&nbsp; If another
+process is started using the same executable program, they share the
+same frames of memory to map the executable.<br>
+</p>
+<p style="margin-left: 40px;">Say that we have a 1MB executable
+program, and we start 100 processes usnig that program as the
+executable.<br>
+</p>
+<p style="margin-left: 40px;">Without shared code regions, each process
+will allocate separate physical memory pages for the executable,
+resulting in memory use of 100 * 1 MB = 100 MB.<br>
+</p>
+<p style="margin-left: 40px;">With shared code regions, each process
+will use the same physical memory pages for the executable.&nbsp; The
+total memory use will be 1 MB.<br>
+</p>
+<p>Not only does this work for executables, but it also works for <span
+ style="font-style: italic;">shared libraries</span>.&nbsp; On most
+operating systems, there is a standard runtime library (usually called
+the C library) that defines all of the system-level APIs.&nbsp; As
+such, it is used by every process.&nbsp; So, most OSes will map this
+library's code using read-only shared memory.<br>
+</p>
+<h3>Copy-On-Write Regions and VM Object Stacking<br>
+</h3>
+<p>A shared read-only mapping is great for code (executable
+instructions): memory containing code is (generally) never modified.<br>
+</p>
+<p>However, consider the data segment of an executable.&nbsp; This
+segment specifies the initial data values for global variables and data
+structures.&nbsp; The data segment of a process address space (which
+maps the data segment in the file) cannot be read-only because a
+program may need to assign new values to global variables.&nbsp;
+Assignments to global variables should never be visible to other
+processes.&nbsp; So, how do we resolve this dilemma?<br>
+</p>
+<p>The answer is to use <span style="font-style: italic;">copy-on-write</span>.&nbsp;
+A copy-on-write (COW) region works as follows:<br>
+</p>
+<p style="margin-left: 40px;">Initially, the copy-on-write region is a
+read-only shared mapping<br>
+</p>
+<p style="margin-left: 40px;">Reads of memory addresses within a COW
+region proceed as usual<br>
+</p>
+<p style="margin-left: 40px;">A write to an address in a COW region
+causes a page fault.&nbsp; The page fault handler allocates a new frame
+and copies the data for that page of the VM object into the new
+frame.&nbsp; The new frame is an exact duplicate of the data in the VM
+object, but is private to a single process address space.&nbsp; The
+kernel maps this new frame into the address space using a read-write
+mapping instead of read-only and restarts the instruction that caused
+the fault, which then proceeds to write into the private frame.<br>
+</p>
+<p>COW gives us the best of both worlds: "clean" (unmodified) pages are
+shared, while "dirty" (modified) pages are private.<br>
+</p>
+<p>There is a very simple way to implement COW: <span
+ style="font-style: italic;">stacked</span> VM objects.<br>
+</p>
+<p>The idea is that a single address space region maps a stack of VM
+objects.&nbsp; When asked to provide a physical memory frame, the top
+VM object may either provide one of its own frames (allocated one if
+needed), <span style="font-weight: bold;">OR</span> it may pass on the
+request to the next lower VM object.<br>
+</p>
+<p>A COW region consists of a stack of two VM objects. The top object
+is an anonymous swap-backed VM object.&nbsp; It is the backing store
+for all modified pages in the region.&nbsp; The bottom object is a
+file-backed VM object mapping the data segment of an executable.<br>
+</p>
+<p>Initially, the top VM object is "invisible".&nbsp; Any read from an
+address in the COW region causes a frame of data from the bottom VM
+object to be mapped into the address space with read-only access.&nbsp;
+If a read-only page is modified (causing a page fault), the top VM
+object takes over responsibility for that page by copying the page data
+from the bottom object into a newly allocated frame and replacing the
+read-only mapping of the bottom object's frame with a read-write
+mapping of the top object's frame.<br>
+</p>
+<p>To illustrate this idea further, imagine that at first, the region
+has mapped only frames in the bottom object, meaning that so far all of
+the memory references in this region of the address space have been
+reads:<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/cowMapping.png"
+ style="width: 40%;"><br>
+</p>
+<p style="margin-left: 40px;"></p>
+<p>Now, let's say that there is a write to one of the pages in the
+region.&nbsp; The resulting COW operation copies the original data from
+the bottom page into a new top page, and replaces the mapping with a
+new frame mapped read-write.&nbsp; The write instruction is restarted
+and modifies data contained in the new top frame.</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/cowMapping2.png"
+ style="width: 50%;"></p>
+<p>Note that other processes will not see the write because either<br>
+</p>
+<p style="margin-left: 40px;">They have the bottom VM object's page
+mapped read-only<br>
+</p>
+<p style="margin-left: 40px;">They have a page from their own private
+top object mapped read-write<br>
+</p>
+<h3>Pagein, Pageout, Demand Paging<br>
+</h3>
+<p>When a process makes a memory reference (either a read or write), a
+physical frame of memory must be mapped at the referenced virtual
+address, or else a page fault results.<br>
+</p>
+<p>We have seen that in a low-memory situation, the OS kernel may need
+to steal a frame that is currently in-use.&nbsp; Now that we know that
+frames belong to VM objects, we can fully explain what happens when a
+page is stolen.<br>
+</p>
+<p>The OS kernel notifies the VM object that owns the page that it is
+being stolen.<br>
+</p>
+<p style="margin-left: 40px;">If the frame is <span
+ style="font-style: italic;">clean</span> (meaning that its contents
+are exactly the same as the data in the backing store), then nothing
+special needs to happen.&nbsp; The frame is removed from the VM object
+and it can then used elsewhere.<br>
+</p>
+<p style="margin-left: 40px;">If the frame is <span
+ style="font-style: italic;">dirty</span> (meaning that it has been
+modified relative to the version in the backing store), then the kernel
+uses the VM object to do a <span style="font-style: italic;">pageout</span>
+operation.&nbsp; A pageout means that the modified contents of the
+frame are written back to the VM object's backing store.&nbsp; For
+example, a swap-backed VM object will perform pageouts by writing the
+frame's data to a chunk of the swap file.<br>
+</p>
+<p style="margin-left: 40px;">Remember the dirty bit stored in each x86
+PTE?&nbsp; That single bit allows the OS kernel to quickly check to see
+whether or not a page was modified.&nbsp; (Note that it needs to check
+each PTE mapping the page, since the page may be mapped into multiple
+address spaces.)<br>
+</p>
+<p>When a frame is stolen, it is also unmapped from any address spaces
+(page tables) that have mapped it.&nbsp; This creates "holes" in those
+address spaces.<br>
+</p>
+<p>At some point, a process may try to reference a page that has been
+stolen from its address space.&nbsp; This will cause a page
+fault.&nbsp; The OS kernel's page fault handler will locate the VM
+object mapped in the fault region and ask it to produce a frame.&nbsp;
+It is possible that the VM object already has the needed frame
+available, in which case the frame can be immediately mapped back into
+the address space.&nbsp; However, it is also possible that the VM
+object does not have the needed frame, in which case the OS kernel will
+ask it to provide one.&nbsp; The VM object will allocate a new frame
+(possibly stealing a frame from elsewhere!) and fill the frame with
+data loaded from the VM object's backing store.&nbsp; This operation is
+a <span style="font-style: italic;">pagein</span>.&nbsp; Once the
+frame has been paged in, it can be mapped into the address space and
+the faulting instruction can be restarted.<br>
+</p>
+<p>It should be clear now that the OS can cope perfectly well with
+missing pages (holes) in user address spaces.&nbsp; When a missing page
+is referenced, it is paged in from the VM object (possibly stealing a
+page and causing a pageout).<br>
+</p>
+<p>If you think about it, it is actually possible to execute any
+arbitrary program with only a single frame of memory.&nbsp; There will
+be lots of pageins and pageouts as the single frame is bounced from one
+part of the address space to another, but the program will continue to
+make progress and (eventually) terminate.&nbsp; This illustrates the
+point that physical frames are <span style="font-weight: bold;">only a
+cache for data in a VM object's backing store</span>.&nbsp; Like any
+cache, they help improve performance, but their existence is (more or
+less) not required for the correct functioning of the system.<br>
+</p>
+<p>Once you start to think about virtual memory in this way, you will
+see that there is no reason for the OS kernel to map any physical
+frames of memory into a process address space when the process is
+started.&nbsp; When the process starts executing, it will generate page
+faults for each page it references, and the OS can use these page
+faults to provide physical frames of memory lazily.<br>
+</p>
+<p style="margin-left: 40px;">Lazy = Avoiding unecessary work<br>
+</p>
+<p>Laziness is a cardinal virtue of Computer Science.<br>
+</p>
+<p>Lazy allocation of physical memory frames is known as <span
+ style="font-style: italic;">demand paging</span>.&nbsp; Demand paging
+makes more efficient use of physical memory by never mapping any pages
+not needed by the process, at the cost of some increase in startup time
+(because a page fault adds some overhead in running time).<br>
+</p>
+</body>
+</html>

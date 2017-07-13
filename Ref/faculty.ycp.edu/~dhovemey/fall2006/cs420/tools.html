@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Tools</title>
+</head>
+<body>
+<h1>CS 420 - Tools<br>
+</h1>
+<p>This page describes the programs that we will be using for
+programming assignments.&nbsp; All of these tools are free, so you are
+encouraged to download them and install them on your home
+machine.&nbsp; All of them are available for both Windows and Linux
+(with the exception of Cygwin, which is only needed on Windows).<br>
+</p>
+<p>If you are using Linux, just make sure that gcc, make, perl, and
+nasm are installed, along with whatever text editor you prefer.<br>
+</p>
+<h2>Cygwin<br>
+</h2>
+<p><a href="http://cygwin.com/">Cygwin</a> is a collection of Unix
+programs that have been ported to
+Windows.&nbsp; We will use various Cygwin programs to compile GeekOS,
+including<br>
+</p>
+<ul>
+  <li>The <a href="http://gcc.gnu.org/">gcc</a> C compiler</li>
+  <li><a href="http://www.gnu.org/software/make/">GNU Make</a> (for
+compiling and linking the kernel)</li>
+  <li>The <a href="http://www.gnu.org/software/bash/">bash</a> shell
+(for running interactive commands)<br>
+  </li>
+  <li><a href="http://www.perl.org/">Perl</a> (required by the GeekOS
+makefile)</li>
+  <li>The <a href="http://nasm.sourceforge.net/">nasm</a> assembler<br>
+  </li>
+</ul>
+<p>When compiling and running GeekOS, you will be using the cygwin bash
+shell to run commands (such as the make utility).<br>
+</p>
+<h2>Bochs<br>
+</h2>
+<p>Bochs is a complete hardware-level emulator for an Intel-based
+PC.&nbsp; We will run the GeekOS kernel within Bochs, rather than
+booting it directly on a real (physical) computer.<br>
+</p>
+<p>You can download Bochs from<br>
+</p>
+<p style="margin-left: 40px;"><a href="http://bochs.sourceforge.net/">http://bochs.sourceforge.net/</a><br>
+</p>
+<p>On the computers in Grantley 123, Bochs can be invoked by running<br>
+</p>
+<p style="margin-left: 40px;">c:\Program Files\Bochs-2.3pre3\bochs.exe<br>
+</p>
+<p>From the cygwin bash shell, the command is<br>
+</p>
+<p style="margin-left: 40px;">/cygdrive/c/Program\
+Files/Bochs-2.3pre3/bochs.exe<br>
+</p>
+<p>Note that a backslash ("\") character is needed just before the
+space character in "Program Files".<br>
+</p>
+<p>Generally, you will want to run bochs from within the cygwin shell,
+and the current directory should be the "build" subdirectory of the
+GeekOS project.<br>
+</p>
+<h2>Editors, ConTEXT<br>
+</h2>
+<p>For editing source code, you can use any text editor (e.g., notepad,
+emacs, vi, etc.).<br>
+</p>
+<p>ConTEXT, which is a programmer's text editor available on all campus
+computers (including GH 123).&nbsp; To run it, choose
+Start-&gt;Run...-&gt;Browse, then
+"My Computer".&nbsp; Double click the "program1 on Dragon (dragon)
+(O:)" drive, then the "Context_IFS260" folder, then the red "ConTEXT"
+icon.&nbsp; Then click "OK".&nbsp; You might want to create a windows
+shortcut and save it somewhere where you can use it again.<br>
+</p>
+<p>If you want to install ConTEXT at home, it is a free download from <a
+ href="http://www.context.cx/">http://www.context.cx/</a><br>
+</p>
+</body>
+</html>

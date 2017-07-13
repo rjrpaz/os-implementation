@@ -1,0 +1,5 @@
+int Sys_SetAcl( struct Interrupt_State* state );
+int Sys_SetSetUid( struct Interrupt_State* state );
+int Sys_SetEffectiveUid( struct Interrupt_State* state );
+int Sys_MessageQueueCreate( struct Interrupt_State* state );
+int Sys_GetUid( struct Interrupt_State* state );

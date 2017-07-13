@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Lecture 19</title>
+</head>
+<body>
+<h1>CS 420 - Lecture 19<br>
+</h1>
+<h2>Page Replacement (Continued)<br>
+</h2>
+<p>Reference string: 7 0 1 2 0 3 0 4 2 3 0 3 2 1 2 0 1 7 0 1<br>
+</p>
+<p>3 frames of memory<br>
+</p>
+<h3>Optimal<br>
+</h3>
+<p>Steal the frame containing the page that will not be used again for
+the greatest amount of time<br>
+</p>
+<p>[Demonstrate.]<br>
+</p>
+<p>Even though this algorithm cannot be implemented in practice, it is
+useful as a comparison, because it allows us to say for a particular
+workload that a algorithm being evaluated is "within X% of optimal".<br>
+</p>
+<h3>LRU<br>
+</h3>
+<p>Steal the frame that has not been USED for the longest period of
+time.<br>
+</p>
+<p style="margin-left: 40px;">The idea behind LRU is <span
+ style="font-style: italic;">reference locality</span>: once a memory
+location has been used, it (or other nearby memory locations) are
+likely to be used again in the near future.<br>
+</p>
+<p style="margin-left: 40px;">Reference locality is a characteristic of
+"most" workloads.<br>
+</p>
+<p>[Demonstrate.]<br>
+</p>
+<p>Implementing LRU:<br>
+</p>
+<p style="margin-left: 40px;">Keep the timestamp of the most recent
+reference in the page table entry.&nbsp; Update in hardware?<br>
+</p>
+<p style="margin-left: 40px;">Stack: Keep linked list of frame
+numbers.&nbsp; On a reference, remove the frame from the linked list
+and put it at the beginning.<br>
+</p>
+<p>The cost of updating a timestamp or reference stack is prohibitive
+in practice, since this needs to be done for each memory reference.<br>
+</p>
+<h3>LRU approximation<br>
+</h3>
+<p>There are various ways to approximate LRU.&nbsp; An important class
+of LRU-approximation techniques make use of a hardware-supported <span
+ style="font-style: italic;">referenced bit</span> in page table
+entries.<br>
+</p>
+<p style="margin-left: 40px;">Recall the "accessed" bit in an x86 PTE:
+that is a referenced bit, because it is set to 1 by the processor
+whenever a memory reference is made to any of the addresses covered by
+the PTE.<br>
+</p>
+<p><span style="font-weight: bold;">Additional reference bits</span>:<br>
+</p>
+<p>Using a time, periodically check the referenced bit in every PTE in
+all address spaces.&nbsp; Shift the referenced bit into the high order
+bit of a counter field associated with the frame, then set the
+referenced bit to 0.&nbsp; The frame(s) with the numerically smallest
+counter are the ones that contain a page that was referenced the least
+recently.<br>
+</p>
+<p>Because we aren't guaranteed to have a unique page that is LRU, we
+must establish an additional algorithm to decide which of the frames
+that is tied for LRU will be stolen.&nbsp; FIFO is one possible choice.<br>
+</p>
+<p><span style="font-weight: bold;">Second-chance</span>:<br>
+</p>
+<p>The second-chance algorithm is a variation of the FIFO
+algorithm.&nbsp; However, it uses the reference bits in the following
+way: when a frame is selected to be stolen, its referenced bit is
+checked.&nbsp; If the referenced bit is set, then the algorithm gives
+it a reprieve and tries the next frame.&nbsp; The process continues
+until<br>
+</p>
+<p style="margin-left: 40px;">An unreferenced frame is found, which
+becomes the victim<br>
+</p>
+<p>The process wraps all of the way around
+back to where it started, in which case the starting frame is the victim<br>
+</p>
+<h2>Thrashing<br>
+</h2>
+<p>In principle, the OS kernel can run any number of user processes
+with a tiny amount of physical memory; possibly as little as 2 frames.<br>
+</p>
+<p>In practice, processes need to have their entire <span
+ style="font-style: italic;">working set</span> in memory in order to
+get good performance.&nbsp; The working set is the set of pages of the
+process address space that have been accessed recently (for some value
+of "recently").&nbsp; If enough physical memory is not available, and
+the page fault rate becomes too high, the system will enter a state
+known as thrashing where most of the time is spent paging to and from
+disk.&nbsp; Because a page fault can be tens or hundreds of thousands
+of times slower than a memory access, the process needs to ensure that
+a very high percentage of memory access instructions hit physical
+memory instead of causing page faults.<br>
+</p>
+<p>Thrashing causes CPU utilization to fall dramatically because
+processes are spending most of their time waiting on I/O caused by page
+faults.<br>
+</p>
+<p>For this reason, virtual memory should be viewed as a mechanism that
+allows an operating system to cope with short periods where demand for
+physical memory exceeds supply.<br>
+</p>
+<h2>Memory-Mapped File I/O<br>
+</h2>
+<p>We have noted that a virtual memory object mapped into a process
+address space can be any persistent data store.&nbsp; Chunks of the
+swap file are commonly used as a backing store for anonymous regions of
+an address space, such as heap, stack, or anonymous shared memory.<br>
+</p>
+<p>A file on a filesystem can also be used as a VM object backing store
+in most operating systems.&nbsp; When pages of a region mapping a file
+VM object are paged in, data is read from the corresponding region of
+the file on disk.&nbsp; Pageouts cause a write back to the
+corresponding region of the file on disk.&nbsp; In this way, a process
+can read from and write to the contents of a disk file using memory
+access.<br>
+</p>
+<p>Multiple processes may map the same file, in which case the file
+acts as a shared memory region between the processes.&nbsp; (This
+assumes that the processes are not using copy-on-write to avoid sharing
+their modifications to the file data.)<br>
+</p>
+<p>In unix, the <span style="font-weight: bold;">mmap</span> system
+API maps a region of a file into the calling process's address
+space.&nbsp; The <span style="font-weight: bold;">CreateFileMapping/OpenFileMapping</span>
+and <span style="font-weight: bold;">MapViewOfFile</span> system APIs
+serve the same purpose on Windows.<br>
+</p>
+</body>
+</html>

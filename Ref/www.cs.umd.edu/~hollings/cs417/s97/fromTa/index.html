@@ -1,0 +1,102 @@
+<HTML>
+
+<HEAD>
+
+<TITLE>CMSC 417 - Hot News</TITLE>
+
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000FF" VLINK="#000080" ALINK="#FF0000">
+
+<H1 ALIGN=CENTER><IMG SRC="hotNews.gif" ALT="UMCP CS HOTNEWS" HEIGHT=75 WIDTH=281></H1>
+
+<BODY TEXT="#000000" BGCOLOR="#D7D3D2" LINK="#78021C" VLINK="#7F6666" ALINK="#FFFFFF" BACKGROUND="marble.gif">
+
+<h2 align=center>for <a href="http://www.cs.umd.edu/~hollings/cs417/s97">CMSC417</a></h2>
+<p>
+This page contains late breaking announcements from Dr. Hollingsworth and Kyungdong Ryu (the TA).  
+
+Please check this page a couple of times a week.
+
+<h2> <a name="final">Final</a></h2>
+<p>
+The final will be Tuesday Mat 20, 1997 from 1:30 to 3:30 in 102 CLB 
+(classroom building).
+
+<h2> <a name="finalDemos">Final Project Demos Scheduled</a></h2>
+<P>
+The final project demos have been scheduled for Wed. May 14, 1997 in the
+<a href="http://www.cs.umd.edu/projects/pchasm/">PCHASM lab</a> 
+(3120 AV Williams).
+The <a href="demoSched.htm">schedule</a> only allows 30 min. per team so please
+try to arrive a bit before the start of your demo to get logged in and ready.
+<h2> <a name ="mtRegrade">Last Day to Request Midterm Regrades is May 13, 1997</h2>
+<P>
+The deadline to request midterm regrades will be Tuesday May 13, 1997 at noon
+(end of office hours).
+<h2> <a name="groups">Project Groups Created</a></h2>
+<P>
+We have created groups for each project team.  When you login and type groups,
+you can see the group id assigned to your project team.  If you chgrp your
+project files to this group, and provide group read/write access to the
+files, you can share project files without having others be able to access them.
+
+<h2> <a name="ftpApp">FTP Application Now Available</a></h2>
+<P>
+The ftp application is now avaialbe.  The <a href="../project/">project page</a>
+contains the source <a href="../project/ftpApp.tar.gz">code</a> and a 
+<a href="../project/ftpApp.readme.html">README</a>.
+You can also use this code as an example of how thread programs work.
+
+<h2> <a name="projInfo1">Update on Project and Common Questions</a></h2>
+<P>To declare variables that have a specific number of bits, you should
+declate a struct of the form
+<pre>
+typedef struct {
+    unsigned int vpi:12;
+    unsigned int vci:16;
+    unsigned int pt:3;
+    unsigned int clp:1;
+    unsigned int crc:8;
+} atmHeader;
+</pre>
+<p>
+You must keep the ATM cell header format as defined above.  Also, you need to
+use payload type field of 001 for a cell containg an AAL7 trailer.
+<p>
+The header files for the 
+<a href="../project/aal7.h">aal7</a>
+<a href="../project/atm-garb.h">garbler</a>, and 
+<a href="../project/config-net.h">network configuration</a> are now on
+the class web page.
+
+<h2> <a name="draftDesign">Draft Project Design Due 3/14/97</a></h2>
+The draft of the project design is due on Friday.  It should include the
+basic structure of your project.  It should also include information about
+the API between your layers.  For example, what are the specific functions
+used to provide timer support?
+
+<h2> <a name="grades">Current Scores Posted</h2>
+Your <a href="../grades.htm">current scores</a> through midterm #1 have been
+posted to the web page.  Your ID number is the last four digits of you SSN.
+
+<h2> <a name="mt1soln">Midterm #1 Solutions now available</a></h2>
+The <a href="../mt1soln.htm">solutions</a> are now available.
+
+<h2> <a name="mt1"></a>Midterm #1 Scheduled</h2>
+The first midterm will be on Thursday March 6, 1997.  It will cover material
+up to (and including) 5.2.
+<h2> <a name="submit"></a>How to submit projects</h2>
+<li> Tar all source code files, Makefile and typescript file.
+	<ul> >tar cvf prog1.tar * </ul>
+<li> submit it using submit program residing in ~jh01/BIN/submit.
+	<ul> >~jh01/BIN/submit 1 prog1.tar </ul>
+
+<h2> <a name="accounts"></a>More accounts for newly added students</h2>
+<li> Accounts are availble for newly added students. Please, come and see
+	TA to get an account for the project.
+
+<h2> <a name="libs"></a>You do not need to link -lnsl on Alpha</h2>
+<li> The C library (/usr/lib/libc.a) that is automatically included in a
+	link request contains the network related libraries.
+
+</HTML>

@@ -1,0 +1,82 @@
+<HTML>
+
+<HEAD>
+
+<TITLE>CMSC 417 - Project Files</TITLE>
+
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#D7D3D2" LINK="#78021C" VLINK="#7F6666" ALINK="#FFFFFF" BACKGROUND="../marble.gif">
+
+<h1>
+Project Description
+</h1>
+The project description is available in 
+    <a href="termProject.htm">HTML</a>, 
+    <a href="termProject.ps">Postsript</a>, or
+    <a href="termProject.pdf">PDF</a>.
+<br>
+
+<h2>
+Project Notes for <a href="../index.html">CMSC417</a></h2>
+<p>
+This page contains files related to the project.
+
+<P>
+We have setup <a href="groups">groups</a> to help teams share code.
+<p>
+Here are the header files for the various parts:
+<P>
+<menu>
+<li><a href="aal7.h">aal7.h</a>
+<li><a href="atm-garb.h">atm-garb.h</a>
+<li><a href="config-net.h">config-net.h</a>
+</menu>
+
+<P>
+Here are several source and object files:
+<P>
+<menu>
+<li><a href="config-net.c">config-net.c</a>
+<li><a href="garb.html">ATM Garbler</a>
+<li>FTP Application
+<menu>
+<li><a href="ftpApp.readme.html">README</a>
+<li><a href="ftpApp.tar.gz">Tar file with source code</a>
+</menu>
+<li>Garbler
+<menu>
+<li><a href="atm-garb.alpha.o">atm-garb.o</a> (alpha)
+<li><a href="atm-garb-hacked.o">atm-garb.o</a> (alpha - Hacked for wrong order)
+<li><a href="atm-garb.solaris.o">atm-garb.o</a> (SPARC/solaris)
+<li><a href="atm-garb.init">atm-garb.init</a> (Sample Garb config file)
+</menu>
+</menu>
+<h2>Corrections and Clarifications about the Project</h2>
+<P>
+The only argument that your network layer should accept is the node number.
+The configuration file is compiled into the config-net routines we supply.
+The information you get back from the config_get_info routine contains all
+the information about a node and the topology you get at startup.  This
+struct contains the port number for the host, and the node name/port number
+pairs for all nodes directly connected to that node.
+<p>
+The all7_accept routine should not be able to return TIMEOUT. This is a pure
+blocking call with no timeout.
+<p>
+The maximum size of a request in an aal7_send is 16KB.
+<p>
+aal7_setMaxRecvWinSize changes the window size of only future connections.  As
+a result, it does not take a connection id as a parameter.  Please download
+an updated <a href="all7.h.fixed">aal7.h</a> and 
+<a href="ftp_client.C.fixed">ftp_client.C</a>.
+<p>
+You make assume that any node has at most 10 servers running (i.e. the size
+of a seperate SAP table).
+<p>
+You may assume that node numbers will be range from 1 to 255.
+<p>
+You *may* use garb_sendto_routing to send ATM signaling cells.  In other words,
+we will drop, but not garble signaling cells.
+<hr>
+Last Updated: <a href="http://www.cs.umd.edu/~hollings">Jeff Hollingsworth</a> (4/3/97)
+</HTML>

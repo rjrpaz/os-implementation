@@ -1,0 +1,512 @@
+<HEAD>
+<TITLE>CMSC 412 - Project 2</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="Project Handout">
+<meta name="keywords" value="p2">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<CENTER>
+<H2><b> CMSC 412</H2></b>
+<b> <H2>Project 2: Multiprogramming, Part I</H2> </b>
+<FONT SIZE="+2">Due: February 28, 1996</FONT>
+<P>
+</CENTER>
+
+<H2><A NAME=SECTION00010000000000000000> Introduction</A></H2>
+<P>
+Multiprogramming is a technique in which the CPU 
+switches between running multiple processes which are fully or
+partially in memory at the same time.  
+In this project, you will implement a small, <I>non-preemptive</I>
+multiprogramming system for an IBM compatible PC.  The
+kernel will support three system calls, as described below. 
+You will demonstrate your implementation by running several
+concurrent processes.
+<P>
+<H2><A NAME=SECTION00020000000000000000> Suggested File Names</A></H2>
+<P>
+   This are suggested file names.  Some of the files will be extended
+from the ones you wrote for project 1.
+<UL>
+<LI> <b><A HREF="cmsc412.c"> cmsc412.c </A> /
+        <A HREF="../proj1/cmsc412.h"> cmsc412.h </A> </b> <br>
+  There has been a slight modification of <tt> Cprintf() </tt>.
+This function now calls <tt> Put_char() </tt> instead of <tt> putch() </tt>.
+This requires <tt> screen.h </tt> to be included since <tt> Put_char() </tt>
+is presumed to be defined in this file. You should get a new copy.<br>
+ Also, look at <TT> Mod_int </TT> and use that instead of 
+<TT> asm CLI </TT> and <TT> asm STI </TT>. 
+<LI> <b> keyboard.c/keyboard.h</b> The keyboard interrupt handler goes here.
+<LI> <b> screen.c/screen.h</b> The screen handler,  <tt>  Put_char()</tt>,
+etc. 
+<LI> <b> queue.c/queue.h</b> Queue related functions. 
+<LI> <b><A HREF="../proj1/codes.h"> codes.h </A> </b>  Also, from
+project 1.
+<LI> <b><A HREF="makefile"> makefile </A> </b>  Sample makefile.
+<LI> <b> kernel.c / <A HREF="kernel.h"> kernel.h </A> </b>  System
+calls, and <tt> System_service </tt>
+<LI> <b> <A HREF="main.c"> main.c </A> </b>  New version of main
+for this project.
+<LI> <b> <A HREF="proc.c"> proc.c </A> </b>  Sample proc.c used
+to test.   You should write your own versions as well (for
+testing your code).
+
+</UL>
+
+<H2><A NAME=SECTION00020000000000000000> Technical Description</A></H2>
+<P>
+<H3><A NAME=SECTION00021000000000000000> Processes</A></H3>
+<P>
+In this project, a process will execute the code of a C function.
+Sample process code can be found in <TT>proc.c</TT>.   You will
+compile the kernel (in <tt>kernel.c</tt>) and user processes
+(in <tt>proc.c</tt>) separately, but link them together.  This
+means that if you pass the name of the function (which is a
+function pointer), the kernel will know the address of
+this function.   If the kernel and user process code had not
+been linked, then the kernel would not be able to resolve
+the addreses.
+<P>
+Each process will have useful information concerning the process
+kept in a PCB (process control block), which is a data structure.
+A PCB will be created during the initialization of a new process. 
+You will need to determine what information the PCB structure should 
+hold by reading this description carefully.
+<P>
+During its lifetime, a process can go through many states.
+For this project, a process is either running, or it ready to
+run.  At most one process can be running at any given time.
+Normally, a process can also exist in other states (blocked, 
+terminated, etc.), but you only have to concern yourself with 
+the two states mentioned.
+<P>
+   To indicate which state a process is in, you will place the PCB
+associated with a given process on a queue associated with the state
+of the process. For example, if a process is currently running, its PCB 
+will be in the run queue.  Since at most one process can be running
+at any given time, at most one PCB can be in the run queue.
+The run queue should be implemented as a pointer to a PCB.  It should
+be noted that the run queue is not a true queue (i.e., there's no 
+real enqueueing or dequeueing) despite its name.
+<P>
+  If a process is not running, then it is ready to run.  Processes
+that are ready to run have their PCBsa in the ready queue
+(which <I>is</I> a queue).  When the running process yields, the 
+PCB on the run queue will be removed and then enqueued onto 
+the ready queue. A new PCB will then be dequeued from the 
+ready queue and placed on the run queue, and that process 
+will be activated.  Selecting a new PCB from the ready queue
+and placing it on the run queue will be the responsibility of
+the function, <tt>Scheduler</tt>.
+<P>
+<H3><A NAME=SECTION00022000000000000000> System Calls</A></H3>
+<P>
+A <I>system call</I> is a request for an operating systems service.  Each
+system call carries out some specific task.  Your kernel will support 
+three system calls:
+<P>
+<PRE>int  Proc_start(int (*proc)(), int argc, char **argv)
+void Proc_term()
+void Yield()
+</PRE>
+<H4> Proc_start </H4>
+<P>
+   Imagine you entered the following in your favorite shell.
+What would happen?
+<PRE>% a.out foo bar
+</PRE>
+   The shell (whch is a user-level program) would parse this input.
+In particular, it would determine that there are three arguments.
+The shell would create an array of pointers to strings.
+In this case, the array would contain three pointers which
+would point to the strings: "<tt>a.out</tt>", 
+"<tt>foo</tt>", and "<tt>bar</tt>".  We will call this array the
+"argv" array because these are the arguments that can be
+accessed from the argv array in the <tt>main()</tt> function
+of <tt>a.out</tt>.
+<P>
+   The shell would then make a system call requesting that the
+kernel create a process from the <tt>a.out</tt> executable.
+At the very least, the shell should pass the following arguments 
+to the system call: the number of arguments, and the "argv" array.   
+While you will not write a shell, you will write the system call.   
+This system call will be called <tt>Proc_start</tt>. Because there 
+is no shell to read and parse a command line, you will need to 
+hardcode the "argv" array as shown in the sample <tt>proc.c</tt>.
+<P>
+   Among the many tasks that the kernel performs when initializing
+a new process, it must create a new copy of the "argv" array.
+This includes the array itself as well as the strings that the
+array points to.   It must also set up the stack for the child
+process so that the child process can access "argc", the argument
+count, and "argv".  This is similar to what happens in programs
+that you write.   You are allowed to access argc and argv from
+main().
+<P>
+<tt> Proc_start</tt> has three arguments.  The first is the name 
+of the function you wish the newly created process to run.  Recall
+that in C, the name of a function is a pointer to that function's
+code. You will need to write the functions used as processes in 
+<tt>proc.c</tt> (or use the ones provided).   The second argument 
+is the number of parameters in the argv array.  This always has a value
+greater than or equal to 1, because the name of the command
+(e.g., <tt> a.out</tt>) is always the first <tt> argv</tt> parameter. 
+In C, this parameter is commonly called "argc" for the argument count.
+The third argument is the <tt>argv</tt> array which was described
+earlier.
+<p>
+To illustrate, if you wanted to create a process that runs the 
+function <tt> foo</tt> with arguments <tt>23</tt>
+and <tt> cat</tt>, you would create an array of three elements whose
+first element contains a pointer to the string ``<tt>foo</tt>'', whose
+second element is 23 converted to a string, and whose third element
+is the string, ``<tt>cat</tt>''.  Use  <tt>Safe_malloc()</tt> to allocate
+the space.
+<P>
+   This array is then passed as the third argument to <tt>
+Proc_start()</tt>.   <tt> Proc_start()</tt> will generate interrupt
+0x62, which will invoke the kernel.   Within the kernel, you
+will need to determine that <tt> Proc_start()</tt> was called, and
+then make a copy of the <tt>argv</tt> array for the new child process
+that is about to be created.   There is a reason for making this
+copy.
+<P>
+In a protected environment, processes usually have distinct
+address spaces.   In particular, a parent process can not access
+the addresses of a child process and vice versa (this is not true
+in DOS, because processes can access any address, there is no
+real mechanism to protect a range of memory addresses 
+for a given process).   The reason for doing so is to prevent
+processes from acting maliciously.  One tenet of operating systems 
+is that a process should not be able to (easily) interfere with 
+another process, and writing into another process's address space 
+constitutes interference.
+<P>
+Suppose the kernel did not copy the "argv" array, and the child
+process could somehow point to the parent's copy.  If the parent
+process terminates, its copy of the array will be freed (processes
+that are terminated have its resources, including memory, freed).
+If the child process accessed this array, it could contain
+garbage.   We assume that a child process is independent of the
+parent process, i.e., if a parent process terminates, the child
+continues to run.
+<P>
+<tt> Proc_start</tt> should return the process ID of the newly created 
+child process.
+<H4> Proc_term </H4>
+<P>
+<tt> Proc_term()</tt> terminates the current process.  No arguments are
+passed.  The kernel should free up memory used by the process (stack
+space, PCB, etc.) This is typically not called within the user program.
+See further on to see how <tt>Proc_term</tt> is actually used.
+<H4> Yield </H4>
+<P>
+<tt> Yield()</tt> is called when the running process wants
+to temporarily give up use of the CPU.  The kernel will
+move the PCB from the run queue to the ready queue, then
+select a new PCB from the ready queue, place it in the
+run queue, and activate the new process. Note that only the running
+process can call <TT>Yield()</TT>. For this project, a process
+voluntarily yields control of the CPU by calling <tt> Yield()</tt>, 
+otherwise, it will run until completion when it is trivially 
+pre-empted.  The next project will allow the kernel to forcibly 
+preempt a process, and switch to a new one.
+<H4> Implementing system calls </H4>
+<P>
+  The various system calls are "implemented" as functions.   However,
+the functions are very simple.  They basically generate an
+interrupt. Specifically, a number identifying the specific
+system call is placed the AX register. Then, a software
+interrupt is called (say, 0x62).  That's usually the entire
+function (return values should be placed in AX).  The kernel
+code (which is hooked at interrupt 0x62) does most of the
+work.
+<P>
+   Normally, either the process making the system call
+or the kernel code must save the state of the user process
+prior to executing kernel code, then restore the state 
+upon complention. However, if you write the kernel routines
+in C using a Borland ``interrupt'' function, the CPU environment 
+will be preserved automatically by the compiler.
+<P>
+What happens to the invoking process depends on which
+system call was made. 
+For <tt> Yield()</tt>, the current state is saved, the
+address of a Dispatch function is pushed on the stack, the 
+stack pointer (ss:sp) is saved in the running process's PCB, 
+the PCB is moved to the ready queue, and the scheduler is invoked to
+select a new process to run.   To restore a yielded process,
+you need to restore the stack pointer (the one saved in the PCB), 
+and call <tt>RETF</tt>, which will call the Dispatch function
+which restores the state of the process, and starts it running
+again.
+<P>
+For <tt> Proc_start()</tt>, a new PCB and stack are created 
+using <tt> Safe_malloc</tt>, a new unique process ID
+is generated for this process,  the PCB is added to the ready queue, 
+and its process ID is returned to the calling process by altering the
+<tt> _AX</tt> value in the calling process's preserved CPU context. 
+This will be done by accessing the <tt> sax</tt> parameter from the
+interrupts handler's argument list (to be discussed momentarily).
+Note: <tt> Proc_start()</tt> only creates a new process (and PCB)
+and places the PCB in the ready queue.  It does not run this
+newly created process!  This is eventually handled by the scheduler.
+<P>
+If the requested system call is <tt> Proc_term()</tt>, then the process is
+deactivated by removing its PCB from the run queue, then
+returning first its stack space, then its PCB to the memory pool
+via <tt> Safe_free</tt>. The "argv" array must also be freed.
+The CPU scheduler is then invoked to select a process from the 
+ready queue to run next.
+<P>
+The stack for a <EM>newly created</EM> process will appear as
+follows (note: SP value is for a stack of size 2K = 0x400):
+<P>
+<PRE>SP Value  Parameter              Description
+03DA      dispatch offset        IP of dispatch() &lt;------- top of stack
+03DC      dispatch segment       CS of dispatch()
+03DE      BP                     initially 0
+03E0      DI                          &quot;
+03E2      SI                          &quot;          
+03E4      DS                     same as _DS of main()
+03E6      ES                     initially 0
+03E8      DX                          &quot;
+03EA      CX                          &quot;
+03EC      BX                          &quot;
+03EE      AX                          &quot;
+03F0      process's offset       new process's IP
+03F2      process's segment      new process's CS
+03F4      flags                  include interrupt enable on (see modint)
+03F6      proc_term offset       IP of proc_term
+03F8      proc_term segment      CS of proc_term
+03FA      argc                   &quot;Parameters&quot; to the
+03FC      argv offset               new 
+03FE      argv segment                process
+</PRE>
+<P>
+Note: the stack looks as if <tt> Proc_term()</tt> called the new process;
+thus when the process finishes, it will automatically invoke 
+<tt> Proc_term()</tt>.  This is a rather interesting solution to
+the problem of ``How do you terminate a process that does not
+call <tt>Proc_term()</tt>?''.  Set up the stack in such a way that
+it appears that <tt>Proc_term()</tt> called the function that is
+being passed to <tt>Proc_start()</tt>, and when that function complete,
+<tt>Proc_term()</tt> will execute.  This will perform various
+cleanup duties needed to properly terminate a process.
+<P>
+<tt> Dispatch()</tt> is a function that uses the ``asm'' feature.
+Since every C function creates its own stack frame, you
+first have to destroy it by the following asm instructions:
+<PRE>        MOV SP, BP
+        POP     BP
+</PRE>
+Then pop off the registers (in the order shown above) and call the
+IRET instruction.  
+<P>
+Note that the stack frame of any process on the ready queue will
+look similar to that shown above.  In particular, the
+stack frame will contain the ``IP of dispatch()'' through ``flags'' 
+fields.
+<P>
+The following code is an outline for the code that will be included
+in <tt> kernel.c</tt>.  This file should include <tt> System_service</tt>
+plus all of the system calls avaiable to the user programs
+(<tt> Proc_start</tt>, <tt> Proc_term</tt>, and <tt> Yield</tt>) as well as
+the <tt> Dispatch()</tt> function all).
+<P>
+<PRE>void interrupt
+System_service( sbp, sdi, ssi, sds, ses, sdx, scx, sbx, sax,
+      sip, scs, sflags, sbp2, sip2, scs2, proc, argc, argv )
+
+      /* Access to system service routines. Service type is
+         to be passed in the AX register */
+
+unsigned int sbp,sdi,ssi,sds,ses,sdx,scx,sbx,sax,sip,scs,sflags,
+      sds2,sbp2,sip2,scs2,argc ;
+int (*proc)() ;
+char ** argv ;
+{
+        type = sax;  /* the system call number is placed in AX */
+        switch (type) {
+
+        case PROC_START: 
+                &lt;code for proc_start&gt;
+                break;
+
+        case PROC_TERM:
+                &lt;code for proc_term&gt;
+                break;
+
+        case YIELD:
+                geninterrupt(0x63);
+                break;
+        }
+        return;
+}
+</PRE>
+<P>
+    For those of you who are interested, the difference between
+Borland 4.5 and earlier versions is that the register DS would
+be pushed after <tt> sflags</tt>.  That is, after <tt> sflags</tt>, you
+would add <tt> sds2</tt>, then <tt> sbp2</tt>.   However, it is assumed
+that you will use Borland 4.5 for this project.
+<P>
+    It may seem odd that <tt> System_service()</tt>, which is basically
+an interrupt handler, has an argument list.  After all, an interrupt
+is not called like a normal function with arguments passed.  The
+above is really a trick.  When <tt> Proc_start</tt> is called, and
+interrupt 0x62 generated, the stack will look exactly like the
+arguments being passed to <tt> System_service</tt> with <tt> sbp</tt>
+at the top of the stack, an <tt> argv</tt> at the bottom, and in
+the order listed as shown in the formal parameter list.  This
+makes it easier to access arguments on the stack without having
+to calculate the locations of all the registers on the stack.
+<P>
+The following function is at vector 0x63:
+<P>
+<PRE>void interrupt Yield_process()
+{
+        /* all regs have already been saved because of void interrupt */
+        /* push cs:ip of Dispatch() */
+        /* save ss:sp in PCB */
+        /* move PCB to ready queue */
+        /* Schedule() */
+}
+</PRE>
+<P>
+   This interrupt will handle the yielding of a process.  It
+leaves the stack of the yielding process with the address of
+<tt> Dispatch()</tt> on top.   The role of <tt> Dispatch()</tt> is
+to pop all the register off, and restore the state of the
+yielded process, when this process is scheduled to run.
+<P>
+Note that when the yielded process is scheduled to run, the
+stack pointer will be reset to the value saved in the PCB
+of this yielded process.   By calling the <tt> RETF</tt> assembly
+instruction, the CS and IP pointer to by the stack pointer
+will be loaded as the new CS and IP, and this will be the
+address of <tt> Dispatch()</tt>,  which pops the registers and does an IRET
+instruction.  The process then continues executing in
+<tt> System_service()</tt>, right where it left off, when it was yielding.
+<tt> System_service()</tt> then pops the registers (again; this is done
+automatically if it is an ``interrupt'' function) and 
+returns to the process.
+<P>
+<H3><A>RETF vs. IRET</A></H3>
+   Calling <tt>RETF</TT> will cause the hardware to pop 4 bytes
+off the stack.   The first two bytes will be placed in IP, and
+the second in CS.   <tt>RETF</TT> stands for "far return" and
+is basically how a function returns to the function
+that called it.  However, this mechanism can also be thought
+of as jumping directly to the address on the stack.  Note
+that <tt>RETF</TT> does not care if the values on the
+stack are legitimate addresses.  It will take the 4 bytes
+off the stack, stuff it in CS and IP, which effectively
+jumps to that address.   Either you or the compiler are
+responsible for making sure the address is correct.
+<P>
+  <tt>IRET</TT> is typically called during a return from
+an interrupt.  During an interrupt, the flags register,
+and the program counter (cs:ip) are pushed on the stack.
+<tt>IRET</TT> undoes this action by popping off 6 bytes.
+The first 4 bytes are still placed in CS and IP as before.
+The last 2 bytes are placed in the FLAGS register.   This
+register records the interrupt status (enabled or disabled)
+as well as the status of the last instruction executed 
+(typically, for use in branch instructions).
+<P>
+<H3><A NAME=SECTION00023000000000000000> Scheduler</A></H3>
+<P>
+The scheduler will use FIFO scheduling to determine the
+next process to run.  Once the process has been chosen, it is
+added to the run queue and dispatched by loading ss:sp
+from the PCB and doing a RETF instruction.
+<P>
+The first time the scheduler is run, it should push the BP onto the
+stack, then save the SS and SP into static variables.  Later, when it
+finds that there are no more processes to run, it should restore SS
+and SP from those variables, pop BP, and return.  At that point,
+execution will resume in main after the call to schedule.  You will
+write a function called <tt> Scheduler()</tt> to handle this.  Place
+this in <tt> kernel.c</tt>.
+<P>
+<H3><A NAME=SECTION00024000000000000000> I/O</A></H3>
+<P>
+Since I/O operations are not implemented as system calls,
+no I/O-computation overlap will be achieved by this project. 
+Nonetheless, you must use the keyboard and screen drivers
+from Project 1 to perform some I/O, or there would be no way
+to see your processes working.  For <tt> Put_char()</tt>, the lack of an
+``I/O wait'' state is of little consequence, since screen
+operations are memory-mapped.  With <tt> Get_char()</tt>, however, the
+lack of the ``I/O wait'' state hurts performance. 
+As in Project 1, <tt>Get_char()</tt> must not busy wait.
+<P>
+Without preemption, <tt> Get_char()</tt> and <tt> Put_char()</tt> can be 
+used as desired without the need, for example, to exclude other
+processes when printing a line of characters.  Likewise, a line
+of characters can be read in with confidence that they will be
+delivered to the same process.
+<P>
+<H3><A NAME=SECTION00025000000000000000> Kernel Initialization</A></H3>
+<P>
+The <tt> main()</tt> routine that you will write constitutes the
+kernel initialization code.  A number of actions must be taken
+to set up the kernel.  
+First, the interrupt vectors for the keyboard driver and kernel
+routines must be saved (i.e., the old DOS versions kept around), 
+then re-vectored to the routines you have written.  An initial process
+must be created, as described below.  Finally, <tt> main()</tt> will
+invoke the scheduler.
+<P>
+The initial process, called <tt> Init()</tt>, is responsible for starting
+the other processes.  <tt> Init()</tt> sets up the parameters for each
+process, invokes <tt> Proc_start()</tt> to start the other processes
+running, prints their process ID's with <tt> Cprintf()</tt> (which calls
+<tt> Put_char()</tt>), then terminates.  Link with the file cmsc412.c in 
+order to use a version of <tt> Cprintf()</tt> that calls your <tt> Put_char()</tt>.
+<P>
+Recall that <tt> Proc_start()</tt> will only create a PCB and the
+stack for a new process.   You will still need to call the
+scheduler to start up the <tt> Init()</tt> process.   <tt> Init()</tt>
+should take <tt> argc</tt> and <tt> argv</tt> as arguments.  
+<H2><A NAME=SECTION00030000000000000000> User Processes</A></H2>
+<P>
+All user processes, including the <tt> Init()</tt> process, should
+be included in a separate module titled <tt> proc.c</tt>.  You can test
+your kernel by running a small number of processes
+concurrently, each of which first prints its arguments, then
+loops a small number of times.  Each loop should produce a
+line of output that identifies the process for each loop iteration,
+then invokes <tt> Yield()</tt> to allow the next process to run.
+<P>
+We will test your programs by running your test
+routines, then by running our own <tt> Init()</tt> and a number (<b>&lt;</b> 10
+concurrently) of other processes.  Note that the names and
+parameters for the three system calls (<tt> Proc_start</tt>, etc.) must 
+be designed as specified, or our test procedures will not run correctly.
+<P>
+<H2><A NAME=SECTION00040000000000000000> What to Turn In</A></H2>
+<P>
+Your diskette should have all files necessary for
+execution and compilation, and only these files, available on
+the root directory, including a makefile.  The only specified
+file names for this project are <tt> makefile</tt> for the makefile and
+<tt> proc.c</tt> for your <tt> Init()</tt> and user processes.
+<P>
+<H2><A NAME=SECTION00050000000000000000> Some Important Stipulations</A></H2>
+<P>
+Your file <tt> proc.c</tt> MUST be compiled separately and linked 
+with the kernel. Including <tt> proc.c</tt> in your kernel code is not 
+acceptable. Also, your OS must create <tt> Init()</tt> as the initial 
+process (using <tt> Proc_start()</tt> ). No other name may be used.
+<P>
+Comments and indentation are important.  Make your code readable!
+Include a README file that lists the various files used, and a
+brief description of each of the functions used in each of the
+files.   Also, add any comments that you feel the TA needs to know,
+especially where you feel there might be confusion, or where
+you have chosen to implement some part of your code in a different
+manner from the one specified.
+</BODY>

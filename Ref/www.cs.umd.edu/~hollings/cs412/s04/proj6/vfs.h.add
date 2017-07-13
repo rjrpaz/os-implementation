@@ -1,0 +1,2 @@
+int SetAcl(char *fileName, int uid, int permissions);
+int SetSetUid(char *name, int setUid);

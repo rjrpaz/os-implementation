@@ -1,0 +1,210 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+<TITLE>CMSC 311-101 (Fall 1995)</TITLE>
+
+<META NAME="GENERATOR" CONTENT="Internet Assistant for Microsoft Word 2.04z">
+</HEAD>
+<BODY>
+<P>
+<CENTER><B><FONT SIZE=5>CMSC 417 Midterm #2 (Spring 1997) - Solutions
+<BR>
+</FONT></B></CENTER>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial"> (15 points) Define <B>and</B> explain
+the following terms:</FONT>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">forbidden region: <I>illegal combinations
+of time/sequence numbers that could permit data from old connections
+to be accepted as part of a current connection. Caused by node
+crashes or sequence number wrap around.</I></FONT>
+<LI><FONT SIZE=2 FACE="Arial">flow control: <I>matching rates
+between producers and consumers.  Can be done at the link or network
+layers.</I></FONT>
+<LI><FONT SIZE=2 FACE="Arial">two army problem: <I>explains the
+problem of communicating over an unreliable network.  The problem
+is that two parties can never know if the last message sent was
+correctly received.  This problem relates to deleting a connection
+between two hosts.</I></FONT>
+<LI><FONT SIZE=2 FACE="Arial">MTU: <I>Maximum Transfer Unit. The
+largest packet/frame size that can travel over a network or link.</I></FONT>
+<LI><FONT SIZE=2 FACE="Arial">bit stuffing: <I>a way to prevent
+the occurrence of a frame boundary string from occurring in data.
+ After a specific sub-string of the pattern is seen, a bit is
+inserted to prevent the target string from appearing.</I></FONT>
+</OL>
+<LI><FONT SIZE=2 FACE="Arial"> (15 points) Error correction and
+detection.  </FONT>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">What is the minimum number of error
+recovery bits required to recover from an n bit error?  Explain
+why this number of bits is sufficient.</FONT>
+</OL>
+</OL>
+<P>
+<I><FONT SIZE=2 FACE="Arial">let n = m + r, m is the message length,
+r is the number of error recovery bits. To be able to recover
+from a d bit error we need to have n choose d invalid messages
+for every valid message.  n choose d is the number of ways you
+can flip exactly d bits in an n bit message. There are 2<I><SUP>m</SUP>
+valid messages so:  [(n choose d) + 1] 2<SUP>m</SUP> &lt;=2 <SUP>
+</SUP>but n = m + r so   [(m + r) choose d + 1] &lt;= 2<SUP>r</SUP></I></FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial">            <IMG SRC="IMG00007.GIF"></FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial">so that the bit pattern with n errors
+is the closest (min. hamming distance) bit pattern to the correct
+message (it's n bits away and the rest will be at least n+1).</FONT></I>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">If the ratio of error detection
+bits to payload bits remains constant, what are the tradeoffs
+between having the error bits applied to a single character vs.
+a block of characters?</FONT>
+</OL>
+<P>
+<I><B><FONT SIZE=2 FACE="Arial">Bigger blocks </FONT></B><FONT SIZE=2 FACE="Arial">can
+detect longer burst errors</FONT></I>
+<P>
+<I><B><FONT SIZE=2 FACE="Arial">Smaller blocks</FONT></B><FONT SIZE=2 FACE="Arial">
+reduce latency when sending small frames and reduce the amount
+of data to be re-transmitted when an error occurs.</FONT></I>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">(20 points) One way to support mobile
+hosts is by assigning a host a temporary IP address in its new
+location, <B>and</B> continuing to use its old address by tunneling
+IP through IP back to an agent running on the mobile host's home
+network.</FONT>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">Explain the steps required to permit
+a mobile host to register on a local network and start receiving
+packets using its permanent IP address.</FONT>
+<OL>
+<LI><I><FONT SIZE=2 FACE="Arial">connect to local server (agent)
+on the foreign network and request temp IP address.</FONT></I>
+<LI><I><FONT SIZE=2 FACE="Arial">local agent contacts home agent
+to inform it of the mobile host's temporary IP address.</FONT></I>
+<LI><I><FONT SIZE=2 FACE="Arial">home agent starts tunneling packets
+destined from the mobile host on its temporary.</FONT></I>
+</OL>
+</OL>
+</OL>
+<P>
+<I><FONT SIZE=2 FACE="Arial">Other answers that provide the same
+information exchange are possible.<BR>
+</FONT></I>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">Give one advantage and one disadvantage
+of this approach to IP mobility compared with having a mobile
+host only use its permanent IP address.</FONT>
+</OL>
+<P>
+<I><FONT SIZE=2 FACE="Arial">+ only need the remote agent to setup
+the transfer, not forward each packet</FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial">+packets can be sent directly to
+the mobile host at its  temporary IP address to prevent sending
+packets long distances twice.</FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial">- software could cache temporary
+IP address and re-use it after the mobile moves again.</FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial">- uses two IP addresses</FONT></I>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">When tunneling IP through IP, it
+is not possible to always maintain a one for one match between
+tunneled packets and the native packet. Why?  Explain the potential
+performance implications of this limitation.</FONT>
+</OL>
+<P>
+<I><FONT SIZE=2 FACE="Arial">Tunneled packet needs an IP header
+and if the packet to tunnel is already at the MTU for the network,
+the extra size will require it to be fragmented.  Fragmentation
+will slow down the network due to extra overhead of processing
+two packets and the need to re-transmit all parts of a fragment
+if one is lost.</FONT></I>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial"> (15 Points) IP Addresses</FONT>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">The Internet is running out of IP
+addresses to assign, but there are substantially less than four
+billion hosts on the Internet.  Explain why this is happening.</FONT>
+</OL>
+</OL>
+<P>
+<I><FONT SIZE=2 FACE="Arial">Internal fragment due to IP addresses
+being assigned in blocks rather than one at a time.</FONT></I>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">Joe Hacker reads about IPv6  (with
+128 bit address) and is concerned about routing table size.  He
+decides that the best solution is to encode latitude and longitude
+into IP addresses. Explain how this might be used to reduce routing
+table size.  Provide a reason why this might not reduce routing
+table size. </FONT>
+</OL>
+<P>
+<I><FONT SIZE=2 FACE="Arial">Geographic information could be used
+as the basis of hierarchical routing.  Nodes would store detailed
+routing information for its local region and only sparse information
+for distant nodes.  The problem is that due to administrative
+domains and different ISP's physical location is not equivalent
+to nearest neighbor for routing purposes.</FONT></I>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial"> (15 Points) Consider a network
+where on average, messages between two hosts must travel through
+10 routers (and thus 11 hops).  On average, one packet in every
+1,000 is lost as is passes through a router.</FONT>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">If one packet in 100 is garbled
+per hop, what is the probability of a packet making it through
+the network if no link level re-transmission is used?  What if
+link-level re-transmission is used?</FONT>
+</OL>
+</OL>
+<P>
+<FONT SIZE=2> </FONT><I><FONT SIZE=2 FACE="Arial">With re-transmission,
+link garbling does not occur so p = .999<I><SUP>10</SUP></I></FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial">Without re-transmission, link garbling
+and router drops can happen so p = .999<I><SUP>10 </SUP>x .99<SUP>11</SUP></I></FONT></I>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">Repeat part a if the probability
+of a link garbling a packet is 1 in a billion.</FONT>
+</OL>
+<P>
+<I><FONT SIZE=2 FACE="Arial">With re-transmission, link garbling
+does not occur so p = .999<I><SUP>10</SUP></I></FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial">Without re-transmission, p = .999<I><SUP>10
+</SUP>x (1-10<SUP>-</SUP>9)<SUP>11</SUP>, conclusion don't need
+link retransmission when link error probability is very low.</I></FONT></I>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">(15 points)  Congestion Control</FONT>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">Why is congestion control more important
+in a network carrying traffic whose bandwidth requirements vary
+dynamically during a session compared with fixed bandwidth traffic?</FONT>
+</OL>
+</OL>
+<P>
+<I><FONT SIZE=2 FACE="Arial">With static traffic, congestion avoidance
+via call admission can be used.  With dynamic traffic, call admission
+leads to under utilization of the network due to conservative
+allocation choices.</FONT></I>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">In TCP (Jacobson) congestion control,
+the variance in round-trip times for packets implicitly influences
+the congestion window.  Explain how a high variation in the round-trip
+time affects the congestion window.  What is the impact of this
+high variation on the throughput for a single connection?</FONT>
+</OL>
+<P>
+<I><FONT SIZE=2 FACE="Arial">With all other things being the same
+(i.e. losses and congestion), high variance in RTT will lead to
+a long timeouts for re-tranmission.  This will make congestion
+detection slower since we only close the window when a packet
+is dropped (detected via a timeout).  As a result, it is more
+likely the network will get into a congested state, this will
+reduce the throughput of our connection.<BR>
+</FONT></I>
+</BODY>
+</HTML>

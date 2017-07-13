@@ -1,0 +1,72 @@
+<!doctype html public "-//IETF//DTD HTML//EN">
+<HTML>
+
+<HEAD>
+
+<TITLE>CMSC 311 (Fall 1995) - HW #1</TITLE>
+
+<META NAME="AUTHOR" CONTENT="Jeff Hollingsworth">
+<META NAME="OPERATOR" CONTENT="Word to HTML">
+</HEAD>
+
+<BODY>
+
+<P>
+<B>CMSC 311- Computer Organization</B>
+<P>
+Fall 1995 - Assignment #1
+<P>
+<I>Due (at the beginning of class) Thursday, September 14</I>
+<OL>
+<LI>In class we saw that a NOR gate is functionally complete (it
+can be used to represent the other 7 gates).  Show that NAND is
+functionally complete by showing how each of the other 7 gates
+can be constructed using one or more NAND gates.
+
+<P>
+
+<LI>Given this circuit:
+<P>
+<IMG SRC="hw1.fig1.gif" ALT="Insert Circuit Here">
+<OL>
+<LI>Write out the truth table.
+<LI>Write out the sum of products representation of F(A,B,C).
+</OL>
+
+<LI>Algebraically simply the following expressions to as few literals
+as possible:
+<OL>
+<LI>(x + y) (x + y')
+<LI>xyz + x'y + xyz'
+<LI>x + xz + yx + xyz + x'yz
+<LI>y(xz' + ((x' + z)y)')
+</OL>
+
+<LI>From Mano, problem 1-4.
+<LI>From Mano, problem 1-5.
+<LI>The implication function is one of the 16 possible functions
+of two Boolean variables.  It is written x -> y, and is defined
+by x -> y = x' + y.
+<OL>
+<LI>Prove or disprove the associativity of this function (does
+ (x -> y ) -> z = x -> (y -> z)).
+<LI>Prove or disprove the communtativity of this function (does
+x -> y = y -> x).
+</OL>
+
+<LI>From Mano, problem 1-7.
+<LI>Use Karnaugh maps to find a simplified sum of products representation
+of the following functions (you need to show the Karnaugh map
+to receive full credit).
+<OL>
+<LI>F(a,b,c) = (0,1,2,3)
+<LI>F(a,b,c) = abc' + ab'c' + a'bc' + a'bc
+<LI>F(a,b,c,d) = (1,2,4,5,7,8,10,11,13,14)
+<LI>F(a,b,c,d) = a'b'c + ad + bd' + cd' + ac' + a'b'
+</OL>
+
+</OL>
+
+</BODY>
+
+</HTML>

@@ -1,0 +1,21 @@
+Grading Guidelines, Project 0
+-----------------------------
+
+Start at 100%.
+
+General
+-------
+	-25%	Makefile missing
+	-5%	Makefile misnamed
+	-0%	Tasm requested, but sampleS.obj is provided
+	-50%	-mk not corrected, bad output
+	-20%	-mk not corrected, would not compile
+
+.C
+--
+	-20%	Comment not closed
+	-20%	Geninterrupt commented, etc (changes that should not be)
+	
+.ASM
+----
+	-25%	Not corrected, but required

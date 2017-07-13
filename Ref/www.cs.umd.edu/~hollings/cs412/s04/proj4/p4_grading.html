@@ -1,0 +1,80 @@
+<html>
+<head><title>CMSC412 Project 4 Grading Criteria</title></head>
+
+
+<body><center><b>Project 4 Grading Criteria</b></center></p>
+
+
+
+<ol>
+<li> <b> Turning On Paging</b>:<br>
+  - Modify the line <tt>Enable_Paging()</tt>; to  be <tt>checkPaging(); Enable_Paging(); checkPaging()</tt>;</p>
+
+Launching bochs should output:</p>
+
+<pre> 
+Paging on?: 0
+Paging on?: 1
+</pre>
+when bochs starts up.  Nothing should crash and the shell prompt must come up.
+Enabling paging is worth <font color=blue>25</font> points.</p>
+
+<li> <b>Dynamically Growing Stack</b> using <a href="rec1.c">rec1.c</a> <br>
+At the shell prompt, typing:</p>
+
+<pre> /c/rec1.exe </pre>
+
+should output
+<pre>
+300
+349
+348
+...
+1
+%
+</pre>
+
+Correct implementation is worth <font color=blue>30</font> points. </p>
+
+<li> <b>Paging Out to a Swapfile</b> using <a href="rec2.c">rec2.c</a><br>
+At the shell prompt, typing:</p>
+
+<pre> /c/rec2.exe </pre>
+
+should output
+<pre>
+3500
+3499
+3498
+...
+1
+%
+</pre>
+
+Correct implementation is worth <font color=blue>35</font> points.</p>
+
+<li> <b>Paging Out to Launch a Program</b> using <a href="rec3.c">rec3.c</a>  and using <a href="a.c">a.c</a><br>
+At the prompt typing:</p>
+<pre> /c/rec3.exe </pre> 
+should output
+<pre>
+3500
+3499
+3498
+...
+1
+Hello from program a.exe
+%
+</pre>
+Correct implementation gets you <font color=blue>10</font> points</p>
+</ol>
+
+<font color=red>Note1: If you are unable to run the rec programs in one bochs session, you can still recieve partial credit.
+<li>For running rec2.exe correctly but not after rec1.exe you will recieve 17 points
+<li>For running rec3.exe correctly but not after rec1.exe or rec2.exe you will recieve 5 points.
+</ol>
+</font><br>
+
+<font color=red>Note2: Points will be deducted if the shell crashes from typing a non-existent file.
+</font><br>
+

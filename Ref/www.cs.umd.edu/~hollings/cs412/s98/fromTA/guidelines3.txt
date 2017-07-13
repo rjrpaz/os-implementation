@@ -1,0 +1,89 @@
+		Approximate Guidelines
+(I gave myself a leeway of a few points to steer around strange cases)
+
+
+			* * *
+
+
+Tests 0, 1, 2, 3, 5 take 20 points each, making up the maximum score of 100.
+Following is the list of possible mistakes/errors and how much they cost; also
+listed are bonuses that work whenever fines have been applied. The maximal
+fine per test is 20 (does not go negative).
+
+
+
+General Issues
+--------------
+
+Experiments: if there is no writeup, the fine is -10 points. If the
+description is more meaningful than empty handwaving and shamanism, the bonus
+is +5 points. If it is not, there is usually no bonus.
+
+No readme file: ok.
+
+File user412.h is missing: fine -10 points.
+File user412.h is useless: fine -7 points.
+File user412.h is misnamed: fine -3 points.
+Important global names missing in user412.h:
+	one name: fine -0 points;
+	more names: fine -1 point.
+
+Makefile misnamed: fine -0 points.
+Makefile contains proc2.c instead of proc.c: fine -0 points.
+
+Default quantum is not 4: fine -0 points.
+
+Specific Issues
+---------------
+
+Test 4 is a bonus test: if all 4 passes are okay, the bonus is +7 points. If
+all is okay but the program freezes at the end, the bonus is still up to +3.
+
+If a test crashes or freezes in the middle of execution, the fine is -20
+points (loses all). If a test freezes at the end, the fine is -7 per test (or
+-5 per test case), but no more than -20 total.
+
+If a test is only working with Wait() functions disabled, the fine is -15
+points per test, but no more than 30 points total.
+
+If a test falls through Wait calls (does not wait), the fine is -10 points.
+
+If extra output slips on the screen after Wait() is called, the fine is -2
+points per instance.
+
+If the output is inconsistent (sometime a test works, sometimes it does not),
+the starting grade is 10 points.
+
+Test 0:
+. Tested with the following arguments:
+  no arguments; -q 1; -q 1 -m; -q 9999; -q 9999 -m.
+. Exits prematurely (as if there were no processes): -20 points (loses all).
+. Processes do not take turns: -10.
+. Processes take "long" turns (do not preempt each other as often as they
+	should): -5.
+. Wrong order of processes execution: -3 per test case.
+
+Test 1:
+. Tested without parameters.
+. Processes do not take turns: fine -10 points.
+. Wrong order of execution of processes: fine -8 points.
+. Processes take long turns: -5 points.
+
+Test 2:
+. Tested with the following parameters:
+  no parameters (should be equivalent to -q 4 -f); -q 1; -q 20; -q 22; -q 256;
+  -q 20 -m.
+. Substantially wrong time: fine -7 points.
+
+Test 3:
+. Tested without parameters.
+. Wrong order of execution: fine -15 points.
+. Wrong order AND freeze at the end: -20 points.
+
+Test 4:
+. Tested without parameters.
+. Bonus test: see above.
+
+Test 5:
+. Tested without parameters.
+. Error(s) on (a) smoker(s): -7 points.

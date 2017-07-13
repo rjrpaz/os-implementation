@@ -1,0 +1,991 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 11 (filtered)">
+<title>CMSC 714-101 (Fall 2008)</title>
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+h1
+	{margin-top:12.0pt;
+	margin-right:0pt;
+	margin-bottom:6.0pt;
+	margin-left:0pt;
+	text-align:justify;
+	text-indent:0pt;
+	page-break-after:avoid;
+	font-size:10.0pt;
+	font-family:Arial;
+	font-weight:normal;}
+h2
+	{margin-top:8.0pt;
+	margin-right:0pt;
+	margin-bottom:6.0pt;
+	margin-left:36.0pt;
+	text-indent:0pt;
+	font-size:10.0pt;
+	font-family:Arial;
+	font-weight:normal;}
+h3
+	{margin-top:6.0pt;
+	margin-right:0pt;
+	margin-bottom:4.0pt;
+	margin-left:36.0pt;
+	text-indent:-36.0pt;
+	page-break-after:avoid;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+h4
+	{margin-top:6.0pt;
+	margin-right:0pt;
+	margin-bottom:4.0pt;
+	margin-left:72.0pt;
+	text-indent:-36.0pt;
+	page-break-after:avoid;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	font-style:italic;}
+h5
+	{margin-top:6.0pt;
+	margin-right:0pt;
+	margin-bottom:4.0pt;
+	margin-left:108.0pt;
+	text-indent:-36.0pt;
+	page-break-after:avoid;
+	font-size:10.0pt;
+	font-family:Arial;}
+h6
+	{margin-top:6.0pt;
+	margin-right:0pt;
+	margin-bottom:4.0pt;
+	margin-left:144.0pt;
+	text-indent:-36.0pt;
+	page-break-after:avoid;
+	font-size:10.0pt;
+	font-family:Arial;
+	font-style:italic;}
+p.MsoHeading7, li.MsoHeading7, div.MsoHeading7
+	{margin-top:4.0pt;
+	margin-right:0pt;
+	margin-bottom:3.0pt;
+	margin-left:180.0pt;
+	text-indent:-36.0pt;
+	page-break-after:avoid;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+p.MsoHeading8, li.MsoHeading8, div.MsoHeading8
+	{margin-top:4.0pt;
+	margin-right:0pt;
+	margin-bottom:3.0pt;
+	margin-left:216.0pt;
+	text-indent:-36.0pt;
+	page-break-after:avoid;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;
+	font-style:italic;}
+p.MsoHeading9, li.MsoHeading9, div.MsoHeading9
+	{margin-top:4.0pt;
+	margin-right:0pt;
+	margin-bottom:3.0pt;
+	margin-left:252.0pt;
+	text-indent:-36.0pt;
+	page-break-after:avoid;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;
+	font-style:italic;}
+p.MsoIndex1, li.MsoIndex1, div.MsoIndex1
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:36.0pt;
+	margin-bottom:.0001pt;
+	text-indent:-36.0pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoIndex2, li.MsoIndex2, div.MsoIndex2
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:54.0pt;
+	margin-bottom:.0001pt;
+	text-indent:-36.0pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoIndex3, li.MsoIndex3, div.MsoIndex3
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:72.0pt;
+	margin-bottom:.0001pt;
+	text-indent:-36.0pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoIndex4, li.MsoIndex4, div.MsoIndex4
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:90.0pt;
+	margin-bottom:.0001pt;
+	text-indent:-36.0pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoIndex5, li.MsoIndex5, div.MsoIndex5
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:108.0pt;
+	margin-bottom:.0001pt;
+	text-indent:-36.0pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoIndex6, li.MsoIndex6, div.MsoIndex6
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:90.0pt;
+	margin-bottom:.0001pt;
+	text-indent:-36.0pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoIndex7, li.MsoIndex7, div.MsoIndex7
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:108.0pt;
+	margin-bottom:.0001pt;
+	text-indent:-36.0pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoIndex8, li.MsoIndex8, div.MsoIndex8
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:126.0pt;
+	margin-bottom:.0001pt;
+	text-indent:-36.0pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoIndex9, li.MsoIndex9, div.MsoIndex9
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:144.0pt;
+	margin-bottom:.0001pt;
+	text-indent:-36.0pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoToc1, li.MsoToc1, div.MsoToc1
+	{margin-top:9.0pt;
+	margin-right:0pt;
+	margin-bottom:6.0pt;
+	margin-left:0pt;
+	font-size:12.0pt;
+	font-family:Arial;
+	font-weight:bold;}
+p.MsoToc2, li.MsoToc2, div.MsoToc2
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:18.0pt;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoToc3, li.MsoToc3, div.MsoToc3
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:36.0pt;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoToc4, li.MsoToc4, div.MsoToc4
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:54.0pt;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoToc5, li.MsoToc5, div.MsoToc5
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:72.0pt;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoToc6, li.MsoToc6, div.MsoToc6
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:90.0pt;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoToc7, li.MsoToc7, div.MsoToc7
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:108.0pt;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoToc8, li.MsoToc8, div.MsoToc8
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:126.0pt;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoToc9, li.MsoToc9, div.MsoToc9
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:144.0pt;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoFootnoteText, li.MsoFootnoteText, div.MsoFootnoteText
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:6.0pt;
+	margin-left:9.35pt;
+	text-indent:-9.35pt;
+	line-height:11.0pt;
+	font-size:9.0pt;
+	font-family:"Times New Roman";}
+p.MsoCommentText, li.MsoCommentText, div.MsoCommentText
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:6.0pt;
+	margin-left:9.35pt;
+	text-indent:-9.35pt;
+	line-height:11.0pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoHeader, li.MsoHeader, div.MsoHeader
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoFooter, li.MsoFooter, div.MsoFooter
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoIndexHeading, li.MsoIndexHeading, div.MsoIndexHeading
+	{margin-top:6.0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:0pt;
+	margin-bottom:.0001pt;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-weight:bold;}
+p.MsoCaption, li.MsoCaption, div.MsoCaption
+	{margin-top:6.0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:0pt;
+	font-size:9.0pt;
+	font-family:"Times New Roman";
+	font-style:italic;}
+p.MsoTof, li.MsoTof, div.MsoTof
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:36.0pt;
+	margin-bottom:.0001pt;
+	text-indent:-36.0pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+span.MsoFootnoteReference
+	{vertical-align:super;}
+span.MsoLineNumber
+	{font-family:Arial;}
+span.MsoPageNumber
+	{font-weight:bold;}
+span.MsoEndnoteReference
+	{vertical-align:super;}
+p.MsoEndnoteText, li.MsoEndnoteText, div.MsoEndnoteText
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:6.0pt;
+	margin-left:9.35pt;
+	text-indent:-9.35pt;
+	line-height:11.0pt;
+	font-size:9.0pt;
+	font-family:"Times New Roman";}
+p.MsoToa, li.MsoToa, div.MsoToa
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:18.0pt;
+	margin-bottom:.0001pt;
+	text-indent:-18.0pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoMacroText, li.MsoMacroText, div.MsoMacroText
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:6.0pt;
+	margin-left:0pt;
+	font-size:10.0pt;
+	font-family:"Courier New";}
+p.MsoToaHeading, li.MsoToaHeading, div.MsoToaHeading
+	{margin-top:6.0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:0pt;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-weight:bold;}
+p.MsoList, li.MsoList, div.MsoList
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:4.0pt;
+	margin-left:36.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoListBullet, li.MsoListBullet, div.MsoListBullet
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:36.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoListNumber, li.MsoListNumber, div.MsoListNumber
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:36.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoList2, li.MsoList2, div.MsoList2
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:4.0pt;
+	margin-left:54.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoList3, li.MsoList3, div.MsoList3
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:4.0pt;
+	margin-left:72.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoList4, li.MsoList4, div.MsoList4
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:4.0pt;
+	margin-left:90.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoList5, li.MsoList5, div.MsoList5
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:4.0pt;
+	margin-left:108.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoListBullet2, li.MsoListBullet2, div.MsoListBullet2
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:54.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoListBullet3, li.MsoListBullet3, div.MsoListBullet3
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:72.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoListBullet4, li.MsoListBullet4, div.MsoListBullet4
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:90.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoListBullet5, li.MsoListBullet5, div.MsoListBullet5
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:108.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoListNumber2, li.MsoListNumber2, div.MsoListNumber2
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:54.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoListNumber3, li.MsoListNumber3, div.MsoListNumber3
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:72.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoListNumber4, li.MsoListNumber4, div.MsoListNumber4
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:90.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoListNumber5, li.MsoListNumber5, div.MsoListNumber5
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:108.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoTitle, li.MsoTitle, div.MsoTitle
+	{margin-top:18.0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:0pt;
+	text-align:center;
+	page-break-after:avoid;
+	font-size:20.0pt;
+	font-family:Arial;
+	font-weight:bold;}
+p.MsoBodyText, li.MsoBodyText, div.MsoBodyText
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoBodyTextIndent, li.MsoBodyTextIndent, div.MsoBodyTextIndent
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoListContinue, li.MsoListContinue, div.MsoListContinue
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:36.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoListContinue2, li.MsoListContinue2, div.MsoListContinue2
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:54.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoListContinue3, li.MsoListContinue3, div.MsoListContinue3
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:72.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoListContinue4, li.MsoListContinue4, div.MsoListContinue4
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:90.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoListContinue5, li.MsoListContinue5, div.MsoListContinue5
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:108.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoSubtitle, li.MsoSubtitle, div.MsoSubtitle
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:12.0pt;
+	margin-left:0pt;
+	text-align:center;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-style:italic;}
+p.MsoDate, li.MsoDate, div.MsoDate
+	{margin-top:48.0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:0pt;
+	text-align:center;
+	line-height:200%;
+	font-size:14.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+p.AttentionLine, li.AttentionLine, div.AttentionLine
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;
+	font-style:italic;}
+p.Author, li.Author, div.Author
+	{margin-top:48.0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:0pt;
+	text-align:center;
+	line-height:200%;
+	font-size:14.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+p.BlockQuotation, li.BlockQuotation, div.BlockQuotation
+	{margin-top:0pt;
+	margin-right:36.0pt;
+	margin-bottom:8.0pt;
+	margin-left:36.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	font-style:italic;}
+p.BlockQuotationFirst, li.BlockQuotationFirst, div.BlockQuotationFirst
+	{margin-top:6.0pt;
+	margin-right:36.0pt;
+	margin-bottom:8.0pt;
+	margin-left:36.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	font-style:italic;}
+p.BlockQuotationLast, li.BlockQuotationLast, div.BlockQuotationLast
+	{margin-top:0pt;
+	margin-right:36.0pt;
+	margin-bottom:12.0pt;
+	margin-left:36.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	font-style:italic;}
+p.BodyTextKeep, li.BodyTextKeep, div.BodyTextKeep
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:0pt;
+	line-height:200%;
+	page-break-after:avoid;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.ChapterLabel, li.ChapterLabel, div.ChapterLabel
+	{margin-top:18.0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:0pt;
+	margin-bottom:.0001pt;
+	text-align:center;
+	page-break-after:avoid;
+	font-size:12.0pt;
+	font-family:Arial;
+	font-weight:bold;
+	text-decoration:underline;}
+p.ChapterSubtitle, li.ChapterSubtitle, div.ChapterSubtitle
+	{margin-top:18.0pt;
+	margin-right:0pt;
+	margin-bottom:18.0pt;
+	margin-left:0pt;
+	text-align:center;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-style:italic;}
+p.ChapterTitle, li.ChapterTitle, div.ChapterTitle
+	{margin-top:30.0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:0pt;
+	margin-bottom:.0001pt;
+	text-align:center;
+	page-break-after:avoid;
+	font-size:16.0pt;
+	font-family:Arial;
+	font-weight:bold;}
+p.DocumentLabel, li.DocumentLabel, div.DocumentLabel
+	{margin-top:12.0pt;
+	margin-right:0pt;
+	margin-bottom:18.0pt;
+	margin-left:0pt;
+	page-break-after:avoid;
+	font-size:18.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+p.FooterEven, li.FooterEven, div.FooterEven
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.FooterFirst, li.FooterFirst, div.FooterFirst
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	text-align:center;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.FooterOdd, li.FooterOdd, div.FooterOdd
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	text-align:right;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.FootnoteBase, li.FootnoteBase, div.FootnoteBase
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:9.35pt;
+	margin-bottom:.0001pt;
+	text-indent:-9.35pt;
+	line-height:11.0pt;
+	font-size:9.0pt;
+	font-family:"Times New Roman";}
+p.GlossaryDefinition, li.GlossaryDefinition, div.GlossaryDefinition
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:27.35pt;
+	text-indent:-27.35pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+span.GlossaryEntry
+	{font-weight:bold;}
+p.HeaderBase, li.HeaderBase, div.HeaderBase
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.HeaderEven, li.HeaderEven, div.HeaderEven
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.HeaderFirst, li.HeaderFirst, div.HeaderFirst
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	text-align:center;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.HeaderOdd, li.HeaderOdd, div.HeaderOdd
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	text-align:right;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.HeadingBase, li.HeadingBase, div.HeadingBase
+	{margin-top:12.0pt;
+	margin-right:0pt;
+	margin-bottom:6.0pt;
+	margin-left:0pt;
+	page-break-after:avoid;
+	font-size:18.0pt;
+	font-family:Arial;
+	font-weight:bold;}
+p.IndexBase, li.IndexBase, div.IndexBase
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:36.0pt;
+	margin-bottom:.0001pt;
+	text-indent:-36.0pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+span.Lead-inEmphasis
+	{font-weight:bold;
+	font-style:italic;}
+p.ListBulletFirst, li.ListBulletFirst, div.ListBulletFirst
+	{margin-top:4.0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:36.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.ListBulletLast, li.ListBulletLast, div.ListBulletLast
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:12.0pt;
+	margin-left:36.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.ListFirst, li.ListFirst, div.ListFirst
+	{margin-top:4.0pt;
+	margin-right:0pt;
+	margin-bottom:4.0pt;
+	margin-left:36.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.ListLast, li.ListLast, div.ListLast
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:12.0pt;
+	margin-left:36.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.ListNumberLast, li.ListNumberLast, div.ListNumberLast
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:12.0pt;
+	margin-left:36.0pt;
+	text-indent:-18.0pt;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.Name, li.Name, div.Name
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:0pt;
+	text-align:center;
+	line-height:200%;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.PartLabel, li.PartLabel, div.PartLabel
+	{margin-top:30.0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:0pt;
+	text-align:center;
+	page-break-after:avoid;
+	font-size:12.0pt;
+	font-family:Arial;
+	text-decoration:underline;}
+p.PartSubtitle, li.PartSubtitle, div.PartSubtitle
+	{margin-top:18.0pt;
+	margin-right:0pt;
+	margin-bottom:6.0pt;
+	margin-left:0pt;
+	text-align:center;
+	page-break-after:avoid;
+	font-size:16.0pt;
+	font-family:Arial;
+	font-style:italic;}
+p.PartTitle, li.PartTitle, div.PartTitle
+	{margin-top:30.0pt;
+	margin-right:0pt;
+	margin-bottom:6.0pt;
+	margin-left:0pt;
+	text-align:center;
+	page-break-after:avoid;
+	font-size:18.0pt;
+	font-family:Arial;
+	font-weight:bold;}
+p.Picture, li.Picture, div.Picture
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:0pt;
+	page-break-after:avoid;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.SectionHeading, li.SectionHeading, div.SectionHeading
+	{margin-top:6.0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:0pt;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-weight:bold;}
+p.SectionLabel, li.SectionLabel, div.SectionLabel
+	{margin-top:12.0pt;
+	margin-right:0pt;
+	margin-bottom:18.0pt;
+	margin-left:0pt;
+	text-align:center;
+	page-break-after:avoid;
+	font-size:18.0pt;
+	font-family:Arial;
+	font-weight:bold;}
+p.SubtitleCover, li.SubtitleCover, div.SubtitleCover
+	{margin-top:12.0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:0pt;
+	text-align:center;
+	page-break-after:avoid;
+	font-size:18.0pt;
+	font-family:Arial;
+	font-style:italic;}
+span.Superscript
+	{vertical-align:super;}
+p.TitleCover, li.TitleCover, div.TitleCover
+	{margin-top:36.0pt;
+	margin-right:0pt;
+	margin-bottom:8.0pt;
+	margin-left:0pt;
+	text-align:center;
+	page-break-after:avoid;
+	font-size:24.0pt;
+	font-family:Arial;
+	font-weight:bold;}
+p.TOCBase, li.TOCBase, div.TOCBase
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+@page Section1
+	{size:612.0pt 792.0pt;
+	margin:57.6pt 72.0pt 72.0pt 72.0pt;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0pt;}
+ul
+	{margin-bottom:0pt;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US>
+
+<div class=Section1>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:16.0pt'>CMSC 714 Midterm (Fall 2008)</span></b></p>
+
+<p class=MsoNormal><i><span style='font-size:12.0pt'>&nbsp;</span></i></p>
+
+<p class=MsoNormal style='text-align:justify'>(1) <span style='font-family:
+Arial'> This exam is closed book, closed notes, and closed neighbor.</span></p>
+
+<p class=MsoNormal style='text-align:justify'><span style='font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:18.0pt;text-align:justify;text-indent:
+-18.0pt'>(2) <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp; </span><span
+dir=LTR><span style='font-family:Arial'>You have 70 minutes to complete this
+exam.  If you finish early, you may turn in your exam at the front of the room
+and leave.  However if you finish during the last ten minutes of the exam
+please remain seated until the end of the exam so you don't disturb others.</span></span></p>
+
+<p class=MsoNormal style='text-align:justify'><span style='font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:18.0pt;text-align:justify;text-indent:
+-18.0pt'>(3) <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp; </span><span
+dir=LTR><span style='font-family:Arial'>Write all answers in the supplied exam
+booklet. Start each new problem (but not sub-problem) on a new page.</span></span></p>
+
+<p class=MsoNormal style='text-align:justify'><span style='font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:18.0pt;text-align:justify;text-indent:
+-18.0pt'>(4) <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp; </span><span
+dir=LTR><span style='font-family:Arial'>Partial credit will be given for most questions
+assuming I can figure out what you were doing.</span></span></p>
+
+<p class=MsoNormal style='text-align:justify'><span style='font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:18.0pt;text-align:justify;text-indent:
+-18.0pt'>(5) <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp; </span><span
+dir=LTR><span style='font-family:Arial'>Please write neatly. Print your answers
+if your handwriting is hard to read. If you write something, and wish to cross
+it out, simply put an X through it. </span></span></p>
+
+<h1 style='margin-left:0pt;text-indent:0pt'>1.<span dir=LTR> (25 points) Define
+and explain the following terms:</span></h1>
+
+<h2 style='text-indent:0pt'>A.<span dir=LTR> Data Parallelism</span></h2>
+
+<h2 style='text-indent:0pt'>B.<span dir=LTR> Space Sharing vs. Time Sharing</span></h2>
+
+<h2 style='text-indent:0pt'>C.<span dir=LTR> Multi-Grid</span></h2>
+
+<h2 style='text-indent:0pt'>D.<span dir=LTR> Owner Computes</span></h2>
+
+<h1 style='margin-left:0pt;text-indent:0pt'>2.<span dir=LTR> (20 points)  Scheduling</span></h1>
+
+<h2 style='text-indent:0pt'>A.<span dir=LTR> Explain why co-scheduling is
+important, and how it can be obtained explicitly or implicitly.</span></h2>
+
+<h2 style='text-indent:0pt'>B.<span dir=LTR> What is symbiotic space sharing
+and how can it improve system performance?</span></h2>
+
+<h1 style='margin-left:0pt;text-indent:0pt'>3.<span dir=LTR> (20 points)  Compare
+and contrast fat tree and 3-d torus networks in their ability to handle different
+types of message passing operations including: nearest neighbor, reduction, and
+all-to-all communication.</span></h1>
+
+<h1 style='margin-left:0pt;text-indent:0pt'>4.<span dir=LTR>(20 points)  Explain
+<b>three</b> issues that must be overcome when programming the Cell processor
+that are not present (or as significant) on a cluster of commodity workstations
+using MPI.</span></h1>
+
+<h1 style='margin-left:0pt;text-indent:0pt'>5.<span dir=LTR>(15 points)  Explain
+how Terra’s MTA is able to achieve good performance without caches. </span></h1>
+
+</div>
+
+</body>
+
+</html>

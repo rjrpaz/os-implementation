@@ -1,0 +1,468 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 11 (filtered)">
+<title>CMSC 412 Project #3 </title>
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:"MS Mincho";
+	panose-1:2 2 6 9 4 2 5 8 3 4;}
+@font-face
+	{font-family:"\@MS Mincho";
+	panose-1:0 0 0 0 0 0 0 0 0 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	font-family:"Times New Roman";}
+h1
+	{margin-right:0pt;
+	margin-left:0pt;
+	font-size:24.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+h2
+	{margin-right:0pt;
+	margin-left:0pt;
+	font-size:18.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+h3
+	{margin-right:0pt;
+	margin-left:0pt;
+	font-size:13.5pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+h4
+	{margin-right:0pt;
+	margin-left:0pt;
+	font-size:11.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+p
+	{margin-right:0pt;
+	margin-left:0pt;
+	font-size:11.0pt;
+	font-family:"Times New Roman";}
+pre
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Courier New";}
+tt
+	{font-family:"Courier New";}
+@page Section1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 54.0pt 72.0pt 54.0pt;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0pt;}
+ul
+	{margin-bottom:0pt;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US link=blue vlink=purple>
+
+<div class=Section1>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:18.0pt'>CMSC 412 Project #3</span></b><span style='font-size:
+18.0pt'> </span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:13.5pt'>Synchronization</span></b><span style='font-size:13.5pt'>
+</span><span style='font-size:12.0pt'><br>
+<b>Due Tuesday, March 23, at 6:00pm </b></span></p>
+
+<ul type=disc>
+ <li class=MsoNormal><b><span style='font-size:12.0pt'><a
+     href="grading.html">Grading
+     Criteria</a> </span></b></li>
+</ul>
+
+<p class=MsoNormal style='margin-left:36.0pt'><b><span style='font-size:13.5pt'>New
+user programs for testing in src/user/</span></b></p>
+
+<ul type=disc>
+ <li class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>semtest.c,
+     semtest1.c, semtest2.c, ping.c, pong.c</span><span style='font-size:12.0pt'>
+     </span></li>
+</ul>
+
+<p class=MsoNormal><b><span style='font-size:24.0pt'>Overview</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:12.0pt'>Synchronization
+Implementation</span></b><span style='font-size:12.0pt'>.&nbsp; You will
+implement semaphores, a simple synchronization primitive. In addition, you will
+provide user programs with semaphore-manipulating system calls.</span></p>
+
+<p class=MsoNormal><b><span style='font-size:24.0pt'>Semaphores</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>You will add system calls
+that provide user programs with semaphores, to enable thread synchronization
+among different threads. The system calls (on the user side) will be:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>int
+Open_Semaphore(const char *name, int ival)</span><span style='font-size:10.0pt;
+font-family:"Courier New"'><br>
+</span><span style='font-size:10.0pt;font-family:"Courier New"'>int P(int sem)</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><br>
+</span><span style='font-size:10.0pt;font-family:"Courier New"'>int V(int sem)</span><span
+style='font-size:10.0pt;font-family:"Courier New"'><br>
+</span><span style='font-size:10.0pt;font-family:"Courier New"'>int
+Close_Semaphore(int sem)</span></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:"Courier New"'>Open_Semaphore</span></b></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>Open_Semaphore(name,
+ival)</span><span style='font-size:12.0pt'> is a request by the current process
+to use a semaphore.&nbsp; The user gives a name for the semaphore, as well as
+the semaphore’s initial value, and will get back a <i>semaphore ID</i>, an
+integer between 0 and N - 1. The semaphore ID denotes a particular semaphore
+datastructure in the kernel, which you must implement.&nbsp; The semaphore ID
+is then passed by the user program to the operations P() and V(), described
+next, to wait or signal the associated semaphore.&nbsp; </span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>Your operating system should
+be able to handle <b>at least</b> 20 (thus N = 20) semaphores whose names may
+be <b>up to</b> 25 characters long. If there are no semaphores left (i.e.,
+there were N semaphores with unique names already given), ENOSPACE must be
+returned indicating an error.</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>The returned semaphore ID is
+chosen in one of two ways.</span></p>
+
+<ol start=1 type=1>
+ <li class=MsoNormal><span style='font-size:12.0pt'>If this is the first time </span><span
+     style='font-size:10.0pt;font-family:"Courier New"'>Open_Semaphore</span><span
+     style='font-size:12.0pt'> has been called for the given name, the kernel
+     should find and return an unused SID, and initialize the value of the
+     associated semaphore datastructure to </span><span style='font-size:10.0pt;
+     font-family:"Courier New"'>ival</span><span style='font-size:12.0pt'>.</span></li>
+ <li class=MsoNormal><span style='font-size:12.0pt'>If another thread has made
+     this system call with the same name, and the semaphore has not been
+     destroyed in the meantime (see below), you must return back the same
+     semaphore ID (</span><span style='font-size:10.0pt;font-family:"Courier New"'>sem</span><span
+     style='font-size:12.0pt'>) that was returned the first time. The parameter
+     </span><span style='font-size:10.0pt;font-family:"Courier New"'>ival</span><span
+     style='font-size:12.0pt'> is ignored in this case.</span></li>
+</ol>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>Think of a semaphore ID as
+like a file descriptor in UNIX: in that case, when you open a file, you get
+back a number (the file descriptor) that denotes that file.&nbsp; Subsequent
+read and write operations take that file descriptor as an argument, and the
+kernel figures out which file the number is associated with, and then performs
+the operations on that file.&nbsp; Just the same way, you will implement a
+semaphore datastructures within the kernel, and refer to them from user
+programs via their associated semaphore IDs.</span></p>
+
+<p class=MsoNormal><b><span style='font-size:12.0pt;font-family:"Courier New"'>P</span></b><b><span
+style='font-size:12.0pt'> and </span></b><b><span style='font-size:12.0pt;
+font-family:"Courier New"'>V</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>The </span><span
+style='font-size:10.0pt;font-family:"Courier New"'>P(sem)</span><span
+style='font-size:12.0pt'> system call is used to decrement the value of the
+semaphore associated with sempahore ID </span><span style='font-size:12.0pt;
+font-family:"Courier New"'>sem</span><span style='font-size:12.0pt'>.&nbsp;
+This operation is referred to as wait() in the text.&nbsp; Similarly, the </span><span
+style='font-size:10.0pt;font-family:"Courier New"'>V(sem)</span><span
+style='font-size:12.0pt'> system call is used to increment (signal() in the
+text) the value of the semaphore associated with </span><span style='font-size:
+12.0pt;font-family:"Courier New"'>sem</span><span style='font-size:12.0pt'>.</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>As you know, when P() is
+invoked using a semaphore ID whose associated semaphore's count is less than <span
+style='color:red'>or equal to</span> 0, the invoking process should
+block.&nbsp; To block a thread, you can use the </span><span style='font-size:
+10.0pt;font-family:"Courier New"'>Wait</span><span style='font-size:12.0pt'>
+function in the kernel. Each semaphore data structure will contain a thread
+queue for its blocked threads.&nbsp; The file </span><span style='font-size:
+10.0pt;font-family:"Courier New"'>thrqueue.h</span><span style='font-size:12.0pt'>
+provides an implementation of a thread queue. You should look at </span><span
+style='font-size:10.0pt;font-family:"Courier New"'>kthread.h</span><span
+style='font-size:12.0pt'> and </span><span style='font-size:10.0pt;font-family:
+"Courier New"'>kthread.c</span><span style='font-size:12.0pt'> to see how it is
+declared and used. To wake up one thread/all threads waiting on a given
+semaphore, i.e. because of a </span><span style='font-size:12.0pt;font-family:
+"Courier New"'>V()</span><span style='font-size:12.0pt'>, you can use </span><span
+style='font-size:10.0pt;font-family:"Courier New"'>Wake_Up_One()/Wake_Up()</span><span
+style='font-size:12.0pt'> routines from </span><span style='font-size:10.0pt;
+font-family:"Courier New"'>kthread.h</span><span style='font-size:12.0pt'>.</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>A process may only legally
+invoke P(sem) or V(sem) if sem was returned by a call to Open_Semaphore for
+that process (and the semaphore has not been subsequently destroyed).&nbsp; If
+this is not the case, these routines should return EINVALID.</span></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:"Courier New"'>Close_Semaphore</span></b></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>Close_Semaphore(sem)</span><span
+style='font-size:12.0pt'> should be called when a process is done using a
+semaphore; subsequent calls to P(sem) and V(sem) (and additional calls to
+Close_Semaphore(sem) by this process) will return EINVALID.</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>Once all processes using the
+semaphore associated with a given semaphore ID have called Close_Semaphore, the
+kernel datastructure for that semaphore can be destroyed.&nbsp; A simple way to
+keep track of when this should happen is to use a reference count.&nbsp; In
+particular, each semaphore datastructure can contain a count field, and each
+time a new process calls Open_Semaphore, the count is incremented.&nbsp; When
+Close_Semaphore is called, the count is decremented.&nbsp; When the count
+reaches 0, the semaphore can be destroyed. </span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>When a thread exits, the
+kernel should close any semaphores that the thread still has open. In your
+code, both the Sys_Close_Semaphore() function and at least some function
+involved in terminating user threads should be able to invoke the
+&quot;real&quot; semaphore-closing function. </span></p>
+
+<p class=MsoNormal><b><span style='font-size:18.0pt'>Notes</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>In order not to clobber
+syscall.c with too much functionality, you must put your semaphore
+implementation in two new files sem.h and sem.c.&nbsp; Semaphore operations
+need to be implemented within a critical section, so that operations execute
+atomically.<br>
+<br>
+Since you need to have multiple processes running concurrently to test the
+functionality you will implement, your shell should be able to launch processes
+in background.&nbsp; You can do as you did in either project 1 or 2.</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>In this, and other projects,
+you will rely heavily upon a list data structure. For this reason an
+implementation has been provided to you in </span><span style='font-size:10.0pt;
+font-family:"Courier New"'>list.h</span><span style='font-size:12.0pt'> file.
+Please familiarize yourself with its syntax and functionality. It could be a
+little tricky to understand the syntax since functions are written using </span><span
+style='font-size:10.0pt;font-family:"Courier New"'>#define</span><span
+style='font-size:12.0pt'>. Naturally you are always free to extend, modify, or
+write your own implementation that would better suit your needs. </span></p>
+
+<p class=MsoNormal><b><span style='font-size:24.0pt'>Summary: New System Calls</span></b></p>
+
+<table class=MsoNormalTable border=1 cellpadding=0 width=767 style='width:575.25pt;
+ border:outset 1.5pt'>
+ <tr>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><b><span style='font-size:12.0pt'>Identifier</span></b></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><b><span style='font-size:12.0pt'>Kernel Function</span></b></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><b><span style='font-size:12.0pt'>User Function</span></b></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><b><span style='font-size:12.0pt'>Effect</span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>SYS_OPEN_SEMAPHORE</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>int
+  Sys_Open_Semaphore(struct Interrupt_State* state)</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>int Open_Semaphore(const
+  char *name, int ival)</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>if <i>name</i> is longer
+  than 25 characters, return ENAMETOOLONG. <br>
+  if a semaphore with this <i>name</i> doesn't exist, create it and return its
+  SID; if it exists, return its SID; note that SID must be &gt;= 0 </span></p>
+  </td>
+ </tr>
+ <tr>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>SYS_P</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>int Sys_P(struct
+  Interrupt_State* state)</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>int P(int sem)</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>might block <br>
+  wait() semantics <br>
+  returns EINVALID if </span><span style='font-size:10.0pt;font-family:"Courier New"'>sem</span><span
+  style='font-size:12.0pt'> invalid <br>
+  returns 0 on success </span></p>
+  </td>
+ </tr>
+ <tr>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>SYS_V</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>int Sys_V(struct
+  Interrupt_State* state)</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>int V(int sem)</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><b><span style='font-size:12.0pt'>never</span></b><span
+  style='font-size:12.0pt'> blocks <br>
+  signal() semantics <br>
+  returns EINVALID if </span><span style='font-size:10.0pt;font-family:"Courier New"'>sem</span><span
+  style='font-size:12.0pt'> invalid <br>
+  returns 0 on success </span></p>
+  </td>
+ </tr>
+ <tr>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>SYS_CLOSE_SEMAPHORE</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>int
+  Sys_Close_Semaphore(struct Interrupt_State* state)</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>int Close_Semaphore(int
+  sem)</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><b><span style='font-size:12.0pt'>never</span></b><span
+  style='font-size:12.0pt'> blocks <br>
+  returns EINVALID if </span><span style='font-size:10.0pt;font-family:"Courier New"'>sem</span><span
+  style='font-size:12.0pt'> invalid <br>
+  returns 0 on success </span></p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal><b><span style='font-size:24.0pt'>Testing your code</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>The files we provided can be
+used to test your semaphores: </span></p>
+
+<ul type=disc>
+ <li class=MsoNormal><b><span style='font-size:12.0pt'>ping.c</span></b><span
+     style='font-size:12.0pt'> and <b>pong.c</b> create a nice effect when you
+     launch them concurrently: </span></li>
+</ul>
+
+<p class=MsoNormal style='margin-left:36.0pt'><span lang=PT-BR
+style='font-size:10.0pt;font-family:"Courier New"'>% /c/ping.exe &amp;</span><span
+lang=PT-BR style='font-size:12.0pt'> <br>
+</span><span lang=PT-BR style='font-size:10.0pt;font-family:"Courier New"'>%
+/c/pong.exe</span><span lang=PT-BR style='font-size:12.0pt'> </span></p>
+
+<p class=MsoNormal><b><span style='font-size:24.0pt'>Final Notes</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>We do not require that your
+earlier projects worked; you should be able to implement this project directly
+from the base kernel, without using the earlier kernel features.&nbsp; Perhaps
+a small exception to this is the convenience of background processes for
+testing purposes, but this is straightforward.&nbsp; However, the base kernel
+that we have provided will have some important system calls and other routines
+unimplemented.&nbsp; However, you can &quot;implement&quot; these routines by
+simply removing the TODO(&quot;...&quot;) and having them return 0.&nbsp; This
+goes for Sys_RegDeliver, Sys_Signal, and Check_Pending_Signal.<b><br>
+<br>
+</b>If you do choose to merge your kernel with the initial kernel for this
+project (preferred), here is a trick that may help you; it takes two steps: </span></p>
+
+<ol start=1 type=1>
+ <li class=MsoNormal><span style='font-size:12.0pt'>finding out the differences
+     between project 2 base and your project 2 implementation </span></li>
+ <li class=MsoNormal><span style='font-size:12.0pt'>integrating these changes
+     into the project 3 base </span></li>
+</ol>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>&nbsp;Let's assume in your
+home directory you have three directories: </span><span style='font-size:10.0pt;
+font-family:"Courier New"'>project2, project2-solution, project3</span><span
+style='font-size:12.0pt'>. </span></p>
+
+<ul type=disc>
+ <li class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>project2</span><span
+     style='font-size:12.0pt'> is the project 2 base </span></li>
+ <li class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>project2-solution</span><span
+     style='font-size:12.0pt'> is your implementation. </span></li>
+ <li class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>project3</span><span
+     style='font-size:12.0pt'> is the project 3 base</span></li>
+</ul>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>So let's find the
+implementation differences first: </span></p>
+
+<p class=MsoNormal style='margin-left:36.0pt;text-indent:-18.0pt'><span
+style='font-size:10.0pt;font-family:"Courier New"'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span dir=LTR><span style='font-size:10.0pt;font-family:"Courier New"'> </span></span></p>
+
+<p class=MsoNormal style='margin-left:36.0pt;text-indent:-18.0pt'><span
+style='font-size:10.0pt;font-family:"Courier New"'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span dir=LTR><span style='font-size:10.0pt;font-family:"Courier New"'>$
+cd ~/project2/src/geekos</span></span></p>
+
+<p class=MsoNormal style='margin-left:36.0pt;text-indent:-18.0pt'><span
+style='font-size:10.0pt;font-family:"Courier New"'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span dir=LTR><span style='font-size:10.0pt;font-family:"Courier New"'>$
+diff -u -r . ~/project2-solution/src/geekos &gt; ~/diff.patch </span></span></p>
+
+<ol start=4 type=1>
+ <li class=MsoNormal><span style='font-size:12.0pt'>And then integrate them
+     into project 3 base: </span></li>
+</ol>
+
+<p class=MsoNormal style='margin-left:36.0pt;text-indent:-18.0pt'><span
+style='font-size:10.0pt;font-family:"Courier New"'>5.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span dir=LTR><span style='font-size:10.0pt;font-family:"Courier New"'> </span></span></p>
+
+<p class=MsoNormal style='margin-left:36.0pt;text-indent:-18.0pt'><span
+style='font-size:10.0pt;font-family:"Courier New"'>6.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span dir=LTR><span style='font-size:10.0pt;font-family:"Courier New"'>$
+cd ~project3/src/geekos</span></span></p>
+
+<p class=MsoNormal style='margin-left:36.0pt;text-indent:-18.0pt'><span
+style='font-size:10.0pt;font-family:"Courier New"'>7.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span dir=LTR><span style='font-size:10.0pt;font-family:"Courier New"'>$
+patch -p0 &lt; ~/diff.patch </span></span></p>
+
+<p class=MsoNormal style='margin-left:36.0pt;text-indent:-18.0pt'><span
+style='font-size:10.0pt;font-family:"Courier New"'>8.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span dir=LTR><span style='font-size:10.0pt;font-family:"Courier New"'>$
+rm *orig</span></span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>You will likely get a few
+errors when doing this, particularly in kthread.c.&nbsp; This is because some
+functions that you changed to get project 2 to work have been changed in the
+base kernel for this project; for example, this may be the case for functions </span><span
+style='font-size:10.0pt;font-family:"Courier New"'>Make_Runnable</span><span
+style='font-size:12.0pt'> and </span><span style='font-size:10.0pt;font-family:
+"Courier New"'>Get_Next_Runnable</span><span style='font-size:12.0pt'>&nbsp;
+For these functions, integrate the code by hand.&nbsp; You can look at the
+generated </span><span style='font-size:10.0pt;font-family:"Courier New"'>.rej</span><span
+style='font-size:12.0pt'> files to see what parts of the merge didn't work out.</span></p>
+
+</div>
+
+</body>
+
+</html>

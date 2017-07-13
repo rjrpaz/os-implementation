@@ -1,0 +1,559 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns:st1="urn:schemas-microsoft-com:office:smarttags"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 11">
+<meta name=Originator content="Microsoft Word 11">
+<link rel=File-List href="mpi-project_files/filelist.xml">
+<title>CMSC 714 - Fall 2010 MPI Program</title>
+<o:SmartTagType namespaceuri="urn:schemas-microsoft-com:office:smarttags"
+ name="City"/>
+<o:SmartTagType namespaceuri="urn:schemas-microsoft-com:office:smarttags"
+ name="place"/>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Jeff Hollingsworth, with mods by Alan Sussman</o:Author>
+  <o:LastAuthor>hollings</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>24</o:TotalTime>
+  <o:Created>2010-09-16T12:45:00Z</o:Created>
+  <o:LastSaved>2010-09-16T12:45:00Z</o:LastSaved>
+  <o:Pages>1</o:Pages>
+  <o:Words>622</o:Words>
+  <o:Characters>3547</o:Characters>
+  <o:Company>University of Maryland</o:Company>
+  <o:Lines>29</o:Lines>
+  <o:Paragraphs>8</o:Paragraphs>
+  <o:CharactersWithSpaces>4161</o:CharactersWithSpaces>
+  <o:Version>11.6360</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:SpellingState>Clean</w:SpellingState>
+  <w:GrammarState>Clean</w:GrammarState>
+  <w:ValidateAgainstSchemas/>
+  <w:SaveIfXMLInvalid>false</w:SaveIfXMLInvalid>
+  <w:IgnoreMixedContent>false</w:IgnoreMixedContent>
+  <w:AlwaysShowPlaceholderText>false</w:AlwaysShowPlaceholderText>
+  <w:Compatibility>
+   <w:SelectEntireFieldWithStartOrEnd/>
+   <w:UseWord2002TableStyleRules/>
+   <w:UseFELayout/>
+  </w:Compatibility>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:LatentStyles DefLockedState="false" LatentStyleCount="156">
+ </w:LatentStyles>
+</xml><![endif]--><!--[if !mso]><object
+ classid="clsid:38481807-CA0E-42D2-BF39-B33AF135CC4D" id=ieooui></object>
+<style>
+st1\:*{behavior:url(#ieooui) }
+</style>
+<![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:"MS Mincho";
+	panose-1:2 2 6 9 4 2 5 8 3 4;
+	mso-font-alt:"\FF2D\FF33 \660E\671D";
+	mso-font-charset:128;
+	mso-generic-font-family:roman;
+	mso-font-format:other;
+	mso-font-pitch:fixed;
+	mso-font-signature:1 134676480 16 0 131072 0;}
+@font-face
+	{font-family:"\@MS Mincho";
+	panose-1:0 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:128;
+	mso-generic-font-family:roman;
+	mso-font-format:other;
+	mso-font-pitch:fixed;
+	mso-font-signature:1 134676480 16 0 131072 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0pt;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	mso-fareast-language:EN-US;}
+h2
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0pt;
+	margin-bottom:3.0pt;
+	margin-left:0pt;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:2;
+	font-size:14.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"MS Mincho";
+	mso-fareast-language:EN-US;
+	font-weight:bold;
+	font-style:italic;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+p
+	{mso-margin-top-alt:auto;
+	margin-right:0pt;
+	mso-margin-bottom-alt:auto;
+	margin-left:0pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	mso-fareast-language:EN-US;}
+pre
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Courier New";
+	mso-fareast-language:EN-US;}
+span.SpellE
+	{mso-style-name:"";
+	mso-spl-e:yes;}
+span.GramE
+	{mso-style-name:"";
+	mso-gram-e:yes;}
+@page Section1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 90.0pt 72.0pt 90.0pt;
+	mso-header-margin:36.0pt;
+	mso-footer-margin:36.0pt;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ @list l0
+	{mso-list-id:356547034;
+	mso-list-template-ids:-1027699500;}
+@list l0:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:36.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l0:level2
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:72.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:"Courier New";
+	mso-bidi-font-family:"Times New Roman";}
+@list l1
+	{mso-list-id:1853492191;
+	mso-list-template-ids:1416290722;}
+@list l1:level1
+	{mso-level-tab-stop:36.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l1:level2
+	{mso-level-tab-stop:72.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l2
+	{mso-list-id:2021811142;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-518072280 52438626 -878775834 -1734293058 43044656 309217458 984137730 -1787408878 1550883158 -572635830;}
+@list l2:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:36.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l2:level2
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:72.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:"Courier New";
+	mso-bidi-font-family:"Times New Roman";}
+@list l2:level3
+	{mso-level-tab-stop:108.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l2:level4
+	{mso-level-tab-stop:144.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l2:level5
+	{mso-level-tab-stop:180.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l2:level6
+	{mso-level-tab-stop:216.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l2:level7
+	{mso-level-tab-stop:252.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l2:level8
+	{mso-level-tab-stop:288.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l2:level9
+	{mso-level-tab-stop:324.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l3
+	{mso-list-id:2089497065;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-652678978 1685640726 -1579657138 716086636 -716558436 -924706774 1291495252 -1142934260 -2044176730 -1519762454;}
+@list l3:level1
+	{mso-level-tab-stop:36.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l3:level2
+	{mso-level-tab-stop:72.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l3:level3
+	{mso-level-tab-stop:108.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l3:level4
+	{mso-level-tab-stop:144.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l3:level5
+	{mso-level-tab-stop:180.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l3:level6
+	{mso-level-tab-stop:216.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l3:level7
+	{mso-level-tab-stop:252.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l3:level8
+	{mso-level-tab-stop:288.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l3:level9
+	{mso-level-tab-stop:324.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+ol
+	{margin-bottom:0pt;}
+ul
+	{margin-bottom:0pt;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0pt 5.4pt 0pt 5.4pt;
+	mso-para-margin:0pt;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-ansi-language:#0400;
+	mso-fareast-language:#0400;
+	mso-bidi-language:#0400;}
+</style>
+<![endif]--><!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="3074"/>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout></xml><![endif]-->
+</head>
+
+<body lang=EN-US link=blue vlink=purple style='tab-interval:36.0pt'>
+
+<div class=Section1>
+
+<p align=center style='text-align:center'><b>CMSC 714 – High Performance
+Computing<o:p></o:p></b></p>
+
+<p align=center style='text-align:center'>Fall 2010 - Programming Assignment</p>
+
+<p align=center style='text-align:center'><b>Due&nbsp;Thursday, Sep 23, 2010 @
+5:00 PM<o:p></o:p></b></p>
+
+<p><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>The purpose of this
+programming assignment is to gain experience in parallel programming and MPI.
+For this assignment you are to write a parallel implementation of a program to
+simulate the game of life. <o:p></o:p></span></p>
+
+<p><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>The game of life
+simulates simple cellular automata. The game is played on a rectangular board
+containing cells. At the start, some of the cells are occupied, the rest are
+empty. The game consists of constructing successive generations of the board.
+The rules for constructing the next generation from the previous one are:<o:p></o:p></span></p>
+
+<ol style='margin-top:0pt' start=1 type=1>
+ <ol style='margin-top:0pt' start=1 type=1>
+  <li class=MsoNormal style='mso-list:l3 level2 lfo3;tab-stops:list 72.0pt'><i><span
+      style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>death</span></i><span
+      style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>: cells with
+      0,1,4,5,6,7, or 8 neighbors die (0,1 of loneliness and 4-8 of over
+      population)<o:p></o:p></span></li>
+  <li class=MsoNormal style='mso-list:l3 level2 lfo3;tab-stops:list 72.0pt'><span
+      class=GramE><i><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>survival</span></i></span><span
+      style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>: cells with 2 or 3
+      neighbors survive to the next generation.<o:p></o:p></span></li>
+  <li class=MsoNormal style='mso-list:l3 level2 lfo3;tab-stops:list 72.0pt'><span
+      class=GramE><i><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>birth</span></i></span><span
+      style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>: an unoccupied cell
+      with 3 neighbors becomes occupied in the next generation.<o:p></o:p></span></li>
+ </ol>
+</ol>
+
+<p><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>For this project
+the game board has finite size. The x-axis starts at 0 and ends at <i>X_limit</i>-1
+(supplied on the command line). <span class=GramE>Likewise, the y-axis start at
+0 and ends at <i>Y_limit</i>-1 (supplied on the command line).</span><o:p></o:p></span></p>
+
+<p><b><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>INPUT<o:p></o:p></span></b></p>
+
+<p style='margin-left:36.0pt'><span style='font-size:11.0pt;mso-bidi-font-size:
+12.0pt'>Your program should read in a file containing the coordinates of the
+initial cells. Sample files are located <a
+href="life.data.1">life.data.1</a>
+and <a
+href="life.data.2">life.data.2</a>.
+You can also find many other sample patterns on the web (use your favorite
+search engine on &quot;game of life&quot; and/or &quot;<st1:City w:st="on"><st1:place
+ w:st="on">Conway</st1:place></st1:City>&quot;). The correct output for these
+files is located in <a
+href="life.data.1.out">life.data.1.out</a>
+and <a
+href="life.data.2.out">life.data.2.out</a>.<o:p></o:p></span></p>
+
+<p style='margin-left:36.0pt'><span style='font-size:11.0pt;mso-bidi-font-size:
+12.0pt'>Your program should take four command line arguments: the name of the
+data file, the number of generations to <span class=GramE>iterate,</span> <span
+class=SpellE><i>X_limit</i></span>, and <span class=SpellE><i>Y_limit</i></span>.<o:p></o:p></span></p>
+
+<p><b><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>OUTPUT<o:p></o:p></span></b></p>
+
+<p style='margin-left:36.0pt'><span style='font-size:11.0pt;mso-bidi-font-size:
+12.0pt'>Your program should print out one line (containing the x coordinate, a
+space, and then the y coordinate) for each occupied cell at the end of the last
+iteration. The output should go to standard output, and no additional output
+should be sent to standard output.<o:p></o:p></span></p>
+
+<p><b><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>HINTS<o:p></o:p></span></b></p>
+
+<p style='margin-left:36.0pt'><span style='font-size:11.0pt;mso-bidi-font-size:
+12.0pt'>The goal is not to write the most efficient implementation of Life, but
+rather to learn parallel programming with MPI.<o:p></o:p></span></p>
+
+<p style='margin-left:36.0pt'><span style='font-size:11.0pt;mso-bidi-font-size:
+12.0pt'>Figure out how you will decompose the problem for parallel execution.
+Remember that MPI (at least the <span class=SpellE>mpich</span> implementation)
+does not have great communication performance and so you will want to make
+message passing infrequent. Also, you will need to be concerned about load
+balancing.<o:p></o:p></span></p>
+
+<p style='margin-left:36.0pt'><span style='font-size:11.0pt;mso-bidi-font-size:
+12.0pt'>One you have decided how to decompose the problem, write the sequential
+version first.<o:p></o:p></span></p>
+
+<p><b><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>WHAT TO TURN IN<o:p></o:p></span></b></p>
+
+<p style='margin-left:36.0pt'><span style='font-size:11.0pt;mso-bidi-font-size:
+12.0pt'>You should submit your program and the times to run it on the input
+file <a
+href="final.data"><span
+class=SpellE>final.data</span></a> (for 1, 2, 4, 8, and 16 processes).<o:p></o:p></span></p>
+
+<p style='margin-left:36.0pt'><span style='font-size:11.0pt;mso-bidi-font-size:
+12.0pt'>You also must submit a short report about the results (1-2 pages) that
+explains:<o:p></o:p></span></p>
+
+<ul style='margin-top:0pt' type=disc>
+ <ul style='margin-top:0pt' type=circle>
+  <li class=MsoNormal style='mso-list:l2 level2 lfo6;tab-stops:list 72.0pt'><span
+      style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>what decomposition was
+      used <o:p></o:p></span></li>
+  <li class=MsoNormal style='mso-list:l2 level2 lfo6;tab-stops:list 72.0pt'><span
+      style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>how was load balancing
+      done <o:p></o:p></span></li>
+  <li class=MsoNormal style='mso-list:l2 level2 lfo6;tab-stops:list 72.0pt'><span
+      style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>what are the
+      performance results, and are they what you expected<o:p></o:p></span></li>
+ </ul>
+</ul>
+
+<p><b><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>Using MPI<o:p></o:p></span></b></p>
+
+<p><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>To get the login
+for your class account, use a web browser to go to grades.cs.umd.edu, and login
+using your campus directory ID.<span style='mso-spacerun:yes'>  </span>Once
+logged, it <span class=GramE>select</span> the option to get your class
+account.<o:p></o:p></span></p>
+
+<p><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>See the separate
+file <a href="http://www.cs.umd.edu/~hollings/cs714/f10/brood.html">http://www.cs.umd.edu/~hollings/cs714/f10/brood.html</a>
+for information on using the cluster.<o:p></o:p></span></p>
+
+<p><b><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>COMMAND LINE
+ARGUMENTS <o:p></o:p></span></b></p>
+
+<p><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>The command line
+arguments should be: <o:p></o:p></span></p>
+
+<pre><span style='font-size:11.0pt;mso-bidi-font-size:10.0pt'><span
+style='mso-tab-count:1'>       </span><span class=GramE>life</span> &lt; input file&gt; &lt;# of generations&gt; &lt; x limit&gt; &lt; y limit&gt;<o:p></o:p></span></pre>
+
+<p style='text-indent:36.0pt;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>The number of processes is
+specified as part of the <span class=SpellE>mpirun</span> command. <o:p></o:p></span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>GRADING<o:p></o:p></span></b></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>The project will be graded
+as follows:<span style='mso-tab-count:1'>  </span><o:p></o:p></span></p>
+
+<table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0
+ style='margin-left:30.2pt;border-collapse:collapse;border:none;mso-border-alt:
+ solid windowtext .5pt;mso-padding-alt:0pt 5.4pt 0pt 5.4pt'>
+ <tr style='mso-yfti-irow:0;mso-yfti-firstrow:yes'>
+  <td width=212 valign=top style='width:158.8pt;border:solid windowtext 1.0pt;
+  border-right:none;mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:
+  solid windowtext .5pt;mso-border-bottom-alt:solid windowtext .5pt;padding:
+  0pt 5.4pt 0pt 5.4pt'>
+  <p><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>Item<o:p></o:p></span></p>
+  </td>
+  <td width=56 valign=top style='width:41.8pt;border:solid windowtext 1.0pt;
+  border-left:none;mso-border-top-alt:solid windowtext .5pt;mso-border-bottom-alt:
+  solid windowtext .5pt;mso-border-right-alt:solid windowtext .5pt;padding:
+  0pt 5.4pt 0pt 5.4pt'>
+  <p><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>Pct<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:1'>
+  <td width=212 valign=top style='width:158.8pt;border:none;border-left:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-top-alt:solid windowtext .5pt;
+  mso-border-left-alt:solid windowtext .5pt;padding:0pt 5.4pt 0pt 5.4pt'>
+  <p><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>Correctly runs on
+  1 processor<o:p></o:p></span></p>
+  </td>
+  <td width=56 valign=top style='width:41.8pt;border:none;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-top-alt:solid windowtext .5pt;
+  mso-border-right-alt:solid windowtext .5pt;padding:0pt 5.4pt 0pt 5.4pt'>
+  <p><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>15 %<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:2'>
+  <td width=212 valign=top style='width:158.8pt;border:none;border-left:solid windowtext 1.0pt;
+  mso-border-left-alt:solid windowtext .5pt;padding:0pt 5.4pt 0pt 5.4pt'>
+  <p><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>Correctly runs on
+  16 processors<o:p></o:p></span></p>
+  </td>
+  <td width=56 valign=top style='width:41.8pt;border:none;border-right:solid windowtext 1.0pt;
+  mso-border-right-alt:solid windowtext .5pt;padding:0pt 5.4pt 0pt 5.4pt'>
+  <p><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>40%<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:3'>
+  <td width=212 valign=top style='width:158.8pt;border:none;border-left:solid windowtext 1.0pt;
+  mso-border-left-alt:solid windowtext .5pt;padding:0pt 5.4pt 0pt 5.4pt'>
+  <p><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>Performance on 1
+  processor<o:p></o:p></span></p>
+  </td>
+  <td width=56 valign=top style='width:41.8pt;border:none;border-right:solid windowtext 1.0pt;
+  mso-border-right-alt:solid windowtext .5pt;padding:0pt 5.4pt 0pt 5.4pt'>
+  <p><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>15%<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:4'>
+  <td width=212 valign=top style='width:158.8pt;border:none;border-left:solid windowtext 1.0pt;
+  mso-border-left-alt:solid windowtext .5pt;padding:0pt 5.4pt 0pt 5.4pt'>
+  <p><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>Speedup of
+  parallel version<o:p></o:p></span></p>
+  </td>
+  <td width=56 valign=top style='width:41.8pt;border:none;border-right:solid windowtext 1.0pt;
+  mso-border-right-alt:solid windowtext .5pt;padding:0pt 5.4pt 0pt 5.4pt'>
+  <p><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>20%<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:5;mso-yfti-lastrow:yes'>
+  <td width=212 valign=top style='width:158.8pt;border-top:none;border-left:
+  solid windowtext 1.0pt;border-bottom:solid windowtext 1.0pt;border-right:
+  none;mso-border-left-alt:solid windowtext .5pt;mso-border-bottom-alt:solid windowtext .5pt;
+  padding:0pt 5.4pt 0pt 5.4pt'>
+  <p><span class=SpellE><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>Writeup</span></span><span
+  style='font-size:11.0pt;mso-bidi-font-size:12.0pt'><o:p></o:p></span></p>
+  </td>
+  <td width=56 valign=top style='width:41.8pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-bottom-alt:solid windowtext .5pt;mso-border-right-alt:solid windowtext .5pt;
+  padding:0pt 5.4pt 0pt 5.4pt'>
+  <p><span style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>10%<o:p></o:p></span></p>
+  </td>
+ </tr>
+</table>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b><span
+style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>ADDITIONAL RESOURCES<o:p></o:p></span></b></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>For additional MPI
+information, see <a href="http://www.mpi-forum.org/">http://www.mpi-forum.org</a>
+(MPI API) and <a href="http://www-unix.mcs.anl.gov/mpi">http://www-unix.mcs.anl.gov/mpi</a>
+(for MPICH)<o:p></o:p></span></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+style='font-size:11.0pt;mso-bidi-font-size:12.0pt'>For more information about
+using the Maryland cluster PBS scheduler, see <a
+href="http://umiacs.umd.edu/labs/LPDC/classguide.htm">http://umiacs.umd.edu/labs/LPDC/classguide.htm</a>.<br>
+This page needs to be updated (path names are not correct for the current Linux
+environment), which should happen soon.</span></p>
+
+<span style='font-size:12.0pt;font-family:"Times New Roman";mso-fareast-font-family:
+"Times New Roman";mso-ansi-language:EN-US;mso-fareast-language:EN-US;
+mso-bidi-language:AR-SA'><br clear=all style='mso-special-character:line-break;
+page-break-before:always'>
+</span>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
+
+<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
+
+</div>
+
+</body>
+
+</html>

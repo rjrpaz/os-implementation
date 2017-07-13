@@ -1,0 +1,150 @@
+Chapter 14 Mass Storage
+
+  Characterizing storage
+    Access time, Capacity, Volatile/nonvolatile, expandable/fixed,
+      removable
+    Examples: registers, cache, RAM, Disk, CD, Tape
+
+  Disk: accessed largely through the file system
+    stores kernel, programs, data ...
+
+  Partitions
+    Booting from boot block, stored on disk
+      Bootstrap program (BIOS) loads boot block "second-stage loader"
+      (mini-OS) that aims to load the actual OS.  Like Grub, LILO,
+      Windows XP OS loader ...
+
+  Disk operations
+    read: (just like normal I/O---request + interrupt)
+    write: (request + copy data to controller (or use DMA))
+
+  Disk organization
+    disk arm + head; seek operation
+    tracks/cylinders
+      consist of sectors/blocks (512 b)
+      address via LBA typically (each block given logical number)
+      data stored is contents, checksum, number
+  
+  Performance
+    seek time: 8ms, rotational delay: 4ms
+    2 GHz CPU does 1.6 million cycles in 8ms!
+    transfer rate high (10-100 MB/sec)
+
+    Notes: outer tracks vs. inner tracks: more blocks.  bad blocks
+
+  Goal: scheduling for performance
+    minimize seek time (rot. latency?)
+    algorithms
+      FCFS
+      SSTF - starvation on edges
+      SCAN - penalizes outer cylinders
+      C-SCAN - one direction.  uniform, but less eff.
+      LOOK, C-LOOK - not whole disk, ASAP.  tradeoff?
+    disk batching
+      multiple requests to disk can fix rot. delay
+
+  RAID
+    redundant array of independent disks
+      striping, shadowing for
+      throughput, reliability
+      MTBF 10^6 hours == m
+      N disks, MTBF m/N that one will fail.
+        need redundancy if we've striped the data.
+
+    raid0 : non-redundant striping
+    raid1 : mirrored disks (1/1 overhead)
+    raid2 : striping plus parity bits (4/3 overhead)
+    raid4 : block-interleaving parity
+            raid0 + parity block disk.  this plus three other
+            disks to restore block on failed disk.
+            reads ok.  slows writes
+    raid5 : distributes parity among all disks, not just 1.
+            avoids overuse of single disk.
+    raid0+1 : ...
+
+  Removable storage:
+    tapes, cds, zips, etc.
+
+  Problems: 14.2, 14.10, 14.16, 14.17, 14.30
+
+Chapter 13 I/O subsystems
+
+  Buses
+    IO ports (addresses for controllers on the bus)
+  Polling vs. Interrupts
+    Maskable vs. non-maskable interrupts
+    Interrupt priority levels
+  Programmed I/O vs. DMA
+  Device types
+    character vs. block
+    sequential vs. random-access
+    sharable vs. dedicated
+    speed
+    read/write, read-only, write-only
+  I/O subsystem
+    syscalls, kernel, device drivers
+    object-oriented implementation
+  Devices
+    keyboard, network card, clock, 
+  Blocking vs. Nonblocking I/O vs. Async
+  I/O Duties
+    scheduling, buffering, caching, spooling
+    device reservation
+  Performance costs
+    driver, context-switches, data copying
+
+  Problems 13.2, 13.4, 13.10
+
+Chapter 18: Protection
+
+  Protection vs. Security
+    prot: ensure each object is accessed correctly and only by
+    authorized processes.
+  Principle of Least Privilege (need to know)
+  Domains
+    objects, access-rights
+  Process executes in a domain
+    can switch domains, expand rights of domain
+  UNIX domains: supervisor, various users
+  Access Matrix
+    rights:
+      read/write, etc.
+      owner
+      copy
+      control
+      transfer
+  Access Control vs. Information flow
+  ACL vs. Capabilities
+    tradeoffs, combination
+  Language-based Protection
+    memory safety, stack inspection
+  Small TCB
+    who do you trust?
+
+  Problems: 18.1, 18.5, 18.7, 18.11
+
+Chapter 19: Security
+
+  External users
+  Authentication
+    extension from initial process
+    passwords, UNIX
+      one-time
+    biometric data
+  Computer-User AUth
+  Threats
+    Trojan Horse, Trap door, overflow
+  Attacks
+    worms, viruses, denial-of-service (net)
+  Monitoring
+    vulernabilities, integrity
+    firewall
+    IDS
+      anomaly vs. signature
+      what data stream?  logs, net, syscalls
+  encryption
+    pub vs. symmetric
+    signatures
+    SSL
+  
+  Problems: 19.7, 19.8

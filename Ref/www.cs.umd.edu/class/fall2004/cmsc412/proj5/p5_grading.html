@@ -1,0 +1,255 @@
+<html>
+<head><title>CMSC412 Project 5 Grading Criteria</title>
+
+</head>
+
+
+<body><center><b>Project 5 Grading Criteria</b></center></p>
+
+<ol>
+
+
+<li> <b>File Operations</b> using <tt>/c/p5test.exe</tt><br>
+<br>
+<tt>p5test.exe</tt> tests the following functionality.<br>
+<br>
+<table border=1>
+<tr>
+<td> <b>Functionality</b> </td>
+<td> <b>Behavior</b>      </td>
+<td> <b>Weightage</b>     </td>
+</tr>
+
+
+<tr>
+<td> <tt>Format</tt> </td>
+<td>  formats the IDE drive 1 to support GOSFS</td>
+<td>  3 </td>
+</tr>
+
+<tr>
+<td> <tt>Mount</tt> </td>
+<td> mounts IDE drive 1 to /d  </td>
+<td> 1 </td>
+</tr>
+
+<tr>
+<td>  <tt>Open-Inexistent file</tt> </td>
+<td>  Tries to open an inexsitent file. <tt>Open</tt> should return -1 if file does not exist</td>
+<td>  1</td>
+</tr>
+
+<tr>
+<td> <tt>Creat</tt> </td>
+<td>  <tt>Open</tt>s and <tt>Close</tt>s a new file. File descriptor returned by <tt>Open</tt> and return value of <tt>Close</tt> should be non-negative</td>
+<td>  2</td>
+</tr>
+
+<tr>
+<td>  <tt>Creat-Long Filename</tt></td>
+<td>  <tt>Open</tt>s and <tt>Close</tt>s a file with a long name (~33 bytes).  File descriptor returned by <tt>OPen</tt> and return value of <tt>Close</tt> should be non-negative</td></td>
+<td>  3</td>
+</tr>
+
+<tr>
+<td> <tt>Creat-Inexistent Path</tt> </td>
+<td> Tries to <tt>Open</tt> a non-existent path in a non-existent directory. <tt>Open</tt> must return -1 in this case </td>
+<td> 3 </td>
+</tr>
+
+<tr>
+<td>  <tt>Basic Read/Write</tt> </td>
+<td>  <tt>Open</tt>s a file, <tt>Write</tt>s to it, <tt>Close</tt> it and then <tt>Opens</tt>s it again, <tt>Read</tt>s from the file and finally <tt>Close</tt>s the file. Return values of successful <tt>Read</tt> and <tt>Write</tt>s should be non-negative</td>
+<td>  5 </td>
+</tr>
+
+<tr>
+<td> <tt>Read from WriteOnly</tt> </td>
+<td> Creates and writes to a file and then attempts to <tt>Read</tt> in a file <tt>Open</tt>ed with only <tt>O_WRITE</tt> set. <tt>Read</tt> must return -1 if file is opened in write only mode.</td>
+<td>  3</td>
+</tr>
+
+<tr>
+<td> <tt>Write to ReadOnly</tt> </td>
+<td> Creates and writes to a file and then attempts to <tt>Write</tt> in a file <tt>Open</tt>ed with only <tt>O_READ</tt> set. <tt>Write</tt> must return -1 if file is opened in read only mode. </td>
+<td> 3 </td>
+</tr>
+
+<tr>
+<td><tt>Close Twice</tt>  </td>
+<td> <tt>Open</tt>s a file, <tt>Close</tt>s it and then calls <tt>Close</tt> on the same file again. The final <tt>Close</tt> should return -1 in this case</td>
+<td> 3 </td>
+</tr>
+
+<tr>
+<td> <tt>Close Illegal FD</tt> </td>
+<td> Calls <tt>Close</tt> on an invalid file descriptor. In this case, <tt>Close</tt> should return -1</td>
+<td>  1</td>
+</tr>
+
+<tr>
+<td> <tt>Basic Delete</tt>  </td>
+<td>  <tt>Create</tt>s a file and calls <tt>Delete</tt> on it. A successful <tt>Delete</tt> should return a non-negative number.</td>
+<td> 3 </td>
+</tr>
+
+<tr>
+<td> <tt>Delete-Inexistent File</tt> </td>
+<td>  Attempts to </tt>Delete</tt> a non-existent file. <tt>Delete</tt> on non-existent files must return -1</td>
+<td>1  </td>
+</tr>
+
+<tr>
+<td> <tt>Basic Create Directory</tt> </td>
+<td>  Creates a single directory ("/d/dir1d"). Upon success, the return value of <tt>CreateDirectory</tt> should be non-negative</td>
+<td> 3 </td>
+</tr>
+
+<tr>
+<td> <tt>Recursively Create Directory</tt> </td>
+<td>  Creates nested directories ("/d/dir2d/dir3d"). Both directories should be created and return value for <tt>CreateDirectory</tt> must be non-negative.</td>
+<td>  5</td>
+</tr>
+
+<tr>
+<td> <tt>Create File in Recursively Created Directory</tt> </td>
+<td>  <tt>Open</tt>s and <tt>Close</tt>s a file in the last directory created above. File descriptor returned by <tt>Open</tt> must be non-negative</td>
+<td>  3</td>
+</tr>
+
+
+<tr>
+<td> <tt>Basic Seek</tt> </td>
+<td>  <tt>Open</tt>s a new file, <tt>Write</tt>s to it and calls <tt>Seek</tt> for two locations. Successful <tt>Seek</tt>s must return a non-negative number</td>
+<td> 2 </td>
+</tr>
+
+
+<tr>
+<td> <tt>Seek w/ Reread</tt> </td>
+<td> <tt>Open</tt>s a new file, <tt>Write</tt>s to it, calls <tt>Seek</tt> for two locations and checks the data at those locations. </td>
+<td>5  </td>
+</tr>
+
+
+<tr>
+<td> <tt>Basic Stat</tt> </td>
+<td> Creates a new file and calls <tt>Stat</tt> on it. Succeful completion of a <tt>Stat</tt> call must return a non-negative number </td>
+<td>  2</td>
+</tr>
+
+<tr>
+<td> <tt>Stat-File</tt> </td>
+<td> <tt>Open</tt>s a file, <tt>Write</tt>s some data to it and calls <tt>Stat</tt>. Return value of <tt>Stat</tt> should be non-negative and the <tt>fileStat</tt> structure filled by <tt>Stat</tt> should have correct size. </td>
+<td> 2 </td>
+</tr>
+
+<tr>
+<td> <tt>Stat-Directory</tt> </td>
+<td> Creates a directory and calls <tt>Stat</tt> on it. Return value of <tt>Stat</tt> should be non-negative and the <tt>fileStat</tt> structure filled by <tt>Stat</tt> should have the <tt>isDirectory</tt> field set </td>
+<td>  2</td>
+</tr>
+
+
+<tr>
+<td> <tt>Delete Empty Directory</tt> </td>
+<td>  Calls <tt>CreateDirectory</tt> and then tries to <tt>Delete</tt> the directory created. Successful completion of <tt>Delete</tt> must return a non-negative value</td>
+<td> 3 </td>
+</tr>
+
+<tr>
+<td> <tt>Delete Non-Empty Directory</tt> </td>
+<td>  Calls <tt>CreateDirectory</tt>, creates a file in this directory and then tries to <tt>Delete</tt> that directory. Calling <tt>Delete</tt> on non-empty directories must fail and return -1.
+<td> 2 </td>
+</tr>
+
+
+<tr>
+<td> <tt>10k Write/Reread</tt> </td>
+<td>  <tt>Open</tt>s a file, <tt>Write</tt>s 10KB of data into it, <tt>Read</tt>s back the data and performs data check.</td>
+<td> 5 </td>
+</tr>
+
+<tr>
+<td> <tt>100k Write/Reread</tt> </td>
+<td>  <tt>Open</tt>s a file, <tt>Write</tt>s 100KB of data into it, <tt>Read</tt>s back the data and performs data check.</td>
+<td> 7 </td>
+</tr>
+<tr>
+
+<td> <tt>Read Entry</tt> </td>
+<td>  Creates a directory with some children, then uses sequential <tt>Read_Entry</tt>, 
+and <tt>Seek</tt> on a directory to check <tt>Read_Entry</tt></td>
+<td> 4 </td>
+</tr>
+
+
+<tr>
+<td> <tt>5 MB Write</tt> </td>
+<td>  <tt>Open</tt>s and <tt>Write</tt>s 5MB of data into a file. This tests the implementation of the double indirect block. Successful <tt>Write</tt>s should return a non negative number</td>
+<td>  8</td>
+</tr>
+
+
+<tr>
+<td>TOTAL</td>
+<td></td>
+<td> 85 </td>
+</tr>
+
+
+</table>
+
+<br>
+<br>
+Executing <tt>p5test.exe</tt> will run through each of these. The ouput will be lines with the functionality listed in
+the first column, the output (PASSED/FAILED) and the score of the particular test.
+
+Correct implementation is worth <font color=blue>85</font> points. </p>
+
+<li> <b>File Persistence</b> using <tt>write.exe</tt> and <tt>cat.exe</tt> <br>
+At the shell prompt, typing:</p>
+
+<pre> /c/write.exe </pre>
+
+should output
+<pre>
+Formatting...
+Mounting...
+Mounted file system on drive 1 of type gosfs onto /d
+Writing...
+Wrote file /d/testWrite
+Sync...
+Done sync
+</pre>
+
+Then shutting down bochs, then running it again and typing:</p>
+
+<pre> /c/mount.exe ide1 /d gosfs
+ /c/cat.exe /d/testWrite </pre>
+
+should output
+<pre>
+Mounted file system on drive 1 of type gosfs onto /d
+Hello.  If you see this your write works.
+</pre>
+
+Correct implementation is worth <font color=blue>15</font> points. </p>
+<hr>
+<font color=red><b>Obviously, when grading, we will use the above programs but change names for files/directories (<tt>p5test.exe</tt>) and test string (<tt>write.exe/cat.exe</tt>)</b></font>
+<p>
+<font color=red><b>If you can not get some tests working you have the option of not testing them.  With your submission
+include a TESTING file that says which tests in <tt>p5test.exe</tt> we should exclude. That comes in handy if one of the tests negatively affects the outcome of subsequent ones. The second test using <tt>write.exe/cat.exe</tt> will still be performed.</b></font>
+</p>
+
+<hr>
+
+  <script language="JavaScript">
+          <!---//hide script from old browsers
+          var theDate = new Date(document.lastModified);
+	  var theLocalDate = theDate.toLocaleString();
+          document.write( "<hr><i>Last updated: "+ theLocalDate +"</i>");
+          //end hiding contents --->
+  </script>
+</body>
+</html>

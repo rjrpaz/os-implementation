@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Lecture 10</title>
+</head>
+<body>
+<h1>CS 420 - Lecture 10<br>
+</h1>
+<h2>CPU Scheduling Continued<br>
+</h2>
+<h3>Context switch overhead<br>
+</h3>
+<p>Recall that there is some overhead associated with doing a context
+switch.&nbsp; It is the time needed to<br>
+</p>
+<ol>
+  <li>Save register context of current process</li>
+  <li>Handle the interrupt</li>
+  <li>Choose a new process to run<br>
+  </li>
+  <li>Restore register context of new process</li>
+</ol>
+<p>A typical software context switch will result in the execution of
+hundreds or thousands of instructions.&nbsp; Also, some additional CPU
+state (such as data residing in a hardware cache, and information
+associated with the original process's page table) may need to be
+discarded, costing some additional time.<br>
+</p>
+<p>This overhead affects the choice of the scheduling quantum.&nbsp; A
+small quantum is good because it minimizes waiting time.&nbsp; However,
+more frequent context switches increases the context switch overhead,
+meaning that processes spend less time doing useful work.<br>
+</p>
+<p>Approaches to this problem:<br>
+</p>
+<p style="margin-left: 40px; text-align: left;"><span
+ style="font-weight: bold;">Hardware register contexts</span>:&nbsp;
+Context switches are done directly by the CPU.&nbsp; Register contexts
+are stored in special high-speed memory.&nbsp; Examples: old Sun
+workstations (and maybe new ones too?)</p>
+<p>Recent trends<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Faster
+CPUs</span>: CPUs are getting faster and faster.&nbsp; Because the cost
+of a context switch is fixed with respect to number of instructions
+executed, the relative cost of context switches is decreasing.&nbsp;
+So, a smaller quantum may not increase context switch overhead very
+much.&nbsp; (Caveat: the costs associated with caching and MMU state
+have not really improved, so number of instructions isn't really a very
+good measure of context switch overhead.)&nbsp; Example: Linux
+historically has used 100 ms as its quantum.&nbsp; Recent
+experimentation with smaller values (e.g., 10 ms) have shown that the
+increase in overhead is not too great.<br>
+</p>
+<div style="margin-left: 40px;">
+<p><span style="font-weight: bold;">Hardware
+multithreading</span>: A major trend in CPU design is hardware
+multithreading, where each CPU core is designed to execute a number of
+processes (e.g. 4)&nbsp; at a time.&nbsp; The CPU works by executing
+one instruction at a time from each active process in round-robin
+fashion.</p>
+</div>
+<h2>Multilevel Queue Scheduling</h2>
+<p>When there are distinct classes of processes.&nbsp; Each process is
+associated with its own queue.<br>
+</p>
+<p>Each queue can have its own scheduling algorithm: FCFS, RR,
+priority, etc.&nbsp; This allows each class of process to be allocated
+to a queue that ensures that its needs are met.&nbsp; For example,
+interactive processes can be assigned to a higher-priority queue with a
+short quantum to ensure that response time is low.<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/mqs.png"
+ style="width: 50%;"><br>
+</p>
+<p>One question is how to divide CPU time between the queues.&nbsp;
+Possibilities:</p>
+<ol>
+  <li>Strict priority (e.g.: this is important if a realtime class is
+supported).&nbsp; Starvation is a problem.<br>
+  </li>
+  <li>Proportional allocation (e.g., one class guaranteed 60% of the
+CPU time, another 20%, etc.).<br>
+  </li>
+</ol>
+<h2>Multilevel Feedback Queue Scheduling<br>
+</h2>
+<p>Strict multilevel queue scheduling is simple to implement, but is
+inflexible.&nbsp; The problem is that the "class" of a process may
+change over time.&nbsp; For example, the application might require
+periods of interactivity, but also have periods of computation.<br>
+</p>
+<p>Idea with MFQS is to allow processes to move between queues as their
+dynamic characteristics change.<br>
+</p>
+<p>Example:<br>
+</p>
+<p>Processes that generally do not use their entire quantum because
+they request IO frequently are classified as I/O bound.&nbsp;
+(Interactive processes will generally fall into this category.)&nbsp;
+They should be allocated to a higher-priority queue with a shorter
+quantum.<br>
+</p>
+<p>Processes that regularly use their entire quantum are classified as
+CPU-bound.&nbsp; They should be allocated to a higher-priority queue
+with a longer quantum.<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/mfqs.png"
+ style="width: 50%;"><br>
+</p>
+<p>Priority can be used to schedule processes within a queue.&nbsp;
+Aging can be used to boost the priority of processes that have not been
+scheduled recently, to prevent starvation.<br>
+</p>
+<h2>Multiprocessor Scheduling</h2>
+<p>Scheduling on a system with multiple processors makes the picture
+more complex.<br>
+</p>
+<p>Two issues:<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Processor
+affinity</span>: As a process runs on a given physical CPU, it will
+tend to build up state on that processor: e.g., data in the processor's
+cache.&nbsp; For this reason, it is more efficient to reschedule a
+process on a CPU that it has run on recently than to move it to a
+different CPU.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Load
+balancing</span>: We do not want to leave any CPUs idle.&nbsp;
+Therefore, processes must be able to move from one CPU to another to
+ensure full utilization.<br>
+</p>
+<p>Obviously, these goals contradict each other to some degree.<br>
+</p>
+<p>One possible solution: each CPU has its own run queue and is
+scheduled independently.&nbsp; A CPU that becomes idle will steal a
+process from another CPU's run queue.<br>
+</p>
+<p>The situation is made even more complex by symmetric multithreading,
+where multiple logical CPUs share some resources with each other, e.g.,
+an L1 cache.&nbsp; This makes it less expensive to move a process
+betwen logical CPUs on the same pysical processor than between logical
+CPUs on different physical processors.&nbsp; E.g., hyperthreading in
+recent Intel CPUs.<br>
+</p>
+<p>In "Dual core" CPUs, the cores are more like independent CPUs.&nbsp;
+For example they have their own L1 caches and (generally) as much L2
+cache per core as a normal "single core" CPU.<br>
+</p>
+<h2>Scheduler Implementation<br>
+</h2>
+<p>The implementation of the scheduler in the OS kernel boils down to
+three main parts:<br>
+</p>
+<p style="margin-left: 40px;">The <span style="font-style: italic;">dispatcher</span>
+is the code that activates a waiting process by restoring its register
+context.&nbsp; The amount of time needed to activate a process is the <span
+ style="font-style: italic;">dispatch latency</span>.<br>
+</p>
+<p style="margin-left: 40px;">The <span style="font-style: italic;">run
+queue</span> data structure is the data structure used to store
+processes that are in the ready state.&nbsp; Note that this data
+structure is not necessarily a queue, and doesn't really behave like
+one in the strict sense.<br>
+</p>
+<p style="margin-left: 40px;">The <span style="font-style: italic;">scheduler</span>
+is the code that decides, when a CPU is available, which process to
+activate.&nbsp; This is where the scheduling algorithm per se is
+implemented.<br>
+</p>
+<p>Obviously, these components are related.&nbsp; For example, the run
+queue data structure is generally written so that the scheduler can
+find the process that will run next quickly.<br>
+</p>
+<p>For example: say that we have a static priority scheduler.&nbsp;
+What would be a good data structure to use for the run queue?<br>
+</p>
+<p style="margin-left: 40px;">We want to be able to find the
+highest-priority process quickly and remove it.&nbsp; We also want to
+be able to quickly insert a process.<br>
+</p>
+<p>The design of the run queue data structure is a complex topic, and
+an area of active research.<br>
+</p>
+<p style="margin-left: 40px;">E.g. the O(1) scheduler in Linux.&nbsp;
+Can insert a process, pick the highest priority process, and update the
+priority of a ready process, all in constant (O(1)) time.<br>
+</p>
+<p>
+</p>
+<h2>Scheduling in GeekOS<br>
+</h2>
+<p>We have talked a bit about the dispatcher in GeekOS in the
+discussion of how interrupts are handled.&nbsp; There are two ways that
+kernel threads are dispatched in GeekOS.&nbsp; The <span
+ style="font-weight: bold;">Switch_To_Thread</span> function in
+lowlevel.asm is used when a kernel thread voluntarily relinquishes the
+CPU: either because it is waiting and has been moved to a wait queue,
+or it used a complete quantum and has been moved to the run
+queue.&nbsp; The <span style="font-weight: bold;">Handle_Interrupt</span>
+function also does thread dispatch, because when the interrupt or
+system call handler has completed, the thread will eventually run again.<br>
+</p>
+<p>The variable <span style="font-weight: bold;">g_currentThread</span>
+in kthread.c always points to the Kernel_Thread data structure (PCB) of
+the kernel thread that is currently executing on the CPU.<br>
+</p>
+<p>The variable <span style="font-weight: bold;">g_needReschedule</span>
+in kthread.c controls whether or not the Handle_Interrupt function will
+suspend the current kernel thread and choose a new thread to run after
+the interrupt handler completes.&nbsp; Essentially, it is a
+notification to the dispatcher that it is time to suspend the current
+kernel thread and choose a new kernel thread to run.<br>
+</p>
+<p style="margin-left: 40px;">[Look at the interrupt handler for the
+timer interrupt.&nbsp; Observe <span style="font-weight: bold;">g_needReschedule</span>
+being set to true.]<br>
+</p>
+<p>The run queue is the <span style="font-weight: bold;">s_runQueue</span>
+variable in kthread.c.&nbsp; Its type is Thread_Queue, which is a
+doubly-linked list of Kernel_Thread objects.&nbsp; The threads are not
+stored in any order.&nbsp; (This means that picking the
+highest-priority thread is an O(n) worst case operation.)<br>
+</p>
+<p>The <span style="font-weight: bold;">Get_Next_Runnable</span>
+function in kthread.c is responsible for picking and removing the
+"best" thread from the run queue.&nbsp; This is the function that is
+called from the dispatch code when it is time to pick a new thread to
+run.<br>
+</p>
+<p>The <span style="font-weight: bold;">Find_Best</span> function in
+kthread.c is responsible for picking the best thread from the run
+queue.&nbsp; It chooses the highest-priority thread from the
+queue.&nbsp; If there are multiple threads with the same priority, it
+will pick the first one.&nbsp; Because threads are always added to the <span
+ style="font-style: italic;">end</span> of the run queue, this means
+that processes with the same priority are scheduled in round-robin
+fashion.<br>
+</p>
+</body>
+</html>

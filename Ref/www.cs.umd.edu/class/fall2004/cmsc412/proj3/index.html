@@ -1,0 +1,420 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>CMSC 412 - Project 3</title>
+</head>
+<body lang="EN-US" link="blue" vlink="purple">
+<center><font size="+2"><b>CMSC 412 Project #3</b> </font></center>
+<p>
+</p>
+<center><font size="+1"><b>Scheduling and Synchronization</b>
+</font></center>
+<center>
+<p><font color="maroon"><b>Due Friday, Oct 15th, 2004 (6:00 PM)</b></font></p>
+</center>
+<ul>
+  <li><b><a href="p3_grading.html">Grading Criteria</a> </b>
+  </li>
+  <li><b><a href="p3_submission.html">Submission Instructions</a> </b>
+  </li>
+  <li><b>Recitation material: <a href="proj3.ppt">proj3.ppt</a>, <a
+ href="scenarios.pdf">scenarios.pdf</a></b>
+    <h2>New project files</h2>
+  </li>
+  <li><b><a href="project3-cyclone.tgz">project3-cyclone.tgz</a></b> -
+new project distribution
+    <h3>New user programs for testing in src/user/</h3>
+    <p> </p>
+  </li>
+  <li><tt>p1.c, p2.c, p3.c, sched1.c, sched2.c, sched3.c, schedtest.c,
+semtest.c, semtest1.c, semtest2.c</tt>
+  </li>
+</ul>
+<h2>Incorporating your project 2 sources</h2>
+This project will rely on successful implementation of Project 2. You
+should use a utility like <b>diff</b> to find the difference between
+your project 2 solution and the downloaded project 3 distribution.
+After that you could copy and paste the relevant parts of the solution
+into project 3, or you could let diff generate a patch script and then
+apply it via <b>patch</b> command. Many different visual tools for <b>diff</b>
+exist. The linuxlab machines have <b>sdiff</b> and <b>vimdiff</b>
+installed, which make the whole process more interactive and
+manageable. <b><font color="black"> Make sure to backup your project 2
+solution before playing around with diff, for many lines of code have
+been lost with improper patching.</font></b> <br>
+<br>
+Most of the sources you changed in project 1 and project 2 are located
+in <b>p3/src/geekos</b>. It will be easier to run your diff only
+within that directory.
+Here's the syntax for diff of the entire geekos directory. It will
+create a file diff.patch containing the differences for all source
+files.
+<pre>diff p3/src/geekos [path-to-p2-sol]/src/geekos &gt; diff.patch </pre>
+<h1>Introduction</h1>
+<p>The main purpose of this project is to add a new scheduling
+algorithm to GeekOS and to implement a simple synchronization primitive
+(semaphore). As you might have already noticed, GeekOS uses a simple
+priority based preemptive Round Robin algorithm. In this project, you
+will change this to a multilevel feedback scheduling. In addition,
+you will provide user programs with semaphores, a means to check
+the system's current time and a mechanism for passing command-line
+arguments.<br>
+</p>
+<h1>List Data Structure</h1>
+<p> In this, and other projects, you will rely heavily upon a list
+data structure. For this reason an implementation has been provided to
+you in <tt>list.h</tt> file. Please familiarize yourself with its
+syntax and functionality. It could be a little tricky to understand the
+syntax since functions are written using <tt>#define</tt>. Naturally
+you are always
+free to extend, modify, or write your own implementation that would
+better suit your needs. </p>
+<h1>Multilevel Feedback Scheduling</h1>
+<p>The most important part of this project includes augmenting the
+existing GeekOS Round Robin scheduling algorithm with a multilevel
+feedback scheduler (MLF). In Round Robin, all threads sit in a FIFO
+queue.
+In the MLF which you will implement, you
+will use 4 queues instead of one. Each queue is assigned a priority
+level, i.e. all threads in the same queue have the same priority. The
+queues will be numbered 0 through 3, with 0 being the highest priority,
+and 3 being the lowest. For this reason, <tt>s_runQueue</tt> in <tt>kthread.c</tt>
+has changed from
+being a <tt> struct</tt> to being an array of <tt>structs</tt>, one
+for
+each priority level.&nbsp; Note that the queue priority level is
+distinct from the kthread priority field; the latter is used to choose
+which thread to run within a given queue (see below).&nbsp; Moreover,
+the highest priority level queue is numbered 0,&nbsp; while 0 is the
+lowest priority for a thread within a queue at a given level (see
+kthread.h). </p>
+<p>You might want to review section 6.3.6 pp 167 in the textbook.
+Note however that in our case the quantum is identical for all four
+queues.</p>
+<p> </p>
+<p> A newly created thread will be placed on the highest priority
+queue (i.e., 0). Each time a thread completes a full quantum, it will
+be placed
+on the run queue with the next lowest priority level, until it reaches
+priority
+level 3, at which point it can not go any lower. Hence, CPU-intensive
+threads
+will be eventually placed on the lowest priority level queue.
+<s>Conversely, each time the quantum timer expires, all of those threads
+that are <span style="font-style: italic;">blocked</span> should have
+their
+priority level increased by one. Thus, if a
+process in the lowest-priority queue is in the blocking state three
+times in a row, it will be back to the highest priority (0).<br>
+</s>
+<font color=maroon>
+When a thread becomes blocked (namely, in <tt>Wait()</tt>), it has 
+to go into a higher priority queue (i.e. <tt>currentReadyQueue</tt> gets
+decremented, and <tt>Make_Runnable()</tt> will insert it in the appropriate queue for you). So promotion is really simple, merely a guarded decrement
+in <tt>Wait()</tt> in <tt>kthread.c</tt></font>.
+
+
+</p>
+<p>To schedule
+a thread to run, look at the highest priority queue. If
+there are threads there, choose the highest priority (i.e. highest
+numbered) process in the queue.&nbsp; If there are no threads there, go
+to the next lowest priority queue, and keep repeating until you find a
+thread. Scheduling always attempts to look at the highest priority
+queue
+and work down. This may mean low priority processes are starved. </p>
+<p> The choice of which scheduler to use should be made within the
+function <tt>Get_Next_Runnable()</tt> (see <tt>kthread.c</tt>). Any
+function that calls <tt>Get_Next_Runnable()</tt> should be unaware of
+which scheduling algorithm is being used (i.e., do not try to pass the
+scheduling type as an argument). It should only be aware that some
+thread has been selected. </p>
+<p> You will need to handle the case of the <i>Idle</i> thread
+specially. It should be placed on the lowest level queue and should
+never be permitted to move out of that level. </p>
+<p> Your operating system should be able to switch which scheduling
+algorithm is being used via a system call: the system call <tt>int
+Set_Scheduling_Policy(int policy, int quantum)</tt> should be
+implemented for this purpose. If the value of <span
+ style="font-family: monospace;">policy</span> is <b>0</b>, the system
+should
+switch to round robin scheduling,
+if the <span style="font-family: monospace;">policy</span> is <b>1</b>,
+the system should switch to MLF.
+Other values of this parameter should result in an error code being
+returned (i.e. a -1 return value). The value of the <span
+ style="font-family: monospace;">quantum</span> parameter
+should be the number of ticks that a user thread may run before getting
+removed from the processor. To implement the tunable quantum, you will
+have to modify <tt>g_Quantum</tt> in <tt>timer.c</tt> to the value <tt>quantum</tt>
+that's passed
+as argument to <tt>Set_Scheduling_Policy()</tt>. Allowed values for
+the quantum are integers in the
+interval [2,100]. This will prevent the OS from switching too often
+(too low quantum) or starving other runnable processes (too high
+quantum). </p>
+<p>You might want to look at the <b><a href="./scenarios.pdf">scenarios</a></b>
+to better understand how you should implement MLF.</p>
+<p> Note: When the system boots up, it will have to use MLF. So don't
+forget to set MLF as the initial scheduler. </p>
+<p> </p>
+<h1>Semaphores</h1>
+<p>You will add system calls that provide user programs with
+semaphores, to enable thread synchronization among different threads.
+The systems calls (on the user side) will be:<br>
+</p>
+<blockquote><tt> int Create_Semaphore(const char *name, int ival)<br>
+int P(int sem)<br>
+int V(int sem)<br>
+int Destroy_Semaphore(int sem)</tt></blockquote>
+<p>Note: the kernel side of these operations needs to be implemented
+in an atomic manner.</p>
+<h2><tt>Create_Semaphore</tt><br>
+</h2>
+<p><tt>Create_Semaphore(name, ival)</tt> is a request by the current
+thread to use a semaphore. A thread can not call <tt>P()</tt> (i.e. <span
+ style="font-family: monospace;">wait()</span> in the text) or <tt>V()</tt>
+(referred to as <span style="font-family: monospace;">signal()</span>
+in the text) unless it calls <tt>Create_Semaphore()</tt>. The user
+gives a name for
+the semaphore, as well as the semaphore&#8217;s initial value, and will get
+back a semaphore ID, an integer between 0 and N - 1. Your operating
+system should be able to handle <b>at least</b> 20 (thus N =
+20) semaphores whose names may be <b>up to</b> 25 characters long. If
+there are no semaphores left
+(i.e., there
+were 20 semaphores with unique names already given), -1
+must be returned indicating an error. </p>
+<p> In your kernel function <tt>Sys_CreateSemaphore</tt>, you will
+check if another thread has made this system call with the same name.
+If so, you must return back the semaphore ID (<tt>sem</tt>) associated
+with this name. The parameter <tt>ival</tt> is ignored in this case.
+The SID value returned will allow the calling thread to tell the kernel
+which semaphore it
+wants to use later. You also need to add this SID to the list of
+semaphores the calling thread can use, as well increment the count of
+registered threads which are permitted to use the semaphore. So, for
+each thread
+you have to store the list of semaphore IDs it can use, and for each
+semaphore, you will store the <i>number</i> of threads using it. (This
+will be used as a reference count.)</p>
+<p> If this is the first time <tt>Create_Semaphore</tt> has been
+called by the name passed in, then find an unused SID, and initialize
+the value of the semaphore variable to <tt>initval</tt>. Again, add
+the SID to the list of semaphores the current thread can use, as well
+as incrementing the semaphore&#8217;s count of authorized threads. </p>
+<h2><tt>P</tt> and <tt>V</tt><br>
+</h2>
+<p> Whenever a thread calls <tt>P()</tt> or <tt>V()</tt>, the
+kernel will
+check if the thread has permission to make this call. It will do so by
+checking
+if the thread has the SID in its list of SIDs that it can access (which
+is why you needed to create such a list). If it is there, it will be
+allowed
+to execute <tt>P()</tt> or <tt>V()</tt>. If not, the kernel should
+return
+back -1. </p>
+<p> Note that the integer passed to <tt>P()</tt> or <tt>V()</tt> is
+NOT a semaphore variable. It is a semaphore <i>ID</i>. The kernel will
+be able to associate the semaphore ID with the semaphore&#8217;s value. That
+way, a thread is not permitted to look at the value of the variable.
+When waiting on a semaphore operation, the thread may <i>not</i> use a
+busy wait. Instead, to block a thread, you can use the <tt>Wait</tt>
+function in the kernel. You will need to create a new thread queue for
+threads blocked on semaphore operations. The file <tt>thrqueue.h</tt>
+provides an
+implementation of a thread queue. You should look at <tt>kthread.h</tt>
+and <tt> kthread.c</tt> to see how it is
+declared and used. To wakeup one thread/all threads waiting
+on a given semaphore, you can use <tt>Wake_Up_One()/Wake_Up()</tt>
+from <tt>kthread.h</tt>. </p>
+<p>You might want to review section 7.4.2 in the textbook, pp 203
+which describes how to implement P (wait) and V (signal).</p>
+<h2><tt>Destroy_Semaphore</tt><br>
+</h2>
+<p><tt>Destroy_Semaphore(int sem)</tt> will remove the passed
+semaphore from the list of semaphores the calling thread is allowed to
+use. It will also keep track of how many threads have references to the
+semaphore, and delete the semaphore from the table (i.e. mark is as an
+unused semaphore) when the last thread that can access this semaphore
+calls <tt>Destroy_Semaphore()</tt> .</p>
+<p>Note: when a thread exits, the kernel should automatically call <tt>Destroy_Semaphore()</tt>
+on behalf of this thread, for all the semaphores it has in its list. </p>
+<p>Note: in order not to clobber <tt>syscall.c</tt> with too much
+functionality,
+you might want to put your semaphore implementation in two new files <tt>sem.h</tt>
+and <tt>sem.c</tt>. </p>
+<h1>Get System Time</h1>
+<p> One way to compare scheduling algorithms is to see how long it
+takes a process to complete from the time of creation to the
+termination
+of the process. You will investigate these differences by implementing
+the <tt>Get_Time_Of_Day()</tt> syscall. </p>
+<p><tt> Get_Time_Of_Day()</tt> will return the value of the kernel
+global variable <tt>g_numTicks</tt>. The variable is already
+implemented
+in the kernel (see <tt>timer.h</tt>), you only need to implement the
+system call to read it.
+You can use this system call in a user program to determine how much
+time has elapsed while a thread was running. You can do this by calling
+<tt> Get_Time_Of_Day()</tt> once at the beginning of the thread
+(in the user code) and once at the end. You can calculate how long the
+thread took to run, as well as when the thread first got scheduled
+(based
+on ticks). Notice that there is no attempt to remove time spent by
+other
+threads. For example, if your thread context switches out, then a
+second
+thread runs, the second thread&#8217;s time during the context switch will be
+included in the first thread&#8217;s total time. This is known as "wall
+clock"
+time. One can also just calculate the time used by the thread itself.
+This is called process time (or sometimes <i>virtual time</i>) but you
+do not need to care about it in this project.<br>
+</p>
+<h1>Wait System Call</h1>
+<p> 
+<s>In the previous project you implemented a <tt>Wait</tt> system
+call using <tt>Join</tt>.
+As you might have noticed, <tt>Join</tt> simply calls <tt>Yield</tt>
+in a while loop. This is a form of busy waiting. Busy waiting is
+undesirable because it wastes CPU schedules that other threads
+could use. You can review section 7.4.2 in the textbook, pp 203 which
+describes busy waiting in
+the context of semaphore implementation. </p>
+<p>In this project, you will modify the <tt>Wait</tt> system call to
+be
+blocking. To accomplish this, each
+thread will have a thread queue indicating who is currently waiting on
+it. You should look at <tt>kthread.h</tt> and <tt> kthread.c</tt> to
+see how queues are declared and used. When the <tt>Wait</tt> system
+call is initiated, the kernel side, or <tt>Sys_Wait</tt>, will add the
+caller to the waiting thread queue of the thread indicated by pid and
+block. The <tt>Wait</tt> function in <tt>kthread.h</tt> should be
+used to block a process. Upon exit, a thread will use <tt>Wake_Up_One()/Wake_Up()</tt>
+from <tt>kthread.h</tt> to notify those who are waiting that it is
+finished. </p>
+<p>As before, <tt>Wait</tt> should immediately return if no thread
+with
+the specified pid is found. </s><br><br>
+<font color=maroon>The project description was incorrect.  The 
+Join function is already implemented using Wait so if you either 
+used Join or copied the code from it, you do not need to do 
+anything differently.  Of course, you should still immediately 
+return if no thread with the specified pid is found.</font> </p> 
+<h1>Background Processes</h1>
+<p>Since you need to have multiple processes running concurrently to
+test the functionality you will implement, your shell should be able to
+launch processes
+in background. In the shell we provided, if Spawn_Program was
+successful, the shell
+waits for the newly launched process to terminate by calling Wait().
+You have to add background functionality to the shell in a manner
+similar to
+UNIX. Before spawning a program, you start at the end
+of the command line ('\n') and walk back until you hit
+a non-space character, and test whether it's an <b>&amp;</b> or not.
+If it is an <b>&amp;</b>, you don't do Wait(). Otherwise, you do. </p>
+<p>Note: Make sure you set the end of the string you pass to
+Spawn_Program so that an eventual <b>&amp; is not</b> passed further
+to Spawn_Program(),
+since the <b>&amp;</b> concerns only the shell.</p>
+<h1>New System Calls</h1>
+<table border="2">
+  <tbody>
+    <tr>
+      <td><b>Identifier</b></td>
+      <td><b>Kernel Function</b></td>
+      <td><b>User Function</b></td>
+      <td><b>Effect</b></td>
+    </tr>
+    <tr>
+      <td>SYS_SETSCHEDULINGPOLICY</td>
+      <td>int Sys_SetSchedulingPolicy(struct Interrupt_State* state)</td>
+      <td>int Set_Scheduling_Policy(int policy, int quantum)</td>
+      <td>if policy is <b>0</b> or <b>1</b> and 2 &lt;= quantum
+&lt;= 100
+switch to that scheduler, setting MAX_TICKS accordingly; <br>
+else return -1</td>
+    </tr>
+    <tr>
+      <td>SYS_GETTIMEOFDAY</td>
+      <td>unsigned long Sys_GetTimeOfDay(struct Interrupt_State*
+state)</td>
+      <td>unsigned long Get_Time_Of_Day()</td>
+      <td>return g_numTicks</td>
+    </tr>
+    <tr>
+      <td>SYS_CREATESEMAPHORE</td>
+      <td>int Sys_CreateSemaphore(struct Interrupt_State* state)</td>
+      <td>int Create_Semaphore(const char *name, int ival)</td>
+      <td>if a semaphore with this <i>name</i> doesn't exist, create
+it and return its SID; if it exists, return its SID; note that SID must
+be &gt;= 0 </td>
+    </tr>
+    <tr>
+      <td>SYS_P</td>
+      <td>int Sys_P(struct Interrupt_State* state)</td>
+      <td>int P(int sem)</td>
+      <td>might block <br>
+wait() semantics <br>
+returns -1 if sid invalid or not initialized <br>
+returns 0 on success </td>
+    </tr>
+    <tr>
+      <td>SYS_V</td>
+      <td>int Sys_V(struct Interrupt_State* state)</td>
+      <td>int V(int sem)</td>
+      <td><b>never</b> blocks <br>
+signal() semantics <br>
+returns -1 if sid invalid or not initialized <br>
+returns 0 on success </td>
+    </tr>
+    <tr>
+      <td>SYS_DESTROYSEMAPHORE</td>
+      <td>int Sys_DestroySemaphore(struct Interrupt_State* state)</td>
+      <td>int Destroy_Semaphore(int sem)</td>
+      <td><b>never</b> blocks <br>
+returns -1 if sid invalid or not initialized <br>
+returns 0 on success </td>
+    </tr>
+  </tbody>
+</table>
+<h1>Testing your code</h1>
+<p> The files we provided can be used to test your semaphores or
+scheduling algorithm: </p>
+<li><b>workload.c</b> is used for testing spawn with arguments and the
+scheduling algorithm:
+  <p><tt>% /c/workload.exe [algorithm] [quantum]</tt> <br>
+where <i>algorithm</i> can take any of the values <tt>rr</tt> or <tt>mlf</tt>
+and <i>quantum</i> is the scheduling algorithm's quantum. </p>
+</li>
+<li><b>ping.c</b> and <b>pong.c</b> create a nice effect when you
+launch them concurrently:
+  <p><tt>% /c/ping.exe &amp;</tt> <br>
+  <tt>% /c/pong.exe</tt> </p>
+  <h1><a name="addreq">Additional Requirement</a></h1>
+  <p>In addition to the code, you should run several tests on the
+supplied application <tt>workload.exe</tt>, varying the quantum length
+as well as the two scheduling algorithms. At minimum try running the
+system with the inputs of: </p>
+  <p><tt>% /c/workload.exe rr 2</tt> <br>
+  <tt>% /c/workload.exe rr 100</tt> <br>
+  <tt>% /c/workload.exe mlf 2</tt> <br>
+  <tt>% /c/workload.exe mlf 100</tt> </p>
+  <p>In your proj3 directory add a file called <b>INTERPRETATION</b>
+listing the results, as well as explaining why the results occurred.
+This exercise is meant to let you consider the effects of quantum
+length and scheduling algorithms on the run of several processes.
+The proj3.tar.gz that you submit must include this file as well. </p>
+  <script language="JavaScript">
+          <!---//hide script from old browsers
+          var theDate = new Date(document.lastModified);
+	  var theLocalDate = theDate.toLocaleString();
+          document.write( "<hr><i>Last updated: "+ theLocalDate +"</i>");
+          //end hiding contents --->
+  </script>
+</li>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Lecture 13</title>
+</head>
+<body>
+<h1>CS 420 - Lecture 13<br>
+</h1>
+<h2>Synchronization Continued<br>
+</h2>
+<h3>Condition Variables</h3>
+<p>A common problem in synchronizing multiple threads or processes is
+waiting for a <span style="font-style: italic;">condition</span> to
+become true.<br>
+</p>
+<p>For example, in the producer/consumer with bounded buffer problem:<br>
+</p>
+<p style="margin-left: 40px;">Wait until buffer is not full (producer)<br>
+</p>
+<p style="margin-left: 40px;">Wait until buffer is not empty (consumer)<br>
+</p>
+<p><span style="font-style: italic;">Condition variables</span> are a
+synchronization mechanism that can be used in conjunction with mutex
+locks to solve problems involving waiting.&nbsp; Rules for using
+condition variables:<br>
+</p>
+<ol>
+  <li>Each condition variable is associated with a mutex.</li>
+  <li>Each condition variable represents a <span
+ style="font-style: italic;">condition</span> associated with a data
+structure that can be true or false.&nbsp; For example, "the buffer is
+not full" and "the buffer is not empty" are two conditions important in
+the producer/consumer bounded buffer problem.<br>
+  </li>
+  <li>The mutex must be locked when performing any operations on the
+condition variable.</li>
+  <li>The mutex must be locked when making any accesses or
+modifications to the data structure.</li>
+  <li>A signal or broadcast must be performed any time a thread makes a
+change to a shared data structure that might enable (make true) a
+condition.<br>
+  </li>
+</ol>
+<p>Each condition variable represents a condition that a thread can
+wait for.&nbsp; E.g., for bounded buffer problem:<br>
+</p>
+<pre style="margin-left: 40px;">struct Mutex_Lock mutex;<br>struct Condition notEmpty;<br>struct Condition notFull;<br><br>int numItems;<br>int in, out;<br>int buffer[MAX];<br></pre>
+<p>Waiting until the buffer is not full:<br>
+</p>
+<pre style="margin-left: 40px;">Mutex_Lock(&amp;mutex);<br>while (numItems == MAX_ITEMS) {<br>    Cond_Wait(&amp;notFull, &amp;mutex);<br>}<br>// now buffer is not full and we have acquired the mutex<br></pre>
+<p>Waiting until the buffer is not empty:<br>
+</p>
+<pre style="margin-left: 40px;">Mutex_Lock(&amp;mutex);<br>while (numItems == 0) {<br>    Cond_Wait(&amp;notEmpty, &amp;mutex);<br>}<br>// now buffer is not empty and we have acquired the mutex<br></pre>
+<p>The meaning of Cond_Wait is simple: atomically release the mutex,
+suspend the thread in a wait queue associated with the condition
+variable, and re-acquire the mutex:<br>
+</p>
+<pre style="margin-left: 40px;">void Cond_Wait(struct Mutex_Lock *mutex, struct Condition *condVar) {<br>  ATOMIC {<br>     Mutex_Unlock(mutex);<br>     Wait(&amp;condVar-&gt;waitQueue);<br>     Mutex_Lock(mutex);<br>  }<br>}<br></pre>
+<p>The unlocking of the mutex and waiting in the wait queue must be
+done atomically, or else we have a potential missed notification
+problem.<br>
+</p>
+<p>Whenever a thread performs an action that could enable a condition,
+it does a signal or broadcast operation.&nbsp; That wakes up one
+(signal) or all (broadcast) threads that are waiting for the condition
+to become true.<br>
+</p>
+<p>Adding an item to the buffer:<br>
+</p>
+<pre style="margin-left: 40px;">numItems++;<br>Cond_Signal(&amp;notEmpty); // buffer is now non-empty<br></pre>
+<p>Removing an item from the buffer:<br>
+</p>
+<pre style="margin-left: 40px;">numItems--;<br>Cond_Signal(&amp;notFull); // buffer is now non-full<br></pre>
+<p>Cond_Signal wakes up one thread waiting on the condition:<br>
+</p>
+<pre style="margin-left: 40px;">void Cond_Signal(struct Condition *condVar) {<br>  Wake_Up_One(&amp;condVar-&gt;waitQueue);<br>}<br></pre>
+<p>It just wakes up a single thread that is waiting in the condition
+variable's wait queue.<br>
+</p>
+<p>Cond_Broadcast wakes up all threads waiting on a given condition:<br>
+</p>
+<pre style="margin-left: 40px;">void Cond_Signal(struct Condition *condVar) {<br>  Wake_Up(&amp;condVar-&gt;waitQueue);<br>}<br></pre>
+<h3>Guidelines for using Mutex Locks and Condition Variables<br>
+</h3>
+<p>Together, mutex locks and condition variables can be used together
+to solve any synchronization problem.<br>
+</p>
+<p>There are a few simple rules to follow in order to use them properly:<br>
+</p>
+<p>1. Each shared data structure must have a mutex lock used to protect
+all accesses to the shared data.<br>
+</p>
+<p style="margin-left: 40px;">The mutex protects critical sections, to
+ensure that only one thread at a time can be executing a critical
+section that accesses or modifies the shared data.<br>
+</p>
+<p>2. If any threads will need to wait for a condition to become true,
+the data structure should have a condition variable representing that
+condition.<br>
+</p>
+<p style="margin-left: 40px;">Condition variables are just a wait queue
+where threads can be suspended while they wait for a condition to
+become true.&nbsp; You can have multiple condition variables in the
+same data structure if there are multiple conditions that threads will
+need to wait for.&nbsp; For example, in a bounded buffer data
+structure, there could be one condition variable representing the
+buffer being non-empty and another representing the buffer being
+non-full.<br>
+</p>
+<p>3. The mutex must be held (locked) whenever a thread (a) checks a
+condition, (b) calls Cond_Wait to wait on a condition, or (c) calls
+Cond_Signal/Cond_Broadcast to signal that a condition may have become
+true.<br>
+</p>
+<p>4. Conditions must be checked in a loop.<br>
+</p>
+<p style="margin-left: 40px;">The correct way to use a condition
+variable is as follows:<br>
+</p>
+<pre style="margin-left: 80px;">Mutex_Lock(&amp;data-&gt;mutex);<br><br>while (!(some condition involving the data structure)) {<br>    Cond_Wait(&amp;data-&gt;condVar);<br>}<br>// Now, the condition is true and this thread has locked the mutex<br></pre>
+<p style="margin-left: 40px;">The main reason is that it is not
+uncommon to use the
+same condition variable for more than one condition.&nbsp; That means
+that a waiting thread may be woken even though the condition it is
+waiting for has not actually become true.</p>
+<p>5. Call Cond_Signal or Cond_Broadcast when a condition is enabled.<br>
+</p>
+<p style="margin-left: 40px;">When a thread modifies shared data in a
+way that could cause a condition to become true, it should call
+Cond_Signal or Cond_Broadcast to wake up one thread/all threads waiting
+for that condition.<br>
+</p>
+<p>6. Prefer Cond_Broadcast to Cond_Signal.<br>
+</p>
+<p style="margin-left: 40px;">Recall that Cond_Broadcast wakes up all
+threads waiting on a condition variable, while Cond_Signal wakes up
+only one.&nbsp; Generally, it is never wrong to use Cond_Broadcast, and
+it helps protect against bugs that could occur if Cond_Signal wakes up
+a thread that is not actually waiting on the condition that has just
+been enabled, or if NO condition has actually been enabled.<br>
+</p>
+<p>7. Check to see that Cond_Wait calls are balanced by a matching
+Cond_Signal or Cond_Broadcast.<br>
+</p>
+<p style="margin-left: 40px;">Otherwise the Cond_Wait call will block
+forever.<br>
+</p>
+<h3>Semaphores<br>
+</h3>
+<p>A semaphore is a counting synchronization mechanism supporting two
+basic operations:<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">wait</span>:
+decrease the semaphore count by 1, waiting if the count is currently 0<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">signal</span>:
+increase the semaphore count by 1, waking up any threads waiting for
+the count to become non-zero<br>
+</p>
+<p>Many references refer to these operations as "P" and "V".<br>
+</p>
+<p>A semaphore starts with some initial (positive) count.&nbsp; The
+count indicates how many threads are allowed to proceed when they call <span
+ style="font-weight: bold;">wait</span>.&nbsp; The general meaning of
+the initial count is the quantity of some resource that is
+available.&nbsp; One call to wait consumes one unit of the
+resource.&nbsp; One call to <span style="font-weight: bold;">signal</span>
+replenishes one unit of the resource.<br>
+</p>
+<p>Special case: a semaphore created with an initial count of 1 can be
+used as a mutex lock.&nbsp; So, a semaphore can be used to solve the
+critical section problem.<br>
+</p>
+<p>Semaphores can be implemented using a mutex lock and a condition
+variable.<br>
+</p>
+<pre style="margin-left: 40px;">struct Semaphore {<br>    int count;<br>    struct Mutex_Lock mutex;<br>    struct Condition nonZero;<br>};<br><br>void Semaphore_Init(struct Semaphore *sem, int initialCount)<br>{<br>    sem-&gt;count = initialCount;<br>    Mutex_Init(&amp;sem-&gt;mutex);<br>    Cond_Init(&amp;sem-&gt;nonZero);<br>}<br><br>void Semaphore_Wait(struct Semaphore *sem)<br>{<br>    Mutex_Lock(&amp;sem-&gt;mutex);<br>    while (sem-&gt;count == 0) {<br>        Cond_Wait(&amp;sem-&gt;nonZero);<br>    }<br>    sem-&gt;count--;<br>    Mutex_Unlock(&amp;sem-&gt;mutex);<br>}<br><br>void Semaphore_Signal(struct Semaphore *sem)<br>{<br>    Mutex_Lock(&amp;sem-&gt;mutex);<br>    sem-&gt;count++;<br>    Cond_Signal(&amp;sem-&gt;nonZero);<br>    Mutex_Unlock(&amp;sem-&gt;mutex);<br>}<br></pre>
+<p>Implementing one kind of synchronization mechanism using another
+kind of synchronization mechanism is a popular party game among
+concurrency geeks.<br>
+<br>
+Applications of semaphores:<br>
+</p>
+<p>Bounded buffer problem: use a pair of semaphores to represent the
+number of full slots and the number of empty slots.<br>
+</p>
+<pre style="margin-left: 40px;">struct Buffer {<br>    struct Semaphore full;<br>    struct Semaphore empty;<br>    struct Mutex_Lock mutex;<br>    int in, out;<br>    ITEM buffer[MAX_ITEMS];<br>};<br><br>void Init_Buffer(struct Buffer *buf)<br>{<br>    Semaphore_Init(&amp;buf-&gt;full, 0);<br>    Semaphore_Init(&amp;buf-&gt;empty, MAX_ITEMS);<br>    Mutex_Init(&amp;buf-&gt;mutex);<br>    buf-&gt;in = buf-&gt;out = 0;<br>}<br></pre>
+<p>The producer thread:<br>
+</p>
+<pre style="margin-left: 40px;">while (true) {<br>    Semaphore_Wait(&amp;buf-&gt;empty); // Wait for an empty slot<br>    Mutex_Lock(&amp;buf-&gt;mutex);<br><br>    // ... produce an item and add it to the buffer...<br><br>    Mutex_Unlock(&amp;buf-&gt;mutex);<br>    Semaphore_Signal(&amp;buf-&gt;full); // Add one full slot<br>}<br></pre>
+<p>The consumer thread:<br>
+</p>
+<pre style="margin-left: 40px;">while (true) {<br>    Semaphore_Wait(&amp;buf-&gt;full); // Wait for a full slot<br>    Mutex_Lock(&amp;buf-&gt;mutex);<br><br>    // ... remove an item from the buffer and consume it ...<br><br>    Mutex_Unlock(&amp;buf-&gt;mutex);<br>    Semaphore_Signal(&amp;buf-&gt;empty); // Add one empty slot<br>}<br></pre>
+<p><span style="font-weight: bold;">NOTE</span>: the mutex is not
+really necessary, since the two threads use independent counters.<br>
+</p>
+<h3>Reader/Writer Locks<br>
+</h3>
+<p>Concurrent access to shared data structures only requires
+synchronization if the data is being modified.&nbsp; In other words,
+any number of threads may be allowed to <span
+ style="font-style: italic;">read</span> information from a shared data
+structure simultaneously.</p>
+<p>A reader/writer lock is a synchronization data structure that allows
+any number of <span style="font-style: italic;">readers</span> to
+execute simultaneously.&nbsp; A reader is a thread that will read
+information from the data structure, but not modify it.&nbsp; If a
+thread wants to modify the data structure, it announces its intention
+to be a <span style="font-style: italic;">writer</span>.&nbsp; The
+reader/writer lock waits for all readers to release the lock before the
+writer can proceed.<br>
+</p>
+<p>The implementation in the book is sort of stupid because it can
+starve writers indefinitely.<br>
+</p>
+<p>A better implementation will keep out new readers when a writer is
+waiting for the current readers to finish.<br>
+</p>
+<p>Reader/writer locks are good for workloads where the majority of
+accesses to a data structure are read-only, and modification (writing)
+is fairly infrequent.</p>
+</body>
+</html>

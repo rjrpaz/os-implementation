@@ -1,0 +1,167 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+<TITLE> </TITLE>
+
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#D7D3D2"
+      LINK="#78021C" VLINK="#7F6666" ALINK="#FFFFFF" BACKGROUND="marble.gif">
+<P>
+<CENTER><h2>CMSC 417 Programming Assignment #1</h2></CENTER>
+<P>
+<CENTER>Due February 14, 1997 (6:00 PM)</CENTER>
+<H2><FONT SIZE=2>Introduction </FONT></H2>
+<P>
+<FONT SIZE=2>The term project will require heavy use of the Berkeley
+UNIX networking facilities (often called The BSD Socket Interface.)
+The user interface to these facilities is rather complicated and
+confusing, so you are asked to do a simple exercise to gain familiarity
+with the interface before you have to start using it in earnest.
+You will use Internet-domain sockets and UDP (the User Datagram
+Protocol) for communication between a client and server, possibly
+running on different machines.</FONT>
+<P>
+<FONT SIZE=2>You should use the <A HREF="http://www.cs.umd.edu/~hollings/cs417/s97/aitsInfo.html" >AITS Alpha cluster </A>.
+ Your account is described on the paper version of this handout.</FONT>
+<H2><FONT SIZE=2>The Assignment </FONT></H2>
+<P>
+<FONT SIZE=2>You will write two programs, a <I>server</I> and
+a <I>client.</I> The server creates a socket in the Internet domain
+bound to port SERVER_PORT (a constant you should define in a</FONT><TT>
+.h</TT><FONT SIZE=2>  file included in both programs), receives
+requests from it, acts on the requests, and returns the results
+to the requester. For this simple exercise, there are only two
+kinds of requests: an ADDR request and a FILESIZE request. Both
+kinds of requests have the same packet structure: a 2-byte (short
+integer) type field, a 4-byte (long) data field and a variable-length
+string. To make things easier, you can assume the string will
+never be longer than 256 bytes, including the string terminator.
+<B>NOTE:</B> all integers (short or long) must be sent in network
+byte order, see the Hints section). </FONT>
+<P>
+<FONT SIZE=2>When the server receives an ADDR request (type field
+is set to ADDR_REQ), it should construct a response packet and
+send it back to the requester immediately. The ADDR response packet
+has the same structure as the ADDR request packet. The type field
+of the ADDR response should be set to ADDR_ACK and the string
+should be the Internet Address (in dotted-decimal format) of the
+host whose name was specified in the string field for the ADDR_REQ
+packet. The 4-byte data field should be set to zero. Some hosts
+may have more than one address. In such cases, just return any
+one of them. </FONT>
+<P>
+<FONT SIZE=2>To satisfy the FILESIZE request (type field is set
+to FILESIZE_REQ), the server will again construct a response packet
+and send it back to the requester immediately. The type field
+of the FILESIZE response should be set to FILESIZE_ACK, the 4-byte
+data field should be the size of the file whose name was specified
+in the string field for the FILESIZE_REQ packet and the string
+field should contain the name of the file. If the file doesn't
+exist, return -1 for the size and the string &quot;file not found&quot;
+for the filename. </FONT>
+<P>
+<FONT SIZE=2>You should find a convenient way to define the necessary
+packet types. </FONT>
+<P>
+<I><FONT SIZE=2>Remember that integers must be sent in network
+order.</FONT></I><FONT SIZE=2> </FONT>
+<P>
+<FONT SIZE=2>The client program takes three command-line arguments:
+the name of the host where the server is running, the request
+type (</FONT><TT>addr </TT><FONT SIZE=2>or </FONT><TT>filesize</TT><FONT SIZE=2>)
+and a string. In the ADDR request case, the string is the name
+of the host (e.g., </FONT><TT>juliet.umd.edu</TT><FONT SIZE=2>)
+for which the internet address is to be found. In the FILESIZE
+request case, it is the name of the file for which you would like
+the size. The requests should have the packet structure described
+above. The client sends the request to the server, waits for a
+reply, and prints the result. If it is an ADDR response, you should
+simply print the string echoed. For the FILESIZE response packet,
+print the file name and the file size (or an error if the file
+doesn't exist). For both requests, set the 4-byte data field to
+zero. </FONT>
+<P>
+<FONT SIZE=2>The server must be able to serve multiple clients.
+Therefore, it cannot have the client's address wired in. </FONT>
+<H2><FONT SIZE=2>Requirements </FONT></H2>
+<P>
+<FONT SIZE=2>You will be doing the term project in teams of two
+people. However, for this assignment, you should work <B>individually</B>,
+so that each of you becomes familiar with the socket interface.
+You should submit (via the submit program) the programs and a
+transcript (using <I>script(1)</I>) of them action. Your transcript
+should demonstrate that your client and server programs handle
+properly formed requests; also demonstrate that the client is
+able to deal with incorrect arguments, such as the name of a non-existent
+host or file. For the address request, use </FONT><TT>nslookup</TT><FONT SIZE=2>
+to verify the correctness of your output. The programs should
+be clearly written and well-commented. You will be building on
+these programs for subsequent stages of the term project, so it
+is in your own best interest to make them maintainable.</FONT>
+<H2><A NAME="_Ref377382080"><FONT SIZE=2>Hints</FONT></A><FONT SIZE=2>
+</FONT></H2>
+<P>
+<FONT SIZE=2>These programs will not be long (probably about 100-200
+lines each including comments), but they may be difficult to write,
+and they will certainly be difficult to debug. First read <A HREF="sock.ps" >Berkeley UNIX System Calls and Interprocess Communication </A>by
+Lawrence Besaw very carefully. This document will have some information
+which you will not need to know for this assignment (e.g. UNIX
+domain sockets and the TCP protocol). Pay particular attention
+to the program example at the end. Note that this example uses
+TCP sockets. You must use UDP sockets, so you cannot copy the
+example exactly. In particular, you should not use the system
+calls <I>connect, listen,</I> or <I>accept</I>. Figure out which
+system calls will be needed by each of your programs and read
+the corresponding <I>man</I> pages.  You might also find  &quot;Internetworking
+with TCP/IP, Vol III&quot;, by Comer and Stevens, Prentice Hall
+[Chap 6] useful.  It is on reserve at the Engineering library.</FONT>
+<P>
+<FONT SIZE=2>You should use <I>gcc</I> as your compiler, rather
+than <I>cc</I>. <I>Gcc</I> supports prototypes<I><B> </B></I>and
+other ANSI extensions, which you should use in your programs.
+The option <I>-Wall</I> turns on most of the useful <I>gcc</I>
+warnings. Compiling with this option will find many simple mistakes
+in your programs. You should try to get your programs to compile
+with as few warnings as possible. Part of your grade will be based
+on how warning-free your program compiles. You may also add options
+<I>-ansi</I>. This will make the compiler reject non-ANSI programs.
+You should also link the network and socket libraries to your
+program. This could be done by including them in the <I>gcc</I>
+command. Just add <I>-lnsl</I> and <I>-lsocket</I> to the <I>gcc</I>
+command. You should use the make program to compile your program.
+ Make(1) is program that reads a file (Makefile) that describes
+how to compile your program.</FONT>
+<P>
+<FONT SIZE=2>In your client program, use <I>gethostbyname(3)</I>
+to translate the host name to an internet address, and in the
+server program use <I>gethostbyname(3) </I>again to obtain the
+internet address. If the host has multiple internet addresses,
+gethostbyname will return all of them. You should return only
+one of them. Also, gethostbyname() does not return the addresses
+in dotted-decimal form. You should use <I>inet_ntoa(3)</I> to
+convert the address returned by gethostbyname() to a dotted-decimal
+form. Be careful about the difference between host byte order
+and network byte order; be sure you know the meaning of <I>htonl(3)</I>
+and friends (<I>htons(3), ntohl(3),</I> and <I>ntohs(3)</I>) and
+use them in the appropriate places. The routines described in
+<I>inet(3)</I> are very helpful for debugging output. For handling
+the FILESIZE request, you could use the <I>stat(2)</I> system
+call to get the filesize. </FONT>
+<P>
+<FONT SIZE=2>You should be aware that the packet structure requires
+that an integer is 4 bytes long. For some architectures, this
+is not true. Keep this in mind, but your programs are not <I>required</I>
+to support this.</FONT>
+<P>
+<FONT SIZE=2>Use <I>netstat(1)</I> to see what sockets have been
+created by your programs (you may have put them in the background;
+once a program terminates, the sockets it created go away). </FONT>
+<P>
+<FONT SIZE=2>Clean up! Use <I>ps(1)</I> to see what processes
+you have left lying around, and use <I>kill(1)</I> to get rid
+of them. </FONT>
+<P>
+<I><FONT SIZE=2>Good luck and have fun <BR>
+</FONT></I>
+</BODY>
+</HTML>

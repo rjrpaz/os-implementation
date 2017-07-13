@@ -1,0 +1,204 @@
+// you have to implement Validate_User_Memory properly!!!
+Boolean Validate_User_Memory(struct User_Context * uc, 
+			     void * ptrInUser, int len)
+{
+  return FALSE;
+}
+
+ int Sys_Mount( struct Interrupt_State* state )
+{
+    char *ptr;
+    struct User_Context *u;
+    mountReq *req;
+    
+    ptr = (char *) state->ebx;
+    u = g_currentThread->userContext;
+    KASSERT(u);
+
+    // validate pointer 
+    if (!Validate_User_Memory(u, ptr, sizeof(mountReq))) {
+        Print("invalid memory %x to %x\n", ptr, ptr+sizeof(mountReq));
+	return -1;
+    }
+    req =  (mountReq *) (ptr + 0x80000000);
+    
+    return Mount(req->mountPoint, req->drive, req->fsType);
+}
+
+ int Sys_Open( struct Interrupt_State* state )
+{
+    char fileName[1024];
+    int mode = state->edx;
+
+    const void* userPtr = (const void*) state->ebx;
+    unsigned int length = state->ecx;
+
+    // Make sure buf is a reasonable size.
+    if ( length > 1024 )
+	return -1;
+
+    if ( !Copy_From_User( fileName, userPtr, length ) ) {
+	return -1;
+    }
+    fileName[ length ] = '\0';
+
+    return Open(fileName, mode);
+}
+
+ int Sys_Close( struct Interrupt_State* state )
+{
+     int fd = state->ebx;
+
+     return Close(fd);
+
+}
+
+ int Sys_Delete( struct Interrupt_State* state )
+{
+    char fileName[1024];
+
+    const void* userPtr = (const void*) state->ebx;
+    unsigned int length = state->ecx;
+
+    // Make sure buf is a reasonable size.
+    if ( length > 1024 )
+	return -1;
+
+    if ( !Copy_From_User( fileName, userPtr, length ) ) {
+	return -1;
+    }
+    fileName[ length ] = '\0';
+
+    return Delete(fileName);
+}
+
+ int Sys_Read( struct Interrupt_State* state )
+{
+    int fd = state->ebx;
+    char* buffer = (char*) state->ecx;
+    unsigned int length = state->edx;
+    struct User_Context *u;
+
+    u = g_currentThread->userContext;
+    KASSERT(u);
+
+    // validate pointer 
+    if (!Validate_User_Memory(u, buffer, length))
+	return -1;
+    
+    buffer += 0x80000000;
+
+    return Read(fd, buffer, length);
+}
+
+ int Sys_Write( struct Interrupt_State* state )
+{
+    int fd = state->ebx;
+    char* buffer = (char*) state->ecx;
+    unsigned int length = state->edx;
+    struct User_Context *u;
+
+    u = g_currentThread->userContext;
+    KASSERT(u);
+
+    // validate pointer 
+    if (!Validate_User_Memory(u, buffer, length)) {
+	Print("Write failed: invalid buffer %x to %x\n", buffer, buffer+length);
+	return -1;
+    }
+    buffer += 0x80000000;
+    
+    return Write(fd, buffer, length);
+}
+
+ int Sys_CreateDirectory( struct Interrupt_State* state )
+{
+    char fileName[4096];
+    const void* userPtr = (const void*) state->ebx;
+    unsigned int length = state->ecx;
+
+    // Make sure buf is a reasonable size.
+    if ( length > 1024 )
+	return -1;
+
+    if ( !Copy_From_User( fileName, userPtr, length ) ) {
+	return -1;
+    }
+    fileName[ length ] = '\0';
+
+    return CreateDirectory(fileName);
+}
+
+ int Sys_Stat( struct Interrupt_State* state )
+{
+    fileStat *stat;
+    struct User_Context *u;
+    unsigned int fd = state->ebx;
+    char *ptr = (char *) state->ecx;
+
+    u = g_currentThread->userContext;
+    KASSERT(u);
+
+    if (!Validate_User_Memory(u, ptr, sizeof(fileStat)))
+        return -1;
+    ptr += 0x80000000;
+    stat = (fileStat *) ptr;
+
+    return Stat(fd, stat);
+}
+
+ int Sys_Seek( struct Interrupt_State* state )
+{
+    unsigned int fd = state->ebx;
+    unsigned int offset = state->ecx;
+
+    return Seek(fd, offset);
+}
+
+ int Sys_Format( struct Interrupt_State* state )
+{
+    int drive = state->ebx;
+    struct Kernel_Thread* current = g_currentThread;
+
+    Print("in syscall for format\n");
+    if (!current->userContext) {
+        return -1;
+    } else {
+        return Format(drive);
+    }
+}
+
+
+void Setup_Syscalls()
+{
+   Register_Syscall(&Sys_Null, SYS_NULL);
+   Register_Syscall(&Sys_Exit, SYS_EXIT);
+   Register_Syscall(&Sys_Print, SYS_PRINT);
+   Register_Syscall(&Sys_GetKey, SYS_GETKEY);
+   Register_Syscall(&Sys_Spawn_Program, SYS_SPAWN);
+   Register_Syscall(&Sys_Wait, SYS_WAIT);
+
+   Register_Syscall(&Sys_Get_Time, SYS_GETTIME);
+   Register_Syscall(&Sys_Set_Scheduling_Policy, SYS_SETSCHED);
+   Register_Syscall(&Sys_Init_Semaphore, SYS_INITSEM);
+   Register_Syscall(&Sys_P, SYS_P);
+   Register_Syscall(&Sys_V, SYS_V);
+   Register_Syscall(&Sys_Finish_Semaphore, SYS_FINISHSEM);
+
+// Setup the syscalls; copy-paste only FS part below if 
+// you've already registered the calls above
+
+   Register_Syscall(&Sys_Mount, SYS_MOUNT);
+   Register_Syscall(&Sys_Open, SYS_OPEN);
+   Register_Syscall(&Sys_Close, SYS_CLOSE);
+   Register_Syscall(&Sys_Delete, SYS_DELETE);
+   Register_Syscall(&Sys_Read, SYS_READ);
+   Register_Syscall(&Sys_Write, SYS_WRITE);
+   Register_Syscall(&Sys_Stat, SYS_STAT);
+   Register_Syscall(&Sys_Seek, SYS_SEEK);
+   Register_Syscall(&Sys_CreateDirectory, SYS_CREATEDIR);
+   Register_Syscall(&Sys_Format, SYS_FORMAT);
+ }
+
+
+

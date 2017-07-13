@@ -1,0 +1,75 @@
+Project 5 Grading Guidelines
+----------------------------
+
+Shell costs 50%, kernel 50%. The grade starts at 100 (kernel+shell) or 50
+(shell only) and is reduced by the cost of each encountered error.
+
+Combined
+--------
+
+- Extra verbiage: -0
+
+Shell
+-----
+
+Similar errors combined up to 25. Grade keeps non-negative.
+
+- does not edit command line with backspace: -7
+- ESC echoed at the end of input (as the character #26, usually a small left
+  arrow): -1.
+
+- Sometimes modules do not exit to shell: -5
+
+- cat|tee|goofy|wc -l crashes or freezes: -7
+- cat|tee|goofy|wc crashes or freezes as well: another -4
+- cat|tee|goofy|wc replicates output (stderr or stdout) more than it should: -2
+
+- one|two would not allow two to accept arguments (and farther in the pipe):
+  -7
+- no parameters accepted: -10
+- arguments off by one (eg argv[1] becomes argv[2]): -5
+
+- crashes or freezes after several commands have been processed: -6
+
+- cannot tee or goofy: -10
+- cannot |tee or |goofy (inside a pipe): -7
+
+- goofy does not return to OS: -5
+- another command does not return to OS: -8
+- goofy inserts whitespace between consecutive characters: -2
+
+- stderr hooked to stdin (symptoms: wrong count on tee|wc; stderr goofied): -15
+
+- does not do multiple pipes: -15
+- does not do pipes: -25
+
+- cat|tee does not retain end-of-line: -4
+
+- 2nd shell (run as a user process on top of another copy) does not perform
+  anything: -5
+- Exit from 2nd shell "falls through" and exits OS: -0
+
+Kernel
+------
+
+- test1 crashes or freezes: -25
+- test1 crashes or freezes at the end: -15
+- test1 performs a wrong order: -8
+
+NOTE: The other 25% for the kernel account for the shell support.
+
+Bonus
+-----
+
+Shell bonus added to the shell graded calculated by the above rules, up to 50.
+
+- Input echoed: +5
+- Prompt safe (from being overwritten by backspace): +7
+- MOD extension not required: +5
+- Pipe sign "|" serves as a delimiter, thus allowing "one|two" etc instead of
+  "one | two": +7. Only "one |two" allowed: +2.
+- A shortcut "hot button" exit from OS: +3.
+- Can dynamically change prompt (as a command line operation): +2.
+
+NOTE: Because of the bonuses, projects with small errors can get the full
+grade. 

@@ -1,0 +1,71 @@
+<HTML>
+
+<HEAD>
+
+<TITLE>CMSC 311-101 (Fall 1995)</TITLE>
+
+<META NAME="GENERATOR" CONTENT="Internet Assistant for Word 2.0z Beta">
+</HEAD>
+
+<BODY>
+
+<P>
+
+<CENTER>
+<B>CMSC 311- Computer Organization</B>
+<P>
+Fall 1995 - Assignment #7
+<P>
+<I>Due (at the beginning of class) Thursday, November 16</I>
+</CENTER>
+
+<OL>
+<LI>From Mano, problem 5-13.
+<LI>From Mano, problem 5-24.
+<LI>Assume that, in the basic Mano computer the PC contains the
+value 10016 at the beginning of a fetch cycle. The AC contains
+555516, and the register R contains a zero. Memory location 10016
+contains the value 020016, and memory location 20016 contains
+the value AAAA16.
+<OL>
+<LI>Show the contents (in hex) of the PC, AC, AR, IR, and R registers
+at the completion of the fetch cycle.
+<LI>Is the indirect cycle entered after this fetch cycle? If so,
+show the contents of each of the above registers at the completion
+of the indirect cycle.
+<LI>Show the contents of the above registers at the completion
+of the execute cycle. What instruction is being executed?
+</OL>
+
+<LI>An important feature of many computers is memory protection.
+One way to achieve memory protection by limiting the range of
+addresses that a program can access. In this problem you are to
+modify the basic Mano computer to have two additional registers
+(LOW and HIGH) and check that all memory references are within
+the range between LOW and HIGH.
+<OL>
+<LI>Add two new instructions to the machine SLO (F020) which transfers
+the contents of the AC to the LOW register, and SHI (F010) which
+transfers the contents of the AC to the HIGH register. Show the
+control functions and micro-operations specific to these instructions.
+
+<LI>Design hardware to check that AR is in range: LOW &lt;= AR
+&lt;= HIGH. Your circuit should have three 16 bit inputs, and
+a single output  INVALID which is 1 if the value of AR is outside
+the allowed range. 
+<LI>Modify the instruction cycle to check if a referenced memory
+location is valid. If the memory reference is out of range, the
+hardware should trap  (cause a subroutine call) to memory location
+0002. Show the modified list of micro-operations for the fetch,
+decode, and indirect steps. (You should not need to add additional
+time steps to the sequence.) Model your implementation on the
+interrupt code by adding a trap cycle. Show the micro-operations
+for the trap cycle.
+</OL>
+
+<LI>From Mano, problem 6-14. 
+</OL>
+
+</BODY>
+
+</HTML>

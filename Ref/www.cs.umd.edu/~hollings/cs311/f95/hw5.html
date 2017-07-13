@@ -1,0 +1,68 @@
+<HTML>
+
+<HEAD>
+
+<TITLE>CMSC 311-101 (Fall 1995)</TITLE>
+
+<META NAME="GENERATOR" CONTENT="Internet Assistant for Word 2.0z Beta">
+</HEAD>
+
+<BODY>
+
+<P>
+
+<CENTER>
+<B>CMSC 311- Computer Organization</B>
+<P>
+Fall 1995 - Assignment #5
+<P>
+<I>Due (at the beginning of class) Tuesday, October 23</I>
+</CENTER>
+
+<OL>
+<LI>Represent  the following floating-point numbers using a 16
+bit normalized mantissa and 8 bit exponent:
+<OL>
+<LI>128.0
+<LI>46.5
+<LI>0.2
+<LI>17.21875
+</OL>
+<LI>
+From Mano problem 4-3.
+
+<LI>From Mano problem 4-6.
+<LI>We have talked about buses for <I>parallel</I> transfer between
+registers. For this problem, you will design a bus for serial
+transfer between registers. The bus should be capable of transferring
+(shifting) bits between any two registers.  The register from
+which the bit is coming is called the <I>source</I> register,
+the register to which the bit goes is called the <I>destination</I>
+register.  A transfer causes the bit at the serial output of the
+source register to be shifted into the serial inputs of both the
+source and destination registers. The bit at the serial output
+of the destination register is lost. For example, if the source
+register contains 0011 and the destination contains 1010 before
+the transfer, after the transfer they will contain 1001 (source)
+and 1101 (destination).  (This assumes a shift to the right.)
+
+<P>
+You have four shift registers (R 0, R 1, R 2, R 3) to interconnect
+with the bus.  Each register has a serial input I s, a serial
+output Z s, and a shift control input S..  When S = 1 and the
+clock pulses, the data in  the register is shifted.  When S=0
+and the clock pulses, nothing happens.
+<P>
+The bus system you design should have select inputs to determine
+the source register and destination register of the transfer.
+(How many select inputs are needed?) Design the serial bus and
+show a block diagram including all components and interconnections.
+<LI>From Mano, problem 4-15.
+<LI>From Mano, problem 4-23.
+</OL>
+
+<P>
+
+</BODY>
+
+</HTML>

@@ -1,0 +1,128 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+                                                                        
+                                                              
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+  <title>CMSC 412, Project 0</title>
+</head>
+ <body>
+<h1>Introduction</h1>
+In this course we will implement a big project in subsequent phases.        
+In  each project  we will be adding some new functionality 
+to  <a href="http://geekos.sourceforge.net/">            GeekOS</a>
+. To run our OS,  we need to either use an actual machine (which 
+must  be  an x86 machine) or  the other (simpler) idea is to use an emulator; 
+we  will  use  <a href="http://bochs.sourceforge.net/">Bochs</a>. 
+Note that instead  of using the latest version, which is 1.4.1, 
+we  will   use 1.2.1!                               
+<h1>Linuxlab</h1>
+You will do all of your development for this course
+on  the   linuxlab         cluster.   You have received a user name and a
+password   during the  first        week  of classes,   and will use that
+to access  the cluster,  and the   lab.     If you  haven't, please   contact
+you professor to get one, as soon  as possible. The lab is located
+in 3107   <a href="http://www.cs.umd.edu/csic/">           CSI</a>
+                (the        new Computer  Science Instructional Center) 
+                             
+<p>To access the cluster remotely, you have to use ssh (it doesn't accept 
+               telnet  requests). The domain name is <tt>linuxlab.csic.cs.umd.edu</tt>
+               .  So   it will  be something like:<br>
+                </p>
+                               
+<blockquote><tt>ssh -l</tt> &lt;your username&gt; <tt>linuxlab.csic.cs.umd.edu</tt><br>
+                  </blockquote>
+                                 
+  <h1>Compiling your kernel</h1>
+                                 To build the project, use <b>gmake</b> instead 
+   of  make;    GeekOS    requires     gmake (GNU make utility).<br>
+                                 
+  <h1>Running your kernel on top of Bochs</h1>
+                                 Once you have the kernel build, it's the 
+time   to  run   bochs    and   load   your   kernel into it. Bochs is installed
+   in<br>
+                                 
+  <blockquote><tt>/usr/local/bochs-1.2.1</tt><br>
+                    </blockquote>
+                                 on the linuxlab cluster. If you are working
+  on  one   of  the   workstations       in  the linuxlab room, just go to
+ your  project's    directory   and run bochs.       (Make  sure you run
+it  from  your project's    directory   so that it can find     the     <b>
+.bochsrc</b>    file which is   given to you,   and tells bochs what    to
+ do.)                                                                   
+ 
+    <p>    If you are working remotely, e.g. from your WAM/Glue account,
+first         download   the fonts file, and uncompress/untar it in your
+account.   then     do:     </p>
+                                   
+    <blockquote><tt>xset fp+</tt> &lt;the font directory in your account&gt; 
+            </blockquote>
+                                 For example, if you have saved the files 
+in  the   directory      ~/fonts,     and   your user name in WAM is bob, 
+do                                                                       
+                
+      <blockquote><tt>xset fp+ ~bob/fonts</tt></blockquote>
+                                       
+        <p>     After this, do         </p>
+                                       
+        <blockquote><tt>xhost +</tt></blockquote>
+                                 and then you must be able to run bochs from
+  your   <i>linuxlab       account</i>     , and   have  the output on your
+  WAM/Glue   X session.                                                 
+                                                                     
+          <p>     Note: you have to do these two steps <i>every time</i>
+you logon to  your  account. Also, the second step is sort of dangerous,
+because it enables  clients  from <i>any</i> host to connect to your X session!
+                                                      </p>
+                                         
+          <h2>Adding the fonts in WAM</h2>
+                      Unfortunately, there is a problem with WAM's font server, 
+   which    makes   adding the fonts   need more steps. Specifically, instead 
+   of<br>
+                                         
+          <blockquote><tt>xset fp+</tt> &lt;path&gt;<br>
+                            </blockquote>
+                      do the following if you're working from a WAM workstation:
+    (Again,     these   have  to be done from your <i>WAM</i> account, and
+ the   text in  <tt><b>   bold</b></tt>   must be entered as is.)       
+                                                                        
+             
+            <ul>
+                              
+              <li>Start XFS (don't forget the <tt><b>&amp;</b></tt>     
+at  the  end):                                                          
+                                                                        
+                              
+                <blockquote><b><tt> xfs -config /afs/wam.umd.edu/home/wam/s/o/sodre/pub/bochs.xfs
+          &amp;</tt></b></blockquote>
+                                </li>
+                                
+                <li>Set XFS in the current display:                     
+                                                                        
+                                                                        
+                  <blockquote><b><tt>xset +fp tcp/</tt></b>&lt;your workstation
+  IP address&gt;<b><tt>:7100</tt></b></blockquote>
+                                  </li>
+                                  
+                  <li>Rehash it:                                        
+                                                                        
+                                           
+                    <blockquote><b><tt>xset fp rehash</tt></b></blockquote>
+                                    </li>
+                                                 
+                  </ul>
+                                                 
+                  <p>For example, if your workstation's IP address is 128.8.17.52,
+the second        command will be:                   </p>
+                                                 
+                  <blockquote><b><tt>xset +fp tcp/128.8.17.52:7100</tt></b></blockquote>
+                                                   
+                    <p>To find out what your workstation IP address is, you
+can do:                                          </p>
+                                                   
+                    <blockquote><b><tt>host $HOST</tt></b></blockquote>
+                                                     
+                          </body>
+                          </html>
+

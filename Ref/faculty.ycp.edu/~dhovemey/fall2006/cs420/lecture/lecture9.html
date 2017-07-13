@@ -1,0 +1,274 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Lecture 9</title>
+</head>
+<body>
+<h1>CS 420 - Lecture 9<br>
+</h1>
+<h2>CPU Scheduling<br>
+</h2>
+<p>General problem: when to allow kernel threads to run on the CPU(s).<br>
+</p>
+<p style="margin-left: 40px;">Often referred to as process scheduling,
+because traditional processes have a single kernel thread<br>
+</p>
+CPU bursts<br>
+<p>Most processes (kernel threads running user mode code) utilize the
+CPU in short bursts<br>
+</p>
+<p style="margin-left: 40px;">A burst ends when the process is
+suspended to wait for the completion of an I/O request<br>
+</p>
+<p>Preemptive vs. cooperative scheduling<br>
+</p>
+<p style="margin-left: 40px;">If a process that is currently in the
+middle of a CPU burst can be yanked from the CPU and another process
+put on the CPU, the scheduling algorithm is preemptive<br>
+</p>
+<p style="margin-left: 40px;">Requires hardware support, i.e., timer
+interrupt<br>
+</p>
+<p style="margin-left: 40px;">In cooperative scheduling a CPU-bound
+process can monopolize the CPU indefinitely<br>
+</p>
+<h3>Scheduling Criteria<br>
+</h3>
+<p style="margin-left: 40px;">CPU utilization - the percentage of the
+the time that the CPU is busy executing a process<br>
+</p>
+<p style="margin-left: 40px;">Throughput - Rate at which submitted
+processes complete<br>
+</p>
+<p style="margin-left: 40px;">Turnaround time - For a single process
+the amount of time between submission and completion<br>
+</p>
+<p style="margin-left: 40px;">Waiting time - For a single process, the
+amount of time spent waiting in the run queue<br>
+</p>
+<p style="margin-left: 40px;">Response time - Amount of time to respond
+(output a response) to user input<br>
+</p>
+<p style="margin-left: 80px;">An important measure for interactive
+processes<br>
+</p>
+<p>In general, no single scheduling algorithm will maximize all of
+these criteria<br>
+</p>
+<h2>Scheduling algorithms</h2>
+<p>Terminology: whenever you see "process", you should mentally
+substitute "kernel thread that is part of a user process".<br>
+</p>
+<h3>Non-preemptive algorithms<br>
+</h3>
+<p>First, consider the case of non-preemptive algorithms.<br>
+</p>
+<h4>First-come, first-serve (FCFS)<br>
+</h4>
+<p>Allocate the CPU to kernel threads in the order they arrive.<br>
+</p>
+<p>[Examples are from Siblerschatz, Sect 5.3.1]<br>
+</p>
+<p>E.g.:</p>
+<blockquote>
+  <table style="text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+    <tbody>
+      <tr>
+        <td style="vertical-align: top;">Arrival<br>
+        </td>
+        <td style="vertical-align: top;">Process<br>
+        </td>
+        <td style="vertical-align: top;">CPU Burst Length<br>
+        </td>
+      </tr>
+      <tr>
+        <td style="vertical-align: top;">1<br>
+        </td>
+        <td style="vertical-align: top;">P1<br>
+        </td>
+        <td style="vertical-align: top;">24 ms<br>
+        </td>
+      </tr>
+      <tr>
+        <td style="vertical-align: top;">2<br>
+        </td>
+        <td style="vertical-align: top;">P2<br>
+        </td>
+        <td style="vertical-align: top;">3 ms<br>
+        </td>
+      </tr>
+      <tr>
+        <td style="vertical-align: top;">3<br>
+        </td>
+        <td style="vertical-align: top;">P3<br>
+        </td>
+        <td style="vertical-align: top;">3 ms<br>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+<p>Resulting schedule:<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/fcfs.jpg"
+ style="width: 60%;"><br>
+</p>
+<p>The average waiting time is (0 + 24 + 27) / 3 = 17<br>
+</p>
+<p>Waiting time is minimized if the kernel threads with shorter CPU
+bursts run first:<br>
+</p>
+<p>E.g.:<br>
+</p>
+<blockquote>
+  <table style="text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+    <tbody>
+      <tr>
+        <td style="vertical-align: top;">Arrival<br>
+        </td>
+        <td style="vertical-align: top;">Process<br>
+        </td>
+        <td style="vertical-align: top;">CPU Burst Length<br>
+        </td>
+      </tr>
+      <tr>
+        <td style="vertical-align: top;">1<br>
+        </td>
+        <td style="vertical-align: top;">P2<br>
+        </td>
+        <td style="vertical-align: top;">3 ms<br>
+        </td>
+      </tr>
+      <tr>
+        <td style="vertical-align: top;">2<br>
+        </td>
+        <td style="vertical-align: top;">P3<br>
+        </td>
+        <td style="vertical-align: top;">3 ms<br>
+        </td>
+      </tr>
+      <tr>
+        <td style="vertical-align: top;">3<br>
+        </td>
+        <td style="vertical-align: top;">P1<br>
+        </td>
+        <td style="vertical-align: top;">24 ms<br>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+<p style="margin-left: 40px;"><img alt="" src="figures/sjf.jpg"
+ style="width: 60%;"><br>
+</p>
+<p>Now the waiting time is (0 + 3 + 6) / 3 = 3<br>
+</p>
+<p>We can use this idea to construct a better algorithm.<br>
+</p>
+<h4>Shortest Job First (SJF)<br>
+</h4>
+<p>Give the CPU to the process that will have the shortest CPU burst
+length.<br>
+</p>
+<p>This results in provably optimal walting time.&nbsp; By always
+scheduling the process that will run for the least amount of time,
+overall waiting time is minimized.<br>
+</p>
+<p>This is an idealized scheduling algorithm: there is really no way of
+knowing in advance how long a process will utilize the CPU for before
+waiting on I/O.<br>
+</p>
+<p>We can estimate the length of the next CPU burst for a process based
+on the past behavior of the process.<br>
+</p>
+<p>A process's CPU bursts can be considered a sequence t<sub>1</sub>,
+t<sub>2</sub>, t<sub>3</sub>, ...<br>
+</p>
+<p>Let &#964;<sub>n</sub> be the predicted CPU burst length for time
+n.&nbsp; One way
+to compute &#964;<sub>n</sub> is as a weighted exponential average of past
+values of t.<br>
+</p>
+<p>Choose a constant &#945; less than
+1.&nbsp; To compute &#964;<sub>n+1</sub>, we can use the formula</p>
+<blockquote>
+&#964;<sub>n+1</sub> = &#945; t<sub>n</sub> + (1 - &#945;) &#964;<sub>n</sub>
+</blockquote>
+<p>(1 - &#945;) is the <span style="font-style: italic;">decay factor</span>:
+it represents how quickly or slowly past measurements are disregarded
+as an indicator of future behavior.&nbsp; A typical value of &#945; might be
+.5.&nbsp; The result is that the predictions &#964;<sub>n</sub> form a
+smooth curve out of the samples of CPU burst size.<br>
+</p>
+<p>[Silberschatz, pg 161, Figure 5.3]<br>
+</p>
+<p style="margin-left: 40px;"><img alt=""
+ src="figures/weightedExponentialAverage.jpg" style="width: 60%;"><br>
+</p>
+<p>
+</p>
+<h3>Preemptive algorithms</h3>
+<p>In a preemptive scheduling algorithm, the OS kernel can remove a
+kernel thread from the CPU and choose another one to replace it at any
+time.<br>
+</p>
+<h4>Preemptive Shortest Job First<br>
+</h4>
+<p>In the preemptive form of SJF, if a process entering the ready state
+has a shorter next CPU burst length than any process either running or
+ready, it is scheduled immediately.</p>
+<h4>Priority Scheduling<br>
+</h4>
+<p>This is the general term for assigning priorities to
+processes.&nbsp; Each time a scheduling decision is made, the process
+with the highest priority is chosen.<br>
+</p>
+<p>The question is how to assign priorities to processes.<br>
+</p>
+<p>Lots of ways.&nbsp; In static priority scheduling, each process is
+assigned a priority when it is created and the priorities never change.<br>
+</p>
+<p>How to choose the priority?<br>
+</p>
+<p style="margin-left: 40px;">SJF: process with shortest estimated next
+CPU burst&nbsp;
+&#964;<sub>n+1</sub> has the highest priority</p>
+<p>Starvation: high priority processes can completely monopolize the
+CPU, never allowing low-priority processes to run.<br>
+</p>
+<p style="margin-left: 40px;">One solution: aging.&nbsp; As processes
+sit in the run queue (ready state), they gradually increase in priority.<br>
+</p>
+<h4>Round-robin scheduling<br>
+</h4>
+<p>Like FCFS, but preemptive.&nbsp; Processes are assigned fixed time
+slices.&nbsp; The amount of time allocated for a single time slice is
+the scheduling <span style="font-style: italic;">quantum</span>.<br>
+</p>
+<p>Example: say there are three processes that need to run:<br>
+</p>
+<pre>Process  Burst size<br>P1       24<br>P2       3<br>P3       3<br></pre>
+<p>Assume quantum of 10 ms.&nbsp; Scheduling looks like this:<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/rr.jpg"
+ style="width: 60%;"><br>
+</p>
+<p>Total amount of waiting: (0 + 10 + 13 + 6) = 29.&nbsp; Average
+waiting time is 9.66 ms.<br>
+</p>
+<p>Because there is some overhead associated with a context switch, the
+choice of quantum will affect how much overall CPU time can be utilized
+by useful work (processes).&nbsp; Larger quantum means less context
+switch overhead.&nbsp; However, too large a quantum affects
+interactivity.<br>
+</p>
+<h2>Assignment 4<br>
+</h2>
+<p>Talk about assignment 4.<br>
+</p>
+</body>
+</html>

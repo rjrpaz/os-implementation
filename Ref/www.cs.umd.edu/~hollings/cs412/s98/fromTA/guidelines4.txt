@@ -1,0 +1,38 @@
+Guidelines for project 4.
+-------------------------
+
+The grade starts at 100. 5 tests are used (number 0..4), each worth 20.
+
+The following errors were observed and the grade was reduced:
+
+If a test crashed or froze during execution, it gets 0 points.
+If init could not load/start a child, it gets 1 point (exception: test 2).
+
+Test 1 does not get back to test1i: 10 points.
+
+Test 2 reports strange (wrong) arguments by the children processes: -2 points
+  per instance.
+Test 2 correctly reported that it could not load the non-existent module and
+  did do anything else correctly: gets 5 points.
+
+Test 3 gets only the sequence or only the "song" correctly: 10 points each.
+Test 3 cannot close test3c: reduction by 0 points.
+
+Test 4 can only execute a few times: gets 1 point.
+Test 4 reports al NULLs or other similar addresses: gets 1 point.
+Test 4 runs out of memory during execution: gets 5 points.
+Test 4 has reports different addresses (that do not cycle): -5 points.
+Test 4 reports different addresses, in a cycle: not an error.
+
+If the project compiles with no warnings, it gets 5 bonus points, up to 100
+  total.
+
+--------------------------------[Bug fixes]--------------------------------
+
+As an EXCEPTION, partial credit will be given back to the projects that will
+improve test results with a small fix. This may introduce additional "observed
+errors" which will then be incorporated in these guidelines.
+
+The partial credit is calculated as one-third of the regular credit.
+
+----------------------------[End of guidelines]----------------------------

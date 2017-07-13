@@ -1,0 +1,301 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Lecture 25</title>
+</head>
+<body>
+<h1>CS 420 - Lecture 25<br>
+</h1>
+<p>[Talk briefly about interrupt levels.]<br>
+</p>
+<h3>Direct Memory Access (DMA)<br>
+</h3>
+<p>If the host CPU is used to copy bulk data from device registers into
+memory, then the kernel is using <span style="font-style: italic;">programmed
+I/O</span>.&nbsp; While the CPU is engaged in data transfer, it can't
+be used to do other useful work, so this approach creates a certain
+amount of CPU overhead.<br>
+</p>
+<p>Many devices and bus architectures support Direct Memory Access
+(DMA).&nbsp; DMA allows a hardware device to directly read and write
+buffers in RAM without intervention by the CPU.&nbsp; This allows the
+CPU to spend more time doing useful work (such as executing user
+processes).<br>
+</p>
+<h3>Device Drivers<br>
+</h3>
+<p>Each hardware device installed will have a corresponding <span
+ style="font-style: italic;">device driver</span> to allow the kernel
+to communicate with the device.&nbsp; Pretty much all operating systems
+try to use abstraction layers to organize similar devices into a
+subsystem with a common interface.<br>
+</p>
+<p>For example, Unix/Linux:<br>
+</p>
+<p style="margin-left: 40px;">Character devices: devices that read/and
+write data 1 byte at a time.&nbsp; E.g.: the keyboard, serial and
+parallel ports.<br>
+</p>
+<p style="margin-left: 40px;">Block devices: devices that read/write
+data in blocks.&nbsp; E.g.: disks, CD/DVD drives, etc.<br>
+</p>
+<h3>Synchronous vs. Asynchronous I/O<br>
+</h3>
+<p>From the perspective of a user process, I/O is either synchronous or
+asynchronous.&nbsp; Synchronous I/O simply means that the calling
+process will wait for the I/O request to complete before continuing
+execution.&nbsp; Asynchronous I/O means that the process will not wait,
+but instead will receive a notification from the kernel later when the
+request completes.<br>
+</p>
+<p>Within the kernel, all I/O is essentially asynchronous.&nbsp; When
+the kernel needs to perform I/O, it creates a request data structure
+and places it in a request queue in the device driver.&nbsp; Thus:<br>
+</p>
+<p>Algorithm for synchronous I/O:<br>
+</p>
+<p style="margin-left: 40px;">1. Create a request object<br>
+</p>
+<p style="margin-left: 40px;">2. Place the request object in the device
+driver's request queue<br>
+</p>
+<p style="margin-left: 40px;">3. Wait until the request object is in
+the FINISHED state<br>
+</p>
+<p style="margin-left: 40px;">4. Return to user process<br>
+</p>
+<p>Asynchronous I/O simply skips step 3, so the process continues to
+execute while the I/O request is pending.&nbsp; The kernel will
+generally support some way for the process to find out when the request
+completes.&nbsp; Possibilities include:<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Unix
+signals</span>: a signal handler function is run asynchronously in the
+process.&nbsp; Signals are like hardware interrupts that the kernel
+sends to running processes.&nbsp; Signals are a major pain in the ass
+to use correctly, and really are a big hack to work around the fact
+that early versions of Unix did not support threads.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Wake up
+a notification thread</span>.&nbsp; There can be a dedicated
+event-handling thread in the process.&nbsp; The kernel can wake up this
+thread by sending it a notification of the completion of the I/O
+request.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Polling</span>.&nbsp;
+The user process can simply poll the kernel periodically to find out
+whether or not the request has completed.<br>
+</p>
+<h3>Blocking vs. Nonblocking I/O<br>
+</h3>
+<p>The user process may also use <span style="font-style: italic;">blocking</span>
+or <span style="font-style: italic;">nonblocking</span> I/O.&nbsp;
+Blocking I/O is just normal synchronous I/O.&nbsp; Nonblocking I/O is
+essentially polled asynchronous I/O.&nbsp; A nonblocking read is a
+check to see if any data is available in the buffer asssociated with
+the device.<br>
+</p>
+<p style="margin-left: 40px;">If so, some or all of the data is
+returned.<br>
+</p>
+<p style="margin-left: 40px;">If not, then the kernel schedules some
+more data to be read from the device into the buffer, but returns
+immediately to the calling process.<br>
+</p>
+<p>Nonblocking writes are similar.<br>
+</p>
+<p style="margin-left: 40px;">If the buffer is not full, some or all of
+the user data is copied into the buffer and control returns immediately
+to the calling process.<br>
+</p>
+<p style="margin-left: 40px;">If the buffer is full, then the kernel
+schedules I/O to write some of the buffered data back to the device
+(freeing up some room in the buffer), and returns immediately to the
+calling process.<br>
+</p>
+<p>As the name suggests, nonblocking I/O calls do not block (suspend)
+the process if the I/O request cannot be satisfied immediately.<br>
+</p>
+<h2>Protection<br>
+</h2>
+<h3>Goals of protection<br>
+</h3>
+<p style="margin-left: 40px;">Allow resources to be safely shared
+between users<br>
+</p>
+<p style="margin-left: 40px;">Specify and enforce degrees of trust<br>
+</p>
+<p style="margin-left: 40px;">Prevent unauthorized access to resources<br>
+</p>
+<p>Mechanism vs. policy<br>
+</p>
+<p style="margin-left: 40px;">A protection mechanism is a check that a
+user is authorized to access a particular resource<br>
+</p>
+<p style="margin-left: 40px;">A policy uses the protection mechanisms
+to determine which users may access which resources<br>
+</p>
+<p>The mechanism is provided by the OS.&nbsp; The policy must be
+determined by the system administrator.<br>
+</p>
+<p>What kinds of resources do we want to be able to protect?<br>
+</p>
+<p style="margin-left: 40px;">Files and directories<br>
+</p>
+<p style="margin-left: 40px;">Access to hardware devices<br>
+</p>
+<p style="margin-left: 40px;">Memory, disk space<br>
+</p>
+<p style="margin-left: 40px;">etc...<br>
+</p>
+<h3>Princples of Protection<br>
+</h3>
+<p><span style="font-style: italic;">Principle of least privilege</span>:
+users and system processes should only have access to the resources
+that they need to accomplish the task at hand.&nbsp; No user or system
+process should have access to resource it does need.<br>
+</p>
+<p style="margin-left: 40px;">If a bug allows a malicious program or
+user to execute arbitrary code, the damage is limited.<br>
+</p>
+<p>Discuss: do Unix and Linux follow the principle of least privilege?<br>
+</p>
+<p style="margin-left: 40px;">In some ways yes, and some ways no.<br>
+</p>
+<p style="margin-left: 40px;">Executing kernel code in kernel mode,
+where it can execute any instruction and access any hardware device, is
+a violation of this principle.&nbsp; In general, the kernel is using
+only a small subset of its privileges at any one time.&nbsp; A bug in
+the kernel can thus allow an attacker to do almost anything.<br>
+</p>
+<p style="margin-left: 40px;">The existence of a root account (maximum
+set of privileges) does not follow this principle.&nbsp; Any daemon
+processes (e.g., the mail server) that run as root are clearly
+violating the principle.<br>
+</p>
+<p style="margin-left: 40px;">Many daemons run as a non-root
+user.&nbsp; E.g., having a special "www" user for the web server.&nbsp;
+If an attacker compromises the web server, the damage is limited to
+resources that the "www" user can access.<br>
+</p>
+<p>Does the principle of least protection actually result in a more
+secure system?&nbsp; Not necessarily.&nbsp; Reasons:<br>
+</p>
+<p style="margin-left: 40px;">The more complex the protection model,
+the more difficult it is to define a good protection policy.&nbsp;
+E.g., Windows, SELinux.<br>
+</p>
+<p style="margin-left: 40px;">The more complex the OS and system
+software, the more possibilities of bugs.&nbsp; E.g., Windows.<br>
+</p>
+<h3>Domain of Protection<br>
+</h3>
+<p>View a computer as a collection of processes and objects.&nbsp;
+Objects can be hardware (devices) or software
+(files/programs/semaphores/etc.)<br>
+</p>
+<p>Objects have associated with them a set of well-defined operations
+that represent things that a process can do with an object.&nbsp; For
+example, read, write, execute (these are the standard operations in the
+Unix protection model).<br>
+</p>
+<p>Access rights: a protection domain is a set of <span
+ style="font-style: italic;">access rights</span>.&nbsp; An access
+right is a pair consisting of<br>
+</p>
+<p style="margin-left: 40px;">(object, operation)<br>
+</p>
+<p>The existence of an access right in a protection domain means that
+any process running within that protection domain has the right to
+perform the specified operation on the specified object.<br>
+</p>
+<p>Static vs. dynamic association of processes with protection
+domains.&nbsp; Static means that a process, once started, is in a
+single protection domain until it exits.&nbsp; Dynamic means that a
+process may switch to a different protection domain.&nbsp; A dynamic
+scheme may have a switching mechanism to allow a process to switch from
+one protection domain to another.<br>
+</p>
+<p>Scope of protection domains: could be<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">User</span>:
+each process runs by a particular user runs in that user's protection
+domain<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Process</span>:
+each process is a separate protection domain<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Procedure</span>:
+each procedure is a separate protection domain.&nbsp; (E.g., Java.)<br>
+</p>
+<h3>The Unix Protection Model<br>
+</h3>
+<p>There are three basic kinds of protection domains:<br>
+</p>
+<p style="margin-left: 40px;">user domain: the set of access rights for
+a particular user account<br>
+</p>
+<p style="margin-left: 40px;">group domain: the set of access rights
+for a particular group account (a group is a collection of users)<br>
+</p>
+<p style="margin-left: 40px;">other domain: the set of access rights
+available for all users<br>
+</p>
+<p>Each process runs with a particular user id and group id.&nbsp; The
+set of access rights available to the process is the union of the
+rights in the user domain, each group domain that the user id belongs
+to, and the other domain.<br>
+</p>
+<p>Protected resources are files.&nbsp; This works because devices
+(e.g., keyboard, screen, disks, etc.) are represented as special files.<br>
+</p>
+<p>Each file has a user and group.&nbsp; The user is the user account
+that "owns" the file.&nbsp; The group is the group account that "owns"
+the file.&nbsp; (A group is a collection of user accounts.)<br>
+</p>
+<p>Each file has a set of access bits:<br>
+</p>
+<pre style="margin-left: 40px;">rwx rwx rwx<br> ^   ^   ^<br> |   |   +--- "other" bits<br> |   +------- "group" bits<br> +----------- "user" bits<br></pre>
+<p>Each bit is associated with a particular domain (user, group, other)
+and a particular operation (read, write, execute).<br>
+</p>
+<p>If a bit is 1 then the access right for the given operation on the
+file exists in the domain the bit is associated with.&nbsp; For
+example, if the group write bit is set to 1, then the "write" operation
+exists for the file in the group protection domain.<br>
+</p>
+<p>There are two additional bits associated with each file: the <span
+ style="font-style: italic;">set user id</span> and <span
+ style="font-style: italic;">set group id</span> bits, abbreviated
+setuid and setgid.&nbsp; These bits have different meanings depending
+on whether the file is an ordinary file, or a directory.&nbsp; (These
+bits have no meaning for devices. (?))<br>
+</p>
+<p>If an ordinary file has the setuid bit set, then any process
+executing the file as an executable will run with the privileges of the
+user owner of the file.&nbsp; Similarly, if any ordinary file has the
+setgid bit set, it will run with the privileges of the group owner of
+the file (in addition to the privileges of groups to which the user id
+belongs).<br>
+</p>
+<h3>Access Control LIsts<br>
+</h3>
+<p>The Unix protection model is limited by the fact that the only way
+to grant access to a collection of users is to define a group.&nbsp;
+Groups are defined in a configuration file (/etc/group) that can only
+be modified by the system administrator.<br>
+</p>
+<p>An Access Control List, or ACL, is a list of entries of the form<br>
+</p>
+<p style="margin-left: 40px;">(user, rights)<br>
+</p>
+<p>An entry grants a set of rights to a particular user.&nbsp; Rights
+can consist of any combination of the read, write, and execution
+operations.<br>
+</p>
+<p>Windows, Linux, and Solaris all support ACLs.<br>
+</p>
+</body>
+</html>

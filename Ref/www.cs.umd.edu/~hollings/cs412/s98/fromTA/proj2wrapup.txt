@@ -1,0 +1,37 @@
+Newsgroups: csd.cmsc412
+Subject: Project 2 wrap-up
+
+Good morning (or another time of day)!
+
+This Wednesday, 1pm, is the deadline for project 2.
+
+Most of the students who took the class in the past agree that this
+phase is remembered as the hardest one. This is why you had 3
+weeks to complete it. Other phases may have less time.
+
+The code from phase 2 will be used extensively in further phases.
+You want to have it thoroughly tested. Was debugging difficult? It
+will be even more difficult in the next phase, with timer
+interrupts making the execution history non-repeatable. You want
+to be sure you can rely on the part of the kernel you have written
+already.
+
+In fact, the next phase will not be officially given to you until
+after the mid-term. Spend that time preparing for the exam, it is
+important (for both the material and the grade).
+
+A few words about tests. I will have a collection of tests of
+various difficulty. Each test will be copied to a proc.c file, the
+project recompiled and run. The simplest test will just call the
+Init() function, but you want to test more than that. See if a
+recursion works properly. As specified, I will not run more than
+10 processes *concurrently*. 
+
+As usual, I hold my office hours on Tuesday, 2:00-3:30 pm. If this
+time is not convenient, you may try to catch me on campus or set
+up an appointment; however, do not do that on Wednesday morning,
+okay? :-)
+
+Good luck!
+
+Simon

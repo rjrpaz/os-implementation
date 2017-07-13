@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/6/project2/build/geekos
+END
+.ignore
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/6/project2/build/geekos/.ignore
+END
+fd_boot.bin
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/6/project2/build/geekos/fd_boot.bin
+END
+kernel.bin
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/6/project2/build/geekos/kernel.bin
+END
+setup.bin
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/6/project2/build/geekos/setup.bin
+END
+kernel.syms
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/6/project2/build/geekos/kernel.syms
+END

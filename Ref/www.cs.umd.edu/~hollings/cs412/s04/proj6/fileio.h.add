@@ -1,0 +1,15 @@
+typedef struct {
+    unsigned int uid:28;
+    unsigned int permission:4;
+} aclEntry;
+
+typedef struct {
+    char name[1024];
+    int uid;
+    int permissions;
+} aclReq;
+
+* add this to the struct fileStat
+   that is, *inside the struct*
+   not as a global declaration */
+aclEntry acls[4];

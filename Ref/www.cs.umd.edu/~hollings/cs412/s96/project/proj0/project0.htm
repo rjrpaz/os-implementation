@@ -1,0 +1,183 @@
+<HTML>
+
+<HEAD>
+
+<TITLE>\documentstyle{article}</TITLE>
+
+<META NAME="GENERATOR" CONTENT="Internet Assistant for Microsoft Word 2.0z Beta">
+</HEAD>
+
+<BODY>
+
+<P>
+<CENTER><B><FONT SIZE=4>CMSC 412 Preliminary Project</FONT></B></CENTER>
+<P>
+<CENTER>Due (in section) February 5, 1996<BR>
+</CENTER>
+<P>
+This handout describes how to use the Borland C++ environment,
+how to compile C and assembler programs in it, and how to use
+the built-in linker and project manager. In addition, you should
+receive sample programs in both C and assembler during lab session.
+Type in the programs; then compile, link and run them. (Note:
+In order to link within the Borland environment, an extra module
+called <A HREF="http://www.cs.umd.edu/~hollings/cs412/s96/project/proj0/dos.mac">dos.mac </A>is
+required).
+<H1>Global Variables and Functions </H1>
+
+<P>
+Add an underscore to every external or public variable used in
+the assembly code module. For example, if a C function, <TT><FONT SIZE=2 FACE="Courier New">scheduler()</FONT></TT><FONT SIZE=2>,
+is called from the assembly module, this function should be declared
+as: </FONT><TT><FONT SIZE=2 FACE="Courier New">extrn _scheduler:far
+</FONT></TT><FONT SIZE=2>where </FONT><TT><FONT SIZE=2 FACE="Courier New">far
+</FONT></TT><FONT SIZE=2>indicates the address mode. The same
+applies for public variables. The sample solution projects illustrate
+how these changes should be done.</FONT>
+<H1><FONT SIZE=2>Compilation and Linking </FONT></H1>
+
+<P>
+Compiling a Borland C++ program test.c can be done outside the
+interactive mode by entering:
+<PRE>
+bcc -c -mh test.c
+</PRE>
+
+<P>
+The -c option specifies that the compiler should output to the
+object file test.obj (needed for the linker). The -mh option specifies
+that huge memory model is to be used. Note, that test.c is a C
+file, not a C++ file. C++ source files have a .cpp ending. When
+a C++ file is compiled, more strict compile time checking is done,
+and a different naming scheme is used in the .obj files, e.g.,
+the schedule() function will be named &quot;schedule()&quot; but
+not &quot;_schedule&quot;. Therefore, you should not mix .c and
+.cpp files in your program. The added features of C++ will not
+really be necessary in this course's projects, so you might want
+to stick with .c files.
+<P>
+Assembly code modules should be compiled using:
+<PRE>
+tasm testS.asm /MX
+</PRE>
+
+<P>
+where the /MX option turns on case sensitivity for external variables.
+
+<P>
+The bc command is also used to link several Borland C++ compatible
+modules together:
+<P>
+<TT><FONT SIZE=2 FACE="Courier New">bcc -mh testC testS </FONT></TT>
+<P>
+Note that bcc has three arguments; the second and third are the
+filenames of modules to link. The first argument ,-mh, indicates
+the memory model used (here, huge).
+<H1>The Borland C++ Integrated Environment </H1>
+
+<P>
+The Borland C++ environment is invoked by typing bc, or, in the
+WAM labs, choosing Compilers and Borland C++ from the user menu.
+It includes a multi-window editor, a linker, a C/C++ compiler,
+a project manager, and a simple debugger. It also includes the
+ability to invoke other programs, such as the Turbo Assembler
+and Turbo Debugger. 
+<P>
+The Project menu provides commands to maintain project files.
+The &quot;Open project...&quot; commands allows you to open old
+project files and make new ones. With the &quot;Add item...&quot;
+command, you can add files to a project. The project manager recognizes
+several file types, for example, .c for C files, .cpp for C++
+files, and .asm for Assembler files. Note that if there is only
+one project file in the current directory when you execute bc,
+the project will automatically open when the Borland C++ environment
+starts up.
+<P>
+With the Options menu, you can set a number of options, relating
+to the built-in C/C++ compiler, the linker, and the editor environment,
+among other things. If you have a project file open when you set
+an option, the option will stay with that project file. In all
+projects for this course, you should make sure that the Compiler
+options are set to the Huge memory model (see the Code Generation
+submenu). Other Compiler options can be left on the default settings.
+<P>
+The Directory options are also important. You must make sure that
+the Include Directories and Library Directories fields refer to
+the correct directories. If you are working in a WAM lab, those
+fields should already be set up correctly.
+<P>
+You might want to play around with the Environment options. Some
+like to have more than 25 lines on the screen, and there is an
+option of using 50 lines instead (the characters become rather
+small, though).
+<P>
+With the &quot;Compile&quot; command in the Compile menu you can
+compile the C/C++ file in the topmost window. If there is a project
+file open, the &quot;Build all&quot; command goes through the
+files listed in the project, compiles them, and links together
+all the object files. The &quot;Make&quot; command compiles and
+links only the files that have changed since the last build, while
+the &quot;Link&quot; command does a link, without compiling.
+<P>
+The built-in C/C++ compiler contains a limited assembler. Source
+text surrounded by <TT><FONT SIZE=2 FACE="Courier New">asm&#133;</FONT></TT><FONT SIZE=2>
+is interpreted as assembly language. Assembler registers are referred
+to by using an underscore before the name (</FONT><TT><FONT SIZE=2 FACE="Courier New">_AX</FONT></TT><FONT SIZE=2>
+for AX, </FONT><TT><FONT SIZE=2 FACE="Courier New">_FLAGS</FONT></TT><FONT SIZE=2>
+for the flags register, and so on), and variables and parameters
+can be referred to, as well. For most purposes, including the
+later projects, it should be enough to use this feature if low
+level access is needed, making the Assembler mostly unnecessary.
+</FONT>
+<P>
+The Run and Debug menus together represent the limited debugging
+features built into the environment. If you need more sophisticated
+facilities, you will have to use the Turbo Debugger, which is
+included in the Borland C++ package. That is going to be very
+helpful in later projects. The Turbo Debugger can be invoked from
+the leftmost menu. However, if you do that, the Borland C++ environment
+will stay in memory, leaving very little space for your program.
+The Turbo Debugger can be invoked from the command line using
+&quot;td&quot;. You can also list your program name after the
+command, e.g., &quot;td myprog'&quot;).
+<P>
+If you need more information about the Borland C++ environment,
+the manuals should be in all WAM labs, as well as in the CSC Program
+Library.
+<H1>The Make File </H1>
+
+<P>
+Borland C++ provides a macro utility make for compiling and linking
+modules outside of the editor environment. Since multiple files
+need to be linked each time we want to build the program, it is
+useful to define a makefile like the one shown below. This way
+the user need only type &quot;make&quot;, and the commands in
+the file with the name <TT><FONT SIZE=2 FACE="Courier New">makefile</FONT></TT><FONT SIZE=2>
+will be executed. If one of the files has not been modified (say,
+test.c) since the last make command, it will not be recompiled
+again when the make command is used. Here is a sample <A HREF="http://www.cs.umd.edu/~hollings/cs412/s96/project/proj0/makefile.txt">makefile</A>.</FONT>
+<P>
+You must include a makefile with all the projects you turn in.
+
+<H1>Program files </H1>
+
+<P>
+Both of the programs below should downloaded, linked and run.
+This project (as all projects) will be turned in on a 3.5&quot;
+diskette containing the 'C' code, the assembler code and the makefile.
+Write your name, section and email address on the front of your
+diskette. Note the commenting used in these preliminary projects;
+we expect to see similar commenting in all of your future programs.
+<B>NOTE: several syntax errors have been included in these files,
+you are to correct the errors and turn in working source code.</B>
+<P>
+The C program is <A HREF="http://www.cs.umd.edu/~hollings/cs412/s96/project/proj0/sampleC.C">sampleC.c</A>.
+<P>
+The Assembly program is 
+<A HREF="http://www.cs.umd.edu/~hollings/cs412/s96/project/proj0/sampleS.S">sampleS.asm</A>.
+If you do not have access to the Turbo Assmebler, you can download the object
+verion of this file.
+<A HREF="http://www.cs.umd.edu/~hollings/cs412/s96/project/proj0/sampleS.obj">sampleS.obj</A>.
+</BODY>
+
+</HTML>

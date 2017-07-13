@@ -1,0 +1,143 @@
+<!-- ----------------------------------------- -->
+<!-- Page title (begin it with "15-410") ----- -->
+<!-- ----------------------------------------- -->
+
+
+
+
+
+<!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 3.2//EN&quot;>
+<html>
+<head><title>15-410 Macintosh Lab Instructions</title>
+</head>
+<body bgcolor=white>
+<table width="100%" height="100%">
+
+<tr><td valign=top width=132>
+<table width=132 bgcolor=#cccccc height="100%">
+<tr><td height=140><center><font size=-1><b>Carnegie Mellon</b></font><br>
+<img alt="SCS logo" src="/~410/img/scslogo.gif"><br>
+<font size=-1><b>Computer Science Department</b></font></center></td></tr>
+<tr><td height=30><a href="/~410"><img alt="home" src="/~410/img/home.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/syllabus.html"><img alt="syllabus" src="/~410/img/syllabus.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/staff.html"><img alt="staff" src="/~410/img/staff.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/schedule.html"><img alt="schedule" src="/~410/img/schedule.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/lecture.html"><img alt="lecture" src="/~410/img/lecture.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/projects.html"><img alt="projects" src="/~410/img/projects.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/homeworks.html"><img alt="homeworks" src="/~410/img/homeworks.gif" border=0></a></td></tr>
+<tr><td>&nbsp;</td></tr></table>
+
+</td>
+
+<td width=10>&nbsp;</td>
+
+<td height="100%" valign=top>
+<br>
+
+<H1 ALIGN=CENTER>15-410 Macintosh Lab Instructions</H1>
+<HR>
+<!-- Body goes here. -->
+ 
+
+<!-- ----------------------------------------- -->
+<!-- Content Begins -------------------------- -->
+<!-- ----------------------------------------- -->
+
+<p>These instructions will tell you how to remotely connect to a linux.andrew.cmu.edu from a Macintosh computer
+(such as those in the Wean 5203 lab) in a way that will let you run Simics and other Unix programs. Since you'll
+need to be able to work with Simics for Project 1, and the number of available Andrew machines is limited, hopefully
+these instructions will provide more options. They should also work for home Macintosh computers, although the performance of Simics can really suffer over slower links (i.e., home DSL).</p>
+
+<p>These instructions will <strong>not</strong> detail how to work locally on these machines. There are a number of
+reasons for this:</p>
+
+<ol> <li>Simics doesn't support OS X. Even though lab machines can mount your afs space and reach the Simics binary,
+they won't execute on a Macintosh running OS X.</li>
+
+ <li>Just as many of you have learned in p0, it's easier both for us and you if you work in the afs space from the
+offset and don't have the pain of doing a transfer later.</li> </ol>
+
+<p>Hence we won't be working on the Macintosh directly, but instead be using it as a client to connect to a
+linux.andrew.cmu.edu machine. Please understand this distinction.</p> <hr>
+
+<ol> <li> <strong>Login</strong>
+
+ <p>Get to a Macintosh lab and log in with your Andrew id and password.</p> </li>
+
+ <li> <strong>Open X11.app</strong>
+
+ <p>X11.app is an implementation of the XFree86 <a href="http://en.wikipedia.org/wiki/X_server">X Window Server</a>.
+This is a program which will let us display graphical programs run remotely on linux.andrew.cmu.edu, including
+Simics and emacs. To open X11.app, Navigate to /Applications/Utilities/ and open X11.app.</p><img
+src="img/x11loc.png" alt="X11.app Location"> </li>
+
+<p>You may want to drag the X11.app program to the Dock so you can run it easily each time you log in.</p>
+
+ <li> <strong>xterm</strong>
+
+ <p>You should see a window open with a commandline and the name xterm at the top. If you've used Macintoshes
+before, it probably looks similar to the Terminal.app program you're familiar with. xterm is the standard terminal
+emulator for the X Window System, and like Terminal.app, it's usually used to display a shell. When X11.app boots,
+it opens one of these so you have a shell to work with. But X11.app is not xterm--xterm just one program the X
+Window Server can display. To see another, type in <tt>xeyes &amp;</tt> at the prompt.</p><img src="img/xeyes.png"
+alt="xeyes running">
+
+ <p>MIT must have been a boring place in 1984. The <tt>xeyes</tt> program has been loaded, and it's sending messages
+to and from the X window server that tells it how to display the eyeballs that follow the mouse. These messages are
+being sent on your local machine, but they can also be sent across the network, which is what we'll do in the next
+step. Close <tt>xeyes</tt> and continue.</p> </li>
+
+ <li> <strong>Connect to linux.andrew.cmu.edu</strong>
+
+ <p>In the xterm window, type in <tt>ssh -X $USER@linux.andrew.cmu.edu</tt> and type in your Andrew password. The -X
+flag tells ssh to set up a tunnel to securely forward X Window messages to the Macintosh. You can now run X programs
+remotely and have them displayed on the lab machine. Try it with <tt>xcalc</tt> or <tt>410/bin/410biff</tt>, a small program to alert you when there are 410 announcements. Don't close the
+xterm window though, or you'll lose your connection and any X programs running over it. (To run a program in the
+background so you can still type in the xterm, append an ampersand to the command. This is basic UNIX stuff you
+should know already and beyond the scope of this document.) If you ever need more xterms you can use the
+<strong>Terminal &#8984N</strong> option from the Applications menu or type <tt>xterm</tt> in the shell.</p> </li>
+
+ <li> <strong>Review docs</strong>
+
+ <p>If you haven't read our documentation on your AFS space yet (how did you finish p0?) now would be a good time to
+"review" <a href="http://www.cs.cmu.edu/~410/afs.html">it</a>. In particular, remember to <tt>aklog
+cs.cmu.edu</tt>. You might also want to add 410/bin to your path as detailed in the notes section of the <a href="p0/proj0.html#notes">Project 0 handout</a>.</p> </li>
+
+ <li> <strong>Test Simics</strong>
+
+ <p>The whole point of this exercise. Try running
+<tt>simics4</tt> in your linux.andrew.cmu.edu shell (you did add the 410 executable directory to your path, right?). After some loading time and a license agreement, you should eventually see a large black window.</p> </li>
+
+ <li> <strong>Editors</strong>
+
+ <p>You may also want to experiment with text editors to do your development work remotely on linux.andrew.cmu.edu.
+Popular ones are <tt>gvim</tt> and <tt>emacs</tt>. Both of these will run remotely over X.</p> </li> </ol>
+
+<h2>Going further...</h2>
+<ol>
+	<p><li>If you're getting errors about trusted X connections when opening remote programs, try passing -Y to ssh instead of -X. See <tt>man ssh</tt></p>
+	<p><li>By default on booting, X11.app runs /etc/X11/xinit/xinitrc to pick starting programs. But if you have a .xinitrc in your home directory on the Macintosh, it will use that instead. For example, an ~/.xinitrc might look like:
+		<dd><tt>xterm -e ssh -Y $USER@linux.andrew.cmu.edu &amp;<br />
+		exec quartz-wm</tt></dd>
+	But you can be much more creative. Be sure to end the file with <tt>exec &lt;some window manager&gt;</tt>. quartz-wm is the default Macintosh look-and-feel one.</ol>
+		
+<p>As usual contact <img src="img/staff-410.gif" alt="staff-410@cs.cmu.edu"> if you're having problems.</p>
+
+
+<!-- ----------------------------------------- -->
+<!-- Content Ends ---------------------------- -->
+<!-- ----------------------------------------- -->
+
+<!-- End body. -->
+
+
+</td></tr>
+<tr><td></td><td></td><td align=center>
+
+<HR>
+<P ALIGN=CENTER>[Last modified Tuesday January 26, 2010]</P></td></tr>
+</table>
+
+</body>
+</html>
+

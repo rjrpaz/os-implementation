@@ -1,0 +1,113 @@
+ int Sys_SetAcl( struct Interrupt_State* state )
+{
+    char *ptr;
+    struct User_Context *u;
+    aclReq *req;
+    
+    ptr = (char *) state->ebx;
+    u = g_currentThread->userContext;
+    KASSERT(u);
+
+    // validate pointer 
+    if (!Validate_User_Memory(u, ptr, sizeof(aclReq))) {
+        Print("invalid memory %x to %x\n", ptr, ptr+sizeof(aclReq));
+	return -1;
+    }
+    req =  (aclReq *) (ptr + 0x80000000);
+
+    return SetAcl(req->name, req->uid, req->permissions);
+}
+
+ int Sys_SetSetUid( struct Interrupt_State* state )
+{
+    char fileName[1024];
+    int setUid = state->edx;
+
+    const void* userPtr = (const void*) state->ebx;
+    unsigned int length = state->ecx;
+
+    // Make sure buf is a reasonable size.
+    if ( length > 1024 )
+	return -1;
+
+    if ( !Copy_From_User( fileName, userPtr, length ) ) {
+	return -1;
+    }
+    fileName[ length ] = '\0';
+
+    return SetSetUid(fileName, setUid);
+}
+
+ int Sys_SetEffectiveUid( struct Interrupt_State* state )
+{
+     int uid = state->ebx;
+
+     // write handling code below
+     return -1;
+
+}
+
+ int Sys_GetUid( struct Interrupt_State* state )
+{
+    // write handling code below
+    return -1;
+}
+
+ int Sys_MessageQueueCreate( struct Interrupt_State* state )
+{
+    char queueName[1024];
+
+    const void* userPtr = (const void*) state->ebx;
+    unsigned int length = state->ecx;
+
+    // Make sure buf is a reasonable size.
+    if ( length > 1024 )
+	return -1;
+
+    if ( !Copy_From_User( queueName, userPtr, length ) ) {
+	return -1;
+    }
+    queueName[ length ] = '\0';
+
+    // write handling code below
+    return -1;
+}
+
+void Setup_Syscalls()
+{
+   Register_Syscall(&Sys_Null, SYS_NULL);
+   Register_Syscall(&Sys_Exit, SYS_EXIT);
+   Register_Syscall(&Sys_Print, SYS_PRINT);
+   Register_Syscall(&Sys_GetKey, SYS_GETKEY);
+   Register_Syscall(&Sys_Spawn, SYS_SPAWN);
+   Register_Syscall(&Sys_Wait, SYS_WAIT);
+
+   Register_Syscall(&Sys_Get_Time, SYS_GETTIME);
+   Register_Syscall(&Sys_Set_Scheduling_Policy, SYS_SETSCHED);
+   Register_Syscall(&Sys_Init_Semaphore, SYS_INITSEM);
+   Register_Syscall(&Sys_P, SYS_P);
+   Register_Syscall(&Sys_V, SYS_V);
+   Register_Syscall(&Sys_Finish_Semaphore, SYS_FINISHSEM);
+
+   Register_Syscall(&Sys_Mount, SYS_MOUNT);
+   Register_Syscall(&Sys_Open, SYS_OPEN);
+   Register_Syscall(&Sys_Close, SYS_CLOSE);
+   Register_Syscall(&Sys_Delete, SYS_DELETE);
+   Register_Syscall(&Sys_Read, SYS_READ);
+   Register_Syscall(&Sys_Write, SYS_WRITE);
+   Register_Syscall(&Sys_Stat, SYS_STAT);
+   Register_Syscall(&Sys_Seek, SYS_SEEK);
+   Register_Syscall(&Sys_CreateDirectory, SYS_CREATEDIR);
+   Register_Syscall(&Sys_Format, SYS_FORMAT);
+
+// Setup the syscalls; copy-paste only FS part below if
+// you've already registered the calls above
+   Register_Syscall(&Sys_SetAcl, SYS_SET_ACL);
+   Register_Syscall(&Sys_SetSetUid, SYS_SET_SET_UID);
+   Register_Syscall(&Sys_SetEffectiveUid, SYS_SET_EFFECTIVE_UID);
+   Register_Syscall(&Sys_GetUid, SYS_GET_UID);
+   Register_Syscall(&Sys_MessageQueueCreate, SYS_MQ_CREATE);
+ }
+
+
+

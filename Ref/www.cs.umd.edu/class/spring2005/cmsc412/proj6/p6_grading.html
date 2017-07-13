@@ -1,0 +1,197 @@
+<html>
+<head><title>CMSC412 Project 6 Grading Criteria</title>
+
+</head>
+
+
+<body><center><b>Project 6 Grading Criteria</b></center></p>
+
+<ol>
+
+<li> <b>Message Queue Operations</b> using <tt>/c/p6test.exe</tt><br>
+<br>
+<tt>p6test.exe</tt> tests the following functionality.<br>
+<br>
+<table border=1>
+<tr>
+<td> <b>Functionality</b> </td>
+<td> <b>Behavior</b>      </td>
+<td> <b>Weightage</b>     </td>
+</tr>
+
+
+<tr>
+<td> <tt>BasicCreateDestroy</tt> </td>
+<td> Create/Destroy a meesage queue </td>
+<td> 10   </td>
+</tr>
+
+<tr>
+<td> <tt>CreateBigSize</tt> </td>
+<td> Tries to create a message queue with too large a size </td>
+<td> 3  </td>
+</tr>
+
+<tr>
+<td> <tt>ReadFromUnopened</tt> </td>
+<td> Tries to read from an unopened message queue </td>
+<td> 3  </td>
+</tr>
+
+<tr>
+<td> <tt>WriteToUnopened</tt> </td>
+<td> Tries to write to an unopened message queue </td>
+<td> 3  </td>
+</tr>
+
+<tr>
+<td> <tt>DestroyTwice</tt> </td>
+<td> Tries to destroy a message queue twice </td>
+<td> 3  </td>
+</tr>
+
+<tr>
+<td> <tt>DestroyUnopened</tt> </td>
+<td> Tries to destroy an message queue with an invalid id </td>
+<td> 3  </td>
+</tr>
+
+<tr>
+<td> <tt>BasicReadWrite</tt> </td>
+<td> Send followed by Receive, and compare </td>
+<td> 15   </td>
+</tr>
+
+<tr>
+<td> <tt>WriteOverflow</tt> </td>
+<td> Tries to write a quantity larger than the message queue size </td>
+<td>  5  </td>
+</tr>
+
+<tr>
+<td> <tt>StressReadWrite</tt> </td>
+<td> Stresses messages queue API by reading/writing lots of data</td>
+<td> 15  </td>
+</tr>
+
+
+
+<tr>
+<td>&nbsp</td>
+<td>&nbsp</td>
+<td>&nbsp</td>
+</tr>
+
+<tr>
+<td><b>TOTAL</b></td>
+<td>&nbsp</td>
+<td> <b>60</b> </td>
+</tr>
+
+
+</table>
+
+<br>
+<br>
+Executing <tt>p6test.exe</tt> will run through each of these. The ouput will be lines with the functionality listed in
+the first column, the output (PASSED/FAILED) and the score of the particular test.
+
+Correct implementation is worth <font color=blue>60</font> points. </p>
+
+<li> <b>Synchronization</b> using <tt>/c/ppstart.exe</tt>, <tt>/c/ping6.exe</tt>, <tt>/c/pong6.exe</tt><br>
+This is a straightforward bidirectional send/receive test. A process can't go to the next send/receive round until it has
+both sent and received a message.
+<br>
+<p>At the shell prompt, typing:</p>
+
+<pre> /c/ppstart.exe </pre>
+
+should output
+<pre>
+Starting ping-pong tests...
+
+Starting process X (PING)...
+Starting process Y (PONG)...
+
+Process X sent PING, awaiting PONG, got 'PONG'
+Process Y sent PONG, awaiting PING, got 'PING'
+Process X sent PING, awaiting PONG, got 'PONG'
+Process Y sent PONG, awaiting PING, got 'PING'
+Process X sent PING, awaiting PONG, got 'PONG'
+Process Y sent PONG, awaiting PING, got 'PING'
+Process X sent PING, awaiting PONG, got 'PONG'
+Process Y sent PONG, awaiting PING, got 'PING'
+Process X sent PING, awaiting PONG, got 'PONG'
+Process Y sent PONG, awaiting PING, got 'PING'
+
+Process X (PING) is done !
+
+Process Y (PONG) is done !
+
+Ping-pong tests completed.
+</pre>
+<p>
+The 'Starting...' and 'Process ...done' may come in a different order, 
+but no deadlock should occur. Obviously, <tt>X</tt> and <tt>Y</tt> are to be replaced by some pid's.
+</p>
+<p>A correct run is worth  <font color=blue>20</font> points.</p>
+
+<li> <b>Fragmentation</b> using <tt>/c/fstart.exe</tt>, <tt>/c/fsend.exe</tt>, <tt>/c/frecv.exe</tt><br>
+This is a slightly harder test; the sender will have to block 
+because its buffer is larger than the mailbox size. 
+<br>
+<p>At the shell prompt, typing:</p>
+
+<pre> /c/fstart.exe </pre>
+
+should output
+<pre>
+Starting fragmentation send/receive tests...
+
+
+Starting process X (Sender)...
+Starting process Y (Receiver)...
+
+Process Y (Receiver) received 5 bytes
+Process Y (Receiver) received 5 bytes
+Process X (Sender) sent 10 bytes
+
+Process Y (Receiver) received 5 bytes
+Process Y (Receiver) received 5 bytes
+Process X (Sender) sent 10 bytes
+
+Process Y (Receiver) received 5 bytes
+Process Y (Receiver) received 5 bytes
+Process X (Sender) sent 10 bytes
+
+Process Y (Receiver) received 5 bytes
+Process Y (Receiver) received 5 bytes
+Process X (Sender) sent 10 bytes
+
+Process Y (Receiver) received 5 bytes
+Process Y (Receiver) received 5 bytes
+Process X (Sender) sent 10 bytes
+
+Process X (Sender) is done !
+
+Process Y (Receiver) is done !
+
+Fragmentation tests completed.
+</pre>
+<p>
+The 'Starting...' / 'Process ...done' and 'sent' / 'received' (for one round) may come in a different order, 
+but no deadlock should occur. Obviously, <tt>X</tt> and <tt>Y</tt> are to be replaced by some pid's.
+</p>
+<p>A correct run is worth  <font color=blue>20</font> points.</p>
+
+</ol>
+</body>
+
+  <script language="JavaScript">
+          <!---//hide script from old browsers
+          var theDate = new Date(document.lastModified);
+	  var theLocalDate = theDate.toLocaleString();
+          document.write( "<hr><i>Last updated: "+ theLocalDate +"</i>");
+          //end hiding contents --->
+  </script>
+</html>

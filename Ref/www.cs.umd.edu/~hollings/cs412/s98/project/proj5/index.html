@@ -1,0 +1,172 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>CMSC 412--Project 4</TITLE>
+<META NAME="doccomm" CONTENT="&lt;META name="description" value="No Title"&gt;&lt;META name="keywords" value="proj4"&gt;&lt;META name="resource-type" value="document"&gt;&lt;META name="distribution" value="global"&gt;">
+</HEAD>
+<BODY LINK="#0000ff">
+
+<P ALIGN="CENTER">CMSC 412</P>
+<B><P ALIGN="CENTER">Project 5: Interprocess Communication and Command Interpreter<FONT SIZE=2> </P>
+</B><P ALIGN="CENTER">Due: May 13, 1998, (in section)</P>
+<P ALIGN="JUSTIFY">&nbsp;</P>
+<P ALIGN="JUSTIFY">Except for the </FONT><TT>Cprintf()</TT><FONT SIZE=2>, the programs that you have written have done very little I/O, and yet I/O remains a key activity of many user programs.   Because I/O services are shared, it, too, falls under the management of the operating system.   In this project, which will build on top of project 4, you will build a message passing library which will allow processes to communicate with one another. You will also implement pipes using this library. In addition, you will write a very simple shell which will parse the command line and start up processes.</P>
+<P ALIGN="JUSTIFY">To enable this effort, we have provided the following new files:</P><DIR>
+
+<P ALIGN="JUSTIFY"></FONT><A HREF="io412.c">io412.c
+</A><FONT SIZE=2>: This file is now to be compiled and linked only with user applications. It contains a modification of the </FONT><TT>Cprintf()</TT><FONT SIZE=2> function.
+<P ALIGN="JUSTIFY"></FONT><A HREF="kprintf.c">kprintf.c</A>
+<FONT SIZE=2>: This file is now to be compiled and linked in with the kernel. This is the version </FONT><TT>Cprintf()</TT><FONT SIZE=2> which the kernel will use. You will want to link this file into your kernel.  You should not link io412 or klib into your kernel. NOTE: If you didn’t call your screen driver character output function, kputch, you will need to rename it that.</P>
+</dir>
+<P ALIGN="JUSTIFY">We have written several applications which you will be able to run from your sample shell.  For all of these programs, EOF is indicated by pressing the ESC key.
+<dir>
+<P ALIGN="JUSTIFY"></FONT><A HREF="wc.c">wc.c
+</A><FONT SIZE=2>, </FONT><A HREF="wc.mak">wc.mak
+</A><FONT SIZE=2>: This program is a simple version of the word count command.  It counts the number of characters, words, and lines in a file.  It takes the normal UNIX arguments of -lwc.
+<P ALIGN="JUSTIFY"></FONT><A HREF="cat.c">cat.c, <A HREF="cat.mak">
+cat.mak
+</A><FONT SIZE=2>: This program is similar to the UNIX command cat.  It reads input from stdin and writes it to stdout.
+<P ALIGN="JUSTIFY"></FONT><A HREF="tee.c">
+tee.c</A><FONT SIZE=2>, </FONT><A HREF="tee.mak">tee.mak
+</A><FONT SIZE=2>: This program is similar to the UNIX command tee.  It reads input from stdin and write a copy to stdout and a second copy to stderr.</P><DIR>
+</dir>
+<DIR>
+
+</FONT><B><FONT SIZE=3><P ALIGN="JUSTIFY">Message Passing</P></DIR>
+</DIR>
+
+</B></FONT><FONT SIZE=2><P ALIGN="JUSTIFY">Message passing allows processes to communicate by sending messages.   In this project, those messages will be sent via message queues.  You can think of the message queues as mailboxes.   A &quot;send&quot; to a mailbox will add a message to the queue of messages corresponding to that mailbox. A &quot;receive&quot; takes one of the message and returns it to the receiver.  Because the message queues are queues, a send should attach a message to the end of a queue of messages.  A receive should dequeue the message from the front of a queue. The message queue is a queue of arrays of bytes.   The kernel must allocate space to hold each message and copy it from the process sending the message.   On a receive, the kernel will dequeue the first message in the queue, copy the message into the buffer passed by the receiver, and then free up the memory used by the message.   If the message is longer that the buffer size of the receiver, part given to the receiver, while the rest will form a new message to be placed at the head of the message queue.   </P><DIR>
+<DIR>
+
+</FONT><B><FONT SIZE=3><P ALIGN="JUSTIFY">The File Descriptors</P></DIR>
+</DIR>
+
+</B></FONT><FONT SIZE=2><P ALIGN="JUSTIFY">Each process (in its pcb) will have a file descriptor array.  The array will contain mailbox numbers (i.e., indices into the MQ array described bellow).  It will have a value of -1 if the file descriptor is being unused.  You may also assume this array has a limited size, say, 20.   The indices of the file descriptor array are the file descriptors.  As in UNIX, file descriptor 0, 1, and 2 are reserved for stdin, stdout, and stderr, respectively. Hence, if you want to send a message to stdout, you will use file descriptor 2.   </P>
+<P ALIGN="JUSTIFY">&nbsp;</P>
+<P ALIGN="JUSTIFY">You should implement the following system calls for creating and using file descriptors.  These will, as in previous projects, be simple functions which call </FONT><TT>gen_interrupt()</TT><FONT SIZE=2> and set AX and related registers correctly.   Due to the behavior of the Borland C compiler, make sure _AX gets set just before you generate the interrupt.</P>
+
+<UL>
+</FONT><TT><P ALIGN="JUSTIFY"><LI>int MQ_Create(char *name)</TT>: </LI></P></UL>
+
+<DFN><DL>
+<DD>This will allow you to &quot;create&quot; a message queue from which to send messages. If there is already a mailbox with this given name, then find a unused file descriptor from the process’s file descriptor table (array), and assign the mailbox number to this file descriptor (element). Return the file descriptor as the result of this system call.  If  this is the first call to MQ_Create with the given name, it creates a new entry in the MQ array. Return -1 if all mailboxes are currently in use (i.e., all mailboxes have at least one user), or all file descriptors are currently in use. </DD>
+</DL>
+
+<UL>
+</DFN><TT><P ALIGN="JUSTIFY"><LI>int MQ_Send(int fd, void *buffer, int size)</TT>: </LI></P></UL>
+<DIR>
+
+<FONT SIZE=2><P ALIGN="JUSTIFY">Once you have a file descriptor from (</FONT><TT>MQ_Create or fd’s 0-2)</TT><FONT SIZE=2>, you can send a message to the message queue associated with the file descriptor.   </FONT><TT>fd</TT><FONT SIZE=2> will be the file descriptor, </FONT><TT>buffer</TT><FONT SIZE=2> will be a in the user process,  and size is the length of the message. If you are sending a string, </FONT><TT>strlen()</TT><FONT SIZE=2>can be used to get the length of the message. This system call can not block the user process.  Inside the kernel, your implemention of send will need to allocate a buffer for the message to be sent, and copy the message into that buffer.</P></DIR>
+
+
+<UL>
+</FONT><TT><P ALIGN="JUSTIFY"><LI>int MQ_Receive(int fd, void *buffer, int maxSize)</TT>: </LI></P></UL>
+<DIR>
+
+<FONT SIZE=2><P ALIGN="JUSTIFY">Processes can receive messages from a message queue using this call.  </FONT><TT>fd</TT><FONT SIZE=2> is a file descriptor returned by </FONT><TT>MQ_Create</TT><FONT SIZE=2>.  </FONT><TT>buffer</TT><FONT SIZE=2> is where the message will be received. </FONT><TT>maxSize</TT><FONT SIZE=2> is the maximum size of the message that can be received.  The buffer must already be allocated by the user and should be able to hold at least </FONT><TT>maxSize</TT><FONT SIZE=2> characters.  If there are no messages in the message queue, then the calling process will  block.   There should be a blocked queue for each active message queue where PCB’s can be placed if blocked.  If the size of the message being received exceeds </FONT><TT>maxSize</TT><FONT SIZE=2>, then only </FONT><TT>maxSize </TT><FONT SIZE=2>bytes should be read.  The rest of the message should be placed at the head of the queue as its own message.  For example, if </FONT><TT>maxSize</TT><FONT SIZE=2> were 10, and the message contained 20 characters, then 10 characters would be written to the buffer, and the remaining 10 characters would be at the head of the queue.  The function will return the number of characters read from the message queue. A process will block if there are no messages in the mailbox.  A -1 is returned for any error conditions (invalid file descriptor, for example).</P></DIR>
+
+
+<UL>
+</FONT><TT><P ALIGN="JUSTIFY"><LI>int MQ_Destroy(int fd)</TT>: </LI></P></UL>
+<DIR>
+
+<FONT SIZE=2><P ALIGN="JUSTIFY">Frees up use of  a file descriptor by the current process, and decrement the use count of the message queue.  If the use count for the message queue is 0, then any pending messages are freed up, and the message queue is deleted. File descriptors can be reused.</P>
+<P ALIGN="JUSTIFY">&nbsp;</P></DIR>
+
+<P ALIGN="JUSTIFY">For each of the functions listed above, you should have a kernel version of the functions.  You should name these functions </FONT><TT>KMQ_Send()</TT><FONT SIZE=2>, </FONT><TT>KMQ_Receive()</TT><FONT SIZE=2>, and so forth.</P><DIR>
+<DIR>
+
+</FONT><B><FONT SIZE=3><P ALIGN="JUSTIFY">The MQ array</P></DIR>
+</DIR>
+
+</B></FONT><FONT SIZE=2><P ALIGN="JUSTIFY">This data structure is an array of mailboxes.   Each mailbox will contain a message queue, the name of the mailbox (determined by </FONT><TT>MQ_Create)</TT><FONT SIZE=2>, and the number of processes (the user count) that are using this queue. The MQ array should contain at least 20 elements.  Two of these will be reserved.  They will contain the names &quot;\dev\console&quot; and &quot;\dev\keyboard&quot;. For example, mailbox 0 can be used for the console message queue, and mailbox 1 can be used for the keyboard. The user count for these mailboxes should never reach 0.  I.e., they should never be reallocated to new names.  </P>
+<P ALIGN="JUSTIFY">There is a subtlety in implementing &quot;\dev\console&quot; and &quot;\dev\keyboard&quot;.  If you </FONT><TT>MQ_Send</TT><FONT SIZE=2> a message to the console, you should write characters to the screen using </FONT><TT>kputch()</TT><FONT SIZE=2> rather than appending a message to the message queue.   </FONT><TT>kputch()</TT><FONT SIZE=2> is the kernel version of </FONT><TT>Put_char()</TT><FONT SIZE=2>.  <STRONG>This must be the name you use as Cprintf() in kprintf.c depends on it</STRONG>. Also, your keyboard interrupt routine should be modified to enqueue characters read from the keyboard into the MQ mailbox for &quot;/dev/keyboard&quot;. Each character will be its own message.</P>
+<P ALIGN="JUSTIFY">You may wish to use the </FONT><TT>KMQ_Create()</TT><FONT SIZE=2>, the kernel version of </FONT><TT>MQ_Create()</TT><FONT SIZE=2> to create these two mailboxes during the initialization of the OS.</P>
+<P ALIGN="JUSTIFY">The array is indexed by mailbox numbers, not file descriptors.</P>
+<P ALIGN="JUSTIFY">For the init process, 0 will refer to the mailbox associated with &quot;\dev\keyboard&quot; while 1 and 2 will refer to the mailbox associated with &quot;\dev\console&quot;.  If 0 is the mailbox number for &quot;\dev\keyboard&quot; and 1 is the mailbox number for &quot;\dev\console&quot;, and if fd is the name of the file descriptor array, then by default, fd[0] will contain 0, fd[1] and fd[2] will contain 1.</P><DIR>
+<DIR>
+
+</FONT><B><FONT SIZE=3><P ALIGN="JUSTIFY">Proc_start() modified</P></DIR>
+</DIR>
+
+</B></FONT><PRE>  int Proc_start( void *fp, int argc, char **argv, 
+                    int stdin, int stdout, int stderr );
+</PRE>
+<FONT SIZE=2><P ALIGN="JUSTIFY">Proc_start() will now take 6 arguments, instead of 3.   The first three arguments are the same as before.  They should contain a function pointer, argc, and argv.   The last three arguments are file descriptors (not mailbox numbers).   The fourth argument is the file descriptor for stdin, the fifth argument is the file descriptor for stdout, and the sixth argument is the file descriptor for stderr.  When a new process is created, file descriptor 0, 1, and 2 for the new process will contain mailbox numbers associated with the file descriptors that were passed in.  Hence, if 4, 7, and 2 are the file descriptors passed to Proc_start as the fourth through sixth arguments respectively, fd[ 0 ] of the child process will be the mailbox bound to fd[ 4 ] of the parent process, fd[ 1 ] will contain fd[ 7 ] of the parent process, and fd[ 2 ] will contain fd[ 2 ] of the parent process.</P>
+<P ALIGN="JUSTIFY">This change will allow you to implement pipes where the stdout  (fd 1) of one process can be hooked up to the stdin (fd 0) of another process.</P>
+<P ALIGN="JUSTIFY">The file descriptors 0, 1, and 2 do not have to be created, or destroyed by the application process.  However, to reflect an accurate user count, you should increment and decrement the values in the MQ array during process creation and termination.</P><DIR>
+<DIR>
+
+</FONT><B><FONT SIZE=3><P ALIGN="JUSTIFY">Cprintf() modified</P></DIR>
+</DIR>
+
+</B></FONT><TT><P ALIGN="JUSTIFY">Cprintf()</TT><FONT SIZE=2> <B>has been modified</B> to use </FONT><TT>MQ_Send()</TT><FONT SIZE=2>.  Because </FONT><TT>MQ_Send()</TT><FONT SIZE=2> is a system call executed by the kernel, and because operations in the kernel run atomically (due to the kernel modes), you do not need to put P’s and V’s around </FONT><TT>Cprintf</TT><FONT SIZE=2>’s in this project.   </FONT><TT>Cprintf()</TT><FONT SIZE=2> prints to stdout, which can now be redirected.</P><DIR>
+<DIR>
+
+</FONT><B><FONT SIZE=3><P ALIGN="JUSTIFY">Implementing Waitpid()</P></DIR>
+</DIR>
+
+</B></FONT><FONT SIZE=2><P ALIGN="JUSTIFY"><A NAME="SECTION00041000000000000000">WaitPid() is a system call with the following prototype</P>
+</FONT><PRE>    int Waitpid( int pid );</PRE>
+<FONT SIZE=2><P ALIGN="JUSTIFY">A process calling Waitpid() will block until the termination of the process with process ID number, pid.  This will be useful in implementing the shell.   Each process will have a blocked queue for processes that are waiting for it to terminate.   Upon termination of the process, any processes blocked on a Waitpid() call will be woken up.  If no processes have the PID value passed in, then the Waitpid() should return -1 immediately and not wait.</P><DIR>
+<DIR>
+<DIR>
+<DIR>
+
+</FONT><B><P ALIGN="JUSTIFY"></A>Writing a Simple Shell</P></DIR>
+</DIR>
+</DIR>
+</DIR>
+
+</B><FONT SIZE=2><P ALIGN="JUSTIFY">Normally, users execute commands using a shell.   This is a common idea in most operating systems.   The shell is a user process whose purpose is to read in commands, parse the input, then execute the call.  For the most part, this will mean calling Proc_start() on the parsed command line.</P>
+<P ALIGN="JUSTIFY">Your initial process, init, should load the shell module (called shell.mod) and Proc_start() it. The shell should display a prompt using </FONT><FONT FACE="Courier New" SIZE=2>Cprintf().</FONT><FONT SIZE=2> The shell will read in commands using MQ_Receive.  It will then parse the command line, and call </FONT><FONT FACE="Courier New" SIZE=2>Proc_start</FONT><FONT SIZE=2>() if necessary.  It will then block using </FONT><FONT FACE="Courier New" SIZE=2>Waitpid()</FONT><FONT SIZE=2> on the PID returned by</FONT><FONT FACE="Courier New" SIZE=2> Proc_start().</FONT><FONT SIZE=2>   </P>
+<P ALIGN="JUSTIFY">To illustrate the operations of the shell, we will start with a simple example.</P>
+</FONT><PRE>   os412 %   wc.mod</PRE>
+<FONT SIZE=2><P ALIGN="JUSTIFY">os412% is the prompt from the shell.   The user (you) type in </FONT><TT>wc.mod</TT><FONT SIZE=2>.  The shell will then discover determine that argc is 1, and create an appropriate argv array.  It will try to open the file named wc.mod using Load_module().   It this succeeds, then the function pointer for Proc(), argc, and argv will be passed to Proc_start, as well as the default file descriptors.   The call should look like:</P>
+</FONT><PRE>     Proc_start( fp, argc, argv, 0, 1, 2 );</PRE>
+<FONT SIZE=2><P ALIGN="JUSTIFY">The shell will use &quot;\dev\keyboard&quot; for its stdin, and &quot;\dev\console&quot; as stdout and stderr.   These will be bound to fd’s 0, 1, and 2 by init. The new process, by default, &quot;inherits&quot; these values from shell.</P>
+<P ALIGN="JUSTIFY">You should also be able to parse out additional arguments.   For example, if the call were </P>
+</FONT><PRE>     wc.mod -f foo</PRE>
+<FONT SIZE=2><P ALIGN="JUSTIFY">then argc should be 3, and argv should contain &quot;wc.mod&quot;, &quot;-f&quot; and &quot;foo&quot;.</P>
+<P ALIGN="JUSTIFY">A newline character will signify the end of the command, and should cause the shell to start parsing.  You do not have to implement a backslash continuation.</P><DIR>
+<DIR>
+
+</FONT><B><FONT SIZE=3><P ALIGN="JUSTIFY">Handling Pipes</P></DIR>
+</DIR>
+
+</B></FONT><FONT SIZE=2><P ALIGN="JUSTIFY">A pipe is a mechanism that allows the standard output of one process to be connect to the standard input of another process.   A pipe will be denoted by the vertical bar, &quot;|&quot;, as it is in UNIX.  Hence, if you get the following in your command line:</P>
+</FONT><PRE>    os412 %   yay.mod | bar.mod foo</PRE>
+<FONT SIZE=2><P ALIGN="JUSTIFY">Then, you should Proc_start two processes.  Each process will have its own argc and argv.  The first process will be &quot;yay.mod&quot; and the second &quot;bar.mod&quot; with an argument for &quot;foo&quot;.   Make sure both modules can be loaded, otherwise do not complete the pipe, print an error message, and display the prompt again.</P>
+<P ALIGN="JUSTIFY">If both modules can be loaded, you will need to create a pipe.   A pipe is basically a message queue shared by the two processes.  Recall that the stdout of the yay.mod process should be hooked to the stdin of bar.mod process.   Think of how this can be done using a message queue and appropriate Proc_start’s.  The shell will then block on the PID values of these two processes.  Once completed, a prompt will be displayed.</P>
+<P ALIGN="JUSTIFY">You should be able to handle multiple pipes.</P><DIR>
+<DIR>
+
+</FONT><B><FONT SIZE=3><P ALIGN="JUSTIFY">Exiting</P></DIR>
+</DIR>
+
+</B></FONT><FONT SIZE=2><P ALIGN="JUSTIFY">For most commands, you will parse it, and try to load the module.  However, you will need a way to quit from the shell.   Typing &quot;exit&quot; as a command should cause you to exit the shell (i.e., do not read any more commands from the user). After typing it, there will be no user processes, which means you should return back to </FONT><TT>main()</TT><FONT SIZE=2> and exit to DOS as in previous projects.</P><DIR>
+<DIR>
+
+</FONT><B><FONT SIZE=3><P ALIGN="JUSTIFY">A More Realistic Shell</P></DIR>
+</DIR>
+
+</B></FONT><FONT SIZE=2><P ALIGN="JUSTIFY">Your shell will not have some of the features that you normally associate with shells.  You will not be able to redirect output to a file, nor read input from a file. You won’t be able to place processes in the background or bring it into the foreground.  Because control keys were not implemented in the keyboard driver, we will not be able to implement such standards as the control-C feature (interrupt the current process) nor the control-Z feature (place the process in the background).  You will not handle globbing (dealing with wildcards) nor have histories.  It is useful,  however, to think about how this might all be implemented in this project.  You might want to spend ten or twenty minutes thinking about how you would implement these more advanced features. Some of this would not be too difficult.  However, you will not be required to implement any of these advanced features (but they make great final questions).</P><DIR>
+<DIR>
+<DIR>
+<DIR>
+
+</FONT><B><P ALIGN="JUSTIFY">Modifications to Existing Code</P></DIR>
+</DIR>
+
+<FONT SIZE=3><P ALIGN="JUSTIFY">Ksleep and Kwakeup</P></DIR>
+</DIR>
+
+</B></FONT><FONT SIZE=2><P ALIGN="JUSTIFY">Because you will be using many queues to put processes to sleep, and because Ksleep and Kwakeup currently take only one argument (the semaphore ID), it may become unwieldly to partition the semaphore IDs for so many different uses.   Hence, you may wish to take a second argument for both Ksleep and Kwakeup.  For example, if the second argument is 0, then you could use the semaphore queues.  If the second argument is 1, you might refer to queues relating to Waitpid() system calls, and so forth.  Since we will be testing your code by using your shell, there will be no need for our test programs to be aware of how Ksleep and Kwakeup are implemented.</P><DIR>
+<DIR>
+
+</FONT><B><FONT SIZE=3><P ALIGN="JUSTIFY">Put_char and Get_char</P></DIR>
+</DIR>
+
+</B></FONT><FONT SIZE=2><P ALIGN="JUSTIFY">You will no longer have these functions in klib (</FONT><TT>MQ_Send</TT><FONT SIZE=2> and </FONT><TT>MQ_Receive</TT><FONT SIZE=2> subsume their roles).  You should also remove the cases in </FONT><TT>System_service</TT><FONT SIZE=2> for these routines.  You will want to keep the </FONT><TT>kputch</TT><FONT SIZE=2> function, but it will only be called by </FONT><TT>KMQ_Send</TT><FONT SIZE=2> (for the mailbox &quot;/dev/console&quot;) and </FONT><TT>Cprintf</TT><FONT SIZE=2> (in kprintf.c).  Likewise the queue of characters from the keyboard has been replaced by the mailbox for &quot;/dev/keyboard&quot;.</P></FONT></BODY>
+</HTML>

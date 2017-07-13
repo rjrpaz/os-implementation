@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Lecture 2</title>
+</head>
+<body>
+<h1>CS 420 - Lecture 2</h1>
+<p>Announcement: Assignment 1 posted, due next Thurs by 11:59 PM.<br>
+</p>
+<p>Finish any parts of lecture 1.<br>
+</p>
+<p>An OS kernel is <span style="font-style: italic;">event-driven</span>:
+by itself, it does nothing.&nbsp; The OS only does work when an event
+occurs:<br>
+</p>
+<ul>
+  <li>System call request from a process</li>
+  <li>Interrupt from hardware device<br>
+  </li>
+</ul>
+<p>General topic for today: Important functions the OS kernel must
+support.<br>
+</p>
+<p>Continuation of discussion of interrupts and I/O.&nbsp; Talk about
+programmed I/O vs. DMA.&nbsp; Discuss the concept of blocking.<br>
+</p>
+<p style="margin-left: 40px;">General form of a process making a
+request for I/O:<br>
+</p>
+<p style="margin-left: 40px;"><img
+ alt="Process requests I/O, kernel initiates request with device"
+ src="figures/requestIO.png" width="40%"><br>
+</p>
+<p style="margin-left: 40px;">I/O requests can take a long time to
+complete.&nbsp; E.g., typical hard drives spin at 7200 RPM:<br>
+</p>
+<p style="margin-left: 40px;"><img alt="Diagram of a hard disk"
+ src="figures/disk.png" style="width: 40%;"><br>
+</p>
+<p style="margin-left: 40px;">.13
+ms might be needed to rotate the disk so that the requested sector is
+under the disk head.&nbsp; For a 3 GHz CPU, that is about 416,000 clock
+cycles.&nbsp; The seek time (moving the disk arm laterally to access a
+different cylinder) is even longer: typically 5-6 ms.&nbsp; That is
+15,000,000 clock cycles!<br>
+</p>
+<p style="margin-left: 40px;">Therefore, the kernel generally <span
+ style="font-style: italic;">suspends</span> the process while the I/O
+request is pending.&nbsp; [Question: why?]<br>
+</p>
+<p style="margin-left: 40px;">When the device has completed the I/O
+operation, it issues an interrupt to the CPU, which triggers an
+interrupt handler in the OS kernel:<br>
+</p>
+<p style="margin-left: 40px;"><img
+ alt="Completion of I/O, kernel resumes process"
+ src="figures/completeIO.png" style="width: 40%;"><br>
+</p>
+<p style="margin-left: 40px;">The kernel resumes the process once the
+I/O operation is complete and the data has been transferred to/from the
+process's memory.<br>
+</p>
+<p style="margin-left: 40px;">Suspending a process pending some future
+event (such as the completion of I/O) is usually called <span
+ style="font-style: italic;">blocking</span>.<br>
+</p>
+<p style="margin-left: 40px;">Suspending and resuming processes in
+response to events is also called <span style="font-style: italic;">sleeping</span>
+and <span style="font-style: italic;">waking</span>.<br>
+</p>
+<p>Processes.&nbsp; Terminology (contrast to program).&nbsp; Operations
+for managing processes that the OS kernel must support.<br>
+</p>
+<ul>
+  <li>Creating processes, killing processes</li>
+  <li>Suspending and resuming processes</li>
+  <li>Synchronizing processes, communication between processes</li>
+  <li>Deadlock handling<br>
+  </li>
+</ul>
+<p>Storage management.&nbsp; Filesystems.<br>
+</p>
+<p>One of the key functions an OS supports is managing data on mass
+storage media such as hard disks and optical disks (CD, DVD).<br>
+</p>
+<p>At a low level, disk storage consists of a sequence of fixed-size <span
+ style="font-style: italic;">sectors</span>, or <span
+ style="font-style: italic;">blocks</span>.&nbsp; These are generally
+addressed by their block number: block 0 is the first block on the
+disk, etc.&nbsp; The number of bytes in a sector may vary by
+device.&nbsp; Common values are 512 bytes (almost all hard disks) and
+2048 disks (CD-ROM).<br>
+</p>
+<p>This organization is not very convenient for ordinary
+programs.&nbsp; The OS generally supports one or more <span
+ style="font-style: italic;">filesystems</span> to organize the disk
+blocks into higher level structures: directories and files.&nbsp; A
+filesystem is an on-disk data structure.&nbsp; A filesystem driver in
+the OS kernel is responsible for accessing and modifying the filesystem
+data structures.&nbsp; Filesystem drivers also generally maintain data
+structures in memory corresponding to files and directories currently
+being used.&nbsp; [Question: why?]<br>
+</p>
+<p>Caching of filesystem data: as mentioned earlier, disks are very
+slow compared to the CPU.&nbsp; If every access to data in a file
+required disk access, disk-I/O-intensive programs would run very
+slowly.&nbsp; For this reason, the OS caches data in files on disk in
+memory.&nbsp; A cache is a collection of <span
+ style="font-style: italic;">buffers</span>, where each buffer is a
+chunk of memory containing the current data of one or more consecutive
+disk blocks.&nbsp; Therefore, file reads and writes are done using the
+buffers, rather than directly to the disk blocks:<br>
+</p>
+<p style="margin-left: 40px;"><img
+ alt="algorithm: I/O using a disk buffer"
+ src="figures/ioUsingBuffer.png" style="width: 50%;"><br>
+</p>
+<p>This explains why you can't simply turn a computer off; rather, you
+need to explicitly tell the operating system to shut down.&nbsp;
+[Question: why?]<br>
+</p>
+<p>An important concern in the implementation of a filesystem driver is
+synchronization between processes.&nbsp; For example, two processes add
+files to a directory at the same time.&nbsp; The OS kernel must
+synchronize these requests so that the directory remains valid.&nbsp;
+This general problem arises in all resources managed by the OS kernel
+that may be accessed by multiple processes.&nbsp; This is the problem
+of <span style="font-style: italic;">concurrency</span>.<br>
+</p>
+<p>Memory management.&nbsp; Responsibilities and functions of the
+OS.&nbsp; Hardware-supoprted (using MMU).<br>
+</p>
+<p>Memory management is the problem of allocating memory to processes.<br>
+</p>
+<p style="margin-left: 40px;">Each process should have its own <span
+ style="font-style: italic;">address space</span>.&nbsp; This means
+that, to each process, it appears to have its own private memory space.<br>
+</p>
+<p style="margin-left: 40px;">Two processes should not use the same
+physical memory at the same time unless they explicitly request to do
+so.&nbsp; [Shared memory can be used as a form of inter-process
+communication.]<br>
+</p>
+<p style="margin-left: 40px;">When a process needs more memory, it must
+request it from the OS kernel.&nbsp; If no physical memory is
+available, then the OS kernel can "borrow" memory from other
+processes.&nbsp; When a chunk of memory is borrowed in this manner, its
+data must be saved.&nbsp; Usually, disk space is used to save portions
+of a process's in-memory data that are not currently residing in
+physical memory.&nbsp; This diskspace is generally referred to as the <span
+ style="font-style: italic;">swapfile</span> or <span
+ style="font-style: italic;">pagefile</span>.&nbsp; In this way, disk
+space may be used to allow programs to use more memory than is
+physically installed in the computer.&nbsp; This is known as <span
+ style="font-style: italic;">virtual memory</span>.<br>
+</p>
+<p>Protection and security.<br>
+</p>
+<p>There are many types of resources that are shared, such as disk
+files and directories, hardware devices, etc.&nbsp; If an OS will
+support multiple users, then there should be a way to ensure that only
+authorized users may access particular resources.<br>
+</p>
+<p>E.g., you may want to protect certain files in your home directory
+so that only you can access them.<br>
+</p>
+<p>This is the problem of <span style="font-style: italic;">protection</span>.<br>
+</p>
+<p>The general way that protection is done is that each process is
+associated with a user.&nbsp; Each shared resource is marked with extra
+information specifying which users may access the resource, and what
+kind of access is allowed.&nbsp; For example, user "Alice' might only
+be able to read a particular file, while user "Bob" might be allowed to
+both read and write the file.<br>
+</p>
+<p>Security the general problem of ensuring that protection mechanisms
+are enforced, and unauthorized users do not access the system.<br>
+</p>
+</body>
+</html>

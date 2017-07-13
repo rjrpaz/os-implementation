@@ -1,0 +1,12 @@
+/* add this in the #include section */
+
+#include "vfs.h"
+
+
+
+
+/* add this to the struct User_Context 
+   that is, *inside the struct*
+   not as a global declaration */
+
+openFile files[MAX_OPEN_FILES];	

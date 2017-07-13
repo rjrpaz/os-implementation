@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <title>Project 2 Test Cases</title>
+  </head>
+
+    <h2>Project 2 Test Cases</h2><p>
+
+<body>
+<ul>
+    <li>*** Testing object storage...(10 pts)<br>
+      Initialize a long so that nearly all bits are set,
+      Call Enqueue() and give it the long as a pointer,
+      Call Dequeue() and check that the pointer returned
+      is equal to the long.</li>
+  
+   <li>*** Testing probe on empty queue...(2.5 pts)<br>
+	Call Probe() on an empty queue</li>
+   <li>*** Testing head on empty queue...(2.5 pts)<br>
+	Call Head() on an empty queue</li>
+   <li>*** Testing probe on non-empty queue...(5 pts)<br>
+	Call Probe() on an queue with one item.</li>
+   <li>*** Testing head on non-empty queue...(5 pts)<br>
+	Call Head() on an queue with one item.</li>
+   <li>*** First test of reading and writing...(15 pts)<br>
+        Create two queues, each with maxItems of 5.  Simultaneously enqueue
+        to first queue, dequeue from the first queue and enqueue what was
+        dequeued into the second queue, and dequeue from the second queue.
+        Compare the sum of all the values enqueued to the first queue and
+        dequeued from the second queue</li>
+   <li>*** Second test of reading and writing...(15 pts)<br>
+        Simultaneously Enqueue(), Dequeue() of integers 0 to 9999 on 
+        queue with maxitems of 100.  Compare the sum of all the
+	values enqueued and dequeue</li>
+   <li>*** Testing timeouts...(10 pts)<br>
+        Call Dequeue() with a three second timeout three times on 
+        one empty queue.</li>
+   <li>*** Test that probe and head unlock the mutex on an empty queue...( 5 pts)<br>
+	Call Probe() and Head() twice each on the same queue.</li>
+</ul>
+
+</body>
+</html>

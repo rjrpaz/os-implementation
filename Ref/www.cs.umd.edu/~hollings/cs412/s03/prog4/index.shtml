@@ -1,0 +1,67 @@
+
+<HTML>
+
+<HEAD>
+
+<TITLE>CMSC 412 - Project #4</TITLE>
+
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#D7D3D2" LINK="#78021C" VLINK="#7F6666" ALINK="#FFFFFF" BACKGROUND="../marble.gif">
+
+<center>
+<h1>
+CMSC412 - Project #4 
+</h1>
+</center>
+
+<h2>Handouts</h2>
+<menu>
+    <li><a href="prog4.html">Programming Assingment</a>
+</menu>
+
+<p>
+
+<P>
+<h2>
+Header, Source, Object, and Sample Data Files
+</h2>
+<P>
+<menu>
+<li>Additional Files for GeeksOS kernel
+<menu>
+<li><a href="bitset.c">bitset.c</a> (updated 4/25/03)
+<li><a href="bitset.h">bitset.h</a>
+<li><a href="vfs.h">vfs.h</a> 
+<li><a href="synch.h">synch.h</a> 
+<li><a href="synch.c">synch.c</a> 
+<li><a href="vfs.c">vfs.c</a> (updated 4/25/03)
+<li><a href="fileio.h">fileio.h</a>
+<li><a href="gosfs.h">gosfs.h</a>
+<li><a href="syscall_excerpt.c">syscall_excerpt.c</a> (New 4/18/03)
+<li><a href="ide.c">ide.c</a> (New 4/24/03)
+</menu>
+<li>User Mode Programs
+<menu>
+<li><a href="libUser_excerpt.c">libUser_excerpt.c</a> (New 4/18/03)
+<li><a href="p4a.c">p4a.c</a>	tests interface to FPAT files.
+<li><a href="format.c">format.c</a>	formats a drive with GOSFS
+<li><a href="mount.c">mount.c</a>	mount filesystem onto a location
+<li><a href="ls.c">ls.c</a>	lists files in a given directory
+<li><a href="mkdir.c">mkdir.c</a>	create a new firectory
+<li><a href="cp.c">cp.c</a>	copy a file from one directory to another
+</menu>
+
+<P>
+All code for the Geek OS fileystem must be in the file gosfs.c
+<p>
+The new ide.c file fixes a problem with detecting the second drive
+on un-patched versions of bochs.
+</p>
+<P>
+We have provided a <a href="stackHelper.c">file</a> that will cause
+traps on kernel stack overflow.  However, the errors reported are
+not graceful.  The <a href="stack.README">README</a> file exlains
+why.  
+
+</HTML>
+

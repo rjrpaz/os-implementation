@@ -1,0 +1,5 @@
+#define SYS_SET_ACL                     22
+#define SYS_SET_SET_UID                 23
+#define SYS_SET_EFFECTIVE_UID           24
+#define SYS_GET_UID                     25
+#define SYS_MQ_CREATE                   26

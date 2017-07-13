@@ -1,0 +1,97 @@
+<HTML>
+
+<HEAD>
+
+<TITLE>CMSC 412 Project 3 P()</TITLE>
+
+</HEAD>
+
+<BODY>
+
+<H2><CENTER>CMSC 412</CENTER></H2>
+
+<H3><CENTER><FONT SIZE=3>Alternative to Book Implemenatation of P()</FONT></CENTER>
+</H3>
+
+The book (<I>Silberschatz and Galvin</I>) suggests the following 
+definition for <tt>P()</tt>.
+<PRE>
+    sem--;
+    if ( sem < 0 ) then
+       begin
+         add process to semaphore queue
+         block
+       end
+</PRE>
+
+   Of course, because it is in a book, and because it is so important,
+it is not an incorrect implementation, but it is a bit limited.  In
+this definition, the value of the semaphore can be negative.  If it
+is negative, then its absolute value determines how many processes
+are blocked on this semaphore
+<P>
+  Because of the way <I>P</I> is defined in the book, <I>V</I> must
+be implemented in a more restricted manner.  You increment the
+value, as usual.   However, when the value is negative, at most
+one process can be woken up (placed on the ready queue) given a
+<i>V</I> operation.   When the unblocked process runs, it will be 
+practically out of the <I>P</I> operation since it has completed
+the <I>if</I> statement.
+<P>
+   As mentioned earlier, the drawback is that at most one process
+can be placed on the ready queue on a <I>V</I> operation.  You
+can also implement <I>V</I> to place all process blocked on this
+semaphore on the ready queue (the value is still only incremented
+by 1).   Basically, the first process that runs will be the
+one that actually wakes up.  The rest will check eventually reblock.
+If you choose to wake all processes up (which you will NOT do in
+this project) and you want to allow negative values for semaphroes, 
+then you need to extend the implementation given in the book.
+Specifically, you will need to use additional variables to
+keep track of how many processes should be awaken, and the
+<I>P</I> implementation needs to be reworked.  All in all,
+this would be a pain.
+<P>
+   There is yet another way to implement semaphores which is
+somewhat closer in spirit to the definition of a semaphore,
+and allows for more than one process to be placed on the
+ready queue in a <I>V</I> operation while not violating
+the semantics of <I>V</I>.   Consider this implementation.   
+<PRE>
+P(sem):    while ( sem <= 0 ) then  // sem should never be < 0
+            begin
+              add process to semaphore queue
+              block
+            end
+           sem--;  // decrement occurs after while loop
+
+V(sem):   sem++;
+          Wake one or more processes from semaphore queue
+</PRE>
+
+   Note the difference between the two implementations.  This
+implementation does not allow the value of the semaphore to
+go negative.   It also has a <tt>while</tt> statement instead
+of an <tt>if</tt> statement.   Hence, a process that is
+placed on the ready queue, and then runs, will check the
+condition in the <i>while</I> loop, and if the value of
+the semaphore is positive, it will decrement the value of
+the semaphore.
+<P>
+   Note <i>V</I> remains roughly the same, except that you
+are now allowed to wake one or more processes (if there are
+any) up.   In the book implementation, you must only wake
+one process up.
+<P>
+    By studying the two implementations, you can get a better
+understanding of how semaphores are implemented.   You can use
+either one since this project only wakes one process up.  Were
+you to wake more than one process, then you would have to use
+the second implementation (or go through the much more difficult
+process of adding additional auxiliary variables) to deal with
+the negative values of the semaphore.   Think about it.  It's
+a good exercise.
+</BODY>
+
+</HTML>                     
+

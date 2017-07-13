@@ -1,0 +1,312 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>CMSC 412 - Project 6</title>
+</head>
+<body lang="EN-US" link="blue" vlink="purple">
+<center><font size="+2"><b>CMSC 412 Project #6</b> </font></center>
+<p>
+</p>
+<center><font size="+1"><b>ACL and Message Passing</b>
+</font></center>
+<center>
+<p><b>Due Tuesday, May 11th, 2004 (9:00 AM)</b></p>
+</center>
+<li><font color=maroon>Updated (05/18)<b><a href="p6_grading.html">Grading Criteria</a> </b></font>
+</li>
+<li><b><a href="submission.html">Submission Instructions</a> </b>
+<li><b><a href="./proj6.ppt">Slides used in recitation</a> </b>
+</li>
+
+  <h2>New project files</h2>
+<h3>Kernel</h3>
+<p>
+<li><font color=maroon>Updated (05/03) <b><a href="syscall.c.add">syscall.c.add</a></b></font>
+<li><b><a href="elf.c">elf.c</a></b> - replace current version
+<li><b><a href="syscallnos.h.add">syscallnos.h.add</a></b>
+<li><b><a href="gosfs.h.add">gosfs.h.add</a></b>, <b><a 
+href="gosfs.c.add">gosfs.c.add</a></b>
+<li><b><a href="fileio.h.add">fileio.h.add</a></b> - add to respective files 
+in the project directory
+<li><b><a href="vfs.h.add">vfs.h.add</a></b>, <b><a
+href="vfs.c.add">vfs.c.add</a></b> - add to respective files
+in the project directory
+<li><b><a href="syscall.h.add">syscall.h.add</a></b> - add to respective files
+in the project directory
+<br>
+
+<h3>User</h3>
+<li>
+<font color=maroon>Updated (05/05)<b><a href="ls.c">ls.c</a></b></font>
+<li>
+<b><a href="setacl.c">setacl.c</a></b>,
+<b><a href="wc.c">wc.c</a></b>,
+<b><a href="cat.c">cat.c</a></b>,
+
+- add to <tt>userProgs</tt> directory; add corresponding .exe files to the PROGS variable in the Makefile in userProgs directory
+<br>
+<li>
+<b><a href="libuser.h.add">libuser.h.add</a></b>, 
+<b><a href="libuser.c.add">libuser.c.add</a></b> - add to respective files in <tt>userProgs</tt> directory 
+<H2>Introduction 
+</H2>
+<P CLASS="msonormal" STYLE="margin-top: 0.11cm; margin-bottom: 0.11cm">
+The purpose of this project is to add the notion of users and access
+control lists to the Geek OS kernel.&nbsp;  You will also add input
+and output redirection as well as add interprocess communication via
+message buffers.</P>
+<P CLASS="msonormal" STYLE="margin-top: 0.11cm; margin-bottom: 0.11cm">
+<BR>
+</P>
+<H2 STYLE="margin-top: 0.11cm">Message Passing</H2>
+<P>Message passing allows processes to communicate by sending
+messages.&nbsp;&nbsp; In this project, those messages will be sent
+via message queues.&nbsp; You can think of the message queues as
+mailboxes.&nbsp;&nbsp; A send to a mailbox will insert the
+message to the queue of messages corresponding to that mailbox. A
+receive reads from the queue and returns it to the
+receiver.&nbsp; The queues will be FIFO so a send should append
+message to the end of a queue.&nbsp; Correspondingly, a
+receive should read from the front of a queue. Messages have arbitrary sizes: the sender uses <tt>Write()</tt> for sending and the receiver uses <tt>Read()</tt> for receiving; so the receiver has no idea how many bytes has the sender actually written; the FIFO mechanism will assure bytes are read in exactly the order they were received. The
+kernel must allocate space to hold the message and copy it from the
+process sending the message.&nbsp;&nbsp; On a receive, the kernel
+will read from the queue and copy the message into
+the buffer passed by the receiver.&nbsp;&nbsp; If the message is longer that the buffer
+size of the receiver, part of the message (up to the buffer size) is
+given to the receiver, while the rest is left in the message queue.
+&nbsp;&nbsp;
+</P>
+<P>All message queues will have a fixed size of 4KB.&nbsp; An attempt
+to write to a full message queue should block the process and an
+attempt to read from an empty message queue will block the process (as you might have noticed, this is the UNIX semantics for pipes).&nbsp;
+The operations of message queues are defined for the case of one
+process reading from a message queue and a second process writing to
+it.&nbsp; You do not need to handle the case of more than one process
+reading from (or writing to) the same message queue.</P>
+<P>The key new system call to allow message passing is:  <tt>int
+MessageQueueCreate</tt>.This call will create a message queue to be used to send messages.  If this is the first call
+to <tt>MessageQueueCreate</tt> with the given
+name, it creates a new entry in the MQ array.  You need to support at least <b>20</b>
+mailboxes whose names may be up to <b>25</b> characters long.  If all mailboxes are currently used (i.e., all mailboxes 
+have at least one user), -1 should be 
+returned. 
+<P>
+If there is already a mailbox with this given name,
+then find an unused file descriptor from the process&rsquo;s file
+descriptor table (declared in user context) and assign the mailbox
+to this file descriptor.  Return the file descriptor number as
+the result of this system call.&nbsp;  
+</P>
+<P CLASS="msonormal" STYLE="margin-top: 0.11cm; margin-bottom: 0.11cm">
+In order to make it easier for processes to use the message queue,
+you will extend the functionality of the VSF.  You will use the read,
+write, and close system calls from project #5 to implement sending
+data to and from message queues and closing a message queue.  To
+implement this functionality, you will need to modify <tt>vfs.c</tt> to
+create a new &quot;filesystem&quot; (FS_TYPE_IPC) that represents the
+message-passing interface.&nbsp;  The read,write, and close calls in
+vsf.c will forward the calls to your message queue functions
+(similarly to the way in which it forwarded GOSFS calls to functions
+in <tt>gosfs.c</tt> in project 5).  
+</P>
+<BR>
+<P CLASS="msonormal" STYLE="margin-top: 0cm; margin-bottom: 0.11cm">
+</P>
+<H2 STYLE="margin-top: 0.11cm">Input/Output Redirection</H2>
+<P CLASS="msonormal" STYLE="margin-top: 0.11cm; margin-bottom: 0.11cm">
+You will also modify your spawn code to allow input and output
+redirection.  To do this, you will need to modify the 
+<tt>Spawn_Program</tt> system call to take two additional parameters 
+(stdin and stdout).&nbsp;  The resulting call will look like 
+<tt>Spawn_Program(char *program, int stdin, int stdout)</tt>
+These extra parameters should be the file descriptors that an
+application process will read from or write to. These file
+descriptors must be valid open file descriptors in the parent process
+that is spawning the child process. Every process will have two
+pre-defined file descriptors (0 and 1) that will refer to the
+standard input and standard output of that process (as passed by the
+spawn system call).  There will also be another file system defined
+called FS_TYPE_CONSOLE.  This is the screen and keyboard.&nbsp; The
+initial process (started in main.c) should have its file descriptors
+0 and 1 set to read and write (respectively) from this special file
+system type.&nbsp; You should modify the vfs.c code to handle read
+and write to the console device (basically clone the code from
+Print_String and GetKey).&nbsp</P>
+<P CLASS="msonormal" STYLE="margin-top: 0.11cm; margin-bottom: 0.11cm">
+<BR>
+Finally, you should modify the Print_String system call to be simply
+a call the write system call to the stdout (1) file descriptor.&nbsp;
+This will allow the output of one process to be either redirected to
+a file (if the open file descriptor passed to the spawn system call
+is a file) or piped into another process (if the open file descriptor
+passed into the process is a message queue). You may want to define
+Debug_Print_String to be the old Print_String system calls to allow
+debugging output while you debug this call.</P>
+<P CLASS="msonormal" STYLE="margin-top: 0.11cm; margin-bottom: 0.11cm">
+<BR>
+You can use the files located in <a href="#redirection">testing</a> to 
+test the 
+additional spawn functionality.
+</P>
+<H2>Users and I/O Protection</H2>
+<P CLASS="msonormal">This project will also introduce the idea of
+user's and I/O protection to the OS.&nbsp; Adding the system calls
+<tt>SetAcl</tt>, <tt>SetSetUid</tt>, and <tt>SetEffectiveUid</tt> will do this.&nbsp; The key
+idea to adding users is simply to have a field in the user context
+data structure that identifies the current user that is running this
+process. The user will be represented by an integer called the uid.&nbsp;
+There is a special user (uid 0) that is the super user. The super
+user (and only the super user) may change the user id of a running
+process via the <tt>SetEffectiveUid </tt>system
+call.&nbsp; If the uid of a process is 0 (superuser) when this system
+call is made, the uid is changed to the passed uid. The <tt>GetUid
+</tt>call returns the current uid of the process.
+When the shell starts, it runs with uid 0, i.e. super-user privileges. 
+When a process is
+spawned, it normally will inherit the uid of the parent process.&nbsp;
+There may be instances where a process may need more rights than its
+parent (think of the passwd command in unix).  In order to allow
+this, there is a special bit, setUid stored in the GOSFSFileNode.  If
+this bit is enabled (set to 1) for the executable, the process should
+inherit the uid of <B>executable file</B> rather than the parent
+process. The function <tt>SetSetUid</tt> is used to set this bit for a file.</P>
+<P CLASS="msonormal">The uid is also used by the file system to check
+if a particular user is able to perform a particular operation on a
+given file.&nbsp; A process running with the uid of the superuser can
+open any file regardless of the ACLs. If the uid is any other value,
+the I/O operation will only succeed if the uid has appropriate
+privilege based on the ACL of the file (or directory).&nbsp; For the
+Open system call, if the file exists the current uid must have the
+requested access level (i.e. Read privilege if the file is being
+opened with read access).&nbsp; If the file does not exist, then the
+user must have write access to the parent directory. The read, write,
+seek, stat, and close system calls do <B>not</B> require checking the
+ACL since the check is made on the Open call. The createDirectory
+call requires write access to the parent directory. The delete and
+setAcl calls require write access to the named file. 
+</P>
+<P CLASS="msonormal">The <tt>SetAcl </tt>system
+call sets the file permissions for the passed uid on the named file.&nbsp;
+If the permissions are 0, this should delete any access that uid had
+to the passed file.&nbsp; If the request is for a new uid to have
+some privilege for a file , and the ACL table for that file is full,
+you should return -1 as an error code.&nbsp; This code should also be
+used for invalid permissions or for non-existent files.</P>
+<H3><FONT SIZE=5>New System Calls</FONT></H3>
+<P CLASS="msonormal">The following system calls will need to be added
+to your operating system.</P>
+<table border="1" width="100% "valign="center" halign="left" >
+<tr>
+
+<td><b>Call</b></td>
+<td><b>User Function</b></td>
+<td><b>Return on success</b></td>
+<td><b>Return on failure</b></td>
+<td><b>Reasons for failure</b></td>
+<td><b>Comment</b></td>
+</tr>
+
+<tr>
+<td>SYS_SET_ACL</td>
+<td>SetAcl(char *name, int uid, int permissions)</td>
+<td>0</td>
+<td>-1</td>
+<td>
+<li><tt>name</tt> does not exist
+<li>illlegal value for <tt>uid</tt> (it must be greater than 0)
+<li>illegal value for <tt>permissions</tt>
+<li>the ACL table for <tt>name</tt> is full
+</td>
+<td>
+<li>The permissions values are flags and may be OR'ed together in a call. For example:
+  <ul>
+  <li>O_READ
+  <li>O_WRITE
+  <li>O_READ|O_WRITE
+  <li>0 (zero)
+  </ul>
+</td>
+</tr>
+
+<tr>
+<td>SYS_SET_SET_UID</td>
+<td>SetSetUid(char *name, int setUid)</td>
+<td>0</td>
+<td>-1</td>
+<td>
+<li><tt>name</tt> does not exist
+<li>illegal value for <tt>setUid</tt> (it can only be 0 or 1)
+
+<td>
+<li>This call will set the setUid bit in the GOSFSFileNode structure for the file corresponding to <tt>name</tt>
+</td>
+</tr>
+
+
+<tr>
+<td>SYS_SET_EFFECTIVE_UID</td>
+<td>SetEffectiveUid(int uid)</td>
+<td>0</td>
+<td>-1</td>
+<td>
+<li>current Uid is not superuser
+</td>
+<td>Set the user id for the current process</td>
+</tr>
+
+
+<tr>
+<td>SYS_GET_UID</td>
+<td>GetUid()</td>
+<td>uid of the current process</td>
+<td>-1</td>
+<td>
+&nbsp
+</td>
+<td>
+Return the user id of the current process
+</td>
+</tr>
+
+
+<tr>
+<td>SYS_MQ_CREATE</td>
+<td>MessageQueueCreate(char *name)</td>
+<td>new file descriptor number</td>
+<td>-1</td>
+<td>
+<li>there is no available file descriptor index for the process
+<li>all mailboxes are currently in use
+</td>
+<td>
+This call should create a new message queue if it does not exist.  Otherwise, it should open it in the current process.
+</td>
+</tr>
+
+</table>
+<P CLASS="msonormal">&nbsp;</P>
+<H3><FONT SIZE=5>Notes</FONT></H3>
+<P>
+The message queue implementation for interprocess communication can be done using a using a circular queue.
+</P>
+<P CLASS="msonormal">
+<a name="redirection">
+<H3>Testing</H3>
+Below are several files you can use for testing.  They require the 
+modified Spawn call to compile.
+<BR>
+<li><b><a href="shell.c">shell.c</a></b>
+<li><b><a href="pipe.c">pipe.c</a></b>
+</P>
+
+</BODY>
+<hr>
+  <script language="JavaScript">
+          <!---//hide script from old browsers
+          var theDate = new Date(document.lastModified);
+	  var theLocalDate = theDate.toLocaleString();
+          document.write( "<i>Last updated: "+ theLocalDate +"</i>");
+          //end hiding contents --->
+  </script>
+
+</html>

@@ -1,0 +1,478 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>CMSC 412 - Project 5</title>
+</head>
+<body lang="EN-US" link="blue" vlink="purple">
+<center><font size="+2"><b>CMSC 412 Project #5</b> </font></center>
+<p>
+</p>
+<center><font size="+1"><b>File System</b>
+</font></center>
+<center><font color=red>
+<p><b>Due Friday, Dec 3rd, 2004 (6:00 PM), no late submission accepted</b></p>
+<p><b>Submissions received before Wednesday, Dec 1st, 2004 (6:00 PM) will get 10% extra credit</b></p>
+</font></center>
+<li><b><a href="p5_grading.html">Grading Criteria</a> </b>
+</li>
+<li><b><a href="p5_submission.html">Submission Instructions</a> </b>
+</li>
+<li><b><a href="proj5.ppt">Slides used in recitation</a> </b>
+</li>
+<li><b><font color=red> New </font><a href="proj5guideline.pdf">Project 5 guideline</a> </b>
+<h2>New project files</h2>
+<li> <a href="project5-cyclone.tgz">project5-cyclone.tgz</a> - new
+project distribution
+</li>
+<li><b> Updated <a href="syscall.c">syscall.c</a> </b>
+<li><b> Updated <a href="vfs.h">vfs.h</a>, <a href="vfs.c">vfs.c</a>, <a href="pfat.c">pfat.c</a>, <a href="gosfs.c">gosfs.c</a> </b>
+<li><b><font color=red> New </font> Updated <a href="p5test.c">p5test.c</a> </b>
+
+<br>
+<br>
+<h1>Introduction</h1>
+<p>The purpose of this project is to add a new filesystem to
+GeekOS, as well as the standard operations for file management.
+</p>
+<p>
+A working project 3 or project 4 is not required for this project. If
+you do not build this project on top of project 4, you must make the
+following changes:
+</p>
+<li>Remove <tt>Init_VM</tt> from <tt>main.c</tt></li>
+<li>Remove <tt>Init_Paging</tt> from main.c</li>
+<li>Modify the <tt>USER_IMP_C := uservm.c</tt> line to <tt>USER_IMP_C
+:= userseg.c</tt></li>
+<h1>GOSFS - GeekOS FileSystem</h1>
+<p>
+The main part of this project is to develop a new filesystem
+for the GeekOS. This filesystem will
+reside on the second IDE disk drive in the Bochs emulator. This will
+allow you to continue to use your
+existing PFAT drive to load user programs while you test your
+filesystem. The second IDE disk's
+image is called <tt>diskd.img</tt>. It is 10MB by default.
+</p>
+<p>GOSFS will provide a filesystem that includes multiple
+directories and long file name support.</p>
+<h1>VFS and file operations</h1>
+<p>Since GEEKOS will have two types of filesystems (PFAT and
+GOSFS), it will have a virtual filesystem layer (VFS) to handle sending
+requests to an appropriate filesystem (see figure below). We have
+provided an implementation of the VFS layer in the file <tt>vfs.c</tt>.
+The VFS layer will call the appropriate GOSFS routines when a file
+operation
+refers a file in the GOSFS filesystem. </p>
+<center><img src="vfs.gif"></center>
+<p>The implementation of PFAT is in <tt>pfat.c</tt>. You will
+implement GOSFS in <tt>gosfs.c</tt> and relevant system calls in <tt>syscall.c</tt>.
+VFS picks the functions
+to call based on supplied structures containing function pointers, one
+for each operation. For example, see <span
+ style="font-family: monospace;">Init_PFAT</span> in <span
+ style="font-family: monospace;">pfat.c</span>: this initializes the
+PFAT filesystem with VFS by passing it a pointer to <span
+ style="font-family: monospace;">s_pfatFilesystemOps</span>, a
+structure that contains function pointers to PFAT routines for mounting
+(and formatting) a filesystem.&nbsp; Other PFAT functions are stored in
+different structures (e.g., look at the <span
+ style="font-family: monospace;">PFAT_Open</span> routine, which passes
+the <span style="font-family: monospace;">s_pfatFileOps</span>
+structure to VFS).&nbsp; You will analogously use <tt>s_gosfsFilesystemOps</tt>,
+<tt>s_gosfsMountPointOps</tt>, <tt>s_gosfsDirOps</tt>, and <tt>s_gosfsFileOps</tt>
+in <tt>gosfs.c</tt>.
+You should also add a call to <tt>Init_GOSFS</tt> provided <tt>gosfs.c</tt>
+in <tt>main.c</tt> to register the GOSFS filesystem.&nbsp; In general,
+use the PFAT implementation as your guide to interfacing GOSFS with VFS.<br>
+</p>
+<p>Open files are tracked in memory with a <span
+ style="font-style: italic;">file descriptor</span>, defined as <span
+ style="font-family: monospace;">struct File</span>.&nbsp; Each user
+space process will have a <span style="font-style: italic;">file
+descriptor table</span> that records which files the process can
+currently read and write.
+A user
+process can have up to <tt>USER_MAX_FILES</tt> files
+open at once. The file descriptor table is implemented asa <tt>struct
+File *fileList[USER_MAX_FILES]</tt> array that you must add to <tt>struct
+User_Context</tt>. Note that not all the entries in the <tt>fileList</tt>
+are necessarily open files, since usually a process has less than <tt>USER_MAX_FILES</tt>
+files open at
+once. If <span style="font-family: monospace;">fileList[i]</span> is <tt>NULL</tt>,
+it represents a
+free slot (file descriptor is not used). This descriptor will be filled
+out by the code in VFS; e.g., see <tt>Open</tt> in <tt>vfs.h</tt>,
+whose <span style="font-family: monospace;">pFile</span> argument is a
+pointer to a free slot in the table.<br>
+</p>
+<p>Your filesystem should support long filenames (at most 128
+bytes, which includes a null at the end). A file's full path (which
+includes directories and subdirectories) will be
+no more than 1024 characters in total.
+</p>
+<p>You should keep track of free disk blocks using a bit vector (as
+described in the textbook, Section 12.5.1, page 431). A library called <i>bitset</i>
+is provided (see <tt>bitset.h</tt> and <tt>bitset.c</tt>)
+that manages a set of bits and provides functions to find bits that are
+0 (i.e.
+correspond to free disk blocks).
+</p>
+<p>The block size for GOSFS is 4 KB; IDE sectors (a.k.a. disk blocks)
+are 512 bytes, so a block is 8 sectors.&nbsp; Thus one bit in a bitset
+corresponds to a 4KB block. For
+example, a
+bitset that is 8192 bits (1024 bytes) will keep track
+of 8192 * 4KB = 32 MB of data.
+</p>
+<h1>Directory Structure</h1>
+See the <b><a href="proj5.ppt">recitation slides</a></b> for details
+on directory structure.
+Each directory in GOSFS takes up a single disk block. The structure of
+the directory is defined in <tt>gosfs.h</tt>.
+A directory is an array of <tt>struct GOSF_Dir_Entry</tt> of size <tt>GOSFS_DIR_ENTRIES_PER_BLOCK</tt>.
+Each
+filenode (directory entry) can represent either a file or a
+subdirectory.&nbsp; That is, unlike UNIX where directory entries and
+inodes are separate, here all file information is tracked in its
+directory entry.<br>
+<p>The filenode for a directory is represented by the <tt>GOSFS_DIRENTRY_ISDIRECTORY</tt>
+flag set in the <tt>GOSFS_Dir_Entry-&gt;flags</tt> field. The location
+of the block that holds the data for the directory
+will be stored in the first entry in the <tt>blocksList</tt> array of
+the directory's filenode (hence entries <tt>blocksList[1]..blocksList[GOSFS_NUM_BLOCK_PTRS-1]</tt>
+are unused).
+</p>
+<h1>Files</h1>
+Unlike directories, that have a fixed size (one block, irrespective
+of how many files they hold), files can take up an arbitrary number of
+disk blocks.
+You will use a version of indexed allocation to represent
+the data blocks of your filesystem. The <tt>blocksList</tt> field in
+the <tt>GOSF_Dir_Entry</tt> struct in the <tt>gosfs.h</tt> file
+keeps track of data blocks for a file. The first eight KB-blocks are
+direct blocks, the ninth points to a single indirect block, the tenth
+to a double indirect block. See textbook, Section 12.4.3 on p. 429 (and
+the recitation
+slides) for a detailed layout (though there is no triple indirect block
+in GOSFS as there is in the text example).<br>
+<h1>Mounting</h1>
+<p>The <b>Mount</b> system call allows you to associate a filesystem
+with a place in the file name hierarchy. The <b>Mount</b> call is
+implemented as part of the VFS code we supply (see <span
+ style="font-family: monospace;">Mount</span> function in <span
+ style="font-family: monospace;">vfs.c</span>); you will implement your
+<span style="font-family: monospace;">Init_GOSFS</span> function so
+that VFS's mount code will call your function <tt>GOSFS_Mount()</tt>
+in <tt>gosfs.c.</tt>
+Among other things, it must ensure that the filesystem being mounted is
+GOSFS. See <a href="indexx.html#table">new syscalls</a> below for
+details.
+</p>
+<a name="table"></a>
+<h1>New System Calls</h1>
+<p>You have to implement the sematics of the new system calls
+as described below. As you can see, the semantics is very similar to
+the
+UNIX file system.</p>
+<li>NOTE: All user-supplied pointers (e.g. strings, buffers) must
+be checked for validity.
+</li>
+<li><font color=maroon>NOTE 2: Some of the checks in 'Reason for failure' column are already done by <tt>vfs.c</tt> so make you don't have to perform the check if it's implemented for you already.</font>
+</li>
+
+<p>
+<table valign="center" halign="left" border="1" width="100%">
+  <tbody>
+    <tr>
+      <td><b>Call</b></td>
+      <td><b>User Function</b></td>
+      <td><b>Return on success</b></td>
+      <td><b>Return on failure</b></td>
+      <td><b>Reasons for failure</b></td>
+      <td><b>Comment</b></td>
+    </tr>
+    <tr>
+      <td>SYS_MOUNT</td>
+      <td>Mount(char *dev, char *prefix, char *fstype)</td>
+      <td>0</td>
+      <td>-1</td>
+      <td> <li>a filesystem already mounted under <tt>name</tt> </li>
+      <li>illegal value for one of the parameters </li>
+      </td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>SYS_OPEN</td>
+      <td>Open(char *path, int mode)</td>
+      <td>new file descriptor number</td>
+      <td>-1</td>
+      <td> <li><tt>name</tt> does not exist (if <tt>permissions</tt>
+don't
+include <tt>O_CREATE </tt>) </li>
+      <li><tt>path to name</tt> does not exist (if <tt>permissions</tt>
+include <tt>O_CREATE </tt>) </li>
+      <li>attempt to open a directory, (should use <tt>OpenDirectory)</tt></li>
+      </td>
+      <td><li>there's no <i>create</i> syscall, so setting O_CREATE
+will
+create the file. If the file exists, the call succeeds (return &gt;= 0)
+but its data contents is not affected. </li>
+      <li>Should NOT create directories; e.g. if you do <tt>Open("/d/d1/d2/d3/xFile",
+O_CREATE)</tt> and the leading path <span
+ style="font-family: monospace;">/d/d1/d2/d3</span> does not exist, the
+syscall
+fails, returning -1 </li>
+      <li>You should use the <tt>Allocate_File</tt> in <tt>vfs.c</tt>
+to get a <tt>File</tt> when opening.</li>
+      <li>The permissions values are flags and may be or'ed together in
+a call. For example:
+        <ul>
+          <li>O_CREATE | O_READ </li>
+          <li>O_READ | O_WRITE </li>
+          <li>O_CREATE | O_READ | O_WRITE </li>
+        </ul>
+      </li>
+      </td>
+    </tr>
+    <tr>
+      <td>SYS_OPENDIRECTORY</td>
+      <td>Open_Directory(char *path)</td>
+      <td>0</td>
+      <td>-1</td>
+      <td> <li><tt>path</tt> does not exist</li>
+      </td>
+      <td>&nbsp;<li>Should NOT create directories, use <tt>CreateDirectory</tt>
+instead.</li>
+      <li>You should use the <tt>Allocate_File</tt> in <tt>vfs.c</tt>
+to get a <tt>File</tt> when opening.</li>
+      </td>
+    </tr>
+    <tr>
+      <td>SYS_CLOSE</td>
+      <td>Close(int fd)</td>
+      <td>0</td>
+      <td>-1</td>
+      <td> <li><tt>fd</tt> not within range 0-(<span
+ style="font-family: monospace;">USER_MAX_FILES</span>-1) </li>
+      <li><tt>fd</tt> is not an open file </li>
+      </td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>SYS_DELETE</td>
+      <td>Delete(char *path)</td>
+      <td>0</td>
+      <td>-1</td>
+      <td> <li><tt>name</tt> does not exist </li>
+      <li><tt>name</tt> is a non-empty directory </li>
+      </td>
+      <td>if <tt>Delete(file)</tt> is called and <tt>file</tt> is
+still open
+in other threads or even in the thread that called <tt>Delete()</tt>,
+all the subsequent operations on that file (except Close())
+should fail</td>
+    </tr>
+    <tr>
+      <td>SYS_READ</td>
+      <td>Read(int fd, char *buffer, int length)</td>
+      <td>number of bytes read</td>
+      <td>-1</td>
+      <td> <li><tt>fd</tt> not in range </li>
+      <li><tt>fd</tt> is not an open file </li>
+      <li><tt>fd</tt> was not open with O_READ flag </li>
+      <li><tt>fd</tt> is a directory </li>
+      </td>
+      <td><li> it's OK if <tt>return value &lt; length</tt>, for
+instance reading close to end of file </li>
+      <li>increase the <tt>filePos</tt> (the current position in the
+file) by the number of bytes read (if successful) </li>
+      </td>
+    </tr>
+    <tr>
+      <td>SYS_READENTRY</td>
+      <td>Read_Entry(int fd, VFS_Dir_Entry *entry)</td>
+      <td>0</td>
+      <td>-1</td>
+      <td> <li><tt>fd</tt> not in range </li>
+      <li><tt>fd</tt> is not an open file </li>
+      <li><tt>fd</tt> was not open with O_READ flag </li>
+      <li><tt>fd</tt> is not a directory </li>
+      </td>
+      <td><li>this reads a file out of a directory entry.</li>
+      <li>increase the <tt>filePos</tt>, if successful </li>
+      <li><tt>VFS_Dir_Entry</tt> is defined in <tt>fileio.h</tt></li>
+      </td>
+    </tr>
+    <tr>
+      <td>SYS_WRITE</td>
+      <td>Write(int fd, char *buffer, int length)</td>
+      <td>number of bytes written</td>
+      <td>-1</td>
+      <td> <li><tt>fd</tt> not in range </li>
+      <li><tt>fd</tt> is not an open file </li>
+      <li><tt>fd</tt> was not open with O_WRITE flag </li>
+      <li><tt>fd</tt> is a directory </li>
+      </td>
+      <td><li>increases <tt>filePos</tt> by the number of bytes
+written, if successful </li>
+      <li>"Grow on write"- allocate blocks "on the fly" if past end of
+file</li>
+      <li>"Grow minimum" - allocate only the needed blocks. A seek to a
+position past the end of the file
+should be allowed and a write will allocate only a single block rather
+than all blocks in between.</li>
+      </td>
+    </tr>
+    <tr>
+      <td>SYS_STAT</td>
+      <td>Stat(char *path, VFS_File_Stat *stat)</td>
+      <td>0</td>
+      <td>-1</td>
+      <td> <li><tt>path</tt> is not valid </li>
+      </td>
+      <td><li><tt>VFS_File_Stat</tt> is defined in <tt>fileio.h</tt></li>
+      </td>
+    </tr>
+    <tr>
+      <td>SYS_FSTAT</td>
+      <td>FStat(int fd, VFS_File_Stat *stat)</td>
+      <td>0</td>
+      <td>-1</td>
+      <td> <li><tt>fd</tt> not within 0-9 </li>
+      <li><tt>fd</tt> is not an open file </li>
+      </td>
+      <td><li><tt>VFS_File_Stat</tt> is defined in <tt>fileio.h</tt></li>
+      </td>
+    </tr>
+    <tr>
+      <td>SYS_SEEK</td>
+      <td>Seek(int fd, int offset)</td>
+      <td>0</td>
+      <td>-1</td>
+      <td> <li><tt>fd</tt> not within 0-9 </li>
+      <li><tt>fd</tt> is not an open file </li>
+      </td>
+      <td><tt>offset</tt> is an absolute position; could be equal to <tt>fileSize</tt>
+or greater, then <tt>Write</tt> appends, see above</td>
+    </tr>
+    <tr>
+      <td>SYS_CREATEDIR</td>
+      <td>Create_Directory(char *path)</td>
+      <td>0</td>
+      <td>-1</td>
+      <td> <li><tt>name</tt> already exists, as file or directory </li>
+      <li>regular file encountered on the path to <tt>name</tt> </li>
+      </td>
+      <td>Should NOT create directories recursively; e.g. <tt>CreateDirectory("/d/d1/d2/d3/d4")</tt>,
+will fail if <span style="font-family: monospace;">/d/d1/d2/d3</span>
+does not exist
+already.</td>
+    </tr>
+    <tr>
+      <td>SYS_SYNC</td>
+      <td>Sync(void)</td>
+      <td>0</td>
+      <td>-1</td>
+      <td>None</td>
+      <td>Forces any outstanding operations to be written to disk.</td>
+    </tr>
+    <tr>
+      <td>SYS_FORMAT</td>
+      <td>Format(char *dev, char *fstype)</td>
+      <td>0</td>
+      <td>-1</td>
+      <td> <li>illegal value for <tt>dev</tt> </li>
+      <li><tt>dev</tt> is in use, i.e. mounted </li>
+      </td>
+      <td>You only have to implement the format of the GOSFS filesystem.</td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<h1>Disk Layout</h1>
+<div style="text-align: center;"><img src="GOSFS_disklayout.gif"
+ alt="disk layout" style="width: 392px; height: 338px;">
+</div>
+<p>A guideline is provided above. The first block (0) is called the
+SUPERBLOCK, and it contains
+filesystem housekeeping data. Blocks &gt;= 1 contain
+files and directories.
+</p>
+<li><a name="magic">The <tt>Magic</tt> number at the very
+beginning could be <i>0xDEADBEEF</i>, <i>"GOSF"</i>
+or the like. This tells you that the disk has a GOSFS filesystem on it.
+If you try to mount a drive and you don't find the magic signature,
+return error. </a></li>
+<li><a name="magic"><tt>Root Dir Pointer</tt> holds the block number
+of the block containing the root directory. </a></li>
+<li><a name="magic"><tt>Size</tt> is the size of the disk, in 4KB
+blocks. (32M / 4K = 8K for the example above) </a></li>
+<li><a name="magic"><tt>Free Blocks Bitmap</tt>
+is : <tt>Size</tt> bits large, that is <tt>Size/8</tt> bytes large.
+(8K / 8 = 1K for the example above). Every block has an associated
+bit. </a>
+  <p><a name="magic">When you do a <tt>Format()</tt> , you make a raw
+disk
+usable with GOSFS. That is: </a></p>
+  <ol>
+    <li><a name="magic"> Get drive's size, convert it in # of blocks. <tt>Get_Num_Blocks()</tt>
+tells you that. </a></li>
+    <li><a name="magic"> Figure out <tt>Free Blocks Bitmap</tt> size,
+mark them all free. </a></li>
+    <li><a name="magic"> Create a valid, but empty directory. That will
+be the root directory.
+Make <tt>Root Dir Pointer</tt> point to it. </a></li>
+    <li><a name="magic"> Mark superblock and block for root directory
+as used in the <tt>Free Blocks Bitmap</tt> </a></li>
+    <li><a name="magic"> If everything went OK, write the <tt>Magic</tt>.
+Now the disk is ready to be mounted and used. </a></li>
+  </ol>
+  <a name="magic">Keep in mind that the superblock and root directory
+have no associated <tt>GOSFS_Dir_Entry</tt>. </a><a name="howto"></a>
+  <h1><a name="howto">How to create an arbitrarily big <tt>diskd.img</tt></a></h1>
+</li>
+<li><a name="howto"> Change the size/disk geometry by changing the <tt>diskd</tt>
+line in <tt>.bochsrc</tt> </a></li>
+<li><a name="howto"> Change the argument to <i>$(ZEROFILE)</i> in <tt>Makefile</tt>.
+For <i>$(ZEROFILE)</i> one block is 512, so 4096 blocks = 2 MB, 65536
+blocks = 32 MB and so on. </a>
+  <h1><a name="howto">Notes</a></h1>
+  <a name="howto">You do not need to consider situations where two
+processes have the
+same file open. You do not need to consider situations where one
+process
+opens the same file twice without closing it in between.</a>
+  <h1><a name="howto">Requirements</a></h1>
+</li>
+<li><a name="howto">Make sure your <tt>Mount()</tt> works well, so
+that we can test your project.
+If we cannot <tt>Mount()</tt> a GOSFS, we cannot grade your project. </a></li>
+<li><a name="howto">You might also want to mount <tt>/d</tt> to <tt>ide1</tt>
+automatically in <tt>main()</tt>
+to speed up your testing, but the code you submit should not mount <tt>/d</tt>
+automatically. </a></li>
+<li><a name="howto">You should support disk sizes of <b>at least</b>
+32 MB. More than 32 MB is optional.
+Following the procedure described in the "How to create an arbitrary
+size big <tt>diskd.img</tt>" section above,
+in your submitted project, when someone types <tt>gmake</tt>, a 32 MB
+file should be created. </a></li>
+<li><a name="howto">You should support file sizes of <b>at least</b> 5
+MB (double indirect threshold crossed, yes). More than 5 MB is
+optional. </a>
+  <h1><a name="howto">Testing</a></h1>
+  <a name="howto"> In <tt>src/user</tt> there are some programs that
+can be used to test your file management syscalls: </a><b><tt>cp.c</tt></b>,
+  <b><tt>format.c</tt></b>, <b><tt>ls.c</tt></b>, <b><tt>mkdir.c</tt></b>,
+  <b><tt>mount.c</tt></b>, <b><tt>p5test.c</tt></b>.
+  <hr>
+  <script language="JavaScript">
+          <!---//hide script from old browsers
+          var theDate = new Date(document.lastModified);
+	  var theLocalDate = theDate.toLocaleString();
+          document.write( "<i>Last updated: "+ theLocalDate +"</i>");
+          //end hiding contents --->
+  </script>
+</li>
+</body>
+</html>

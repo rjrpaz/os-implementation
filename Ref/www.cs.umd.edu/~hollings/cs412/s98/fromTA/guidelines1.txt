@@ -1,0 +1,44 @@
+Errors observed (and their cost, in parentheses). The initial cost of the
+project, without errors, is 100. 
+
+[nuisance; nonintuitive]
+- Makefile misnamed. (0)
+- The executable file is called an unspecified name. (0)
+
+- Arrows are not consistent. (0)
+- Considers the penultimate row to be the last one. (0)
+- Pressing enter or backspace in the middle of a line erases the character at
+	the old cursor position. (0)
+- When an unusual key is pressed (grey keypad, undefined functional
+	keys, etc), funny characters appear on the screen. (0)
+
+[minor]
+- Backspace does not blank out the part of screen it travelled (spreads the
+	cursor along the line). (1)
+- When at the pre-last position on the last row, the cursor does not move to
+	the right, but thinks it does. (1)
+- When tabulation wraps onto the next line, the old cursor position remains
+	lit. (1)
+
+- When starts, the cursor does not appear. (0)
+- Does not exit on just ESC; requires another key to be pressed. (4)
+- Does not clear screen when completes. (3)
+- Does not restore the text color when completes. (3)
+- Does not hide hardware cursor when run 2nd time in a row. (4)
+
+[fails specifications]
+- Tabulation of a wrong size. (1)
+
+- Caps Lock has no effect. (20)
+- Caps Lock mode: shift is not working properly. (10)
+- Caps Lock affects the keys it should not. (8)
+
+- Misses characters. (25)
+
+[major]
+- Does not run properly 2nd time in a row. (25)
+
+- When the screen is (almost) full, it is cleared and does not show anything
+	anymore. (35)
+- Aborts or freezes at some point of execution. (50)
+- No life. (100)

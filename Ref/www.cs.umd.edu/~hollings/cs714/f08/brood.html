@@ -1,0 +1,83 @@
+<html>
+<head><title>Instructions for setting up the Hive cluster</title></head>
+
+<body>
+<h1>Instructions for setting up the Hive cluster (CMSC 714)</h1>
+<p>
+This document describes how to set up for the Hive cluster, brood00.umiacs.umd.edu. 
+</p>
+
+<p>
+<h2>1. Generate SSH keys (everybody must do this once)</h2>
+<p>
+A direct access to the Hive cluster is restricted to CS department/UMIACS machines only. If you are working at home, you should first use ssh to login to a department server (e.g., <a href="http://www.cs.umd.edu/faq/guides/manual_unix/node44.html">Linux</a> or <a href="http://www.cs.umd.edu/faq/guides/manual_unix/node45.html">Solaris</a>) using your department account. Refer to the <a href="http://www.cs.umd.edu/faq/guides/manual_unix/node45.html">department guide</a> for details. Once you're logged in, then connect to the cluster with your class account (cs714xx).
+</p>
+
+<pre>
+% ssh -l username brood00.umiacs.umd.edu
+% cd $HOME
+% ssh-keygen -t rsa1 -N ""  -f $HOME/.ssh/identity
+% ssh-keygen -t rsa -N "" -f $HOME/.ssh/id_rsa
+% ssh-keygen -t dsa -N "" -f $HOME/.ssh/id_dsa
+% cd .ssh
+% touch authorized_keys authorized_keys2
+% cat identity.pub >> authorized_keys
+% cat id_rsa.pub id_dsa.pub >> authorized_keys2
+% chmod 640 authorized_keys authorized_keys2
+</pre>
+
+<p>
+You also need to manually set up your environment. Refer to the <a href="http://www.umiacs.umd.edu/research/parallel/hive-toc.html">Hive cluster manual</a> for path settings. In particular, if you use LAM, which we recommend, make sure that in your path, /usr/local/stow/lam-7.0.6-gm-nagware/bin, /opt/UMtorque/bin, and /usr/local/bin are placed in this order, and before /usr/bin.
+</p>
+
+<h2>3. Basic usage</h2>
+Below is just an overview of the cluster usage. Refer to <a href="http://www.umiacs.umd.edu/research/parallel/hive-toc.htm">Hive cluster manual</a> for more detailed information.
+<h3>To compile a program</h3>
+<pre>
+% mpicc -o foo foo.c
+</pre>
+
+<h3>To run a program in a batch mode</h3>
+<p>
+You must write a script file (foo.sh) like below.
+</p>
+<pre>
+#!/bin/bash
+#PBS -l nodes=2
+lamboot $PBS_NODEFILE
+cd ~/
+mpirun -np 2 ./foo
+lamhalt
+</pre>
+then submit a job to a PBS queue.
+<pre>
+% qsub -l nodes=&lt;nodes&gt; foo.sh
+</pre>
+<p>
+The nodes option is very important to make sure that your job is run properly. Typical options are "nodes=2,walltime=00:00:60", etc.
+</p>
+
+<p>
+Note that the standard output and the standard error are redirected to files named foo.sh.oNNNNN and foo.sh.eNNNNN, respectively.
+</p>
+
+<h3>To run a program in an interactive mode</h3>
+<p>
+The following command submits an interactive job.
+</p>
+<pre>
+% qsub -l nodes=&lt;nodes&gt; -I
+</pre>
+<p>In an interactive shell, you must run "lamboot $PBS_NODEFILE" before running mpirun jobs. You should run "lamhalt" before you exit.</p>
+
+<h3>Other commands</h3>
+<ul>
+<li>"qstat": show status of pbs batch jobs</ul>
+<li>"qdel": delete pbs batch job</ul>
+<li>"qdel": delete pbs batch job</ul>
+<li>"pbsnodes -a": show all nodes and their attributes</ul>
+</ul>
+
+</body>
+
+</html>

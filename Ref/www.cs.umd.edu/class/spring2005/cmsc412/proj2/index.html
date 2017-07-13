@@ -1,0 +1,809 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>CMSC 412 - Project 2</title>
+</head>
+<body style="color: rgb(0, 0, 0);" alink="#ffffff" link="#78021c"
+ vlink="#7f6666">
+<center>
+<h1>CMSC 412 Project #2</h1>
+</center>
+<p>
+</p>
+<center>
+<h2>User Mode Support</h2>
+</center>
+<center>
+<h3>Due Thursday, Feb 24, at 6PM</h3>
+</center>
+<menu>
+<li><b><a href="p2_grading.html">Grading Criteria</a> </b>
+</li>
+<li><b><a href="p2_submission.html">Submission Instructions</a> </b>
+</li>
+<li><b>New project files: <a href="project2.tgz">project2.tgz</a></b>
+</li>
+<li><b>Slides used in recitation: <a href="proj2.ppt">proj2.ppt</a></b>
+
+<li><b>The IA-32 Intel(R) Architecture Software Developer's <a
+ name="IntelDoc"
+ href="ftp://download.intel.com/design/Pentium4/manuals/25366814.pdf">
+Manual</a>,Volume 3</b>
+</menu>
+<br>
+
+<h2>Introduction</h2>
+<p>In project 1, you wrote code
+that parsed an executable and prepared it to be run. The actual running
+of the program was handled by code that we supplied. The code was run
+in kernel mode, i.e. with full privileges, in a potentially unsafe
+manner. In this project, you will add code to GeekOS
+that will allow it to run user programs, i.e. programs executing
+safely, at lower privilege.</p>
+<p>Much of this project
+description provides background information on some operating system
+concepts,
+how the Intel x86 processors (above 386) work, and how GeekOS works.
+This should make it easier
+to understand the GeekOS code and to understand what you have to do for
+the
+project. </p>
+<h2>1 Background<br>
+</h2>
+<h3>Required Reading</h3>
+The Intel IA32 Architecture Manuals are the definitive reference for
+programming x86 CPUs. The most relevant for this project is
+<a href="#IntelDoc">Volume 3 (System Programming Guide)</a>. For this
+project, you will need to understand <b>segments</b> and <b>local
+descriptor tables</b>. You will want to read Sections 3.1 thru 3.5 (of
+this Volume 3) to understand how segments work.
+<p>If you already know all of this, you can skip ahead to the <a
+ href="#ProjectReqs">Project Requirements</a> section, which describes
+exactly
+what you have to do for this project.</p>
+<h3>Safe Mode for Running User Programs</h3>
+<p>In writing an operating system,
+you want to make a distinction between the things that operating system
+code
+are allowed to do and the things user programs are allowed to do. The
+goal is
+to protect the system from incorrect or malicious code that a user may
+try to
+run. Bad things a program could do include:</p>
+<ul>
+  <li>Making the operating system and/or other user programs crash</li>
+  <li>Looking at data that belong to the system or to other programs</li>
+  <li>Circumventing access control</li>
+  <li>Using hardware incorrectly, with all the negative consequences
+that result e.g. machine crash or data corruption</li>
+</ul>
+<p>Preventing these sorts of mistakes or attacks is accomplished by
+controlling the parts of memory that can
+be accessed when user code is running and limiting the set of machine
+operations
+that the user code can execute. The 386 processor provides the
+operating
+system with facilities to support these controls.</p>
+<p>A program that is running in this sort of controlled way is said to
+be running in user mode.</p>
+<p>(also see section <b>2.5.1 Dual-Mode Operation </b>in the
+textbook, but note that the mode bit discussed
+in the textbook is replaced by a <span style="font-style: italic;">privilege
+level</span> in GeekOS.)</p>
+<h3>Memory Segments </h3>
+<p><b>(Also see chapter 9 in the textbook)</b></p>
+<p>The facility that the processor
+provides for dividing up memory is its handling of memory segments. A
+memory
+segment specifies a region of memory and the "privilege level" that
+is required to access that memory. Each user program has its own memory
+segments - one for code, one for data, one for its stack, plus a couple
+extra
+for various purposes. If the operating system sets up the segments
+properly, a
+program will be limited to accessing only its own memory.</p>
+<p>Privilege levels range from
+0 to 3. Level 0 processes have the most privileges, level 3
+processes have the least. Protection levels are also called <i>rings</i>
+in 386 documentation. Kernel processes will run in ring 0, user
+processes
+will run in ring 3. Besides limiting access to different memory
+segments, the
+privilege level also determines the set of processor operations
+available to a
+process. A program's privilege level is determined by the privilege
+level of
+its code segment.</p>
+<p>If a process attempts to access memory
+outside of its legal segments, the result should be the
+all-too-familiar <b>segmentation
+fault</b>, and the process will be halted.</p>
+<p>Another important function of
+memory segments is that they allow programs to use relative memory
+references.
+All memory references are interpreted by the processor to be relative
+to the
+base of the current memory segment. Instruction addresses are relative
+to the
+base of the code segment, data addresses are relative to the base of
+the data
+segment. This means that when the linker creates an executable, it
+doesn't need
+to specify where a program will sit in memory, only where the parts of
+the
+program will be, relative to the start of the executable image in
+memory.</p>
+<h3>Descriptor Tables</h3>
+<p>The information describing a
+segment is stored in a data structure called a <b>segment descriptor</b>.
+The
+descriptors are stored in <b>descriptor tables</b>. The descriptor
+tables are
+located in regular memory, but the format for them is exactly specified
+by the
+processor design. The functions in the processor that manipulate memory
+segments assume that the appropriate data structures have been created
+and
+populated by the operating system. You will see a similar approach used
+when
+you work with multi-level page tables in a future project.</p>
+<p>There are two <a href="#fn1"><sup>1</sup></a> types of
+descriptor tables. The Local Descriptor
+Table (LDT) stores the segment descriptors
+for each user process. There is one LDT per process.&nbsp; The Global
+Descriptor Table (GDT) contains information for all of the processes,
+and there is only one GDT in the system.&nbsp; There is one entry in the GDT for
+each user process
+which contains a descriptor for the memory containing the LDT for that
+process.</p>
+<p>Since all kernel processes are
+allowed to access all of memory, they can all share a single set of
+descriptors, which are stored in the GDT.<br>
+</p>
+<p>The relationship between GDT, LDT and User_Context entries is explained in 
+<a href="#ldtgdt">this picture</a>.
+</p>
+<h3>Segment Descriptor Selectors</h3>
+The GDTR and
+LDTR registers contain the addresses of the GDT and the current
+LDT, respectively.&nbsp; In addition, for fast access, there are six
+registers that keep track of a process's active segments:
+<ul>
+  <li>CS - Code Segment</li>
+  <li>SS - Stack Segment</li>
+  <li>DS - (Default) Data Segment</li>
+  <li>ES, FS, GS - Extra Data Segments</li>
+</ul>
+<p>These registers do not contain
+the actual segment descriptors. Instead, they contain <b>Segment
+Descriptor
+Selectors</b>, which are essentially the indices of descriptors within
+the GDT
+and the current LDT.</p>
+<p>The memory segments for a process are
+activated by loading the address of the LDT into the LDTR and the
+segment
+selectors into the various segment registers.<br>
+</p>
+<p>You might want to review sections 3.1, 3.4, 3.4.1, 3.4.3 (pages 3-1,
+3-6 thru 3-12)
+in the Intel manual for details. </p>
+<h3>Anatomy of a User Thread</h3>
+<p>In GeekOS, there is a
+distinction between <b>Kernel Threads</b> and <b>User Threads</b>. As
+you would
+expect, kernel processes run as kernel threads, while user processes
+run in
+user threads. </p>
+<a name="struct_kernel_thread"></a>
+<p>A kernel thread is represented
+by a Kernel_Thread structure (in <tt>include/geekos/kthread.h</tt>)</p>
+<pre>  struct Kernel_Thread {<br>    unsigned long esp;                  // offset 0<br>    volatile unsigned long numTicks;    // offset 4<br>    int priority;<br>    DEFINE_LINK( Thread_Queue, Kernel_Thread );<br>    void* stackPage;<br>    struct User_Context* userContext;<br>    struct Kernel_Thread* owner;<br>    int refCount;<br> <br>    .........................<br>  };</pre>
+<p>In a sense, the most important
+fields of a kernel thread structure are those that specify where the
+thread's
+stack is, namely <b>stackPage</b> and <b>esp</b>. Each kernel thread
+has a stack
+associated with it. Besides being used as a regular stack while
+executing within the kerenel (for keeping
+track of local variables, function arguments, return addresses and so
+forth), the kernel stack is where the operating
+system stores the execution context when it switches away from a thread
+(either to run a
+different thread or to handle an interrupt).&nbsp; This context
+includes the general-purpose registers and segment registers, among
+other things.<br>
+</p>
+<p>The kernel thread contains all
+of the mechanisms necessary to run and schedule a process. In order to
+represent user threads, GeekOS includes an extra field in the
+Kernel_Thread
+structure that points to a User_Context structure. In a thread
+representing a
+kernel process, the User_Context will be null. The User_Context is
+defined in in <tt>include/geekos/user.h</tt>.</p>
+<p>In a user thread, the
+User_Context structure will contain all of the information that only
+applies to
+user processes, like the location of the process' LDT and the location
+of the
+executable image. The "kernel" parts of the thread are used by the
+OS to schedule the thread, while the "user" parts represent the
+specific user program being run.</p>
+<h3>Two stacks?</h3>
+<p>User threads have two different
+stacks associated with them. The kernel part of the thread has a stack
+that is created when the thread is
+created. The executable image has a stack that you created when you set
+up the
+executable image. The <b>kernel stack</b> (sometimes called the <b>thread
+stack</b>),
+is used by OS for saving context information, and for local variables
+used by the user process when running in kernel mode. The <b>user stack</b>
+is
+used as the program stack for local variables and so forth when running
+the user program.<br>
+</p>
+<p><a name="InitialThreadState"><b>InitialThread State</b></a></p>
+<p>As discussed above, before a
+context switch, the OS saves the thread context information by pushing
+it onto
+the kernel stack associated with the thread. (The 386 provides a
+different mechanism
+for saving thread state, via the TSS structure, but GeekOS does not use
+this
+mechanism.)</p>
+<p>To prepare a thread to be run
+for the first time, GeekOS sets up the kernel stack to look as if the
+thread
+had previously been running and then context-switched to the ready
+queue.&nbsp; To present this illusion requires setting up the kernel
+stack properly.&nbsp; In particular, we must push the
+initial values for all of the processor registers onto the kernel stack
+when
+the thread is created. When the thread is scheduled for the first time,
+these
+initial values will be loaded into the processor registers and the
+thread can
+run. </p>
+<p>One example of an initial value
+that will be loaded into a register is the instruction pointer (EIP).
+GeekOS pushes the entry point for the process and this value will be
+subsequently loaded into EIP. In the case of a kernel process,
+this will be the function that was passed to Start_Kernel_Thread() to
+create
+the thread.<br>
+</p>
+
+<h3>Syscalls</h3>
+<p><b>(Also see chapter 3 of the textbook)</b></p>
+<p>The operating system uses
+segmented memory to limit a process to only accessing memory belonging
+to that
+process. But sometimes a program will need to interact with the system
+in ways
+that require it to access other memory. For example, if the program
+wants to
+write to the screen, it may need to access video memory, which will be
+outside
+of the process's segment. Or a program may want to call an OS routine -
+the
+Print routine, for example - which is stored outside of the process's
+segment.</p>
+<p>To allow a user program to access system memory in a controlled way,
+the operating system provides a series of <b>System Calls</b>, also
+known as <b>Syscalls</b>. A syscall is an operating system
+routine that carries out some operation for the user program that calls
+it. But
+since these routines are themselves in protected memory, the OS
+provides a
+special mechanism for making syscalls.</p>
+<p>In order to make a syscall, a
+user program sends a processor interrupt, using the <span
+ style="font-family: monospace;">int</span> instruction. GeekOS has
+provided an interrupt
+handler that is installed as interrupt 0x90. This routine, called
+Syscall_Handler (<tt>src/geekos/trap.c</tt>), examines the
+current value in the register eax and calls the
+appropriate system routine to handle the syscall request. The value in
+eax is called
+the <b>Syscall Number</b>. The routine that handles the syscall
+request is
+passed a copy of the caller's context state, so the values in general
+registers
+(ebx, ecx, edx) can be used by the user program to pass parameters to
+the
+handler routine and can be used to return values to the user program.</p>
+<p>
+The syscall stubs are already defined for you in <tt>src/geekos/syscall.c</tt>:
+Sys_Null, Sys_Exit, etc. You'll need to fill in the code that does the
+following: </p>
+<ul>
+  <li>Extracts the parameters passed by the user process (these are
+passed in the registers, so you'll access them via state-&gt;ebx,
+state-&gt;ecx, and so forth) </li>
+  <li>Implements the logic of the syscall </li>
+  <li>Returns the result (or the appropriate error code) </li>
+</ul>
+<p>Before the system handles a
+system call - actually, before handling any kind of interrupt - the
+thread context
+is saved and the active segments are switched to the kernel segments,
+so all of
+memory can be legally accessed. Before returning from the syscall, the
+previous
+context is restored so that the program can continue running. A pointer
+to the
+stored copy of the context - on the kernel stack - is actually what is
+passed
+to the <tt>Syscall_Handler</tt>.</p>
+<h3>Passing pointers to syscalls</h3>
+<p>Because arguments are always
+passed to syscalls through registers, you are limited to passing 32-bit
+values,
+such as ints. If you want to pass a larger argument, a structure, say,
+or you
+want to pass a string, you will need to pass a pointer to the argument
+instead
+of passing the argument.</p>
+<p>A problem arises when the
+syscall handling function wants to use the pointer. Because the pointer
+is
+generated by the user program, it will be a pointer that is relative to
+the
+base of the user program's memory. When the interrupt handler is
+running, it
+will be using a data segment that spans all of memory. The handler will
+need to
+convert the pointer from user space to kernel space. You will write
+code to do
+this conversion as part of the <a href="#CopyFromUser">Copy_From_User</a>
+function described below.</p>
+<p>It is also critical that your <tt>Copy_From_User</tt> function
+ensures
+that any
+memory to be copied from a user program really belongs to that user
+program. This is necessary to prevent a malicious user program from
+passing a bad pointer which could cause the kernel to access memory
+that does not belong to the user process (or worse yet invalid memory
+and thus causing the kernel to crash). </p>
+<h2><a name="ProjectReqs"></a>2 Project Requirements </h2>
+<p>This project will require you to make changes to several files.
+In general, look for the calls to the <tt>TODO()</tt> macro.
+These are places where you will need to add code, and they
+will generally contain a comment giving you some hints on how
+to proceed.</p>
+<p>For project 2, you will need to
+add the code necessary to create user threads running executables from
+files in
+the filesystem. You will also need to implement a collection of
+syscalls and a
+user library of functions to call the syscalls.<br>
+</p>
+<h2>2.1 Running User Processes</h2>
+<h3><tt>Spawn()</tt></h3>
+<p>The top-level function for
+launching user programs is <tt>Spawn()</tt> in the file <tt>src/geekos/user.c</tt>.
+This
+function will have to do the following (see the comments in <tt>user.c</tt>
+as well) </p>
+<ul>
+  <li>call the <tt>Read_Fully()</tt> function to read an executable
+file
+from disk into memory </li>
+  <li>call the <tt>Parse_ELF_Executable()</tt> function you wrote in
+project 1 to populate an <tt>Exe_Format</tt> data structure; <i>you
+may ignore the bogus program header describing a segment of size 0
+that gets inserted by the GNU linker on the Linuxlab machines. That is,
+if one program header's <tt>memsize</tt> is 0, ignore it and report
+one less segment in <tt>numSegments</tt>. </i> </li>
+  <li>call Load_User_Program() to set up the memory image for the new
+process and create a User_Context with the loaded program </li>
+  <li>call Start_User_Thread() with the new User_Context </li>
+</ul>
+<p>You should copy your
+implementation of <tt>Parse_ELF_Executable</tt> from Project 1 into
+the new <tt>elf.c</tt>. </p>
+<h3><tt>Load_User_Program()</tt></h3>
+This function (found in <tt>src/geekos/userseg.c</tt>) should
+prepare a new address space for the program and create a User_Context.
+These are the steps:
+<ul>
+  <li> find out how much space you should allocate for the memory image
+of the new process.
+You'll have to scan the exeFormat that's passed in and find the highest
+possible virtual address, based on the segment
+base address and memory size of that segment. </li>
+  <li> the size should be page-aligned and have extra room for the
+stack
+and arguments:
+    <p><i>size = Round_Up_To_Page(highest virtual address) +
+Round_Up_To_Page(DEFAULT_USER_STACK_SIZE + argument block size) </i></p>
+  </li>
+  <li> create the User_Context (see below). The User_Context will
+contain
+the space for the new process (in the <tt>memory</tt> field), so you
+can now copy the segments over into the process's memory space (using <tt>memcpy()</tt>).
+The <tt>startAddress</tt> and <tt>lengthInFile</tt> fields in
+Exe_Segment will tell you where the segments must be copied, and their
+sizes. You might want to take
+a look at this <a href="./elfdiagram.jpg">ELF diagram</a> to refresh
+your memory (the stack size
+is DEFAULT_USER_STACK_SIZE, not 4096 as depicted there). </li>
+</ul>
+<h3><tt>Create_User_Context()</tt></h3>
+<p>The <tt>User_Context</tt> structure stores in it all of
+the information that will be needed to setup and run a user thread.
+To implement <tt>Create_User_Context(ulong_t size)</tt>, you will need
+to do the following things:</p>
+<ul>
+  <li>allocate <tt>size</tt> memory (page multiple, including space
+for stack, as described above)</li>
+  <li>allocate space for a User_Context (defined in <tt>include/geekos/user.h</tt>)
+and then fill in its fields as described below:</li>
+  <li>create an LDT for the process</li>
+  <li>add a descriptor to the GDT that describes the location of the
+LDT</li>
+  <li>create a selector that contains the location of the LDT
+descriptor within the GDT</li>
+  <li>create descriptors for the code and data segments of the user
+program and add these descriptors to the LDT</li>
+  <li>create selectors that contain the locations of the two
+descriptors within the LDT</li>
+  <font color=maroon><li>NOTE: The selectors contain a priveledge level.  For the selectors for segment descriptors in the 
+LDT you have to use USER_PRIVELEDGE level and for those in the GDT you have to use KERNEL_PRIVELEDGE</li></font>
+</ul>
+<p>Notes on these steps:</p>
+<p>There will only be two segments
+for each user program: code and data. The data segment, the stack
+segment, and the extra data
+segments will all be in a single segment that we will heretofore call
+the data segment. </p>
+<p>Even though the <tt>vaddr</tt> for the
+data segment indicates that the start of the data segment is offset
+from the
+start of the executable image, the data segment you create should
+always have
+its base at the start of the executable image. The files we will be
+working
+with are linked such that the memory references in the data segment are
+aligned
+as if the data segment started at the beginning of the executable
+image. For
+example, say the <tt>data.vaddr</tt> were 100. If there were a data
+item at the first
+address of the data segment, its address would not be 0 - even though
+it is at
+the very start of the data segment. Its address would be 100, since the
+address
+is calculated as the offset from the beginning of the executable image.</p>
+<p>The base of the code segment
+will also be at the beginning of the executable image. In this case,
+the vaddr
+actually indicates this.</p>
+<p>There are examples in the
+GeekOS code of how to create descriptors and selectors, though these
+examples are always putting the descriptors in
+the GDT. You can also look at the code that we included for project 1,
+which
+contains another example. GeekOS provides a variety of functions for
+these
+operations, so look around before you start writing.</p>
+
+<p>The relationship between GDT entries, LDT and User_Context entries is depicted below</p>
+<a name="ldtgdt"><img src="./ldtgdt.gif"></a>
+<p>
+Note that the <tt>selectors</tt> are not pointers, but rather 'fancy indexes'.
+You create selectors from indexes using the <tt>Selector(...,index)</tt> function.</p>
+
+<h3><tt>Start_User_Thread()</tt></h3>
+<p>After setting up the memory
+segments for the new process, <tt>Spawn_User_Program</tt> will call <tt>Start_User_Thread()</tt>
+in <tt>src/geekos/kthread.c</tt>.&nbsp;&nbsp; <tt>Start_User_Thread</tt>,
+which you will write, does the following:</p>
+<ul>
+  <li>creates a new thread</li>
+  <li>sets its <tt>UserContext</tt> field to the new <tt>User_Context</tt></li>
+  <li>initializes the stack as described <a href="#InitialThreadState">above</a></li>
+  <li>makes the thread runnable, so that it will be scheduled and run </li>
+</ul>
+<p>Notes on these steps:</p>
+<p>The steps involved in creating
+a new user thread are very similar to those involved in creating a new
+kernel
+thread. Tracing through the <tt>Start_Kernel_Thread</tt> function will
+help you
+understand what you need to do and what functions already in GeekOS can
+be
+useful.</p>
+<p>The initial stack state for a
+user thread should look like:</p>
+<center>
+<table border="1" cellpadding="0" cellspacing="0">
+  <tbody>
+    <tr>
+      <td valign="top">Stack Data Selector (data selector)</td>
+    </tr>
+    <tr>
+      <td valign="top">Stack Pointer (end of data memory)</td>
+    </tr>
+    <tr>
+      <td valign="top">Eflags </td>
+    </tr>
+    <tr>
+      <td valign="top">Text Selector (code selector) </td>
+    </tr>
+    <tr>
+      <td valign="top">Program Counter (entry addr) </td>
+    </tr>
+    <tr>
+      <td valign="top">Error Code (0) </td>
+    </tr>
+    <tr>
+      <td valign="top">Interrupt Number (0) </td>
+    </tr>
+    <tr>
+      <td valign="top">EAX (0) </td>
+    </tr>
+    <tr>
+      <td valign="top">EBX (0) </td>
+    </tr>
+    <tr>
+      <td valign="top">ECX (0) </td>
+    </tr>
+    <tr>
+      <td valign="top">EDX (0) </td>
+    </tr>
+    <tr>
+      <td valign="top">ESI (Argument Block address) </td>
+    </tr>
+    <tr>
+      <td valign="top">EDI (0) </td>
+    </tr>
+    <tr>
+      <td valign="top">EBP (0) </td>
+    </tr>
+    <tr>
+      <td valign="top">DS (data selector) </td>
+    </tr>
+    <tr>
+      <td valign="top">ES (data selector) </td>
+    </tr>
+    <tr>
+      <td valign="top">FS (data selector) </td>
+    </tr>
+    <tr>
+      <td valign="top">GS (data selector) </td>
+    </tr>
+  </tbody>
+</table>
+</center>
+<p>The items at the top of this diagram are pushed first, the
+items at the bottom are pushed last.</p>
+<p>The routine <tt>Push</tt> in (<tt>src/geekos/kthread.c</tt>)
+can be used to push individual
+values and the routine <tt>Push_General_Registers</tt> will push all
+of the
+general-purpose registers at once. For Eflags, you can follow the model
+used
+for setting up a kernel thread.</p>
+<p>The stack pointer should indicate an empty stack. The user
+process stack you created starts at the very end of the executable
+image
+(as is typically the case, the stack "grows down" from higher memory
+addresses to lower
+ones.) The
+stack pointer should be specified as an address relative to the
+beginning of
+the executable image, <b>not</b> as an absolute address in memory.</p>
+
+<h3>Context-switching a user thread</h3>
+<p>
+To give the impression of processes running concurrently, the kernel switches contexts
+among processes, thus giving each process a small time quantum to run.</p>
+
+<p>
+For every context switch, the kernel calls <tt>Switch_To_User_Context()</tt>
+in (<tt>src/geekos/user.c</tt>), because context switching
+user threads entails additional work. 
+
+<p>The kernel threads have a NULL userContext,
+whereas for user threads, this context is non-NULL (see <a href="#struct_kernel_thread"><tt>struct Kernel_Thread</tt></a> above). This is how you differentiate between user and kernel threads.
+When implementing <tt>Switch_To_User_Context()</tt> you need to switch the current user context 
+as follows: if the new thread (passed as argument) is a kernel thread, 
+obviously you don't need to do anything; but if the new thread is a user thread, you have to:
+<li>Switch to a new address space by loading this process's LDT (<tt>Switch_To_Address_Space</tt>
+in (<tt>src/geekos/userseg.c</tt>))
+<li>Move the stack pointer up one page via <tt>Set_Kernel_Stack_Pointer():
+<pre>
+Set_Kernel_Stack_Pointer(((ulong_t) kthread->stackPage) + PAGE_SIZE);
+</pre></tt>
+
+<p>
+For <tt>Switch_To_Address_Space</tt> you need to load the LDT of the new thread (<tt>ldtSelector</tt> of
+User_Context) using the "lldt" assembly instruction. For some hints on how to do this,
+look at how  <tt>Load_Task_Register()</tt> is implemented in <tt>src/geekos/tss.c</tt>.
+</p>
+
+<h3>Command line arguments</h3>
+<p> In <tt>Load_User_Program()</tt> you will also need to create an <b>Argument_Block</b>
+data structure and attach it to the process image. This data structure
+contains the <tt>argc</tt> and <tt>argv</tt> arguments that are
+passed to the <tt>main()</tt> function of the user process (via the
+ESI register, see <tt>src/libc/entry.c</tt>). </p>
+<p>Two functions are defined to help you build the argument block
+(prototypes in <tt>include/geekos/argblock.h</tt>): </p>
+<ol>
+  <li><tt>Get_Argument_Block_Size()</tt> takes the <b>command string</b>
+passed to the <tt>Spawn()</tt> function and determines how many
+command line arguments there will be, and how many
+bytes are required to store the argument block. </li>
+  <li>The <tt>Format_Argument_Block()</tt>
+function takes the number of arguments and argument block size from <tt>Get_Argument_Block_Size()</tt>
+and builds the <b>Argument_Block</b> data structure in the memory
+location you have
+allocated for it. </li>
+</ol>
+<p>Note that you will need to take the size of the stack and argument
+block
+into account when you decide how much memory to allocate for the
+process. </p>
+<h3>Testing <tt>Spawn()</tt></h3>
+<p>After you have completed the project to this point, your code
+is able to load a user program and spawn it. In order to test this out,
+you can
+try loading the user program <tt>/c/null.exe</tt>. This program just
+calls the NULL
+syscall (which you must implement. i.e print a string in Sys_Null()). If the program is able to
+call the
+NULL syscall successfully, you are in good shape.</p>
+<p>The project has code in <tt>main.c</tt> that spawns <tt>/c/shell.exe</tt>
+when
+the operating system boots up. To test, you will need to replace this
+code with
+a call to load <tt>/c/null.exe</tt>.</p>
+<h2>2.2 Adding System Calls</h2>
+<p>You will need to implement a couple of syscalls in GeekOS, by
+filling in the syscall handlers in <tt>src/geekos/syscall.c</tt>.
+</p>
+<p>Your kernel should support the following system calls:</p>
+<b>SYS_NULL</b><br>
+Kernel Function: Sys_Null<br>
+User Function: int Null(void)<br>
+Effect: Prints a string to indicate it has been called.<br>
+Return: 0<br>
+<br>
+<b>SYS_EXIT</b><br>
+Kernel Function: Sys_Exit<br>
+User Function: int Exit(int exitCode)<br>
+Effect: Destroys the thread and frees associated memory:
+Kernel_Thread, User_Context, LDT, etc.<br>
+Never returns.<br>
+<br>
+<b>SYS_PRINTSTRING</b><br>
+Kernel Function: Sys_PrintString<br>
+User Function: int Print_String(const char* msg);<br>
+Effect: Prints the string passed as an argument. The length of <tt>msg</tt>
+should not exceed 1024<br>
+Return: -1 if there was an error, 0 otherwise<br>
+<br>
+<b>SYS_GETKEY</b><br>
+Kernel Function: Sys_GetKey<br>
+User Function: Keycode Get_Key(void)<br>
+Effect: Calls Wait_For_Key() and returns key that is read. Make sure
+that each key is only returned once.<br>
+<br>
+<b>SYS_SETATTR</b><br>
+Kernel Function: Sys_SetAttr<br>
+User Function: int Set_Attr(int attr)<br>
+Effect: Set text attributes; calls kernel's Set_Current_Attr()<br>
+<br>
+<b>SYS_GETCURSOR</b><br>
+Kernel Function: Sys_GetCursor<br>
+User Function: int Get_Cursor(int *row, int *col)<br>
+Effect: Get the current cursor position; calls kernel's Get_Cursor()<br>
+<br>
+<b>SYS_PUTCURSOR</b><br>
+Kernel Function: Sys_PutCursor<br>
+User Function: int Put_Cursor(int row, int col)<br>
+Effect: Set the current cursor position; calls kernel's Put_Cursor()<br>
+<br>
+<b>SYS_SPAWN</b><br>
+Kernel Function: Sys_Spawn<br>
+User Function: int Spawn_Program(const char *program, const char *command)<br>
+Effect: Calls <tt>Spawn()</tt>.The length of the <tt>program</tt>
+string should not exceed VFS_MAX_PATH_LEN.<br>
+Return Value: Returns the pid of the new thread.<br>
+<br>
+<b>SYS_WAIT</b><br>
+Kernel Function: Sys_Wait<br>
+User Function: int Wait( int pid );<br>
+Effect: Look at <tt>Join()</tt> in <tt>src/geekos/kthread.c</tt>
+to see how to wait on the thread with the specified PID.
+The calling process will end up waiting until the thread with the
+specified PID
+has exited. If there is no thread with the specified PID, the function
+should
+immediately return.<br>
+Return: -1 if there was an error, the exit code of the process otherwise<br>
+<br>
+<b>SYS_GETPID</b><br>
+Kernel Function: Sys_GetPID<br>
+User Function: int Get_PID(void)<br>
+Return Value: Returns the PID of the current thread.<br>
+<p>The user function prototypes are declared in various headers files
+in the <tt>include/libc</tt> directory.</p>
+<p><a name="CopyFromUser">
+<h3><tt>Copy_From_User()</tt></h3>
+</a></p>
+<p>In order to implement SYS_PRINTSTRING
+and SYS_SPAWN, you will need to implement the function <tt>Copy_From_User(void*
+destInKernel, ulong_t srcInUser, ulong_t bufSize)</tt> that is stubbed
+in <tt>src/geekos/userseg.c</tt>. This will be needed so that
+you
+can access the strings that are passed as arguments to these functions.
+</p>
+<p>The point of validating the
+pointer is that we do not want to allow an incorrect or malicious
+program to
+view the contents of protected memory by passing a pointer that is
+outside of
+the process' data segment. This is even more important for <tt>Copy_To_User</tt>,
+where
+a program could cause the kernel to write arbitrary data to an
+arbitrary
+location in memory - which is a bad thing.</p>
+<p>Copy_From_User must do the
+following:</p>
+<ul>
+  <li>validate that the passed pointer (<b>srcInUser</b>) is within
+the user process' data segment</li>
+  <li>validate that the end of the memory is not beyond the end of
+the data segment.</li>
+  <li>convert the pointer from user space to kernel space</li>
+  <li>copy from abolute (e.g converted) value of <b>srcInUser</b> to <b>destInKernel</b></li>
+  <li>return <tt>true</tt> if <b>srcInUser</b> was legal (even if
+copy was truncated, see below) </li>
+  <li>return <tt>false</tt> if <b>srcInUser</b> was illegal i.e.
+out of bounds </li>
+</ul>
+<p><a name="CopyFromUser">
+<h3><tt>Copy_To_User()</tt></h3>
+</a></p>
+<p>On a similar note, you'll implement <tt>Copy_To_User(ulong_t
+destInUser, void* srcInKernel, ulong_t bufSize)</tt> which is very
+similar to <tt>Copy_From_User()</tt> above, except that data flows
+from kernel to user space. You'll need it when you store data in user
+space (e.g.
+for SYS_GETCURSOR). The only difference is that in this case you should
+check the validity of <b>destInUser</b>. The functions
+Copy_From/To_User should be generic
+and simply validate and copy
+memory. </p>
+<p>Note: Copy_To_User/Copy_From_User do not allocate/free any
+buffers. The caller
+takes care of that. </p>
+<p>For SYS_PRINTSTRING you should ensure that the supplied string is
+not larger than 1024 characters, and for SYS_SPAWN not larger than
+VFS_MAX_PATH_LEN. You must ensure that <b>destInKernel</b> is
+terminated with a \0 at either the user-supplied size (<tt>length</tt>,
+which comes in <tt>state-&gt;ecx</tt>). You may use a third function
+to ensure this proper termination
+or put the code directly in both SYS_PRINTSTRING and SYS_SPAWN<br>
+</p>
+
+<br>
+<hr> <a name="fn1"><sup>1</sup>
+386 actually uses three descriptor tables, but IDT (Interrupt
+Descriptor Table) is of no interest for this project</a>
+</body>
+
+<hr>
+<script language="JavaScript">
+          <!---//hide script from old browsers
+          var theDate = new Date(document.lastModified);
+	  var theLocalDate = theDate.toLocaleString();
+          document.write( "<i>Last updated: "+ theLocalDate +"</i>");
+          //end hiding contents --->
+</script> 
+</html>

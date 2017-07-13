@@ -1,0 +1,33 @@
+<HTML>
+
+<HEAD>
+
+<TITLE>Operating Systems (412)</TITLE>
+
+</HEAD>
+
+<BODY TEXT="#000000" BGCOLOR="#D7D3D2" LINK="#78021C" VLINK="#7F6666"
+ALINK="#FF FFFF">
+
+
+<H2 align=center>CMSC 412 </h2>
+<h1 align=center>Change in Project #4 Requirements</H1>
+
+<h2>Module Unload</h2>
+
+<p>
+The blocking semantics of close module described in the project handout are
+wrong. Closing a module should not be a blocking operation.
+
+<p>
+You should keep a reference count for each loaded module in the OML.
+When the value of the count goes to zero, the module is no longer in use
+and can be deleted from the system (and its memory freed).  
+Modules reference counts should be incremented when the module is loaded,
+or when a process that uses the module is started. The count is decremented
+when a process that has an open module terminates, or when Close_module is
+called.
+Processes can have more than one open module at a time.
+
+</BODY>
+</HTML>

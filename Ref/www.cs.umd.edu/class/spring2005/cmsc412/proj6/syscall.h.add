@@ -1,0 +1,4 @@
+    SYS_MESSAGEQUEUE_CREATE,  /* Create message queue system call  */
+    SYS_MESSAGEQUEUE_DESTROY, /* Destroy message queue system call  */
+    SYS_MESSAGEQUEUE_SEND,    /* Message queue send system call  */
+    SYS_MESSAGEQUEUE_RECEIVE, /* Message queue receive system call  */

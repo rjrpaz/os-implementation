@@ -1,0 +1,197 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 11 (filtered)">
+<title>CMSC 714 - Fall 2006 MPI Program</title>
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+h2
+	{margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-weight:bold;
+	font-style:italic;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+p
+	{margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+pre
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Courier New";}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US link=blue vlink=purple>
+
+<div class=Section1>
+
+<p align=center style='text-align:center'><b>CMSC 714 – High Performance
+Computing</b></p>
+
+<p align=center style='text-align:center'>Fall 2006 - Programming Assignment #2</p>
+
+<p align=center style='text-align:center'><b>Due&nbsp;Wednesdays, October 11,
+2006 @ 9:00 AM</b></p>
+
+<p><span style='font-size:11.0pt'>The purpose of this programming assignment is
+to gain experience in writing openMP programs.  You will start with a working
+serial program (<a href="http://www.cs.umd.edu/%7Ehollings/cs714/f03/swim.f">swim.f</a>)
+and add openMP directives to create a parallel program. </span></p>
+
+<p><b><span style='font-size:11.0pt'>HINTS</span></b></p>
+
+<p style='margin-left:.5in'><span style='font-size:11.0pt'>The goal is be
+systematic in figuring out how to parallelize this program.  You should start
+by using the gprof command to figure out what parts of the program take the
+most time.  From there you should exam the loops in the most important
+subroutines and figure out how to add openMP directives.</span></p>
+
+<p style='margin-left:.5in'><span style='font-size:11.0pt'>The programs will be
+run on a Sparc SMP (called tau.umiacs.umd.edu).  Your account names will be the
+same as on the Linux cluster.</span></p>
+
+<p><b><span style='font-size:11.0pt'>WHAT TO TURN IN</span></b></p>
+
+<p style='margin-left:.5in'><span style='font-size:11.0pt'>You should submit
+your program and the times to run it on the input file <a
+href="http://www.cs.umd.edu/%7Ehollings/cs714/f03/swim.in">swim.in</a> (for 1,
+4, 8 and 16 processors).</span></p>
+
+<p style='margin-left:.5in'><span style='font-size:11.0pt'>You also must submit
+a short report about the results (1-2 pages) that explains:</span></p>
+
+<ul style='margin-top:0in' type=disc>
+ <ul style='margin-top:0in' type=circle>
+  <li class=MsoNormal><span style='font-size:11.0pt'>what directives were used</span></li>
+  <li class=MsoNormal><span style='font-size:11.0pt'>what are the performance
+      results, and are they what you expected</span></li>
+ </ul>
+</ul>
+
+<p><b><span style='font-size:11.0pt'>Using  openMP</span></b></p>
+
+<p style='margin-left:.5in'><span style='font-size:11.0pt'>To compile openMP
+you use the Fortran90 (</span>/opt/SUNWhpc/bin/mpf90 ) <span style='font-size:
+11.0pt'>compiler and supply the additional command line argument
+-xopenmp=parallel.</span></p>
+
+<p style='margin-left:.5in'><span style='font-size:11.0pt'>The environment
+variable OMP_NUM_THREADS controls the number of processors that will run the
+program.  Set this value in the shell window you are about to run the program
+from.</span></p>
+
+<p><b><span style='font-size:11.0pt'>RUNNING THE PROGRAM </span></b></p>
+
+<p style='text-indent:.5in'><span style='font-size:11.0pt'>Swim reads the input
+file swim.in from standard input that describes various aspects of how the
+program should run. </span></p>
+
+<p><b><span style='font-size:11.0pt'>GRADING</span></b></p>
+
+<p><span style='font-size:11.0pt'>The project will be graded as follows:     </span></p>
+
+<table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0
+ style='margin-left:30.2pt;border-collapse:collapse;border:none'>
+ <tr>
+  <td width=212 valign=top style='width:158.8pt;border:solid windowtext 1.0pt;
+  border-right:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p><span style='font-size:11.0pt'>Item</span></p>
+  </td>
+  <td width=56 valign=top style='width:41.8pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p><span style='font-size:11.0pt'>Pct</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=212 valign=top style='width:158.8pt;border:none;border-left:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><span style='font-size:11.0pt'>Correctly runs on 1 processor</span></p>
+  </td>
+  <td width=56 valign=top style='width:41.8pt;border:none;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><span style='font-size:11.0pt'>15 %</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=212 valign=top style='width:158.8pt;border:none;border-left:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><span style='font-size:11.0pt'>Correctly runs on 8 processors</span></p>
+  </td>
+  <td width=56 valign=top style='width:41.8pt;border:none;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><span style='font-size:11.0pt'>40%</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=212 valign=top style='width:158.8pt;border:none;border-left:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><span style='font-size:11.0pt'>Performance on 1 processor</span></p>
+  </td>
+  <td width=56 valign=top style='width:41.8pt;border:none;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><span style='font-size:11.0pt'>15%</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=212 valign=top style='width:158.8pt;border:none;border-left:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><span style='font-size:11.0pt'>Speedup of parallel version</span></p>
+  </td>
+  <td width=56 valign=top style='width:41.8pt;border:none;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><span style='font-size:11.0pt'>20%</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=212 valign=top style='width:158.8pt;border-top:none;border-left:
+  solid windowtext 1.0pt;border-bottom:solid windowtext 1.0pt;border-right:
+  none;padding:0in 5.4pt 0in 5.4pt'>
+  <p><span style='font-size:11.0pt'>Writeup</span></p>
+  </td>
+  <td width=56 valign=top style='width:41.8pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><span style='font-size:11.0pt'>10%</span></p>
+  </td>
+ </tr>
+</table>
+
+<p>&nbsp;</p>
+
+</div>
+
+</body>
+
+</html>

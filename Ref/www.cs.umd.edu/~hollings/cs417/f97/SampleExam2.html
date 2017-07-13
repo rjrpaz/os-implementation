@@ -1,0 +1,55 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>CMSC 417-101 (Fall 1997)</TITLE>
+<META NAME="Template" CONTENT="C:\Program Files\Microsoft Office\Office\html.dot">
+</HEAD>
+<BODY LINK="#0000ff" VLINK="#800080">
+
+<B><FONT SIZE=5><P ALIGN="CENTER">CMSC 417 Midterm #2 (Spring 1997)</P>
+<OL>
+
+</B></FONT><FONT FACE="Arial,Helvetica" SIZE=2><P ALIGN="JUSTIFY"><LI> (15 points) Define <B>and</B> explain the following terms:</LI></P>
+<OL TYPE="a">
+
+<LI>forbidden region</LI>
+<LI>flow control</LI>
+<LI>two army problem</LI>
+<LI>MTU</LI>
+<LI>bit stuffing</LI></OL>
+
+<P ALIGN="JUSTIFY"><LI>(15 points) Error correction and detection. </LI></P>
+<OL TYPE="a">
+
+<LI>What is the minimum number of error recovery bits required to recover from an n bit error? Explain why this number of bits is sufficient.</LI>
+<LI>If the ratio of error detection bits to payload bits remains constant, what are the tradeoffs between having the error bits applied to a single character vs. a block of characters?</LI></OL>
+
+<P ALIGN="JUSTIFY"><LI>(20 points) One way to support mobile hosts is by assigning a host a temporary IP address in its new location, <B>and</B> continuing to use its old address by tunneling IP through IP back to an agent running on the mobile host’s home network.</LI></P>
+<OL TYPE="a">
+
+<LI>Explain the steps required to permit a mobile host to register on a local network and start receiving packets using its permanent IP address.</LI>
+<LI>Give one advantage and one disadvantage of this approach to IP mobility compared with having a mobile host only use its permanent IP address.</LI>
+<LI>When tunneling IP through IP, it is not possible to always maintain a one for one match between tunneled packets and the native packet. Why? Explain the potential performance implications of this limitation.</LI></OL>
+
+<P ALIGN="JUSTIFY"><LI>(15 Points) IP Addresses</LI></P>
+<OL TYPE="a">
+
+<LI>The Internet is running out of IP addresses to assign, but there are substantially less than four billion hosts on the Internet. Explain why this is happening.</LI>
+<LI>Joe Hacker reads about IPv6 (with 128 bit address) and is concerned about routing table size. He decides that the best solution is to encode latitude and longitude into IP addresses. Explain how this might be used to reduce routing table size. Provide a reason why this might not reduce routing table size. </LI></OL>
+
+<P ALIGN="JUSTIFY"><LI>(15 Points) Consider a network where on average, messages between two hosts must travel through 10 routers (and thus 11 hops). On average, one packet in every 1,000 is lost as is passes through a router.</LI></P>
+<OL TYPE="a">
+
+<LI>If one packet in 100 is garbled per hop, what is the probability of a packet making it through the network if no link level re-transmission is used? What if link-level re-transmission is used?</LI>
+<LI>Repeat part a if the probability of a link garbling a packet is 1 in a billion.</LI></OL>
+
+<P ALIGN="JUSTIFY"><LI>(15 points) Congestion Control</LI></P>
+<OL TYPE="a">
+
+<LI>Why is congestion control more important in a network carrying traffic whose bandwidth requirements vary dynamically during a session compared with fixed bandwidth traffic?</FONT><FONT SIZE=2>&nbsp;</LI>
+</FONT><FONT FACE="Arial,Helvetica" SIZE=2><LI>In TCP (Jacobson) congestion control, the variance in round-trip times for packets implicitly influences the congestion window. Explain how a high variation in the round-trip time affects the congestion window. What is the impact of this high variation on the throughput for a single connection?</LI></OL>
+</OL>
+
+</FONT><FONT SIZE=2><P>&nbsp;</P></FONT></BODY>
+</HTML>

@@ -1,0 +1,333 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./Assign1_files/filelist.xml">
+<title>This is an exercise designed to familiarize yourself with forking
+processes and making systems calls for I/O</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>hawkey</o:Author>
+  <o:Template>Normal</o:Template>
+  <o:LastAuthor>hawkey</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>119</o:TotalTime>
+  <o:Created>2003-05-14T11:16:00Z</o:Created>
+  <o:LastSaved>2003-05-14T11:16:00Z</o:LastSaved>
+  <o:Pages>3</o:Pages>
+  <o:Words>912</o:Words>
+  <o:Characters>5204</o:Characters>
+  <o:Company>Dalhousie University</o:Company>
+  <o:Lines>43</o:Lines>
+  <o:Paragraphs>10</o:Paragraphs>
+  <o:CharactersWithSpaces>6390</o:CharactersWithSpaces>
+  <o:Version>9.2720</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:2;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:0 268435456 0 0 -2147483648 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+h3
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:3;
+	font-size:13.5pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+h4
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:4;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+p
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+@list l0
+	{mso-list-id:886795857;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-166314114 1184399584 -2090143174 537711726 484605994 1277224744 -1755421746 1193825106 192044248 1669606120;}
+@list l0:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l1
+	{mso-list-id:1018583897;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1568546568 -120674062 -1258806382 -159758782 -1151974428 -542501074 -2068792398 769677622 -790569120 -551519548;}
+@list l1:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+</head>
+
+<body lang=EN-US link=blue vlink=purple style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<p class=MsoNormal>CS 3120 Operating Systems, Summer 2003</p>
+
+<p class=MsoNormal>Assignment 1, due: Friday, May 23, 1:35pm</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>This is an exercise designed to familiarize you with C
+programming in Unix, forking processes and making systems calls for I/O. You
+will write a &quot;shell&quot; program in C that accepts input commands from a
+user, forks a child process, and executes the user's command in the child
+process. The shell program will be run on a Unix system (borg).</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The Shell</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The shell program must print a prompt, consisting of your
+student number, and then accept input commands (one at a time) typed by the
+user. The format of an input command is &quot;command [parameters]&quot; where
+[parameters] is zero <u>or more</u> command parameters to be passed to the
+program named by &quot;command&quot;. </p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>When the user types the command in response to the prompt,
+your shell will fork a child process, which will then use the <b>execvp</b>
+system call to replace the forked process image with a new process image
+running the program requested by the user. The child process must communicate
+the user's parameters to the requested program, so that it will run in the same
+way as if the user had typed the same command to one of the standard shells.
+This means that you will have to parse the command line parameters and pass
+them to <b>execvp </b>in the form of an array of null-terminated strings (which
+is used to provide the argv argument to the main function of the program to be
+executed). The last element of this array must be a null pointer.<span
+style="mso-spacerun: yes">  </span>If the needed executable is not found, the
+shell should print a message to the user indicating that the command could not
+be found.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>While the child is running the user's command, the parent
+will do a <b>waitpid</b> to wait for the child process to complete. After the
+child completes, the parent shell process will then loop back to its command
+prompt, ready to accept and process another command from the user. If the user
+types the special command &quot;exit&quot;, the shell process should exit.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The shell program should be called &quot;myshell&quot;, and
+its source code should be in a file &quot;myshell.c&quot;. Your program should
+be commented appropriately so the reader of the soruce code (the course T.A.)
+will be able to understand what the program is doing. <u>Put your name and
+student number in comment lines at the top of every file.<o:p></o:p></u></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Also note that you should do <u>all</u> input/output in your
+shell using low-level system calls (open, close, read, write, etc)</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>One word of warning: when testing a program like your shell
+which forks new processes, it is not hard for the program to get &quot;out of
+control&quot; and fork more processes than you think, or to leave sub-processes
+running that you are not aware of. During testing, periodically use the
+&quot;ps&quot; command to look at how many processes you have on the go, and if
+you find an alarming number of them, use the &quot;kill&quot; command to get rid
+of them (type &quot;man kill&quot; to see how to do this...) Students in this
+class in the past have brought borg to its knees on more than one occasion, so
+the tech support staff are always nervous when they know we are doing an
+assignment like this(!)</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Resources</p>
+
+<p class=MsoNormal>The GNU C library <a
+href="http://www.cs.utah.edu/dept/old/texinfo/glibc-manual-0.02/library_toc.html">documentation</a>
+is available on the Web, and makes an excellent reference source. In
+particular, the section on <a
+href="http://www.cs.utah.edu/dept/old/texinfo/glibc-manual-0.02/library_23.html">child
+processes</a> will take you to an information page that gives a good
+explanation of the system calls accessible from C for forking processes and
+related operations. The other functions mentioned above can be found via the
+function index you will find at the bottom of the contents page. Another good
+source of information on Unix in general can be found at <a
+href="http://www.geek-girl.com/unix.html">http://www.geek-girl.com/unix.html.</a></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The GNU documentation goes beyond simple description of each
+system call, and contains well written explanations of how things work,
+complete with helpful examples. For purposes of this programming project, you
+will find useful information especially in the following sections:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Child Processes, (subsections on Creating a Process and
+Executing a File) </p>
+
+<p class=MsoNormal>Low-Level Input/Output<span style="mso-spacerun: yes"> 
+</span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>You will also provide your own &quot;child' program,
+mychild.c.<span style="mso-spacerun: yes">  </span>This program should take a
+command line argument that is the name of a file.<span style="mso-spacerun:
+yes">  </span>It will open the disk file indicated in the argument vector and
+will read from the file and write to the screen.<span style="mso-spacerun:
+yes">  </span>Your shell should be able to work with this child program and
+should also be able to invoke standard Unix programs like &quot;ls&quot;,
+&quot;cat&quot;, &quot;sort&quot;, and &quot;ps&quot;, for example. </p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The code provided will go a long way towards giving you the
+required functionality of this assignment, but it is up to you to comment the
+programs fully, getting rid of any &quot;magic numbers&quot;, naming variables
+with meaningful names, commenting code fragments, and fully commenting the
+program header itself so that the full functionality of the program is
+described.<span style="mso-spacerun: yes">  </span>This commenting is how you
+will be showing the marker that you understand what all the code is doing.<span
+style="mso-spacerun: yes">  </span>As you can see from marking scheme, this is
+an important part of the process.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Directions for submitting your program electronically will
+be given closer to the submit date.<span style="mso-spacerun: yes">  </span>You
+should pass in hard copies of your programs: myshell.h, myshell.c, mychild.h,
+mychild.c, makefile, README file, and a test text file (test.txt) at beginning
+of class on the due date.<span style="mso-spacerun: yes">  </span>Even if you
+don't get it finished, pass in your partial work and demonstrate as much as
+possible that you understand what you should have been doing, even if you don't
+quite get it working.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Reminder:<span style="mso-spacerun: yes">  </span>Late
+assignments will not be accepted.<span style="mso-spacerun: yes">  </span>In
+order to ensure that you have no problems with the electronic submission, it is
+recommended that you submit the day before.<span style="mso-spacerun: yes"> 
+</span>The electronic submission will assume that all your files are correctly
+named (see above) and able to compile - don't leave it to the last minute to
+find out that you forgot something.<span style="mso-spacerun: yes">  </span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Marking scheme:</p>
+
+<table border=1 cellpadding=0 width=328 style='width:246.0pt;mso-cellspacing:
+ 1.5pt;mso-padding-alt:0in 0in 0in 0in'>
+ <tr style='height:37.45pt'>
+  <td width="81%" style='width:81.66%;padding:0in 0in 0in 0in;height:37.45pt'>
+  <p class=MsoNormal>&nbsp;Readability: documentation(internal, README file),
+  makefile, coding style, modularity (header files)</p>
+  </td>
+  <td width="16%" style='width:16.5%;padding:0in 0in 0in 0in;height:37.45pt'>
+  <p class=MsoNormal>&nbsp;10</p>
+  </td>
+ </tr>
+ <tr style='height:18.2pt'>
+  <td width="81%" style='width:81.66%;padding:0in 0in 0in 0in;height:18.2pt'>
+  <p class=MsoNormal>&nbsp;Robustness:<span style="mso-spacerun: yes"> 
+  </span>attention to error codes and memory management</p>
+  </td>
+  <td width="16%" style='width:16.5%;padding:0in 0in 0in 0in;height:18.2pt'>
+  <p class=MsoNormal>&nbsp;5</p>
+  </td>
+ </tr>
+ <tr style='height:37.45pt'>
+  <td width="81%" style='width:81.66%;padding:0in 0in 0in 0in;height:37.45pt'>
+  <p class=MsoNormal>Assignment requirements: Correct handling of command
+  lines, argv[] vector passing, etc.</p>
+  </td>
+  <td width="16%" style='width:16.5%;padding:0in 0in 0in 0in;height:37.45pt'>
+  <p class=MsoNormal>&nbsp;5</p>
+  </td>
+ </tr>
+ <tr style='height:18.2pt'>
+  <td width="81%" style='width:81.66%;padding:0in 0in 0in 0in;height:18.2pt'>
+  <p class=MsoNormal>&nbsp;Total</p>
+  </td>
+  <td width="16%" style='width:16.5%;padding:0in 0in 0in 0in;height:18.2pt'>
+  <p class=MsoNormal>&nbsp;20</p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+</body>
+
+</html>

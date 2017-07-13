@@ -1,0 +1,10 @@
+#
+# Modify  your userProgs's Makefile
+# append the programs rec.exe and swapfile to the line PROGS
+#
+
+PROGS = <CURRENT_PROGS> rec.exe swapfile
+
+swapfile :
+	perl ../zerofile swapfile 8192
+

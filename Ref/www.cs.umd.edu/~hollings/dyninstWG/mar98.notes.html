@@ -1,0 +1,499 @@
+
+<html>
+<body>
+<center>
+<h1> 
+DYNINST API/DAIS STANDARDS: 
+<br>ORGANIZATIONAL MEETING
+</h1>
+<h2>
+Wednesday, March 18, 1998
+</h2>
+</center>
+
+<a href="mar98.attendees.html">Attendees</a>
+  
+
+<pre>
+I. Process Issues
+
+Issue:
+    What is the form of participation?
+
+Proposal:
+    Structure the process like the X consortium.  Anyone can attend, but
+    voting will be limited to those organizations who either provide
+    resources in money (e.g. $30K to Wisc. or Maryland) or 1/4 FTE.
+    But be assured that participation is encouraged regardless.
+
+Comments:
+  Doug P:
+    Building the low-level implementation is not the only way to
+    participate. It is just as important to have people working on the tools
+    level. The whole intention is to have it possible to create real tools.
+    We don't want an impression that we're trying to exclude somebody, but we
+    do want to avoid someone coming in and "scuttling the ship" without being
+    part of the crew.
+
+  Bart:
+    The meetings will remain open but you only get to vote if you are providing
+    resources.  IBM has committed resources in the form of several FTEs.
+    Wisconsin/Maryland have both committed resources.  It is important to make
+    sure that the infrastructure does get done. Otherwise the high level
+    tools aren't any use.
+
+  Jeff B:
+    Would like to see SGI adopt this effort, but are willing to help get
+    that process going.  They are willing to have 1 FTE working on this as
+    long as Doug P. (IBM) continues to be interested in this.
+
+  Robert H:
+    Looking for tool infrastructure, would expect to be an active
+    participant, some uncertainty. (can't officially speak for NASA)
+
+  SGI:
+    They are here to observe with hopes to leverage or provide if
+    appropriate, but don't understand it well enough yet.
+
+  Mary Z:
+    As long as IBM remains interested in this, LLNL will be active.
+
+  Shirley B:
+    UT is involved with DOD mod and is interested in portable tools.
+    They can get resources to work on projects with specific deliverables that
+    benefit the PET/DOD users. Anything that they provide resources for
+    needs to benefit the application developers.  For PET to put resources
+    into this, we would have to show specific deliverables, tools. They
+    are not interested in infrastructure as a deliverable. The main focus
+    is not creating tools, but rather porting, survey, and robustifying
+    existing tools.
+
+  Arndt B:
+    The market of SC users is so small that there is no need to have
+    disjoint tools.  We need to make them more portable.  We have our own
+    approach - and want to see how these evolve.  We are interested in seeing
+    how dyninst and DAIS are evolving. Could contribute to the effort.  We
+    are a long distance away (Munich), so might not have regular contact.
+
+  Brian T:
+    Argonne's interest is currently passive. We are interested in adaptivity,
+    so might be able to incorporate this into some agent.
+
+Question:
+  What is the time table for this effort?
+
+Answer (Bart):
+  Of course we don't have a good estimate right now.  It depends
+  on the resources available, and the scope. Hopefully in three months we will
+  have a good idea of where we are going.
+
+Question:
+  As an end user, is it obvious what you want as a minimal set in the API?
+
+Answer (Doug P):
+  We will use the high level tools (e.g., Paradyn) as drivers. The tool
+  requirements will drive API level development. Infrastructure in isolation
+  is not very interesting.
+
+Question:
+  What are the frequency of the meetings?
+
+Answer (Jeff H):
+  We anticipate about every 3-6 months with teleconference more frequently.
+  A good time for the next meeting is after the SPDT conference in Oregon
+  during the first week in August.
+
+Comment (Mary Z):
+  Regular teleconferences worked well with OpenMP effort (LLNL).  However,
+  using just email doesn't work out very well.
+
+Comment (Bart M):
+  If there are other organizations who are not at this meeting, please
+  feel free to contact them or let us know and we will contact them.
+
+Question (Jeff B):
+  Is this effort like the National Compiler Infrastructure?
+
+Answer (Jeff H):
+  They have funding source (DARPA) for that purpose. However, if there is
+  sufficient interest and demand, we might consider submitting a proposal for
+  funding the development of the reference implementation of the API.
+
+Question (Chris K):
+  How will tool developers know what others are doing?
+
+Answer (Doug P):
+  The mail reflector is an appropriate forum for experiences in tool
+  development. Otherwise there is no specific plan for how to deal with
+  this.
+
+II. Scope
+
+Issue:
+  What are we trying to standardize?
+
+Proposal:
+  A multi-layered model, with well-defined interfaces at the dyninst and
+  DAIS levels.  Dyninst is the stuff that has to be done on a single node,
+  DAIS is the stuff that glues together multiple nodes.
+
+  Dyninst:
+      * Platform independent process instrumentation on a single node.
+      * Platform independent process control functions on a single node.
+
+  DAIS:
+      * Platform independent extracting data from processes.
+      * Multi-node, multi-tool support/RPC architecture, Security.
+      * Scalability (by offloading work to the nodes)
+
+  New Features and pieces outside dyninstAPI/DAIS:
+      * Source browser
+      * Expression parser
+      * Name demangler
+      * Clock sync package (distributed clocks)
+
+Comment (Bart M):
+  When it comes to scalability and performance, the lesson from
+  Paradyn is: You cannot make things asynchronous enough. Synchronous
+  (blocking) behavior was never the right answer.  It is important to design
+  in from the start a model that is very asynchronous.
+
+Question (Arndt B):
+  What are the target architectures?  Where do heterogeneous things fit?
+
+Answer (Bart M):
+  If designed properly into the RPC, heterogeneity is almost free.
+
+Answer (Jeff H):
+  We believe that we will be able to continue to hide the architecture
+  issues under the dyninst API. Because dyninst has machine independent
+  abstractions, DAIS could work with multiple different platforms
+  simultaneously.
+
+Comment (Mary Z):
+  Heterogeneity is important for projects like the Computational Plant
+  (A cluster system that is constantly evolving - nodes being added and
+  removed).
+
+Issue:
+  What are are the uses of the API?
+
+Suggestions were placed on the white board.  The list included:
+  debuggers,
+  performance steering,
+  performance tools (code, comm, and I/O),
+  visualization,
+  load balancing,
+  ras,
+  test coverage,
+  future systems design/simulation,
+  Condor like systems: running on idle workstation systems.
+      This currently requires linking with a special C library. Instead,
+      we could use dyninst to "hijack" the job and change the C library
+      to be the condor version and send it off to the condor queue.
+  memory tools (perf, array bounds, ptr checks)
+  checkpointing
+  relative debugging: comparing the output of two different runs/versions of
+      a program.
+
+Comment (Doug P):
+  Let me explain RAS applications. For example, an application tries to
+  save relevant data when it realizes it is going down, or there is a
+  problem. Within the system, the RAS code can trigger a client application
+  to help handle this situation.
+
+Question:
+  Will the API will support debuggers and static analysis tools?
+
+Answer (Doug P):
+  IBM is looking at putting debuggers on top of this API. We are not
+  restricting DAIS to performance analysis tools.  Issues related to source
+  code get into the fuzzy area between the client and the infrastructure
+  level. DAIS is not a debugger, but we want to provide infrastructure that
+  can support a debugger and application steering, etc.
+
+Question:
+  Why is application steering so interesting? Isn't this really a
+  relatively small issue, related to moving large volumes of data out of
+  the process.
+
+Answer: <I don't see an answer in the notes - JKH>
+
+Comment (Jeff B):
+  We should focus on the performance tool issues as driver, this seems to
+  give us about 70% of the required functionality for all of the proposed
+  applications.
+
+Comment (Mary Z):
+  Source browsers are an important component. Should they be part of the
+  DAIS standard, or are hooks that permit building source browsers
+  sufficient?
+
+Comment (Bart M):
+  There is a need for a library of useful functionality for tools. For example,
+  name demangelers are an important part of the picture.  We need to be able
+  to translate from internal to external names (and back) for different
+  languages, compilers, and platforms.
+
+Comment (Doug P):
+  Expressions parsers are another item that are a useful common feature.
+
+Question (Jeff B):
+  Can we use kernInst to help with checkpoint/restore?
+
+Answer (Bart M):
+  KernInst is not ready for prime time yet.
+
+A poll was taken of what applications of the API the group felt were important.
+Everyone got up to three votes.  The results were: performance tools(14),
+debuggers (8), memory tools (3), visualization (4), relative debugging (2),
+load balancing (1), future systems (1), RAS (1).
+
+Comment:
+  This is a biased group. Many (maybe most) people here are performance tool
+  builders or debuggers writers. Probably some of the others are subsets of
+  these.
+
+III. Status of dyninstAPI
+
+A copy of the current draft dyninstAPI document was distributed.
+
+Comments (Jeff H):
+  There are some features that are in the document and missing from the
+  current reference implementation. The two most significant are block
+  and loop level instrumentation and thread support.
+
+Question:
+  How soon will the instruction level instrumentation described by Ari on
+  Tuesday be available?
+
+Comment (Bart M):
+  The prototype for fine-grained instrumentation is very early, and it will
+  take quite a bit of work to get it ready for distribution.
+
+Question:
+  How do you start up an application and take control of it?
+
+Answer (Jeff H):
+  The API provides attach and process create methods.
+
+Question:
+  How do you access a variable that is in memory on another node (perhaps in
+  software DSM or that is part of an HPF distributed array)?
+
+Answer (Doug P):
+  We don't plan to handle these language specific issues in the API, instead
+  we will provide enough to read/write the local memory on a node and there
+  will need to be mapping and access functions.
+
+A list of features not in the current API document, but that would be useful
+was put on the white board.  It contained:
+
+    - support for distributed environments
+    - register state - what registers: perf counters - timing,
+	pc, sp frame pointer, etc.
+    - stack trace
+    - some notions of breakpoint - and step and single step
+    - symbol table information/source mapping information (anything you can
+	get out of the symbol table without parsing the source)
+    - compiler language and vendor (string representation of what
+	compiler, etc.)
+    - signals catching
+    - floating point expressions
+    - 32/64 bit - both ints and floats
+    - basic structures  /  arrays
+    - extract machine specific info (effective addr)
+    - address as a base type for snippet expressions
+    - bulk data transfer, perhaps with a filter function to return all
+	values that meet a simple test (i.e. not zero, < 0.0001, etc.).
+    - load code (e.g. dynamic linked library)  -- will be implemented soon
+    - dump what you think the state of the world is now (tools for debugging
+	tool building)
+    - simple string to AST Expr tree conversion routine.
+
+Question:
+   Does dyninst or DAIS need to be just thread aware or specific thread-package
+   aware?
+
+Answer (Jeff H):
+   To allow snippets to only be active for a subset of the threads in
+   an address space, thread-package specific instrumentation is required in
+   the thread context switch code.
+
+Question:
+   How are signals handled within this interface?
+
+Answer (Jeff H):
+   A mutator process can select if a specific signal will stop this process
+   and inform the mutator.  If a mutator wishes to change the signal handling
+   behavior within the application, it can use the oneShot interface to cause
+   a new signal handler to be installed.
+
+Question:
+   How can conditional break points that have arbitrary code be inserted
+   and used?
+
+Answer (Jeff H):
+   For simple expressions "inline" snippet can be generated.  For more
+   complex code, it might be possible to invoke the native compiler, have
+   it produce a predicate function which the dynamic linker would load into
+   the program and the snippet would be installed to call.
+
+Comment:
+   That approach assumes that a compiler will be available on the nodes.
+   In many systems, the compiler is only installed on the front-end node.
+
+Question:
+   How will instrumentation of individual instructions be handled?
+
+Comment:
+   ATOM has good support for instrumenting individual instructions.
+   It also has a nice abstraction for instrumenting instructions, and
+   computing the effective address of a load or store instruction.
+
+Question:
+   How do rewriting and dynamic instrumentation fit together?
+
+Answer: <none found in the notes - jkh>
+
+Question:
+    What is the status of the source code for the reference implementation?
+
+Answer (dyninst):
+  Currently we make the source code freely available for non-profit uses which
+  includes internal use by companies.  Redistribution is this only thing that
+  has a substantial restriction.  Also, we have avoided using GNU Public
+  Licensed code so far.  Although there are hooks in the code that can plug
+  into some gnu functionality such as the name demangler.
+
+Answer (DAIS):
+  We intend to make the code available to partners.  There are some parts
+  that use IBM proprietary code, but that code is used for AIX specific
+  functionality.
+
+Comment (Jeff H):
+  Many of the features on the list of possible additions to the dyninstAPI
+  will require a substantial amount of work.  Perhaps we are better off
+  starting by defining the interfaces.
+
+III. Status of DAIS
+
+Doug is still working on the first public draft of the DAIS document (should
+be ready in about 2-3 weeks).
+
+A list of possibly useful features was placed on the white board. A * means
+that Doug felt the issue was already addressed in the current DAIS effort.
+    - security *
+    - process/thread sub-grouping (and names groups)
+	 maybe hooks for MPI communicators to register?
+    - scaling to 1000's of nodes
+    - help with sync clocks (external libraries)
+    - Can the RPC mechanism be abstracted so that different ones can be used?
+    - language consistent between DAIS and DyninstAPI
+    - App language expression  {language and mechanism -
+	compiled, interp, run-time compile}
+    - moving data from app (Dais vs dyninstAPI)
+    - communications between daemons (OMIS does this)
+    - communications between clients / peers ... apps & dais
+	servers & dais clients
+    - multiple simultaneous clients tools
+    - interface for serial tools (yes -- degenerate case)
+    - A dyninst-only tool coexisting with a DAIS-based tool
+	 * This may note be possible, can't attach to the same application
+	   at the same time.
+    - question about whether a dyninst tool would co-exist a
+    dais-dyninst  tool  (DP - no).
+    - NT interface (dyninstAPI has one, DAIS doesn't)
+    - dump what you think the state of the world is now  (tools
+	for debugging tool building)
+    - language for API (interface & implementation)  {how many
+	languages are involved here}
+    - ... discussion of implication of exceptions ...
+    - work in batch / queued mode
+    - connecting to a job with or without stopping   { dais has
+	both an attach and connect}
+    - dynamic process  / thread spawning ...  (might just provide
+	a registration hook)
+    - eventually 3rd party data transfers ... e.g. ship a block
+    of data to a third process ...
+
+Question:
+  What language is DAIS written in?
+
+Answer (Doug P):
+  It uses C++ with no templates, but does use data polymorphism and exceptions.
+
+Comment (Jeff H):
+  The dyninstAPI uses a constructor only for the top level object, then
+  uses member functions to build up other objects, thus avoiding having to
+  deal with exceptions.
+
+Question:
+  Is it possible to abstract out the authentication so that a different
+  module can be plugged in to provide different authentication? One suggestion
+  might be to use the GSS API for security.
+
+Answer (Doug P):
+  I am not familiar with the GSS API, but we might be able to create some layer
+  that lets users select a security interface.
+
+Comment (Bart M):
+  Doug, if you could write a thin layer to adapt DCE to conform to GSS
+  (and I don't know what it looks like exactly, so I don't know how hard
+  this would be) could you then support the GSS API and still supply the DCE
+  security you had planned?
+
+Answer (Doug P):
+  I don't know, I will have to look at GSS, but it might be possible.
+
+Question:
+  How does it work when multiple tools try to use DAIS at once for the
+  same application? This is an important features if DAIS is used for
+  load leveling, RAS, or condor, and then someone wants to do visualization
+  or debugging.
+
+Answer (Doug P):
+  There are two types of modes possible:
+     attach: exclusive access to process, can change control flow.
+     connect: access to process, can insert probes (attach without stop, or
+	 "asynchronous attach")
+
+Question (Jeff H):
+  What issues does dynamic process spawning raise for DAIS?
+
+Answer (Doug P):
+  DAIS doesn't deal with this currently.
+
+V. Summary and Action
+
+Main Goal by teleconference:
+  Make the requirements more concrete and document them.
+
+Action Items:
+  Suggested by Doug P:
+      We need to identify tool developers must-have and like-to-have API
+      features.  We want to Try to avoid a laundry list!
+
+  Robert Hood volunteered to look through the features used by p2d2 to identify
+      missing items from the dyninstAPI
+
+  Jeff H will document the interfaces for some of the "easy" extensions and
+      add them to the API document.  This will include simple expression
+      string to AST translation, breakpoints, and dynamic loading of code.
+
+  Doug will give us a new DAIS document in 2-4 weeks.
+
+  After Doug's document has circulated we will have a tele-conference.
+
+  We will try to have the next meeting after SPDT'98 in Oregon on Aug. 3.
+
+  Send Doug email if you want to join in on Dais end --- so he
+  can get legal things filled out.
+
+A special thanks to Mary Zosel and Aaron Sawdey for taking notes during the
+meeting.  Credit for capturing what happened goes to them, blame for
+inaccuracies should be directed to me - Jeff
+
+</pre>
+</body>
+</html>

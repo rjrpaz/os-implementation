@@ -1,0 +1,157 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+<TITLE>CMSC 311-101 (Fall 1995)</TITLE>
+
+</HEAD>
+<BODY>
+<P>
+<CENTER><B><FONT SIZE=5>CMSC 417 Midterm #1 (Spring 1997) - Solution</FONT></B></CENTER>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">(15 points) Define or explain the
+following terms:</FONT>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">count to infinity problem: <I>A
+problem with distance vector routing that causes it to react slowly
+of link failures since only a count of hops rather than the full
+path is exchanged between routers.</I></FONT>
+<LI><FONT SIZE=2>packet: <I>a small unit of communication.  It
+can be variable or fixed size, but there is a fixed maximum size.</I></FONT>
+<LI><FONT SIZE=2>virtual circuit vs. packet switched: <I>Virtual
+circuits involve using a connection establishment message to store
+traffic connection state in a network.  Virtual circuits tend
+to provide static routing for a single connection and thus ensure
+in-order delivery of packets.</I></FONT>
+<LI><FONT SIZE=2>ISDN: <I>Integrated Services Digital Network.
+ A way to provide 2 64kbps circuit switched channels over a single
+pair of copper wire.</I></FONT>
+<LI><FONT SIZE=2>flooding: <I> a way to send information from
+a source to a destination by sending the traffic over <B>all</B>
+links.  It its pure form is generally leads to infinite traffic,
+but it can be useful as a basis of comparison.  Also, by adding
+ways to control the flood it becomes a practical algorithm.</I></FONT>
+</OL>
+<LI><FONT SIZE=2 FACE="Arial"> (15 points) Consider using a 4khz
+channel and 16 discrete levels to send data.</FONT>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">What is the maximum possible transmission
+rate if the channel is noiseless?  </FONT>
+<P>
+<FONT SIZE=2>   2 H log<SUB>2</SUB> N = 2 4,000 log<SUB>2</SUB>
+16 = <U>32,000</U></FONT>
+<LI><FONT SIZE=2 FACE="Arial">What if the signal to noise ratio
+is 30dB?</FONT>
+<P>
+<FONT SIZE=2>   <I>X dB = 10 log<SUB>10</SUB>(S/N)  10 = 30 log<SUB>10</SUB>(S/N)
+ S/N = 1,000</I></FONT>
+<P>
+<I><FONT SIZE=2>   H log<I><SUB>2</SUB>(1 + S/N) = 4,000 log<SUB>2</SUB>(1
++ 1,000)  4,000 log<SUB>2</SUB>(1024) = <U>40,000</U></I></FONT></I>
+</OL>
+<LI><FONT SIZE=2 FACE="Arial"> (15 Points) A cellular phone system
+needs to accommodate many users.  Explain how the system uses
+space, frequency, and time division multiplexing.</FONT>
+<P>
+<FONT SIZE=2> <I><B>Space Division</B>: many cells permit re-use
+of the same channels in any two non-adjacent cells.</I></FONT>
+<P>
+<I><FONT SIZE=2> <I><B>Frequency Division</B>: the cellular band
+is divided into 800 separate channels.</I></FONT></I>
+<P>
+<I><FONT SIZE=2> <I><B>Time Division</B>: frequencies are only
+allocated when they are in use.  Since most cell phones in a single
+cell are not in use at any one time, this is a type of time division
+multiplexing.</I></FONT></I>
+<LI><FONT SIZE=2 FACE="Arial"> (20 Points) List the seven layers
+of the ISO/OSI reference model and for each layer provide an example
+of a function commonly performed at that layer.</FONT>
+<P>
+<FONT SIZE=2> </FONT><I><FONT SIZE=2 FACE="Arial">Application:
+mail header format</FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial"> Presentation: encryption</FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial"> Session: cursor movement</FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial"> Transport: byte ordering</FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial"> Network: routing, congestion control</FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial"> Link: sending frames, link errors</FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial"> Physical: representation of 0's,1's</FONT></I>
+<LI><FONT SIZE=2 FACE="Arial">(20 points) Consider routing in
+a network with 200 routers, and on average every router is connected
+to 4 other routers. Routing information is exchanged every 100msec.
+How much network bandwidth is used under link-state and distance
+vector routing to exchange this information. Assume sequence numbers
+are used to damp flood packets for link-state. Please explain
+any assumptions you make about the size of routing table entries.</FONT>
+<P>
+<FONT SIZE=2 FACE="Arial"></FONT>
+<P>
+<FONT SIZE=2 FACE="Arial"> <I>Link-state:</I></FONT>
+<P>
+<I><FONT SIZE=2 FACE="Arial">      For each link, each router
+sends &lt;neighbor id, link state&gt; (2 bytes should be fine)</FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial">      For each route update, each
+router sends a sequence number (4 bytes is safe)</FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial">     Therefore each routing message
+contains: 4 links x 2 bytes/link + 4 bytes = 12 bytes.</FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial">    Each routing message travels
+over every link  (flooding with sequence numbers)  </FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial">    200 routers x 4 links/router
+/ (2 end-points per link) = 400 links.</FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial">    Routing messages are send 1/100msec
+= 10 messages/second</FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial">    So 200 routers x 10 msgs/sec-router
+x 400 links x 12 bytes/msg = <U><I>9.6M bytes/sec<BR>
+</I></U></FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial">Distance Vector:</FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial">    Each routing table entry contains
+&lt;dest, hop count (metric), next hop&gt; <I> 3 bytes</I></FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial">    Each host maintains a 200 entry
+routing table</FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial">    At each update, each router sends
+all of its neighbors its entire table</FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial">    So 200 routers x 10 updates/sec-router
+x 4 link/router x 3 x 200 bytes/link = <U><I>4.8 MB/sec</I></U></FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial">    </FONT></I>
+<LI><FONT SIZE=2 FACE="Arial">(15 points) In a broadcast channel,
+link bandwidth is wasted due to multiple hosts trying to send
+at once and canceling each others communication.  A simple model
+of this problem is that time is divided into discrete slots. 
+If a network has n hosts, and the probability of any single host
+trying to use a slot is p, what fraction of slots are wasted due
+to collisions?</FONT>
+<P>
+<I><FONT SIZE=2 FACE="Arial">A collision is two or more stations
+sending a once. Let P(x) denote the probability of x stations
+sending at once.  <BR>
+</FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial">P(&gt;=2) = 1 - P(0) - P(1)</FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial">P(0) = (1-P)<I><SUP>n</SUP>  </I></FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial">P(1) = n p (1-P)<I><SUP>n-1</SUP></I></FONT></I>
+<P>
+<I><FONT SIZE=2 FACE="Arial">(&gt;=2) = <U><I>1 -  (1-P)<SUP>n
+</SUP>- n p (1-P)<SUP>n-1<BR>
+<BR>
+<BR>
+</SUP></I></U></FONT></I>
+</BODY>
+</HTML>

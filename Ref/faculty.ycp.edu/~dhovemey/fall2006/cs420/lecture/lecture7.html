@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Lecture 7</title>
+</head>
+<body>
+<h1>CS 420 - Lecture 7<br>
+</h1>
+<h2>Threads<br>
+</h2>
+<p>We have discussed processes, the basic model for running a program
+in a private address space<br>
+</p>
+<p style="margin-left: 40px;"><img alt=""
+ src="figures/traditionalProcess.png"
+ style="width: 262px; height: 310px;"><br>
+</p>
+<p>In the basic process model, there is only one thread of control:
+i.e., only one instruction is being executed at a time, and there is
+only one program counter and set of CPU registers.<br>
+</p>
+<p>Threads are "Virtual CPUs".&nbsp; Each thread has its own program
+counter and CPU registers.&nbsp; If a process contains multiple
+threads, all of the threads run "at the same time" in the process's
+address space.<br>
+</p>
+<p style="margin-left: 40px;"><img alt=""
+ src="figures/threadedProcess.png" style="width: 267px; height: 313px;"><br>
+</p>
+<p>Because threads run in a common address space, they can communicate
+with each other using shared data structures.<br>
+</p>
+<h3>Why multithreading is useful<br>
+</h3>
+<p>Parallelism<br>
+</p>
+<p style="margin-left: 40px;">When multiple threads are executed
+simultaneously on multiple CPUs, they can cooperate to solve a problem
+by each working independenty on part of the problem and then combining
+their solutions.&nbsp; For example, a multithreading program running on
+a machine with 8 processors might be able to solve a problem 6 times
+faster than a single-threaded program running on a single processor.<br>
+</p>
+<p>GUI applications<br>
+</p>
+<p style="margin-left: 40px;">GUI event loop:<br>
+</p>
+<pre style="margin-left: 80px;">while (true) {<br>&nbsp; event = WaitForEvent();<br>&nbsp; DispatchEvent(event);<br>}<br></pre>
+<p style="margin-left: 40px;">Waiting for an event: waiting for the
+user to press a key, click the mouse, etc.<br>
+</p>
+<p style="margin-left: 40px;">Dispatching the event means finding the
+handler code for that event.<br>
+</p>
+<p style="margin-left: 80px;">For example, the handler code which is
+called when a particular button is pressed<br>
+</p>
+<p style="margin-left: 40px;">If the handler is long-running (render a
+ray-traced scene, read from a network socket), the GUI is frozen
+waiting for the operation to complete<br>
+</p>
+<p style="margin-left: 40px;">Therefore, long-running operations can be
+run in a separate thread, allowing the GUI to continue responding to
+events<br>
+</p>
+<h3>Thread implementation<br>
+</h3>
+<p>Many of the same issues that arise in multiprogramming for processes
+also arise for threads.<br>
+</p>
+<p>Each thread must have its own stack of activation records.<br>
+</p>
+<p>Each thread will have a thread context data structure that serves a
+purpose similar to a PCB.&nbsp; E.g., the thread context will save the
+thread's<br>
+registers when the thread is suspended.<br>
+</p>
+<h3>Kernel threads</h3>
+<p>A kernel thread, like the name suggests, is a thread that exists in
+the kernel.&nbsp; The OS kernel is responsible for scheduling kernel
+threads on the available CPUs.<br>
+</p>
+<p>Each process is associated with at least one kernel thread.&nbsp;
+When a process makes a system call, the kernel code path (interrupt
+handler, system call dispatch, and system call handler) is executed in
+the context of the process's kernel thread.<br>
+</p>
+<p>The kernel may create some kernel threads internally that are not
+associated with any process.&nbsp; These are <span
+ style="font-style: italic;">kernel-only</span> threads.&nbsp; They are
+created to carry out tasks such as <br>
+</p>
+<h3>Preemptive vs. cooperative threads<br>
+</h3>
+<p>In a preemptive threading model, a thread can be suspended at any
+time.&nbsp; This is the same idea as the OS kernel assigning time
+slices to processes and suspending a process when it has completely
+used its assigned time slice.<br>
+</p>
+<p>In a cooperative threading model, a thread is only suspended in the
+following situations:<br>
+</p>
+<ol>
+  <li>it issues an I/O request that blocks<br>
+  </li>
+  <li>it voluntarily <span style="font-style: italic;">yields</span>
+the CPU</li>
+</ol>
+<p>In cooperative threading, a process that is using the CPU for long
+periods can <span style="font-style: italic;">starve</span> the other
+threads so that they don't get a chance to run.<br>
+</p>
+<h3>Thread models<br>
+</h3>
+<p>On a system with multiple processors and/or multiple CPU cores,
+threads in the same process can assigned to multiple processors.&nbsp;
+This
+is <span style="font-style: italic;">parallel execution</span>, and it
+means that the threads are truly executing simultaneously.<br>
+</p>
+<p>On a system with a single CPU core, only one thread can be executing
+at any given time.&nbsp; However, switching between the threads creates
+the
+illusion that they are running simultaneously.&nbsp; (This is the same
+idea
+as the kernel's timeslicing of processes.)<br>
+</p>
+<h3>A traditional process<br>
+</h3>
+<p>This is what happens when you have a single thread executing in the
+process, and the process has a single kernel thread.&nbsp; It is the
+degenerate case of threading.<br>
+</p>
+<p style="margin-left: 40px;"><img alt=""
+ src="figures/traditionalProcessThreadModel.png"
+ style="width: 261px; height: 213px;"><br>
+</p>
+<h3>Many-to-one model<br>
+</h3>
+<p>All of the threads in a process are assigned to a single kernel
+thread:<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/manyToOne.png"
+ style="width: 278px; height: 277px;"><br>
+</p>
+<p>There is no possibility for parallelism in this model: even if the
+system has multiple CPUs, only one thread in the process can be
+executing at any one moment.<br>
+</p>
+<p>Interesting fact: in most operating systems, it is possible to
+implement many-to-one threading without any assistance from the OS
+kernel.&nbsp; Such an implementation is known as <span
+ style="font-style: italic;">user-level</span> threading.&nbsp;
+Usually, user-level thread implementations are cooperative rather than
+preemptive (although preemptive is possible).<br>
+</p>
+<p>Early versions of Java used this model ("green" threads).<br>
+</p>
+<h3>One-to-one<br>
+</h3>
+<p>Each thread in a process is assigned to a single kernel thread.<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/oneToOne.png"
+ style="width: 344px; height: 270px;"><br>
+</p>
+<p>Parallelism is possible: each kernel thread can be scheduled on a
+different CPU.<br>
+</p>
+<p>One criticism of this model is that each kernel thread requires
+memory to be allocated in the kernel (to store the kernel thread's
+context data structure and stack).&nbsp; For a process with thousands
+of threads, this can be a real concern.<br>
+</p>
+<p>Windows and Linux both use this model.<br>
+</p>
+<h3>Many to many<br>
+</h3>
+<p>Also known as m:n threading.<br>
+</p>
+<p>The process has a fixed number of kernel threads.&nbsp; The user
+threads are scheduled on the kernel threads.<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/manyToMany.png"
+ style="width: 346px; height: 295px;"><br>
+</p>
+<p>Parallelism is possible, with the maximum degree of parallelism
+determined by the number of kernel threads.<br>
+</p>
+<p>Solaris uses this model.<br>
+</p>
+</body>
+</html>

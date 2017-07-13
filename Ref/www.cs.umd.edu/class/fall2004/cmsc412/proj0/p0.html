@@ -1,0 +1,248 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+            "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD><TITLE></TITLE>
+
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META name="GENERATOR" content="hevea 1.07">
+</HEAD>
+<BODY >
+<!--HEVEA command line is: hevea p0.tex -->
+<!--HTMLHEAD-->
+<!--ENDHTML-->
+<!--PREFIX <ARG ></ARG>-->
+<!--CUT DEF section 1 -->
+<BR>
+<BR>
+
+
+
+
+<H1 ALIGN=center>Project 0</H1>
+
+<H3 ALIGN=center>CMSC 412, Fall 2004</H3>
+
+<H3 ALIGN=center><EM>Due Friday, September 10 at 6pm</EM></H3>
+The purpose of this assignment is to get you familiar with two things:
+the GeekOS development environment (including the BOCHS x86 simulator)
+and the Cyclone programming language.
+The assignment is to write a simple kernel mode thread that does three
+things:
+<OL type=1><LI>
+Prints a message
+<LI>Reads keyboard input, echoing each key pressed to the terminal,
+ until the user hits control-d.
+<LI>Prints the number of lines, words, and bytes entered in total
+(before pressing control-d) by the user, with each number separated by
+a single space.
+</OL>
+<!--TOC section Preparation-->
+
+<H2><A NAME="htoc1">1</A>&nbsp;&nbsp;Preparation</H2><!--SEC END -->
+
+You should use the CSIC cluster (see
+<A HREF="http://www.csic.cs.umd.edu/linuxlab"><TT>http://www.csic.cs.umd.edu/linuxlab</TT></A> for information
+on how to login). Your account information is available by logging
+into the class grade web site
+(<A HREF="http://grades.cs.umd.edu">grades.cs.umd.edu</A>) using your
+campus Directory ID and password.<BR>
+<BR>
+After logging in, get the Bochs simulator environment and the
+mini-kernel for GeekOS running in your account. You should download
+the <A HREF="project0-cyclone.tgz">GeekOS kernel</A> and unpack it in your
+account. This will create a directory <TT>project0-cyclone</TT>. Next,
+you need to set up your PATH to include the Bochs <TT>bin/</TT>
+directory and the Cyclone <TT>bin/</TT> directory. On Linuxlab, you
+should add <TT>/usr/local/bochs-2.0.2/bin</TT> and
+<TT>/afs/csic/projects/cmsc412/cyclone/bin</TT>. At this point, you
+<TT>cd</TT> to the directory <TT>project0-cyclone/build</TT> and invoke
+GNU make to build the kernel (GNU make is the default <TT>make</TT>
+command on LinuxLab). Once the kernel builds, you can run the
+simulator by typing <TT>bochs</TT> and choosing option <TT>5</TT>
+(which is the default). For this to work, you need a proper
+<TT>.bochsrc</TT> in that directory; the version there should be fine
+for LinuxLab. If you run into trouble, check the <A HREF="running.shtml">GeekOS documentation</A> for more details.<BR>
+<BR>
+<!--TOC section Reading and Printing Text-->
+
+<H2><A NAME="htoc2">2</A>&nbsp;&nbsp;Reading and Printing Text</H2><!--SEC END -->
+
+Your first task is to add code to the kernel some code to create a new
+kernel mode thread. The kernel mode thread should print out ``Hello
+from <EM>xxx</EM>'' where <EM>xxx</EM> is your class account name. To
+start a new kernel mode thread you use the
+<TT>Start_Kernel_Thread</TT> function. Look at the comments in
+before the definition of this function in <TT>geekos/kthread.c</TT>.<BR>
+<BR>
+Next, implement the thread to then call the keyboard input routine
+<TT>Wait_For_Key</TT> repeatedly, echoing each character entered,
+until the termination character (<EM>left</EM> control-d) is
+entered. You need only handle <EM>left</EM> control key when testing for
+termination character. Until control-d is entered, you should also
+buffer each of the characters entered. The <TT>KeyCode</TT> returned
+by <TT>Wait_For_Key</TT> is 16 bits; you need to properly convert
+this to an 8-bit ASCII value before storing it in a <TT>char</TT>
+buffer (as well as before printing it to the screen properly).<BR>
+<BR>
+Third, you must count the lines, words, and characters entered by the
+user before pressing control-d. To do this, you must implement the
+function <TT>count</TT>, which should be written in Cyclone in the
+file <TT>geekos/proj0.cyc</TT>. Information about Cyclone can be
+found in the Cyclone manual,
+<A HREF="http://www.cs.umd.edu/projects/cyclone/online-manual/"><TT>http://www.cs.umd.edu/projects/cyclone/online-manual/</TT></A>. Going
+through the Chapter ``Cyclone for C Programmers'' should give you a
+pretty good feel for the language and be sufficient for this project.
+Chapter 3 on pointers is also relevant.<BR>
+<BR>
+<!--TOC section Word Counting-->
+
+<H2><A NAME="htoc3">3</A>&nbsp;&nbsp;Word Counting</H2><!--SEC END -->
+
+The <TT>count</TT> routine you must implement has the following
+prototype:
+<PRE>
+  void count(char * @notnull @numelts(buflen) @nozeroterm buf, 
+                                     /* the buffer to count */
+             tag_t&lt;`i&gt; buflen,       /* the length of the buffer */
+             int cnt,                /* # of valid chars in the buffer */
+             int * @notnull w_cnt,   /* # of words */
+             int * @notnull l_cnt,   /* # of lines */
+             int * @notnull b_cnt,   /* # of bytes (chars) */
+             int * @notnull was_sp)  /* if the last char read was a space */
+</PRE>Here is an explanation of the arguments:
+<UL><LI>
+The first argument (<TT>buf</TT>) is the buffer containing the
+characters to count. The type is more complicated than, but is
+representationally-equivalent to, a C <TT>char *</TT> pointer (thus,
+when you call this function from C, you can just pass it the
+<TT>char *</TT> into which you were storing the entered characters).
+All of the parts of the type beginning with <TT>@</TT> are
+<EM>qualifiers</EM>, which provide additional information about pointer
+types. The first qualifier <TT>@notnull</TT> states that <TT>buf</TT>
+can never be NULL. The second qualifier <TT>@numelts(buflen)</TT>
+states that <TT>buf</TT> has length <TT>buflen</TT>. The final
+qualifier <TT>@nozeroterm</TT> states that <TT>buf</TT> is not
+zero-terminated. With these qualifiers, the Cyclone compiler will
+ensure that you never call <TT>count</TT> with an incorrect pointer,
+e.g., one that is NULL or has fewer than <TT>buflen</TT> characters.
+However, when you call <TT>count</TT> from C, you must take care to
+meet the expected preconditions yourself.<BR>
+<BR>
+<LI>The second argument (<TT>buflen</TT>) is the size of the first
+argument, <TT>buf</TT>. Notice how this matches the
+<TT>@numelts(buflen)</TT> qualifier on the type of the <TT>buf</TT>
+argument. When calling this function from Cyclone, the typechecker
+can thus ensure that the first two arguments are used consistently.<BR>
+<BR>
+<LI>The third argument (<TT>cnt</TT>) is the number of valid
+characters in the buffer; it is always less than or equal to
+<TT>buflen</TT>.<BR>
+<BR>
+<LI>The next three arguments are the word, line, and byte counts
+(<TT>w_cnt</TT>, <TT>l_cnt</TT>, <TT>b_cnt</TT>, respectively).
+Their types are representationally-equivalent to <TT>int *</TT> in C;
+and the <TT>@notnull</TT> qualifier designates the pointers can never
+be NULL, as with <TT>buf</TT>. These counts are passed as pointers
+and modified by reference, which allows <TT>count</TT> to accumulate
+the results from many calls.<BR>
+<BR>
+<LI>The last argument (<TT>was_sp</TT>) indicates whether the last
+character seen, on the last call to <TT>count</TT>, was a whitespace
+character. This ensures that a word split by two calls to
+<TT>count</TT> is not treated as two words. The first time you call
+count, the value of <TT>*was_sp</TT> should be 1.
+</UL>
+A small bit of the <TT>count</TT> routine has been provided for you.
+In particular, it calls <TT>Core::mkfat</TT> to convert <TT>buf</TT>
+into a ``fat'' pointer that comes with bounds information. This
+ensures that all accesses to the pointer are in bounds. (The ``thin''
+pointer <TT>buf</TT> can be accessed directly too, but the compiler
+will forbid some accesses that are to a human obviously correct. For
+extra credit, you can try to use <TT>buf</TT> directly: what
+relationship must hold between <TT>buflen</TT> and <TT>cnt</TT> to
+ensure that all accesses of <TT>buf</TT> will be within bounds? How
+can you communicate this relationship to the compiler?)<BR>
+<BR>
+<!--TOC subsection Testing <TT>count</TT>-->
+
+<H3><A NAME="htoc4">3.1</A>&nbsp;&nbsp;Testing <TT>count</TT></H3><!--SEC END -->
+
+The <TT>proj0.cyc</TT> file has been written with its own
+<TT>main</TT> routine to allow you to test it on its own, outside of
+GeekOS. Simply do
+<PRE>
+cyclone proj0.cyc -o proj0
+</PRE>The resulting program (<TT>proj0</TT>) takes input on standard in (stdin) and
+prints its output to standard out (stdout). The output should be the
+same, other than spacing, as the <TT>wc</TT> command. In particular, for any
+text file <TT>foo.txt</TT>, if you were to do
+<PRE>
+wc &lt; foo.txt &gt; wc.out
+proj0 &lt; foo.txt &gt; proj0.out
+diff -w wc.out proj0.out
+</PRE>Then there should be no reported differences. Once you have debugged
+the <TT>count</TT> routine, you can modify your kernel thread to call
+<TT>count</TT> every time its buffer fills up and when the user hits
+control-d. After the final call to <TT>count</TT> can print the
+results. Use the <TT>main</TT> routine in <TT>proj0.cyc</TT> as a
+guide.<BR>
+<BR>
+<!--TOC section Calling Cyclone code from C-->
+
+<H2><A NAME="htoc5">4</A>&nbsp;&nbsp;Calling Cyclone code from C</H2><!--SEC END -->
+
+To call a Cyclone function from C code, we must take into account that
+the Cyclone function might throw an exception (like an array bounds
+violation or a null pointer exception, as in Java). We have therefore
+provided two macros to simplify calling Cyclone from C. These are
+provided in <TT>geekos/cyclone.h</TT>. To call a Cyclone function
+<TT>f(<I>es</I>)</TT> which returns <TT>void</TT>, use the syntax
+<TT>void_cyc_call(f(<I>es</I>))</TT>. If the Cyclone function throws an
+exception, then <TT>void_cyc_call</TT> will return its name, as a
+string. Otherwise it will return NULL. For example, to call the
+Cyclone function <TT>foo</TT> with argument <TT>arg</TT>, we would do:
+<PRE>
+#include &lt;geekos/cyclone.h&gt; // for void_cyc_call
+#include &lt;geekos/screen.h&gt; // for Print
+
+...
+
+  char *exn = void_cyc_call(foo(arg));
+  if (exn)
+    Print("Oops! Cyclone function threw an exception %s!\n",exn);
+</PRE>Note that the Cyclone compiler, when compiling Cyclone code to C code
+(which is then compiled to assembly), it prepends every Cyclone
+function with the prefix <TT>Cyc_</TT>. Therefore, the
+<TT>void_cyc_call</TT> and <TT>cyc_call</TT> macros prepend this
+prefix to the function call provided.<BR>
+<BR>
+The <TT>cyc_call</TT> macro is similar, except that you must also
+provide it with a variable to store the value returned from the
+Cyclone function. For example, if the Cyclone function
+<TT>foo</TT> returns an integer, then we would call it as follows:
+<PRE>
+#include &lt;geekos/cyclone.h&gt; // for void_cyc_call 
+#include &lt;geekos/screen.h&gt; // for Print
+
+...
+
+  int ret = 0;
+  char *exn = cyc_call(ret,foo(arg));
+  if (exn)
+    Print("Oops! Cyclone function threw an exception %s!\n",exn);
+</PRE>At the conclusion of this code, if <TT>exn</TT> is NULL, then
+<TT>ret</TT> contains the value returned from the Cyclone code,
+otherwise it will contain 0.<BR>
+<BR>
+Calling C functions from Cyclone (which you shouldn't need to do) is
+straightforward, and is described in the Cyclone manual.<BR>
+<BR>
+<!--HTMLFOOT-->
+<!--ENDHTML-->
+<!--FOOTER-->
+<HR SIZE=2>
+<BLOCKQUOTE><EM>This document was translated from L<sup>A</sup>T<sub>E</sub>X by
+</EM><A HREF="http://pauillac.inria.fr/~maranget/hevea/index.html"><EM>H<FONT SIZE=2><sup>E</sup></FONT>V<FONT SIZE=2><sup>E</sup></FONT>A</EM></A><EM>.
+</EM></BLOCKQUOTE>
+</BODY>
+</HTML>

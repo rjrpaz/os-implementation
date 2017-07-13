@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Lecture 14</title>
+</head>
+<body>
+<h1>CS 420 - Lecture 14<br>
+</h1>
+<h2>A better reader/writer lock implementation<br>
+</h2>
+<p>Implementation:</p>
+<pre style="margin-left: 40px;">struct RW_Lock {<br>    struct Mutex_Lock mutex;<br>    struct Condition noWriters;<br>    struct Condition noActiveWriter;<br>    struct Condition noReaders;<br>    int readers;<br>    int writers;<br>    bool writerActive;<br>};<br><br>void RW_Init(struct RW_Lock *rwLock)<br>{<br>    Mutex_Init(&amp;rwLock-&gt;mutex);<br>    Cond_Init(&amp;rwLock-&gt;noWriters);<br>    Cond_Init(&amp;rwLock-&gt;noWriterActive);<br>    Cond_Init(&amp;rwLock-&gt;noReaders);<br>    rwLock-&gt;readers = 0;<br>    rwLock-&gt;writers = 0;<br>    rwLock-&gt;writerActive = false;<br>}<br><br>void RW_Lock_Read(struct RW_Lock *rwLock)<br>{<br>    Mutex_Lock(&amp;rwLock-&gt;mutex);<br><br>    // Wait until there are no writers<br>    while (rwLock-&gt;writers &gt; 0) {<br>        Cond_Wait(&amp;rwLock-&gt;mutex, &amp;rwLock-&gt;noWriters);<br>    }<br><br>    // Since there are no writers, we can proceed to read<br>    rwLock-&gt;readers++;<br><br>    Mutex_Unlock(&amp;rwLock-&gt;mutex);<br>}<br><br>void RW_Unlock_Read(struct RW_Lock *rwLock)<br>{<br>    Mutex_Lock(&amp;rwLock-&gt;mutex);<br><br>    rwLock-&gt;readers--;<br><br>    // The last reader will signal that there are no readers,<br>    // allowing any waiting writers to proceed<br>    if (rwLock-&gt;readers == 0) {<br>        Cond_Signal(&amp;rwLock-&gt;noReaders);<br>    }<br><br>    Mutex_Unlock(&amp;rwLock-&gt;mutex);<br>}<br><br>void RW_Lock_Write(struct RW_Lock *rwLock)<br>{<br>    Mutex_Lock(&amp;rwLock-&gt;mutex);<br><br>    // Announce intent to write: keep out any new readers<br>    rwLock-&gt;writers++;<br><br>    // Wait for readers to finish<br>    while (rwLock-&gt;readers &gt; 0) {<br>        Cond_Wait(&amp;rwLock-&gt;mutex, &amp;rwLock-&gt;noReaders);<br>    }<br><br>    // Wait for any active writer to finish<br>    while (rwLock-&gt;writerActive) {<br>        Cond_Wait(&amp;rwLock-&gt;mutex, &amp;rwLock-&gt;noWriterActive);<br>    }<br><br>    // Now this thread is the active writer<br>    rwLock-&gt;writerActive = true;<br><br>    Mutex_Unlock(&amp;rwLock-&gt;mutex);<br>}<br><br>void RW_Unlock_Write(struct RW_Lock *rwLock)<br>{<br>    Mutex_Lock(&amp;rwLock-&gt;mutex);<br><br>    rwLock-&gt;writerActive = false;<br>    rwLock-&gt;writers--;<br><br>    // If there are other writers waiting, let the next one take a turn.<br>    // Otherwise, signal that there are no more writers, allowing any waiting readers<br>    // to proceed.<br>    if (rwLock-&gt;writers &gt; 0) {<br>        Cond_Signal(&amp;rwLock-&gt;noWriterActive);<br>    } else /* rwLock-&gt;writers == 0 */ {<br>        Cond_Signal(&amp;rwLock-&gt;noWriters);<br>    }<br><br>    Mutex_Unlock(&amp;rwLock-&gt;mutex);<br>}<br></pre>
+<p>This implementation gives preference to writers because <span
+ style="font-weight: bold;">RW_Lock_Write</span>() increments the <span
+ style="font-weight: bold;">writers</span> count early: this serves as
+a signal to any new readers that they will need to wait for waiting
+writers to complete before they can gain read access to the lock.<br>
+</p>
+<h2>Deadlocks<br>
+</h2>
+<p>Deadlocks can occur when mutliple threads acquire two or more locks.<br>
+</p>
+<p>Example:<br>
+</p>
+<pre style="margin-left: 40px;">Thread 1                 Thread 2<br>-----------------------------------------------<br>mutex_lock(&amp;lockA);      mutex_lock(&amp;lockB);<br>mutex_lock(&amp;lockB);      mutex_lock(&amp;lockA);<br></pre>
+<p>Now envision the following interleaving:<br>
+</p>
+<p style="margin-left: 40px;">Thread 1 acquires lockA<br>
+</p>
+<p style="margin-left: 40px;">Thread 2 acquires lockB<br>
+</p>
+<p style="margin-left: 40px;">Thread 1 attempts to acquire lockB: it
+must wait because thread 2 has already locked it<br>
+</p>
+<p style="margin-left: 40px;">Thread 2 attempts to acquire lockA: it
+must wait because thread 1 has already acquired it<br>
+</p>
+<p>This is really bad: neither thread will ever be able to run again,
+and neither will any other thread attempting to acquire lockA or lockB.<br>
+</p>
+<h3>Necessary Conditions for Deadlock<br>
+</h3>
+<p>1. Mutual exclusion.<br>
+</p>
+<p>2. Hold and wait.&nbsp; [At least one process must be both holding
+resource a waiting for another resource.]<br>
+</p>
+<p>3. No preemption.&nbsp; A thread cannot be forced to give up a
+resource it is holding.<br>
+</p>
+<p>4. Circular wait<br>
+</p>
+<h3>The Resource Allocation Graph<br>
+</h3>
+<p>The resource allocation graph is an abstraction for describing
+threads, resources, and deadlocks.<br>
+</p>
+<p>There are two distinct types of vertices<br>
+</p>
+<p style="margin-left: 40px;">Process (thread) vertices<br>
+</p>
+<p style="margin-left: 40px;">Resource vertices<br>
+</p>
+<p>An edge from a process vertex P to a resource vertex R means that P
+is waiting to acquire R.&nbsp; This is a <span
+ style="font-style: italic;">request edge</span>.<br>
+</p>
+<p>An edge from a resource vertex R to a process vertex P means that P
+has acquired R.&nbsp; This is an <span style="font-style: italic;">assignment</span>
+edge.<br>
+</p>
+<p>Note that each resource may have multiple <span
+ style="font-style: italic;">instances</span>, meaning that more than
+one unit of the resource may be in use at once.&nbsp; (Like a
+semaphore: if the initial count is &gt; 1 then multiple threads may use
+the semaphore at one time.)<br>
+</p>
+<p>Resource graph of our example [Silberschatz, pg. 251]:<br>
+</p>
+<p style="margin-left: 40px;"><img alt=""
+ src="figures/deadlockGraph.png" style="width: 50%;"><br>
+</p>
+<p>Note that in this example, each resource (lockA and lockB) have only
+one instance available.<br>
+</p>
+<p>Properties:<br>
+</p>
+<p style="margin-left: 40px;">If the system is in a deadlock, there
+will be a cycle in the resource allocation graph<br>
+</p>
+<p style="margin-left: 40px;">If each resource has a single instance
+(e.g., mutex locks), a cycle implies that there is a deadlock.&nbsp;
+Any processes waiting for resources involved in the cycle are
+deadlocked.<br>
+</p>
+<p>Note that if the cycle involves resources of which there are
+multiple instances, then a cycle does not necessarily mean there is a
+deadlock.&nbsp; Example [Silberschatz]:<br>
+</p>
+<p style="margin-left: 40px;"><img alt=""
+ src="figures/cycleWithoutDeadlock.png" style="width: 50%;"><br>
+</p>
+<h3>Self-deadlock</h3>
+<p>Note that a single thread can create a deadlock if it tries to
+acquire a single-instance resource it has already acquired:<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/selfDeadlock.png"
+ style="width: 10%;"><br>
+</p>
+<p>For example, executing the following code<br>
+</p>
+<pre style="margin-left: 40px;">mutex lock;<br><br>void f() [<br>    mutex_lock(&amp;lock);<br>    ...<br>    g();<br>    ...<br>    mutex_unlock(&amp;lock);<br>}<br><br>void g() {<br>    mutex_lock(&amp;lock);<br>    ...<br>    mutex_unlock(&amp;lock);<br>}<br></pre>
+<p>If the function f() is called, instant deadlock.<br>
+</p>
+<h3>What kinds of software deadlocks can affect</h3>
+<p>Deadlocks can affect any kind of software where multiple threads use
+using locks to synchronize access to shared resources.<br>
+</p>
+<p>Operating system kernels: this is a big problem.&nbsp; A deadlock
+can cause the entire system to freeze.<br>
+</p>
+<p>Multithreaded servers: the server can become unresponsive.&nbsp; The
+deadlocked server can be killed and restarted, but this is not ideal.<br>
+</p>
+<p style="margin-left: 40px;">It is not uncommon to use some kind of
+watchdog program to monitor a server to periodically check to ensure
+that it is still responsive.<br>
+</p>
+<h2>Handling Deadlocks</h2>
+<p>Various strategies exist for handling deadlocks:<br>
+</p>
+<p style="margin-left: 40px;">1. Use a protocol to ensure that a
+deadlock can never occur.&nbsp; [Deadlock avoidance, deadlock
+detection.]<br>
+</p>
+<p style="margin-left: 40px;">2. Detect deadlocks at runtime, and
+recover<br>
+</p>
+<p style="margin-left: 40px;">3. Ignore the problem, hope that
+deadlocks never occur<br>
+</p>
+<p>Option 1 (deadlock avoidance or detection) is probably the best-bet
+for critical system software, such as an OS kernel.<br>
+</p>
+<p>Options 2 is common in database servers.<br>
+</p>
+<h3>Deadlock Prevention<br>
+</h3>
+<p>To prevent deadlock, we must make sure that at least one of the four
+necessary conditions for deadlock does not occur.<br>
+</p>
+<p>1. <span style="font-weight: bold;">Mutual exclusion</span>.&nbsp;
+Doesn't help us too much, since some resources can only be accessed
+safely by a single thread.<br>
+</p>
+<p>2. <span style="font-weight: bold;">Hold and wait</span>.&nbsp; We
+can address this prerequsiite for deadlock by ensuring that no process
+holds more than one resource at a time.&nbsp; One way to accomplish
+this is to protect all shared resources with a single lock (in essence,
+creating a single shared resource).&nbsp; Easy, commonly used by early
+versions of Unix and Linux (and still used by Windows).&nbsp; Not good
+for scalability of multiprocessors.<br>
+</p>
+<p>3. <span style="font-weight: bold;">No preemption</span>.&nbsp;
+Example: when a thread waits, it must release any locks it is currently
+holding.&nbsp; The problem with this approach is locks are often used
+to protect access to shared data structures; while holding the lock,
+the data structure is very likely in an inconsistent state.&nbsp;
+Releasing a lock guarding a data structure in an inconsistent state is
+a really bad idea.&nbsp; (E.g., a linked list that has broken or
+circular links.)<br>
+</p>
+<p>4. <span style="font-weight: bold;">Circular wait</span>.&nbsp;
+This is the most commonly-used way of preventing deadlocks: ensure that
+there can never be a cycle in the resource graph.&nbsp; This is done by
+enforcing a global lock acquisition order which takes the form of
+statements like "lockB can only be acquired after lockA, never
+before".&nbsp; All threads must be written in a way that honors this
+ordering.<br>
+</p>
+<p style="margin-left: 40px;">The question is, how can this ordering be
+enforced?&nbsp; What if programmers unintentionally violate it?&nbsp;
+Two basic techniques:<br>
+</p>
+<p style="margin-left: 80px;">1. Report any violations
+dynamically.&nbsp; Each thread keeps track of which locks it has
+acquired.&nbsp; Any violations of the global lock order are logged.<br>
+</p>
+<p style="margin-left: 80px;">2. Verify the lock order
+statically.&nbsp; In other words, analyze the source code of the
+program, and construct a proof that it can never execute such that the
+lock order is violated at runtime.&nbsp; This is a much stronger
+guarantee: if the verification is successful, then we know that there
+will never be deadlocks at runtime.&nbsp; Problem is that verification
+is a hard problem, especially when locks may be created dynamically (so
+we don't know the set of locks in advance.)<br>
+</p>
+<h3>Deadlock Avoidance<br>
+</h3>
+<p>Threads must announce which locks they wish to acquire in advance.<br>
+</p>
+<p>Resource graph algorithm (for resources with a single instance):<br>
+</p>
+<p style="margin-left: 40px;">A process must add a claim edge to the
+resource graph before it can acquire the resource (converting the edge
+into a request edge).&nbsp; All of the claim edges must be added at the
+same time, in advance: once a thread has any request edges in the
+resource graph, it cannot add any claim edges.<br>
+</p>
+<p style="margin-left: 40px;">A claim edge can be converted into a
+request edge at any time.<br>
+</p>
+<p style="margin-left: 40px;">A request edge can be turned into an
+assignment edge only if the resulting resource graph has no
+cycles.&nbsp; A process attempting to turn a request edge into an
+assignment edge must wait until it can do so without creating a cycle.<br>
+</p>
+<p style="margin-left: 40px;">Note that the book claims that detecting
+a cycle in a graph is O(n<sup>2</sup>), where n is the number of
+processes.&nbsp;
+This is not really accurate.&nbsp; It would be more correct to say that
+cycle detection takes O(|V| + |E|) time, where |V| is the number of
+vertices and |E| is the number of edges.&nbsp; It is true that |E| can
+be O(|V|<sup>2</sup>): however, that is extremely unlikely, since that
+it would
+imply a graph that was nearly fully connected, meaning that nearly
+every thread had some kind of edge to or from nearly every
+resource.&nbsp; Most systems simply won't exhibit such behavior.<br>
+</p>
+<p>The book presents some more general strategies for deadlock
+avoidance when there are multiple instances of resources.</p>
+</body>
+</html>

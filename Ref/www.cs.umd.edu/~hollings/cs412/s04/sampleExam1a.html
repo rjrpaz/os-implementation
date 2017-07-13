@@ -1,0 +1,118 @@
+<HTML>
+
+<HEAD>
+
+<TITLE>CMSC 412-101 (Spring 1996)</TITLE>
+
+<META NAME="GENERATOR" CONTENT="Internet Assistant for Microsoft Word 2.0z Beta">
+</HEAD>
+
+<BODY>
+
+<br>
+<CENTER><B><FONT SIZE=5>CMSC 412 Midterm #1 (Spring 1996)</FONT></B></CENTER>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">(15 points) Define the following
+terms:</FONT>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">thread</FONT>
+
+<P>
+<LI><FONT SIZE=2 FACE="Arial">policy vs. mechanism</FONT>
+
+<P>
+<P>
+<LI><FONT SIZE=2 FACE="Arial">preemptive multi-tasking</FONT>
+
+<BR>
+</FONT>
+<P>
+<LI>
+<FONT SIZE=2 FACE="Arial"></FONT><FONT SIZE=2> </FONT><FONT SIZE=2 FACE="Arial">critical
+section (three conditions)</FONT>
+</OL>
+
+<LI><FONT SIZE=2 FACE="Arial">(10 points) <B>Statement:</B> In
+DOS, user programs change the hardware interrupt vector.  </FONT>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">If user programs can do this, why
+is it impossible to provide processor protection?  </FONT>
+<P>
+<LI><FONT SIZE=2 FACE="Arial">Windows NT provides processor protection
+and can run DOS programs?  Explain how this might be accomplished?</FONT>
+
+<P>
+</OL>
+<LI><FONT SIZE=2 FACE="Arial"> (20 points) In a system that contains
+only one instance of each resource, circular waiting is a necessary
+and sufficient condition for deadlock.</FONT>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">Why is circular waiting sufficient
+if there is only one instance of each resource, but only necessary
+if there is one instance of each resource?</FONT>
+
+<P>
+<LI><FONT SIZE=2 FACE="Arial">Consider a system with one instance
+of each resource, and the condition that requests for resources
+must be satisfied in the order in which they are received. Give
+an algorithm that takes as input requests to allocate and release
+resources and determines if the system is deadlocked.</FONT>
+
+</ol>
+<LI><FONT SIZE=2 FACE="Arial">(25 points) You have to solve a
+variation of the readers-writers problem, in which multiple writers
+can write at the same time. Specifically, there are readers and
+writers. Multiple reads at the same time are allowed. Multiple
+writes at the same time are allowed. A read and a write at the
+same time is not allowed. Provide a solution using semaphores
+with the following properties:</FONT>
+<UL>
+<ol>
+<LI><FONT SIZE=2 FACE="Arial">no busy waiting.</FONT>
+<LI><FONT SIZE=2 FACE="Arial">starvation-free (i.e. a continuous
+stream of readers does not starve writers, and vice versa) is
+desirable but not compulsory (<B>but</B> <B>you will lose some
+points</B>).</FONT>
+<LI><FONT SIZE=2 FACE="Arial">you cannot use process ids and you
+cannot have a separate semaphore for every process.</FONT>
+</UL>
+
+</OL>
+
+<P>
+<LI><FONT SIZE=2 FACE="Arial">(15 points) Your friend, Lazy Student,
+ wants to test his implementation of multiplication (shown below)
+as a process in your kernel from assignment number two.  Why might
+Lazy not want to run multiply(5000, 2)?  Explain (in as much detail
+as possible) what would happen if he tried this.</FONT>
+
+<br>
+<TT><FONT SIZE=2 FACE="Courier New">int multiply(int x, int y)</FONT></TT>
+<br>
+<TT><FONT SIZE=2 FACE="Courier New">{ </FONT></TT>
+<br>
+<TT><FONT SIZE=2 FACE="Courier New"> if (x == 1) {</FONT></TT>
+<br>
+<TT><FONT SIZE=2 FACE="Courier New">return(y);</FONT></TT>
+<br>
+<TT><FONT SIZE=2 FACE="Courier New">} else {</FONT></TT>
+<br>
+<TT><FONT SIZE=2 FACE="Courier New">return(y + multiply(x-1,y));
+<BR>
+}</FONT></TT>
+<br>
+<TT><FONT SIZE=2 FACE="Courier New">}<BR>
+</FONT></TT>
+<br>
+<LI><FONT SIZE=2 FACE="Arial">(15 points)  Using test-and-set
+instructions, provide an algorithm that solves the dining philosophers
+problem.  Recall that in this problem, n philosophers sit at a
+round table with one chop stick between each philosopher. Philosophers
+either are thinking or eating (rather dull people :).  To eat,
+they need to acquire the chopsticks to their left and their right.
+Your solution must work for any number of philosophers and ensure
+that none of them starves to death.</FONT>
+
+</BODY>
+
+</HTML>

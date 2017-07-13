@@ -1,0 +1,666 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<META NAME="Template" CONTENT="C:\PROGRAM FILES\MICROSOFT OFFICE\OFFICE\html.dot">
+</HEAD>
+<body background="blueback.jpg"> 
+<BODY LINK="#0000ff" VLINK="#800080">
+
+<P><!doctype html public "-//w3c//dtd html 4.0 transitional//en"></P>
+<B><U><FONT SIZE=6><P ALIGN="CENTER">Submission Guidelines</B></U></FONT> </P>
+<B><U><FONT SIZE=6><P ALIGN="CENTER">Programming Assignment #3</P>
+</B></U></FONT><P><BR>
+<BR>
+<B><FONT FACE="Arial" SIZE=4>Implementation Requirements</B></FONT> </P>
+<FONT SIZE=4><P>1- You should submit a tar file that contains the source code for your implementation.</FONT> </P>
+<FONT SIZE=4><P>2- Like the previous programs, you should submit a tar file. The tar file should include:</FONT> </P>
+<OL TYPE="a">
+<OL TYPE="a">
+
+<B><I><FONT SIZE=4><LI>Makefile</B></I> that compiles your implementation. The executable file should be named "</FONT><B><FONT SIZE=4 COLOR="#ff0000">node</B></FONT><FONT SIZE=4>"</LI>
+<LI>Source code of your implementation.</LI>
+<LI>The typescripts output of running your implementation. There should be one typescript per node (numbered typescript.1, ...) for the </FONT><A HREF="#scenario"><FONT SIZE=5>scenario</FONT></A><FONT SIZE=5> </FONT><FONT SIZE=4>given below.</LI></OL>
+</OL>
+
+</FONT><B><FONT SIZE=5 COLOR="#0000ff"><P ALIGN="CENTER">The CSC cluster, i.e. on Alpha stations</P>
+</B></FONT><P><HR></P>
+<B><FONT FACE="Arial" SIZE=5><P>Questions</B></FONT><FONT SIZE=5> </P>
+<B><I><P>1- What should I display?</B></I></FONT> </P>
+<FONT SIZE=4><P>There are two cases in which you are going to display information.</FONT> <BR>
+<B><I><U><FONT SIZE=4>Case 1: </I></FONT><FONT SIZE=4 COLOR="#ff0000">Change of topology as a result of receiving a HELLO packet or LSP (Link State Packet)</B></U></FONT> </P>
+<FONT SIZE=4><BLOCKQUOTE>Your code should display the information received in the following format:</FONT> </BLOCKQUOTE><DIR>
+
+<FONT SIZE=4><BLOCKQUOTE>Link (source, destination) is </FONT><B><FONT SIZE=4 COLOR="#800000">ON</B></FONT><FONT SIZE=4>/</FONT><B><FONT SIZE=4 COLOR="#808080">OFF</B></FONT> <BR>
+<FONT SIZE=4>Node &lt;node-number is </FONT><B><FONT SIZE=4 COLOR="#800000">ALIVE</B></FONT><FONT SIZE=4>/</FONT><B><FONT SIZE=4 COLOR="#808080">DEAD</BLOCKQUOTE>
+</B></FONT><FONT SIZE=4><BLOCKQUOTE>Please refer to the </FONT><A HREF="#scenario"><FONT SIZE=4>scenario</FONT></A><FONT SIZE=4> given later in this page.</BLOCKQUOTE></DIR>
+
+<B><I><U><P>Case 2:</I> </FONT><FONT SIZE=4 COLOR="#ff0000">Change In Routing Table</B></U></FONT> </P>
+<FONT SIZE=4><BLOCKQUOTE>Your code should display the routing table in the following format:</BLOCKQUOTE></FONT>
+<P ALIGN="CENTER"><CENTER><TABLE BORDER CELLSPACING=3 CELLPADDING=3>
+<TR><TD VALIGN="MIDDLE">
+<P ALIGN="CENTER"><B><FONT SIZE=4>Destination</B></FONT></TD>
+<TD VALIGN="MIDDLE">
+<B><FONT SIZE=4><P ALIGN="CENTER">GoTo</B></FONT></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<P>&nbsp;</TD>
+<TD VALIGN="MIDDLE">
+<P>&nbsp;</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<P>&nbsp;</TD>
+<TD VALIGN="MIDDLE">
+<P>&nbsp;</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<P>&nbsp;</TD>
+<TD VALIGN="MIDDLE">
+<P>&nbsp;</TD>
+</TR>
+</TABLE>
+</CENTER></P>
+
+<P><HR></P>
+<B><I><FONT SIZE=5><P>2- How are you going to run my program?</B></I></FONT> </P>
+<FONT SIZE=4><P>1. First, I'll untar the submitted file. <B><U>Please don't create any directories</B></U>.</FONT> </P>
+<FONT SIZE=4><P>2- Then, copy </FONT><A HREF="network.parameters"><FONT SIZE=4>network.parameters</FONT></A><FONT SIZE=4>, and </FONT><A HREF="senario1.config"><FONT SIZE=4>network.config </FONT></A><FONT SIZE=4>to the current directory. The first file will contain my parameters as defined in the assignment handout. The second file will contain the network topology I am going to use to test your code. I am going to use different topologies to test different cases.</FONT> <BR>
+<B><FONT SIZE=4 COLOR="#800000">You have to make sure that your code reads these files from the current directory.</B></FONT> </P>
+<FONT SIZE=4><P>3- Type "<B>make</B>". The name of the executable file should be </FONT><B><I><FONT SIZE=4 COLOR="#ff0000">node</B></I></FONT><FONT SIZE=4>.</FONT> <BR>
+<FONT SIZE=4>&nbsp;&nbsp; <B><U>There is no partial credit if your code does not compile successfully with no errors.</B></U></FONT> </P>
+<FONT SIZE=4><P>4- Run your program by typing "</FONT><B><I><FONT SIZE=4 COLOR="#ff0000">node node-number</B></I></FONT><FONT SIZE=4>" where node number represents the number of the current running node. For example:</FONT> </P>
+<B><I><FONT SIZE=4 COLOR="#ff0000"><P ALIGN="CENTER">node fe90::0001</P>
+</B></I></FONT><P><HR></P>
+<B><I><FONT SIZE=5><P>3- How do I submit my project?</B></I></FONT> <BR>
+<FONT SIZE=4>You make a tar archive and then call a certain program from my directory called <B><I>submit</B></I>. The exact path is</FONT> </P>
+<B><I><FONT SIZE=4 COLOR="#ff0000"><P ALIGN="CENTER">~jh41701/BIN/submit</P>
+</B></I></FONT><FONT SIZE=4><P>Finally to submit your program, type</FONT> </P>
+<B><I><FONT SIZE=4 COLOR="#ff0000"><P ALIGN="CENTER">submit 3 filename</P>
+</B></I></FONT><FONT SIZE=4><P>There is only one filename which is the tar file.</FONT> </P>
+<P><HR></P>
+<B><I><FONT SIZE=5><P><A NAME="scenario"></A>4- How am I going to test your code?</B></I></FONT> <BR>
+<FONT SIZE=4>Assume that your program has compiled with no errors and an executable file, </FONT><B><I><FONT SIZE=4 COLOR="#ff0000">node</B></I></FONT><FONT SIZE=4>, has been successfully generated. Also assume that I am using the topology defined in </FONT><A HREF="senario1.config"><FONT SIZE=4>network.config </FONT></A><FONT SIZE=4>. Following is a simple scenario that I can use to test your code:</FONT> <BR>
+&nbsp; </P>
+<TABLE BORDER CELLSPACING=3 CELLPADDING=3 WIDTH=725>
+<TR><TD VALIGN="MIDDLE" COLSPAN=3 HEIGHT=58>
+<BLOCKQUOTE>1- Open 4 windows each correspond to a certain node in the config file. All windows are running on <B><I>tracy, </B></I>of course. </BLOCKQUOTE></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE" COLSPAN=3 HEIGHT=86>
+<FONT SIZE=4><BLOCKQUOTE>2- Start node</FONT><B><FONT SIZE=4 COLOR="#ff0000"> fe90::0002</B></FONT><FONT SIZE=4> by typing:</BLOCKQUOTE>
+</FONT><B><I><FONT SIZE=4 COLOR="#ff0000"><P ALIGN="CENTER">node fe90::0002</B></I></FONT></TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="MIDDLE" COLSPAN=2>
+<B><FONT SIZE=4><P>node</FONT><FONT SIZE=4 COLOR="#ff0000"> fe90::0002</B></FONT></TD>
+<TD WIDTH="79%" VALIGN="MIDDLE">
+
+<UL>
+<FONT SIZE=4><LI>Create threads. </LI>
+<LI>Send HELLO packet to all neighbors. </LI>
+<LI>Continue normal operation.</UL>
+</FONT></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE" COLSPAN=3>
+<I><FONT SIZE=4><P ALIGN="CENTER">No information is displayed on the screen so far.</I></FONT></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE" COLSPAN=3>
+<FONT SIZE=4><BLOCKQUOTE>3- Start node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0003</B></FONT><FONT SIZE=4>, in another window, by typing:</BLOCKQUOTE>
+</FONT><B><I><FONT SIZE=4 COLOR="#ff0000"><P ALIGN="CENTER">node fe90::0003</B></I></FONT></TD>
+</TR>
+<TR><TD WIDTH="20%" VALIGN="MIDDLE">
+<B><FONT SIZE=4><P>node</FONT><FONT SIZE=4 COLOR="#ff0000"> fe90::0003</B></FONT></TD>
+<TD WIDTH="80%" VALIGN="MIDDLE" COLSPAN=2>
+
+<UL>
+<FONT SIZE=4><LI>Create threads. </LI>
+<LI>Send HELLO packet to all neighbors. </LI>
+<LI>Continue normal operation.</UL>
+</FONT></TD>
+</TR>
+<TR><TD WIDTH="20%" VALIGN="MIDDLE">
+<B><FONT SIZE=4><P>node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0002</B></FONT></TD>
+<TD WIDTH="80%" VALIGN="MIDDLE" COLSPAN=2>
+
+<UL>
+<FONT SIZE=4><LI>Receives HELLO packet from node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0003</FONT><FONT SIZE=4>.</B> </LI>
+<LI>Record the link as operational &amp; node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0003</B></FONT><FONT SIZE=4> is alive. </LI>
+<LI>Send HELLO_ACK to node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0003</B></FONT><FONT SIZE=4>.</UL>
+</FONT></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE" COLSPAN=3 BGCOLOR="#c0c0c0">
+<B><FONT SIZE=4><P ALIGN="CENTER">The following information is displayed in the window running node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0002</FONT><FONT SIZE=4>:</B></FONT></TD>
+</TR>
+</TABLE>
+
+<P>&nbsp;</P>
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">Receiving <B>HELLO</B> Packet from node <B>fe90::0003</B></FONT><FONT FACE="Courier"> <BR>
+</FONT><FONT FACE="Courier" SIZE=4>Link (fe90::0002, fe90::0003) is <B>ON</B></FONT><FONT FACE="Courier"> <BR>
+</FONT><FONT FACE="Courier" SIZE=4>Node fe90::0003 is <B>ALIVE</P></B></FONT>
+<P ALIGN="CENTER"><CENTER><TABLE BORDER CELLSPACING=3 CELLPADDING=3 WIDTH=270>
+<TR><TD WIDTH="49%" VALIGN="MIDDLE">
+<P ALIGN="CENTER"><B><FONT FACE="Courier" SIZE=4>Destination</B></FONT></TD>
+<TD WIDTH="51%" VALIGN="MIDDLE">
+<B><FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">GoTo</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="49%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0001</FONT></TD>
+<TD WIDTH="51%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">-</FONT></TD>
+</TR>
+<TR><TD WIDTH="49%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0003</FONT></TD>
+<TD WIDTH="51%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0003</FONT></TD>
+</TR>
+<TR><TD WIDTH="49%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0004</FONT></TD>
+<TD WIDTH="51%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">-</FONT></TD>
+</TR>
+</TABLE>
+</CENTER></P>
+
+<P ALIGN="CENTER"></P>
+<P ALIGN="CENTER"><CENTER><TABLE BORDER CELLSPACING=3 CELLPADDING=3 WIDTH=726>
+<TR><TD WIDTH="21%" VALIGN="MIDDLE">
+<P ALIGN="CENTER"><B><FONT SIZE=4>node</FONT><FONT SIZE=4 COLOR="#ff0000"> fe90::0003</B></FONT></TD>
+<TD WIDTH="79%" VALIGN="MIDDLE">
+
+<UL>
+<FONT SIZE=4><LI>Receives HELLO_ACK from node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0002</B></FONT><FONT SIZE=4>.</UL>
+</FONT></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE" COLSPAN=2 BGCOLOR="#c0c0c0">
+<B><FONT SIZE=4><P ALIGN="CENTER">The following information is displayed in the window running node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0003</FONT><FONT SIZE=4>:</B></FONT></TD>
+</TR>
+</TABLE>
+</CENTER></P>
+
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">&nbsp;</P>
+<P ALIGN="CENTER">Receiving <B>HELLO_ACK</B> Packet from node <B>fe90::0002</B> <BR>
+Link (fe90::0003, fe90::0002) is <B>ON</B> <BR>
+Node fe90::0002 is <B>ALIVE</P></B></FONT>
+<P ALIGN="CENTER"><CENTER><TABLE BORDER CELLSPACING=3 CELLPADDING=3 WIDTH=270>
+<TR><TD WIDTH="49%" VALIGN="MIDDLE">
+<P ALIGN="CENTER"><B><FONT FACE="Courier">Destination&nbsp;</B></FONT></TD>
+<TD WIDTH="51%" VALIGN="MIDDLE">
+<B><FONT FACE="Courier"><P ALIGN="CENTER">GoTo</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="49%" VALIGN="MIDDLE">
+<FONT FACE="Courier"><P ALIGN="CENTER">fe90::0001&nbsp;</FONT></TD>
+<TD WIDTH="51%" VALIGN="MIDDLE">
+<FONT FACE="Courier"><P ALIGN="CENTER">-</FONT></TD>
+</TR>
+<TR><TD WIDTH="49%" VALIGN="MIDDLE">
+<FONT FACE="Courier"><P ALIGN="CENTER">fe90::0002&nbsp;</FONT></TD>
+<TD WIDTH="51%" VALIGN="MIDDLE">
+<FONT FACE="Courier"><P ALIGN="CENTER">fe90::0002</FONT></TD>
+</TR>
+<TR><TD WIDTH="49%" VALIGN="MIDDLE">
+<FONT FACE="Courier"><P ALIGN="CENTER">fe90::0004&nbsp;</FONT></TD>
+<TD WIDTH="51%" VALIGN="MIDDLE">
+<FONT FACE="Courier"><P ALIGN="CENTER">-</FONT></TD>
+</TR>
+</TABLE>
+</CENTER></P>
+
+<FONT SIZE=4><BLOCKQUOTE ALIGN="CENTER">&nbsp;</BLOCKQUOTE>
+</FONT><P ALIGN="CENTER">&nbsp;</P>
+<TABLE BORDER CELLSPACING=3 CELLPADDING=3 WIDTH=726>
+<TR><TD VALIGN="MIDDLE" COLSPAN=3>
+<BLOCKQUOTE><FONT SIZE=4>4- Start node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0004</B></FONT><FONT SIZE=4 COLOR="#800000">,</FONT><FONT SIZE=4> in another window, by typing:</BLOCKQUOTE>
+</FONT><B><I><FONT SIZE=4 COLOR="#ff0000"><P ALIGN="CENTER">node fe90::0004</B></I></FONT></TD>
+</TR>
+<TR><TD WIDTH="39%" VALIGN="MIDDLE">
+<B><FONT SIZE=4><P>node</FONT><FONT SIZE=4 COLOR="#ff0000"> fe90::0004</B></FONT></TD>
+<TD WIDTH="61%" VALIGN="MIDDLE" COLSPAN=2>
+
+<UL>
+<FONT SIZE=4><LI>Create threads. </LI>
+<LI>Send HELLO packet to all neighbors. </LI>
+<LI>Continue normal operation.</UL>
+</FONT></TD>
+</TR>
+<TR><TD WIDTH="39%" VALIGN="MIDDLE">
+<B><FONT SIZE=4><P>node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0002</B></FONT></TD>
+<TD WIDTH="61%" VALIGN="MIDDLE" COLSPAN=2>
+
+<UL>
+<FONT SIZE=4><LI>Receives HELLO packet from node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0004</B></FONT><FONT SIZE=4>. </LI>
+<LI>Record the link as operational &amp; node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0004</B></FONT><FONT SIZE=4> is alive. </LI>
+<LI>Send HELLO_ACK to node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0004</B></FONT><FONT SIZE=4>.</UL>
+</FONT></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE" COLSPAN=3 BGCOLOR="#c0c0c0">
+<B><FONT SIZE=4><P ALIGN="CENTER">The following information is displayed in the window running node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0002</FONT><FONT SIZE=4>:</B></FONT></TD>
+</TR>
+</TABLE>
+
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">&nbsp;</P>
+<P ALIGN="CENTER">Receiving <B>HELLO</B> Packet from node <B>fe90::0004</B> <BR>
+Link (fe90::0002, fe90::0004) is <B>ON</B> <BR>
+Node fe90::0004 is <B>ALIVE</P></B></FONT>
+<P ALIGN="CENTER"><CENTER><TABLE BORDER CELLSPACING=3 CELLPADDING=3 WIDTH=299>
+<TR><TD WIDTH="60%" VALIGN="MIDDLE">
+<P ALIGN="CENTER"><B><FONT FACE="Courier" SIZE=4>Destination&nbsp;</B></FONT></TD>
+<TD WIDTH="40%" VALIGN="MIDDLE">
+<B><FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">GoTo</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="60%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0001&nbsp;</FONT></TD>
+<TD WIDTH="40%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">-</FONT></TD>
+</TR>
+<TR><TD WIDTH="60%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0003&nbsp;</FONT></TD>
+<TD WIDTH="40%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0003</FONT></TD>
+</TR>
+<TR><TD WIDTH="60%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0004&nbsp;</FONT></TD>
+<TD WIDTH="40%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0004</FONT></TD>
+</TR>
+</TABLE>
+</CENTER></P>
+
+<P ALIGN="CENTER"><BR>
+&nbsp; </P>
+<TABLE BORDER CELLSPACING=3 CELLPADDING=3 WIDTH=726>
+<TR><TD WIDTH="21%" VALIGN="MIDDLE">
+<P><B><FONT SIZE=4>node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0003</B></FONT></TD>
+<TD WIDTH="79%" VALIGN="MIDDLE">
+
+<UL>
+<FONT SIZE=4><LI>Receives HELLO packet from node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0004</B></FONT><FONT SIZE=4>. </LI>
+<LI>Record the link as operational &amp; node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0004</B></FONT><FONT SIZE=4> is alive. </LI>
+<LI>Send HELLO_ACK to node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0004</B></FONT><FONT SIZE=4>.</UL>
+</FONT></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE" COLSPAN=2 BGCOLOR="#c0c0c0">
+<B><FONT SIZE=4><P ALIGN="CENTER">The following information is displayed in the window running node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0003</FONT><FONT SIZE=4>:</B></FONT></TD>
+</TR>
+</TABLE>
+
+<P>&nbsp;</P>
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">Receiving <B>HELLO_ACK</B> Packet from node <B>fe90::0004</B></FONT><FONT FACE="Courier"> <BR>
+</FONT><FONT FACE="Courier" SIZE=4>Link (fe90::0003, fe90::0004) is <B>ON</B></FONT><FONT FACE="Courier"> <BR>
+</FONT><FONT FACE="Courier" SIZE=4>Node fe90::0004 is <B>ALIVE</P></B></FONT>
+<P ALIGN="CENTER"><CENTER><TABLE BORDER CELLSPACING=3 CELLPADDING=3 WIDTH=301>
+<TR><TD WIDTH="59%" VALIGN="MIDDLE">
+<P ALIGN="CENTER"><B><FONT FACE="Courier" SIZE=4>Destination&nbsp;</B></FONT></TD>
+<TD WIDTH="41%" VALIGN="MIDDLE">
+<B><FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">GoTo</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="59%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0001&nbsp;</FONT></TD>
+<TD WIDTH="41%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">-</FONT></TD>
+</TR>
+<TR><TD WIDTH="59%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0002&nbsp;</FONT></TD>
+<TD WIDTH="41%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0002</FONT></TD>
+</TR>
+<TR><TD WIDTH="59%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0004&nbsp;</FONT></TD>
+<TD WIDTH="41%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0004</FONT></TD>
+</TR>
+</TABLE>
+</CENTER></P>
+
+<P ALIGN="CENTER"><BR>
+&nbsp; </P>
+<TABLE BORDER CELLSPACING=3 CELLPADDING=3 WIDTH=726>
+<TR><TD WIDTH="21%" VALIGN="MIDDLE">
+<P><B><FONT SIZE=4>node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0004</B></FONT></TD>
+<TD WIDTH="79%" VALIGN="MIDDLE">
+
+<UL>
+<FONT SIZE=4><LI>Receives HELLO_ACK from node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0002</B></FONT><FONT SIZE=4> &amp; node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0003</B></FONT><FONT SIZE=4> (order is not determined).</UL>
+</FONT></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE" COLSPAN=2 BGCOLOR="#c0c0c0">
+<B><FONT SIZE=4><P ALIGN="CENTER">The following information is displayed in the window running node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0004</B></FONT></TD>
+</TR>
+</TABLE>
+
+<P>&nbsp;</P>
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">Receiving <B>HELLO_ACK</B> Packet from node <B>fe90::0002</B></FONT><FONT FACE="Courier"><BR>
+</FONT><FONT FACE="Courier" SIZE=4>Link (fe90::0004, fe90::0002) is <B>ON</B></FONT><FONT FACE="Courier"> <BR>
+</FONT><FONT FACE="Courier" SIZE=4>Node fe90::0002 is <B>ALIVE</B></FONT><FONT FACE="Courier"> <BR>
+</FONT><FONT FACE="Courier" SIZE=4>Receiving <B>HELLO_ACK</B> Packet from node <B>fe90::0003</B></FONT><FONT FACE="Courier"> <BR>
+</FONT><FONT FACE="Courier" SIZE=4>Link (fe90::0004, fe90::0003) is <B>ON</B></FONT><FONT FACE="Courier"> <BR>
+</FONT><FONT FACE="Courier" SIZE=4>Node fe90::0003 is <B>ALIVE</P></B></FONT>
+<P ALIGN="CENTER"><CENTER><TABLE BORDER CELLSPACING=3 CELLPADDING=3 WIDTH=305>
+<TR><TD WIDTH="59%" VALIGN="MIDDLE">
+<P ALIGN="CENTER"><B><FONT FACE="Courier" SIZE=4>Destination&nbsp;</B></FONT></TD>
+<TD WIDTH="41%" VALIGN="MIDDLE">
+<B><FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">GoTo</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="59%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0001&nbsp;</FONT></TD>
+<TD WIDTH="41%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">-</FONT></TD>
+</TR>
+<TR><TD WIDTH="59%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0002&nbsp;</FONT></TD>
+<TD WIDTH="41%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0002</FONT></TD>
+</TR>
+<TR><TD WIDTH="59%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0003&nbsp;</FONT></TD>
+<TD WIDTH="41%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0003</FONT></TD>
+</TR>
+</TABLE>
+</CENTER></P>
+
+<P ALIGN="CENTER"><BR>
+&nbsp; </P>
+<TABLE BORDER CELLSPACING=3 CELLPADDING=3 WIDTH=732>
+<TR><TD WIDTH="20%" VALIGN="MIDDLE">
+<P><B><FONT SIZE=4>node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0002</B></FONT></TD>
+<TD WIDTH="80%" VALIGN="MIDDLE">
+
+<UL>
+<FONT SIZE=4><LI>Receives an LSP (Link Sate Packet) from node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0003</B></FONT><FONT SIZE=4>.</UL>
+</FONT></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE" COLSPAN=2 BGCOLOR="#c0c0c0">
+<B><FONT SIZE=4><P ALIGN="CENTER">The following information is displayed in the window running node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0002</B></FONT></TD>
+</TR>
+</TABLE>
+
+<P>&nbsp;</P>
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">Receiving <B>LSP</B> from node <B>fe90::0003</B></FONT><FONT FACE="Courier"> <BR>
+</FONT><FONT FACE="Courier" SIZE=4>Link (fe90::0003, fe90::0004) is <B>ON</P>
+</FONT><I><U><FONT SIZE=4 COLOR="#ff0000"><P>(Note: routing table is not displayed since it does not change)</B></I></FONT> </P></U>
+<TABLE BORDER CELLSPACING=3 CELLPADDING=3 WIDTH=732>
+<TR><TD WIDTH="20%" VALIGN="MIDDLE">
+<P><B><FONT SIZE=4>node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0002</B></FONT></TD>
+<TD WIDTH="80%" VALIGN="MIDDLE">
+
+<UL>
+<FONT SIZE=4><LI>Receives an LSP (Link Sate Packet) from node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0004</FONT><FONT SIZE=4>.</UL>
+</B></FONT></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE" COLSPAN=2 BGCOLOR="#c0c0c0">
+<B><FONT SIZE=4><P ALIGN="CENTER">The following information is displayed in the window running node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0002</B></FONT></TD>
+</TR>
+</TABLE>
+
+<P>&nbsp;</P>
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">Receiving <B>LSP</B> from node <B>fe90::0004</B></FONT><FONT FACE="Courier"><BR>
+</FONT><FONT FACE="Courier" SIZE=4>Link (fe90::0004, fe90::0003) is <B>ON</P>
+</FONT><I><U><FONT SIZE=4 COLOR="#ff0000"><P>(Note: routing table is not displayed since it does not change)</B></I></FONT> </P>
+</U><B><FONT SIZE=4 COLOR="#ff0000"><P>The order of displaying the above information is not important.</B></FONT> </P>
+<TABLE BORDER CELLSPACING=3 CELLPADDING=3 WIDTH=732>
+<TR><TD WIDTH="20%" VALIGN="MIDDLE">
+<P><B><FONT SIZE=4>node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0004</B></FONT></TD>
+<TD WIDTH="80%" VALIGN="MIDDLE">
+
+<UL>
+<FONT SIZE=4><LI>In a similar way, will update its topology<B>.</UL>
+</B></FONT></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE" COLSPAN=2 BGCOLOR="#c0c0c0">
+<B><FONT SIZE=4><P ALIGN="CENTER">The following information is displayed in the window running node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0004</B></FONT></TD>
+</TR>
+</TABLE>
+
+<P>&nbsp;</P>
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">Receiving <B>LSP</B> from node <B>fe90::0002</B></FONT><FONT FACE="Courier"> <BR>
+</FONT><FONT FACE="Courier" SIZE=4>Link (fe90::0002, fe90::0003) is <B>ON</P>
+</B><P ALIGN="CENTER">Receiving <B>LSP</B> from node <B>fe90::0003</B></FONT><FONT FACE="Courier"> <BR>
+</FONT><FONT FACE="Courier" SIZE=4>Link (fe90::0003, fe90::0002) is <B>ON</P></B></FONT>
+<TABLE BORDER CELLSPACING=3 CELLPADDING=3 WIDTH=732>
+<TR><TD VALIGN="MIDDLE" COLSPAN=2>
+<BLOCKQUOTE><FONT SIZE=4>5- During the above operations, HELLO packets, and LSP (Link State Packets), are traveling inside the network between active nodes. </FONT><B><FONT SIZE=4 COLOR="#ff0000">However, no information is displayed at any node unless it represents something new</B></FONT><FONT SIZE=4>. </BLOCKQUOTE></FONT></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE" COLSPAN=2>
+<FONT SIZE=4><P>6- Start node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0001</B></FONT><FONT SIZE=4>, in another window, by typing:</FONT><B><I><FONT SIZE=5 COLOR="#ff0000"> </P>
+</FONT><FONT SIZE=4 COLOR="#ff0000"><BLOCKQUOTE>node fe90::0001</BLOCKQUOTE></B></I></FONT></TD>
+</TR>
+<TR><TD WIDTH="20%" VALIGN="MIDDLE">
+<B><FONT SIZE=4><P>node</FONT><FONT SIZE=4 COLOR="#ff0000"> fe90::0001</B></FONT></TD>
+<TD WIDTH="80%" VALIGN="MIDDLE">
+
+<UL>
+<FONT SIZE=4><LI>Create threads. </LI>
+<LI>Send HELLO packet to all neighbors. </LI>
+<LI>Continue normal operation.</UL>
+</FONT></TD>
+</TR>
+<TR><TD WIDTH="20%" VALIGN="MIDDLE">
+<B><FONT SIZE=4><P>node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0002</B></FONT></TD>
+<TD WIDTH="80%" VALIGN="MIDDLE">
+
+<UL>
+<FONT SIZE=4><LI>Receives HELLO packet from node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0001</B></FONT><FONT SIZE=4>. </LI>
+<LI>Record the link as operational &amp; node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0001</B></FONT><FONT SIZE=4> is alive. </LI>
+<LI>Send HELLO_ACK to node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0001</B></FONT><FONT SIZE=4> (Note that HELLO_ACK is sent regardless the link (<B>fe90::0001</B>, <B>fe90::0002</B>) is unidirectional or bi-directional).</UL>
+</FONT></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE" COLSPAN=2 BGCOLOR="#c0c0c0">
+<B><FONT SIZE=4><P ALIGN="CENTER">The following information is displayed in the window running node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0002</B></FONT></TD>
+</TR>
+</TABLE>
+
+<P>&nbsp;</P>
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">Receiving <B>HELLO</B> Packet from node <B>fe90::0001</B></FONT><FONT FACE="Courier"> <BR>
+</FONT><FONT FACE="Courier" SIZE=4>Node fe90::0001 is <B>ALIVE</P>
+</FONT><I><FONT SIZE=4 COLOR="#ff0000"><P>(Note: routing table is not displayed since it does not change)</B></I></FONT> <BR>
+&nbsp; </P>
+<TABLE BORDER CELLSPACING=3 CELLPADDING=3 WIDTH=732>
+<TR><TD WIDTH="20%" VALIGN="MIDDLE">
+<P><B><FONT SIZE=4>node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0001</B></FONT></TD>
+<TD WIDTH="80%" VALIGN="MIDDLE">
+
+<UL>
+<FONT SIZE=4><LI>Receives HELLO_ACK from node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0002</B></FONT><FONT SIZE=4>.</UL>
+</FONT></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE" COLSPAN=2 BGCOLOR="#c0c0c0">
+<B><FONT SIZE=4><P ALIGN="CENTER">The following information is displayed in the window running node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0001</B></FONT></TD>
+</TR>
+</TABLE>
+
+<P>&nbsp;</P>
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">Receiving <B>HELLO_ACK</B> Packet from node <B>fe90::0002</B></FONT><FONT FACE="Courier"> <BR>
+</FONT><FONT FACE="Courier" SIZE=4>Link (fe90::0001, fe90::0002) is <B>ON</B></FONT><FONT FACE="Courier"> <BR>
+</FONT><FONT FACE="Courier" SIZE=4>Node fe90::0002 is <B>ALIVE</P></B></FONT>
+<P ALIGN="CENTER"><CENTER><TABLE BORDER CELLSPACING=3 CELLPADDING=3 WIDTH=296>
+<TR><TD WIDTH="60%" VALIGN="MIDDLE">
+<P ALIGN="CENTER"><B><FONT FACE="Courier" SIZE=4>Destination&nbsp;</B></FONT></TD>
+<TD WIDTH="40%" VALIGN="MIDDLE">
+<B><FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">GoTo</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="60%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0002&nbsp;</FONT></TD>
+<TD WIDTH="40%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0002</FONT></TD>
+</TR>
+<TR><TD WIDTH="60%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0003&nbsp;</FONT></TD>
+<TD WIDTH="40%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">-</FONT></TD>
+</TR>
+<TR><TD WIDTH="60%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0004&nbsp;</FONT></TD>
+<TD WIDTH="40%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">-</FONT></TD>
+</TR>
+</TABLE>
+</CENTER></P>
+
+<P ALIGN="CENTER"><BR>
+&nbsp; </P>
+<TABLE BORDER CELLSPACING=3 CELLPADDING=3 WIDTH=732>
+<TR><TD WIDTH="20%" VALIGN="MIDDLE">
+<P><B><FONT SIZE=4>node</FONT><FONT SIZE=4 COLOR="#ff0000"> fe90::0002</B></FONT></TD>
+<TD WIDTH="80%" VALIGN="MIDDLE">
+
+<UL>
+<FONT SIZE=4><LI>Later on, will send LSP to all nodes, including node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0001 </B></FONT><FONT SIZE=4>regardless of the link is unidirectional.</UL>
+</FONT></TD>
+</TR>
+<TR><TD WIDTH="20%" VALIGN="MIDDLE">
+<B><FONT SIZE=4><P>node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0001</B></FONT></TD>
+<TD WIDTH="80%" VALIGN="MIDDLE">
+
+<UL>
+<FONT SIZE=4><LI>Receives LSP from node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0002</B></FONT><FONT SIZE=4>.&nbsp;</UL>
+</FONT></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE" COLSPAN=2 BGCOLOR="#c0c0c0">
+<B><FONT SIZE=4><P ALIGN="CENTER">The following information is displayed in the window running node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0001</B></FONT></TD>
+</TR>
+</TABLE>
+
+<P>&nbsp;</P>
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">Receiving <B>LSP</B> from node <B>fe90::0003</B></FONT><FONT FACE="Courier"> <BR>
+</FONT><FONT FACE="Courier" SIZE=4>Link (fe90::0002, fe90::0003) is <B>ON</B></FONT><FONT FACE="Courier"> <BR>
+</FONT><FONT FACE="Courier" SIZE=4>Link (fe90::0002, fe90::0004) is <B>ON</B></FONT><FONT FACE="Courier"> <BR>
+</FONT><FONT FACE="Courier" SIZE=4>Node fe90::0003 is <B>ALIVE</B></FONT><FONT FACE="Courier"> <BR>
+</FONT><FONT FACE="Courier" SIZE=4>Node fe90::0004 is <B>ALIVE</P></B></FONT>
+<P ALIGN="CENTER"><CENTER><TABLE BORDER CELLSPACING=3 CELLPADDING=3 WIDTH=311>
+<TR><TD WIDTH="57%" VALIGN="MIDDLE">
+<P ALIGN="CENTER"><B><FONT FACE="Courier" SIZE=4>Destination&nbsp;</B></FONT></TD>
+<TD WIDTH="43%" VALIGN="MIDDLE">
+<B><FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">GoTo</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="57%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0002&nbsp;</FONT></TD>
+<TD WIDTH="43%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0002</FONT></TD>
+</TR>
+<TR><TD WIDTH="57%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0003&nbsp;</FONT></TD>
+<TD WIDTH="43%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0002</FONT></TD>
+</TR>
+<TR><TD WIDTH="57%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0004&nbsp;</FONT></TD>
+<TD WIDTH="43%" VALIGN="MIDDLE">
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">fe90::0002</FONT></TD>
+</TR>
+</TABLE>
+</CENTER></P>
+
+<P ALIGN="CENTER"><BR>
+&nbsp; </P>
+<TABLE BORDER CELLSPACING=3 CELLPADDING=3 WIDTH=732>
+<TR><TD WIDTH="20%" VALIGN="MIDDLE">
+<P><B><FONT SIZE=4>node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0003</B></FONT></TD>
+<TD WIDTH="80%" VALIGN="MIDDLE">
+
+<UL>
+<FONT SIZE=4><LI>Receives LSP from node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0002</B></FONT><FONT SIZE=4>.</UL>
+</FONT></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE" COLSPAN=2 BGCOLOR="#c0c0c0">
+<B><FONT SIZE=4><P ALIGN="CENTER">The following information is displayed in the window running node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0003</B></FONT></TD>
+</TR>
+</TABLE>
+
+<P>&nbsp;</P>
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">Receiving <B>LSP</B> from node <B>fe90::0002</B></FONT><FONT FACE="Courier"> <BR>
+</FONT><FONT FACE="Courier" SIZE=4>Node fe90::0001 is <B>ALIVE</P>
+</FONT><I><FONT SIZE=4 COLOR="#ff0000"><P>(Note: routing table is not displayed since it does not change)</B></I></FONT> <BR>
+&nbsp; </P>
+<TABLE BORDER CELLSPACING=3 CELLPADDING=3 WIDTH=732>
+<TR><TD WIDTH="20%" VALIGN="MIDDLE">
+<P><B><FONT SIZE=4>node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0004</B></FONT></TD>
+<TD WIDTH="80%" VALIGN="MIDDLE">
+
+<UL>
+<FONT SIZE=4><LI>Receives LSP from node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0002</B></FONT><FONT SIZE=4>.</UL>
+</FONT></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE" COLSPAN=2 BGCOLOR="#c0c0c0">
+<B><FONT SIZE=4><P ALIGN="CENTER">The following information is displayed in the window running node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0004</B></FONT></TD>
+</TR>
+</TABLE>
+
+<P>&nbsp;</P>
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">Receiving <B>LSP</B> from node <B>fe90::0002</B></FONT><FONT FACE="Courier"> <BR>
+</FONT><FONT FACE="Courier" SIZE=4>Node fe90::0001 is <B>ALIVE</P>
+</FONT><I><FONT SIZE=4 COLOR="#ff0000"><P>(Note: routing table is not displayed since it does not change)</B></I></FONT> <BR>
+&nbsp; </P>
+<TABLE BORDER CELLSPACING=3 CELLPADDING=3 WIDTH=732>
+<TR><TD WIDTH="20%" VALIGN="MIDDLE">
+<P><B><FONT SIZE=4>node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0003/4</B></FONT></TD>
+<TD WIDTH="80%" VALIGN="MIDDLE">
+
+<UL>
+<FONT SIZE=4><LI>Later on, will send LSP to all nodes, including node </FONT><B><FONT SIZE=4 COLOR="#ff0000">fe90::0001</B></FONT><FONT SIZE=4> regardless of the link is unidirectional.</UL>
+</FONT></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE" COLSPAN=2 BGCOLOR="#c0c0c0">
+<B><FONT SIZE=4><P ALIGN="CENTER">The following information is displayed in the window running node </FONT><FONT SIZE=4 COLOR="#ff0000">fe90::0001</B></FONT></TD>
+</TR>
+</TABLE>
+
+<P>&nbsp;</P>
+<FONT FACE="Courier" SIZE=4><P ALIGN="CENTER">Receiving <B>LSP</B> from node <B>fe90::0003</B></FONT><FONT FACE="Courier"> <BR>
+</FONT><FONT FACE="Courier" SIZE=4>Link (fe90::0003, fe90::0002) is <B>ON</FONT><FONT FACE="Courier"> </B><BR>
+</FONT><FONT FACE="Courier" SIZE=4>Receiving <B>LSP</B> from node <B>fe90::0004</B></FONT><FONT FACE="Courier"> <BR>
+</FONT><FONT FACE="Courier" SIZE=4>Link (fe90::0004, fe90::0002) is <B>ON</P>
+</FONT><I><FONT SIZE=4 COLOR="#ff0000"><P>(Note: routing table is not displayed since it does not change)</B></I></FONT> </P>
+<B><FONT SIZE=4 COLOR="#ff0000"><P>The order of the above communications is not important.</B></FONT> </P>
+<P><HR></P>
+<B><FONT FACE="Arial" SIZE=5><P>Grading Guidelines:</B></FONT><FONT SIZE=5> <BR>
+</FONT><FONT SIZE=4>These are only guidelines to give you a hint about what I am going to test in your code. The points may be redistributed later during grading the assignment.</FONT> <BR>
+&nbsp; </P>
+<P ALIGN="CENTER"><CENTER><TABLE BORDER CELLSPACING=3 CELLPADDING=3 WIDTH=660>
+<TR><TD WIDTH="94%" VALIGN="MIDDLE">
+<P>Proper submission: submitted a tar file containing the files specified above <B><FONT COLOR="#ff0000">specially Makefile</B></FONT>.</TD>
+<TD WIDTH="6%" VALIGN="MIDDLE">
+<P ALIGN="CENTER">10</TD>
+</TR>
+<TR><TD WIDTH="94%" VALIGN="MIDDLE">
+<P>Timer Thread (timeouts are correct)</TD>
+<TD WIDTH="6%" VALIGN="MIDDLE">
+<P ALIGN="CENTER">20</TD>
+</TR>
+<TR><TD WIDTH="94%" VALIGN="MIDDLE">
+<P>Displaying exact format and information as specified above and in the cases defined in the scenario.</TD>
+<TD WIDTH="6%" VALIGN="MIDDLE">
+<P ALIGN="CENTER">10</TD>
+</TR>
+<TR><TD WIDTH="94%" VALIGN="MIDDLE">
+<P>Correct Dijkstra's Algorithm</TD>
+<TD WIDTH="6%" VALIGN="MIDDLE">
+<P ALIGN="CENTER">10</TD>
+</TR>
+<TR><TD WIDTH="94%" VALIGN="MIDDLE">
+<P>HELLO &amp; HELLO_ACK&nbsp; (new alive nodes)</TD>
+<TD WIDTH="6%" VALIGN="MIDDLE">
+<P ALIGN="CENTER">15</TD>
+</TR>
+<TR><TD WIDTH="94%" VALIGN="MIDDLE">
+<P>LSP implementation&nbsp;</TD>
+<TD WIDTH="6%" VALIGN="MIDDLE">
+<P ALIGN="CENTER">15</TD>
+</TR>
+<TR><TD WIDTH="94%" VALIGN="MIDDLE">
+<P>Receiving &amp; Sending data</TD>
+<TD WIDTH="6%" VALIGN="MIDDLE">
+<P ALIGN="CENTER">10</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<P>Handling Node Failure</TD>
+<TD VALIGN="MIDDLE">
+<P ALIGN="CENTER">10</TD>
+</TR>
+<TR><TD WIDTH="94%" VALIGN="MIDDLE">
+<P>Total points:&nbsp;</TD>
+<TD WIDTH="6%" VALIGN="MIDDLE">
+<B><FONT COLOR="#ff0000"><P ALIGN="CENTER">100</B></FONT></TD>
+</TR>
+</TABLE>
+</CENTER></P>
+
+<P ALIGN="CENTER"></P></BODY>
+</HTML>

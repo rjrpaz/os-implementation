@@ -1,0 +1,419 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Operating Systems</title>
+</head>
+<body>
+<h1>CS 420 - Operating Systems</h1>
+<h2>Fall 2006</h2>
+<table style="text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">Instructor<br>
+      </td>
+      <td style="vertical-align: top;"><a
+ href="http://faculty.ycp.edu/%7Edhovemey/">David Hovemeyer</a><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Office / Phone Ext.<br>
+      </td>
+      <td style="vertical-align: top;">GH 118 / x6582<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Office Hours<br>
+      </td>
+      <td style="vertical-align: top;">M/W/F 1-2 PM<br>
+T/Th 2-3 PM<br>
+or by arrangement </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Email<br>
+      </td>
+      <td style="vertical-align: top;">dhovemey@ycp.edu<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Class Location<br>
+      </td>
+      <td style="vertical-align: top;">GH 123<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Class Times<br>
+      </td>
+      <td style="vertical-align: top;">T/Th, 12:30-1:45 PM<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<h2>Course Description</h2>
+<p><span class="copy">This course provides an introduction to the
+fundamentals of operating systems. Topics include inter-process
+communication, process scheduling, deadlock, memory management, virtual
+memory, file systems and distributed systems. Formal principles are
+illustrated with examples and case studies of one or more contemporary
+operating systems. Also, students will study a widely used operating
+system such as Windows or UNIX with an emphasis on system programming
+for the operating system. Topics include kernel design, the I/O system,
+scheduling algorithms, process control, inter-process communication,
+system calls, and memory management.<br>
+</span></p>
+<h2><span class="copy">Prerequisites</span></h2>
+<p>CS 340</p>
+<h2>Textbook</h2>
+<p>Silberschatz et. al., <a
+ href="http://codex.cs.yale.edu/avi/os-book/os7/">Operating System
+Concepts, 7th ed</a>.<br>
+</p>
+<h2>Course Structure<br>
+</h2>
+<p>Class meetings will consist mainly of lecture and discussion, with
+occasional in-class lab exercises.<br>
+</p>
+<p>Occasional quizzes will be given in class (no more than once per
+week).<br>
+</p>
+<p>One midterm exam will be given in class (date to be
+announced).&nbsp; A scheduled final examination will be given (see <a
+ href="http://www.ycp.edu/academics/4902.htm">Final Exam Schedule</a>).<br>
+</p>
+<p>Approximately 4-5 written homework assignments will assigned
+(generally problem sets
+from the text).<br>
+</p>
+<p>In a sequence of&nbsp; (approximately 4-5) programming projects, you
+will implement subsystems within a real (simplified) operating system
+kernel, <a href="http://geekos.sourceforge.net/">GeekOS</a>.&nbsp;
+These projects
+will involve significant programming using C and x86 assembly
+language.&nbsp; The goal of these projects is to create components of a
+small but
+complete operating system kernel supporting processes, virtual memory,
+filesystems, and inter-process communication.<br>
+</p>
+<h2>Policies</h2>
+<h3>Grades</h3>
+<p>Grades on assignments, quizzes, and exams are given on a 100 point
+scale.</p>
+<blockquote>
+  <table style="text-align: left;" border="0" cellpadding="2"
+ cellspacing="0">
+    <tbody>
+      <tr>
+        <th style="vertical-align: top;">Numeric Range<br>
+        </th>
+        <th style="vertical-align: top;">Letter Grade<br>
+        </th>
+      </tr>
+      <tr>
+        <td style="vertical-align: top;">90-100<br>
+        </td>
+        <td style="vertical-align: top;">A (4.0)<br>
+        </td>
+      </tr>
+      <tr>
+        <td style="vertical-align: top;">85-90<br>
+        </td>
+        <td style="vertical-align: top;">B+ (3.5)<br>
+        </td>
+      </tr>
+      <tr>
+        <td style="vertical-align: top;">80-85<br>
+        </td>
+        <td style="vertical-align: top;">B (3.0)<br>
+        </td>
+      </tr>
+      <tr>
+        <td style="vertical-align: top;">75-80<br>
+        </td>
+        <td style="vertical-align: top;">C+ (2.5)<br>
+        </td>
+      </tr>
+      <tr>
+        <td style="vertical-align: top;">70-75<br>
+        </td>
+        <td style="vertical-align: top;">C (2.0)<br>
+        </td>
+      </tr>
+      <tr>
+        <td style="vertical-align: top;">60-70<br>
+        </td>
+        <td style="vertical-align: top;">D (1.0)<br>
+        </td>
+      </tr>
+      <tr>
+        <td style="vertical-align: top;">0-60<br>
+        </td>
+        <td style="vertical-align: top;">F (0.0)<br>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+<br>
+Your overall course grade will be determined as follows:<br>
+<ul>
+  <li>Homework: 20%<br>
+  </li>
+  <li>Programming Assignments: 25%<br>
+  </li>
+  <li>Midterm exam: 20%<br>
+  </li>
+  <li>Final exam: 25%</li>
+  <li>Quizzes: 5%<br>
+  </li>
+  <li>Attendance, participation: 5%<br>
+  </li>
+</ul>
+<h3>Course website</h3>
+<p>Please check the course website (available in My YCP) regularly for
+important
+announcements.</p>
+<h3>Posting and Submission of Assignments<br>
+</h3>
+<p>All homework assignments and programming projects will be posted in
+your MyYCP Inbox,
+and your solutions should be submitted electronically through the the
+MyYCP Inbox.<br>
+</p>
+<h3>Academic Integrity<br>
+</h3>
+<p>All assignments are to be completed individually.&nbsp; You may
+discuss high level concepts with other students (and I encourage you to
+do so), but the work you turn in must be yours alone.<br>
+</p>
+<h3>Late Assignments</h3>
+<p>Late assignments will be marked down 5% per day late.&nbsp; No
+credit is given for assignments turned in after grading has taken place.<br>
+</p>
+<h3>Exams<br>
+</h3>
+<p>No
+make-up exams will be given without approval
+of the instructor prior to class unless proof of extreme emergency or
+illness
+is provided.&nbsp; Unless expclitily allowed by the instructor and
+announced in advance, exams will be closed-book and closed-notes.<br>
+</p>
+<h3>Attendance and Participation</h3>
+<p>I expect you to attend class and participate regularly in class
+discussions.&nbsp; If you miss a class, please notify me in
+advance.&nbsp; You are responsible for all material covered in class,
+regardless of whether or not you were present.&nbsp; If you attend
+and participate in class regularly, you can expect to receive full
+credit (5% of the course grade) for attendance and participation.&nbsp;
+Frequent absence and/or lack of participation in class discussions will
+reduce the credit you receive for attendance and participation.<br>
+</p>
+<p>You are responsible for keeping up with the reading assignments as
+described in the schedule below.<br>
+</p>
+<h3>Communication Standards</h3>
+<p>York College recognizes the importance of effective communication in
+all disciplines and careers. Therefore, students are expected to
+competently analyze, synthesize, organize, and articulate course
+material in papers, examinations and presentations. In addition,
+students should know and use communication skills current to their
+field of study, recognize the need for revision as part of their
+writing process, and employ standard conventions of English usage in
+both writing and speaking. Students may be asked to further revise
+assignments that do not demonstrate effective use of these
+communication skills.<br>
+</p>
+<h2>Schedule</h2>
+<p>This schedule may be subject to minor changes.&nbsp; Any changes
+will be announced in class and also be posted on the course webpage
+(available in <a href="http://my.ycp.edu/">My YCP</a>).<br>
+</p>
+<table style="text-align: left; width: 100%;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <th style="vertical-align: top;">Week<br>
+      </th>
+      <th style="vertical-align: top;">Note<br>
+      </th>
+      <th style="vertical-align: top;">Topic<br>
+      </th>
+      <th style="vertical-align: top;">Reading<br>
+      </th>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Week 1: August 28th to September
+1st</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Introduction. </td>
+      <td style="vertical-align: top;">Chapter 1<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Week 2: September 4th -
+8th </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Operating system structure. </td>
+      <td style="vertical-align: top;">Chapter 2<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Week 3: September 11th -
+15th </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Process management. </td>
+      <td style="vertical-align: top;">Chapter 3<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Week 4: September 18th -
+22nd </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Threads and scheduling. </td>
+      <td style="vertical-align: top;">Chapter 4<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Week 5: September 25th -
+29th </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">CPU Scheduling.<br>
+      </td>
+      <td style="vertical-align: top;">Chapter 5<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Week 6: October 2nd - 6th </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Synchronization. </td>
+      <td style="vertical-align: top;">Chapters 6<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Week 7: October 9th - 13th </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Deadlocks.<br>
+      </td>
+      <td style="vertical-align: top;">Chapter 7<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; background-color: silver;">October
+14th - 17th<br>
+      </td>
+      <td colspan="3"
+ style="vertical-align: top; background-color: silver;"><span
+ style="font-weight: bold;">Fall break, no classes</span><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Week 8: October 16th - 20th </td>
+      <td style="vertical-align: top;">No class on Tuesday<br>
+      </td>
+      <td style="vertical-align: top;">Memory management.<br>
+      </td>
+      <td style="vertical-align: top;">Chapter 8<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Week 9: October 23rd - 27th </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Memory management (cont'd).
+Virtual memory.<br>
+      </td>
+      <td style="vertical-align: top;">Chapters 8-9<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Week 10: October 30th - November
+3rd </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Virtual memory continued.<br>
+      </td>
+      <td style="vertical-align: top;">Chapter 9<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Week 11: November 6th - 10th </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Filesystem interfaces and
+implementation.<br>
+      </td>
+      <td style="vertical-align: top;">Chapter 10<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Week 12: November 13th -
+17th </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Filesystems (cont'd).&nbsp; Mass
+storage.<br>
+      </td>
+      <td style="vertical-align: top;">Chapter 11-12<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Week 13: November 20th -
+24th </td>
+      <td style="vertical-align: top;">No class Thursday<br>
+      </td>
+      <td style="vertical-align: top;">I/O.<br>
+      </td>
+      <td style="vertical-align: top;">Chapter 13<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; background-color: silver;">November
+22nd - 26th<br>
+      </td>
+      <td colspan="3"
+ style="vertical-align: top; background-color: silver;"><span
+ style="font-weight: bold;">Thanksgiving break, no classes</span><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Week 14: November 27th -
+December 1st </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Protection and security. </td>
+      <td style="vertical-align: top;">Chapters 14-15<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Week 15: December 4th - 8th </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Protection and security
+(cont'd).&nbsp; Distributed systems.<br>
+      </td>
+      <td style="vertical-align: top;">Chapters 15-16<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Week 16: December 11th -
+12th </td>
+      <td style="vertical-align: top;">No class on Thursday<br>
+      </td>
+      <td style="vertical-align: top;">Course wrap-up.<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

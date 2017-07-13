@@ -1,0 +1,54 @@
+
+Here is a solution to the Barber's Chair problem.
+
+Constants:
+   N = number of waiting chairs in the shop.
+
+Semaphores (and initial values):
+   chair = 1;		/* is the chair free */
+   barber = 0;		/* number of waiting customers - between 0 and N 
+				this is used to wake up the barber if need be
+			*/
+   mutex = 1;		/* mutual exclusion over the counter */
+   customer = 0;	/* is the customer's hair cut done */
+	  
+Variables 
+   count;		/* number of waiting customers */
+
+Barber:
+   while (1) {
+       P(barber);	/* sleep waiting for customer */
+       P(mutex);	/* CS for count */
+       count -= 1;
+       V(mutex);	/* count updated */
+
+       /* cut hair - could be short busy wait until customer is seated.
+		but we know the customer will be seated soon so this is OK 
+       */
+
+       V(customer);	/* hair cut is done, the customer can get up */
+   }
+
+Customer:
+   while (1) {
+       P(mutex);
+       if (count < N) {
+	   V(barber);	/* wakeup barber or indicate we are waiting */
+	   count += 1;	/* add to total waiting */
+	   V(mutex);	/* we are done updating count */
+
+	   P(chair);	/* wait for the chair to be free */
+
+	   /* sit down in the barber's chair */
+
+	   P(customer);	/* wait until the barber indicates our hair is done */
+
+	   /* stand up and get out of chair */
+
+	   V(chair);	/* indicate that we are out of the chair */
+       } else {
+	   V(mutex);	/* too many people waiting - leave the shop */
+       }
+
+       /* grow hair */
+   }

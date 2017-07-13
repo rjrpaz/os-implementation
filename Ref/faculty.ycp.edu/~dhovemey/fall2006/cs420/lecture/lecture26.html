@@ -1,0 +1,278 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Lecture 26</title>
+</head>
+<body>
+<h1>CS 420 - Lecture 26<br>
+</h1>
+<p>[Finish Protection from last lecture]<br>
+</p>
+<h2>Security<br>
+</h2>
+<h3>Kinds of attacks<br>
+</h3>
+<p style="margin-left: 40px;">Breach of confidentiality: e.g., stealing
+customer information<br>
+</p>
+<p style="margin-left: 40px;">Breach of integrity: modifying data
+without authorization<br>
+</p>
+<p style="margin-left: 40px;">Breach of availability: destroying data<br>
+</p>
+<p style="margin-left: 40px;">Theft of service: unauthorized use of
+system, e.g., installing a spam relay<br>
+</p>
+<p style="margin-left: 40px;">Denial of service: preventing legitimate
+use of the system<br>
+</p>
+<h3>How can security be compromised?<br>
+</h3>
+<p style="margin-left: 40px;">Masquerading: attacker pretends to be a
+legitimate user.&nbsp; E.g., steals password or private encryption key.<br>
+</p>
+<p style="margin-left: 40px;">Man-in-the-middle: interposes between
+legitimate user and system.<br>
+</p>
+<h3>Security measures<br>
+</h3>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Physical</span>.&nbsp;
+If an attacker can gain physical access to a system, all bets are off.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Human</span>.&nbsp;
+Must prevent "social engineering" attacks.&nbsp; E.g., phishing attacks
+request private information from users in the guise of legitimate email
+from a trusted service provider (ebay, paypal, etc.)&nbsp; Another
+possibility: call someone and claim to be from the I.T. dept, asking
+for password.<br>
+</p>
+<p style="margin-left: 40px;">This is hard to do because many computer
+users are not technically savvy.&nbsp; And the ones who are might still
+be fooled by a clever enough trick.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Operating
+system</span>.&nbsp; Prevent deliberate or accidental security
+compromises.&nbsp; Examples:<br>
+</p>
+<p style="margin-left: 80px;">Password cracking.<br>
+</p>
+<p style="margin-left: 80px;">Fork bomb denial of service.<br>
+</p>
+<p style="margin-left: 80px;">Exploitation of bugs where a privilege
+escalation could occur.<br>
+</p>
+<p style="margin-left: 80px;">Interesting question: how can we
+distinguish legitimate use from accidental or deliberate misuse?<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Network</span>.&nbsp;
+Networks vastly increase the possibilities for attackers to breach
+security.<br>
+</p>
+<h3>Program Threats<br>
+</h3>
+<p><span style="font-weight: bold;">Trojan horse</span>.&nbsp; A
+program that masquerades as a legitimate application.&nbsp; User may
+reveal sensitive information, not realizing that the program is
+malicious.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Example</span>:
+a program that masquerades as the login screen.&nbsp; Unsuspecting
+users may try to log in by typing their usernames and passwords.&nbsp;
+Program records them, says "invalid password".&nbsp; Incidentially,
+this is why you have to type Ctrl-Alt-Del to log into a Windows machine.<br>
+</p>
+<p><span style="font-weight: bold;">Trap door</span>.&nbsp;
+Implementers of system software may deliberately leave in a "back door"
+to escalate privileges.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Example</span>:
+Ken Thompson, one of the inventors of Unix, added a clever trap door to
+Unix.&nbsp; The "login" program would allow login using a special
+username/password not in the system password database.&nbsp; Since Unix
+is distributed with source code, this trapdoor would have been obvious
+to anyone reading it.&nbsp; So, special code was added to the compiler
+to detect when the login program was being compiled, in order to insert
+the trap door code automatically.&nbsp; Again, the compiler was
+distributed with source code, which would have made the trap door
+obvious.&nbsp; So, the default install of the operating system included
+a special binary compiler executable that could detect:<br>
+</p>
+<p style="margin-left: 80px;">1. When the login program was recompiled,
+in order to compile in the trap door code<br>
+</p>
+<p style="margin-left: 80px;">2. When the compiler program was
+recompiled, in order to compile the "detect login program compilation
+and insert trapdoor code" code<br>
+</p>
+<p style="margin-left: 40px;">This backdoor persisted undetected for
+many years, and was eventually revealed as part of his <a
+ href="http://www.acm.org/classics/sep95/">Turing award acceptance
+speech</a>.<br>
+</p>
+<p><span style="font-weight: bold;">Logic bomb</span>.&nbsp; Program
+that is covertly installed, and triggered later.&nbsp; E.g., a
+disgruntled system administrator uses legitimate root privileges to
+install a script that erases the hard drive 2 weeks after he/she quits.<br>
+</p>
+<p><span style="font-weight: bold;">Stack or Buffer Overflow</span>.&nbsp;
+An easily-exploited kind of bug in C and C++ programs.<br>
+</p>
+<p>Consider the following function, which might be part of a web app:<br>
+</p>
+<pre style="margin-left: 40px;">int TitleSearch(const char *bookTitle)<br>{<br>	char buf[1024];<br>	QueryHandle *handle;<br><br>	sprintf(buf, "SELECT id FROM book WHERE title = '%s'", bookTitle);<br>	handle = ExecuteQuery(buf);<br>	while (FetchRow(handle)) {<br>		BookResult(FetchAttribute(query, 0));<br>	}<br>	CloseHandle(handle);<br>}<br></pre>
+<p>Bugs?&nbsp; [Discuss.]<br>
+</p>
+<p>Consider the layout of the activation record for the call to the
+TitleSearch
+function:<br>
+</p>
+<p style="margin-left: 40px;"><img alt=""
+ src="figures/bufferOverflowAttack.png" style="width: 50%;"><br>
+</p>
+<p>Typically, a stack frame consists of parameters (argument values
+pushed on the stack by the caller), a return address (the address of
+the instruction immediately following the subroutine call instruction),
+and then local variables defined in the called function.&nbsp; There is
+also usually some scratch space that we're not showing here.<br>
+</p>
+<p>Now consider what happens if the string bookTitle contains more than
+1023 characters: it will <span style="font-style: italic;">overwrite
+the return address</span>.&nbsp; That means that when the function
+returns, it will return to the instruction who's address is stored in
+the return address field in the activation record.&nbsp; An attacker
+can construct a special bookTitle that will overwrite the return
+address with any value she chooses.&nbsp; By carefully constructing
+bookTitle, the return address can be used to execute code that is
+inside the buf array.&nbsp; This causes the execution of arbitrary
+machine code chosen by the attacker.<br>
+</p>
+<p>There are a number of details that the attacker has to get just
+right: she has to know (to a close approximation) the address at which
+the buf array will be loaded in memory, to ensure that the forged
+return address executes code that is inside buf.<br>
+</p>
+<p>Arbitrary code execution is, in many ways, a worst case for a
+security compromise, since it allows the attacker to perform any
+operation that is allowed by the protection domain of the attacked
+process.&nbsp; (This is a good argument for not running servers with
+root privileges.)<br>
+</p>
+<p>Buffer overflow attacks are especially bad if they occur in a setuid
+executable.&nbsp; This allows escalation of privileges to the
+protection domain of the user recorded as the owner of the
+executable.&nbsp; A buffer overflow in a setuid root executable means
+that any user account allowed to execute the executable can escalate to
+root privileges.<br>
+</p>
+<h3>Viruses (Virii?)<br>
+</h3>
+<p>A self-replicating program.&nbsp; Lots of infection and propagation
+methods are possible:<br>
+</p>
+<p>Infection:<br>
+</p>
+<p style="margin-left: 40px;">Installs itself in a hidden directory<br>
+</p>
+<p style="margin-left: 40px;">Attaches itself to a host executable or
+file<br>
+</p>
+<p style="margin-left: 40px;">Installs itself in the boot block<br>
+</p>
+<p>Propagation:<br>
+</p>
+<p style="margin-left: 40px;">Copies itself into new locations<br>
+</p>
+<p style="margin-left: 40px;">Attaches itself to new executables or
+files<br>
+</p>
+<p style="margin-left: 40px;">Sends itself over network<br>
+</p>
+<p>Virus-detection programs attempt to detect and eliminate viruses
+that have installed themselves.&nbsp; Generally, they work by scanning
+each file in the filesystem and looking for a virus signature: a speial
+sequence of bytes that is unique to the virus.<br>
+</p>
+<p>Viruses use a number of techniques to conceal themselves, including:<br>
+</p>
+<p style="margin-left: 40px;">Polymorphism: virus changes its own code
+to avoid virus detectors that look for fixed signatures.<br>
+</p>
+<p style="margin-left: 40px;">Encryption: a virus can encrypt its own
+code, decrypting when executed.<br>
+</p>
+<p style="margin-left: 40px;">Stealth.&nbsp; a virus can modify the
+system software to prevent detection.&nbsp; E.g., change the read
+system call to prevent revealing what files have been infected.<br>
+</p>
+<p style="margin-left: 40px;">Multipartite: use multiple infection
+mechanisms.<br>
+</p>
+<p style="margin-left: 40px;">Armored: obfuscate the code to prevent
+analysis by researchers.<br>
+</p>
+<h3>Network Security and Encryption<br>
+</h3>
+<p>With ubiquitious networking, sensitive data is travelling over the
+network.<br>
+</p>
+<p>If any sensitive data is sent in <span style="font-style: italic;">plaintext</span>,
+then it could be intercepted and cause a security compromise.<br>
+</p>
+<p>Encryption can be used to protect sensitive information.&nbsp; The
+most common encryption technique is public-key encryption:<br>
+</p>
+<p style="margin-left: 40px;">Both parties that wish to communicate
+create a private key and a public key; the combination of private and
+public keys is known as a key pair.&nbsp; Private keys are kept
+private, and are known only to the owner of the key.&nbsp; Public keys
+are made known to everyone, including potential attackers.<br>
+</p>
+<p style="margin-left: 40px;">To send a message to someone, you encrypt
+it with their public key.&nbsp; A message encrypted with a public key
+can only be decrypted if you have the matching public key.<br>
+</p>
+<p>Authentication is the problem of finding out the identity of a party
+involved in communication.&nbsp; Public key encryption can be used to
+build a secure authentication mechanism.&nbsp; E.g.:<br>
+</p>
+<p style="margin-left: 40px;">Bob wants to prove his identiy to Alice.<br>
+</p>
+<p style="margin-left: 40px;">Alice sends a challenge encrypted with
+Bob's public key.&nbsp; This challenge is only readable by someone who
+has Bob's private key.<br>
+</p>
+<p style="margin-left: 40px;">Bob deciphers the challenge, encrypts it
+with Alice's public key, and sends it back to Alice.<br>
+</p>
+<p>Note that an untrustde party who intercepts will not be able to
+decipher either message, because reading them would require Bob's and
+Alice's private keys.<br>
+</p>
+<h3>Chains of Trust<br>
+</h3>
+<p>A potential problem with public key encryption is the
+man-in-the-middle attack.&nbsp; If someone can intercept and alter
+messages sent, then he/she could distort the public keys.&nbsp; E.g.:<br>
+</p>
+<p>[diagram]<br>
+</p>
+<p>The problem is that Bob should only use a public key to communicate
+with Alice if he has a good reason to trust that the public key is
+authentic.&nbsp; So, how does Bob acquire Alice's public key?<br>
+</p>
+<p>Could be done out of band.<br>
+</p>
+<p>Or, could be done through a key-distribution mechanism.&nbsp; Such a
+mechanism could be done using a <span style="font-style: italic;">root
+certificate</span>: this is essentially a well-known public key of a
+trusted party.&nbsp; Bob can obtain a trustworthy public key for Alice
+if it is signed by the trusted authority using the private key matching
+the root certificate.<br>
+</p>
+<p>A root certificate can also be used by the trusted party to endorse
+another trusted party, establishing a chain of trust.<br>
+</p>
+</body>
+</html>

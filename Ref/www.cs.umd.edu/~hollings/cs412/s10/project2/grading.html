@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>CMSC412 Project 2</title>
+  <link rel="stylesheet" href="../nspring-wh.css">
+</head>
+<body>
+		<h2 align="center"> Project 2 Grading Criteria </h2>
+		<h3>Basic Signal Functionality - (40/100 points)</h3>
+		<ul>
+			<li> <font color="#FF0000"><b><i>Full Credit</i></b></font> - ALL
+              the following functionalities should be working correctly:
+              <ol>
+                <li> Register handler</li>
+                <li>Send signal</li>
+                <li>Handle signal</li>
+                <li>Return from signal correctly</li>
+              </ol>
+              <p>&nbsp;
+			</li>
+			<li> <font color="#FF0000"><b><i>Partial Credit</i>  </b> </font>- If the basic signal functionality is not working, however, your code shows that you made a good effort in the project, you will receive
+              (<b><font color="#0066FF">20 Pts</font></b>) as partial credit.
+			</li></ul>
+
+		<h3>SIGCHLD - <b>(15/100 points)</b></h3>
+		<ul>
+			<li>
+(<b><font color="#0066FF">5 Pts</font></b>) SIGCHLD should be ignored if there is no registered handler.
+			</li>
+			<li>
+(<b><font color="#0066FF">10 Pts</font></b>) Whenever a child process dies, a SIGCHLD should be sent to parent.
+			</li></ul>
+		<h3>SIG_IGN &amp; SIG_DFL - <b>(15/100 points)</b></h3>
+		<ul>
+			<li> (<b><font color="#0066FF">5 Pts</font></b>) Passing SIG_IGN as a handler to a signal should result in the signal being ignored.
+			</li>
+			<li> (<b><font color="#0066FF">5 Pts</font></b>) Passing SIG_DFL as a handler to a signal should result in the process exiting as described in the specification, except for SIGCHLD.
+			</li>
+
+			<li> (<b><font color="#0066FF">5 Pts</font></b>)
+              If a process receives a signal and no explicit
+              signal handler has been defined for that
+              signal by Sys_Signal, then the default signal
+              handler will be invoked.
+
+			</li></ul>
+		<h3>Testing Non-reentrant Handler Code - <b>(10/100 points)</b></h3>
+        <ul>
+          <li>(<b><font color="#0066FF">5 Pts</font></b>) Handling Multiple Same Signals: Indicate that one signal is pending while executing the handler no matter how many times the signal received.</li>
+          <li>(<b><font color="#0066FF">5 Pts</font></b>) Handling Multiple Different Signals: Indicate all signals as pending once.</li>
+        </ul>
+        <h3>Handling Errors - <b>(10/100 points)</b></h3>
+        <ul>
+          <li>(<b><font color="#0066FF">2 Pts</font></b>) Registering a handler for SIGKILL</li>
+          <li>(<b><font color="#0066FF">2 Pts</font></b>) Registering a handler for non-exiting signal</li>
+          <li>(<b><font color="#0066FF">2 Pts</font></b>) Sending a signal to a non-existing PID</li>
+          <li>(<b><font color="#0066FF">2 Pts</font></b>) Sending a non-existing signal</li>
+<!--          <li>(<b><font color="#0066FF">2 Pts</font></b>) Passing NULL to Sys_RegDeliver as the return signal (trampoline)</li> -->
+          <li>(<b><font color="#0066FF">2 Pts</font></b>) Sending a signal to a kernel process </li>
+
+        </ul>
+        <h3>Sys_WaitNoPID - <b>(10/100 points)</b></h3>
+        <ul>
+          <li>(<b><font color="#0066FF">5 Pts</font></b>) Sys_WaitNoPID should reap any zombie child process that happens to have terminated, and whose refCount is 1.</li>
+          <li>(<b><font color="#0066FF">5 Pts</font></b>) Return ENOZOMBIES if there are no dead child processes.</li>
+        </ul>
+	</body></html>

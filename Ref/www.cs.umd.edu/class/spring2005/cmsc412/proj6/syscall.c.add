@@ -1,0 +1,67 @@
+/*
+ * Create a Message Queue
+ * Params:
+ *   state->ebx - user address of name of MQ
+ *   state->ecx - length of MQ name
+ *   state->edx - MQ buffer size
+
+ * Returns: the global MQ id
+ * It creates the MQ if it doesn't exist, and returns the already-existing id if the MQ exists.
+ */
+static int Sys_MessageQueueCreate(struct Interrupt_State* state)
+{
+    TODO("MessageQueueCreate system call");
+}
+
+/*
+ * Destroys a Message Queue
+ * Params:
+ *   state->ebx - the MQ id
+
+ * Returns: 0 if successful, error code (< 0) if unsuccessful
+ * Will destroy the MQ for this thread only. You need a ref count.
+ * If the ref count gets to 0, destroys the MQ completely.
+ */
+
+static int Sys_MessageQueueDestroy(struct Interrupt_State* state)
+{
+    TODO("MessageQueueDestroy system call");
+}
+
+/*
+ * Write to a Message Queue
+ * Params:
+ *   state->ebx - the MQ id
+ *   state->ecx - user address of buffer
+ *   state->edx - length of message 
+ *
+ * Returns: 0 if successful, error code (< 0) if unsuccessful
+ * Blocks is the buffer is full.
+ */
+static int Sys_MessageQueueSend(struct Interrupt_State* state)
+{
+    TODO("MessageQueueSend system call");
+}
+
+/*
+ * Read from a Message Queue
+ * Params:
+ *   state->ebx - the MQ id
+ *   state->ecx - user address of buffer
+ *   state->edx - length of message 
+ *
+ * Returns: 0 if successful, error code (< 0) if unsuccessful
+ * Blocks if no data is available.
+ */
+static int Sys_MessageQueueReceive(struct Interrupt_State* state)
+{
+    TODO("MessageQueueReceive system call");
+}
+
+
+
+//////////////// add these TO THE END of the const Syscall g_syscallTable array //////////////////
+    Sys_MessageQueueCreate,
+    Sys_MessageQueueDestroy,
+    Sys_MessageQueueSend,
+    Sys_MessageQueueReceive

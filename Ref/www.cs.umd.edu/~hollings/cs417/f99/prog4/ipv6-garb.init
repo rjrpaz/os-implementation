@@ -1,0 +1,5 @@
+ 3.0  data - discard probability
+ 10.0  data - corruption probability
+ 4.0  data - duplicate probability
+ 1.5  routing - discard probability
+ 2.0  routing - corruption probability

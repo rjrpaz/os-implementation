@@ -1,0 +1,57 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1253">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>CMSC 417 - Fall 1999 Sample MT1a</TITLE>
+<META NAME="Template" CONTENT="C:\Program Files\Microsoft Office\Office\html.dot">
+</HEAD>
+<BODY LINK="#0000ff" VLINK="#800080">
+
+<B><FONT SIZE=5><P ALIGN="CENTER">CMSC 417 Midterm #1 (Fall 1997)</P>
+<OL>
+
+</B></FONT><FONT FACE="Arial" SIZE=2><P ALIGN="JUSTIFY"><LI>(12 points) Define or explain the following terms:</LI></P>
+<OL TYPE="a">
+
+<LI>ATM cell</LI>
+<LI>virtual circuit vs. packet switched</LI>
+<LI>POTS</LI>
+<LI>Frequency Division Multiplexing</LI></OL>
+
+<P ALIGN="JUSTIFY"><LI>(18 points) Limits on information exchange.</LI></P>
+<OL TYPE="a">
+
+<LI>If we wish to send 1,000 octets per second through a 800hz channel, what is the minimum signal to noise ratio in decibels?</LI>
+<LI>Explain why using additional bits per baud will not increase the maximum transmission rate through a channel with a fixed bandwidth and signal to noise ratio?</LI></OL>
+
+<P ALIGN="JUSTIFY"><LI>(15 Points) What is the difference between a protocol and a service interface? Explain your answer in terms of a the ISO seven layer model.</LI></P>
+<P ALIGN="JUSTIFY"><LI>(20 Points) A proposed way to fix the count-to-infinity problem in distance-vector routing is that on a link failure the two routers at either end of the line immediately broadcast (via flooding) that the link between the two routers has failed. Will this solve the problem? Explain your answer.</LI></P>
+<P ALIGN="JUSTIFY"><LI>(20 points) The following C program runs two threads, t1, t2, that share two integer variables, x and y. Thread t1 executes xdec() and thread t3 execute ydec(). xdec() should repeatedly do the following: decrement x by 2 and increment y by 1 if x is at least 2, otherwise block until x is at least 2. ydec() should repeatedly do the following: decrement y by 2 and increment x by 2 if y is at least 1, otherwise block until x is at least 2.</LI></P>
+<P>Using Pthreads, supply the missing code in the boxes to achieve this:</FONT><FONT SIZE=2> </P>
+</FONT><PRE>int x = 10 ;
+int y = 10 ;
+xdec() {
+&#9;while (1) {
+&#9;&#9;x = x-2 ;
+&#9;&#9;y = y-1 ;
+&#9;}
+}
+
+ydec() {
+&#9;while (1) {
+&#9;&#9;y = y-2 ;
+&#9;&#9;x = x-1 ;
+&#9;}
+}
+
+main() {
+&#9;pthread_t t1, t2;
+&#9;pthread_init( &amp;t1, NULL ) ;
+&#9;pthread_init( &amp;t2, NULL ) ;
+
+&#9;pthread_create( &amp;t1, NULL, xdec , NULL ) ;
+&#9;pthread_create( &amp;t2, NULL, ydec , NULL ) ;
+}</PRE>
+<FONT FACE="Arial" SIZE=2><P ALIGN="JUSTIFY"><LI>(15 points) Consider a time division switch for circuit switching. The switch has 8 input lines and 8 output lines, with each line delivering an octet every 2 microseconds. What is the access time of the switch memory?</LI></P></OL>
+</FONT></BODY>
+</HTML>

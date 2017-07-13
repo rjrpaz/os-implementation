@@ -1,0 +1,263 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./Assign4_files/filelist.xml">
+<title>CSCI 3120 Summer 2003</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>hawkey</o:Author>
+  <o:Template>Normal</o:Template>
+  <o:LastAuthor>hawkey</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>66</o:TotalTime>
+  <o:Created>2003-06-23T22:59:00Z</o:Created>
+  <o:LastSaved>2003-06-23T22:59:00Z</o:LastSaved>
+  <o:Pages>2</o:Pages>
+  <o:Words>475</o:Words>
+  <o:Characters>2712</o:Characters>
+  <o:Company>Dalhousie University</o:Company>
+  <o:Lines>22</o:Lines>
+  <o:Paragraphs>5</o:Paragraphs>
+  <o:CharactersWithSpaces>3330</o:CharactersWithSpaces>
+  <o:Version>9.2720</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+h1
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:16.0pt;
+	font-family:Arial;
+	mso-font-kerning:16.0pt;}
+h2
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:2;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-style:italic;}
+h3
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:3;
+	font-size:13.0pt;
+	font-family:Arial;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+</head>
+
+<body lang=EN-US style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<h1 style='margin:0in;margin-bottom:.0001pt'>CSCI 3120 Summer 2003</h1>
+
+<h1 style='margin:0in;margin-bottom:.0001pt'>Assignment 4</h1>
+
+<h1 style='margin:0in;margin-bottom:.0001pt'>Due: 1:35 pm, Wednesday, July 2,
+2003</h1>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>This assignment should help you become familiar with the
+client-server model and interprocess communication using sockets.</p>
+
+<h2>Required functionality:</h2>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>This assignment requires you to write the code for 3
+processes:<span style="mso-spacerun: yes">  </span>a server (server.c), and two
+clients (client1.c, client2.c).<span style="mso-spacerun: yes">   </span></p>
+
+<h3>Server:</h3>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The server should create a socket and output the port number
+to the screen.<span style="mso-spacerun: yes">  </span>Upon accepting a request
+for a connection, the server should fork a child process to deal with the
+request.<span style="mso-spacerun: yes">  </span>The child should exist until
+the client terminates.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The child process(es) should receive a message with 3
+integer fields.<span style="mso-spacerun: yes">  </span>The child should add
+the values in the first 2 fields and return the result in the third field.<span
+style="mso-spacerun: yes">  </span>It should output to the screen the request
+and results.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The server should not exit.<span style="mso-spacerun: yes"> 
+</span>When finished, kill the server with ctrl-C.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h3>Clients:</h3>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The clients will be virtually identical, except that one
+will add the numbers from 1 to 1000 and the other from 1000 down to 1.<span
+style="mso-spacerun: yes">  </span>The request is a structure consisting of 3
+fields:<span style="mso-spacerun: yes">  </span>the integers to be added and
+the result returned from the server.<span style="mso-spacerun: yes"> 
+</span>Each child should print to the screen the numbers added and the result
+returned.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h3>To compile:</h3>
+
+<p class=MsoNormal><span style="mso-spacerun: yes">                </span>gcc
+-o output_file code.c -lsocket -lnsl</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h3>To run:</h3>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Open 3 windows (a combination of borg and torch).<span
+style="mso-spacerun: yes">  </span>Start the server and get the port
+number.<span style="mso-spacerun: yes">  </span>In each of the other 2 windows,
+type the command, but don't hit enter.<span style="mso-spacerun: yes"> 
+</span>The goal is to have both clients accessing the server concurrently.<span
+style="mso-spacerun: yes">  </span>If the system is running so quickly that you
+can't achieve concurrency with 1000 numbers, increase the numbers and verify
+that your server can handle concurrent clients - the marker will be verifying
+this<span style="mso-spacerun: yes">  </span>After having typed both commands, quickly
+start both clients by hitting the enter key in the appropriate window.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Command to run the clients should work as follows:</p>
+
+<p class=MsoNormal>client# server_host port#<span style="mso-spacerun: yes"> 
+</span>(where server_host is either borg or torch depending on where your
+server is running and the port# is the port specified at runtime by the
+server).<span style="mso-spacerun: yes">  </span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h3>To submit:</h3>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Place all source code, the makefile, and readme file in a
+directory called assign4 and submit the directory.<span style="mso-spacerun:
+yes">  </span>Also hand in a hard copy of all files at the beginning of
+class.<span style="mso-spacerun: yes">  </span>Make sure that your name and
+student number are on the top of each file.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><b><span style='font-size:13.0pt;font-family:Arial'>Sample
+makefile</span></b>:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>all :<span style="mso-spacerun: yes">          
+</span>client1 client2 server</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>client1 :<span style="mso-spacerun: yes">         
+</span>client1.c assign3.h</p>
+
+<p class=MsoNormal><span style="mso-spacerun: yes">                </span>gcc
+-o client1 client1.c -lsocket -lnsl</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>client2 :<span style="mso-spacerun: yes">         
+</span>client2.c assign3.h</p>
+
+<p class=MsoNormal><span style="mso-spacerun: yes">    </span><span
+style="mso-spacerun: yes">            </span>gcc -o client2 client2.c -lsocket
+-lnsl</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>server :<span style="mso-spacerun: yes">       
+</span>server.c assign3.h</p>
+
+<p class=MsoNormal><span style="mso-spacerun: yes">                </span>gcc
+-o server server.c -lsocket -lnsl</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h3>Sample code:</h3>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Some tutorials and sample code for working with sockets is
+available on the course website.<span style="mso-spacerun: yes">  </span>Please
+limit your use of &quot;borrowed code&quot; to these examples and credit
+appropriately.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h3>Marking scheme:</h3>
+
+<p class=MsoNormal>50% functionality (25% server, 25% client)</p>
+
+<p class=MsoNormal>50% readability (includes proper use of header files,
+commenting at all levels including a readme file, variable names, constants,
+demonstrated knowledge of how/why program is working, indentation, etc.)</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Ensure that your code compiles on torch with your
+makefile.<span style="mso-spacerun: yes">  </span>Provide an all: in the
+makefile to simplify things for the marker.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+</body>
+
+</html>

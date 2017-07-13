@@ -1,0 +1,9 @@
+#define MAX_ARGC 20
+
+
+int Set_Scheduling_Policy( int policy, int quantum );
+unsigned long Get_Time( void );
+int Init_Semaphore(char *name, int initval);
+int P(int sid);
+int V(int sid);
+int Finish_Semaphore(int sid);

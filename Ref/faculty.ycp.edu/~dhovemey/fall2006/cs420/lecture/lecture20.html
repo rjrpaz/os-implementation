@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Lecture 20</title>
+</head>
+<body>
+<h1>CS 420 - Lecture 20<br>
+</h1>
+<h2>Kernel Heap<br>
+</h2>
+<p>We have talked about memory management mostly from the perspective
+of the OS kernel providing virtual address spaces for user processes to
+run in.&nbsp; However, the kernel has its own memory management to
+consider.<br>
+</p>
+<p>Most operating systems keep all of their own code and data mapped
+into the kernel address space at all times.&nbsp; Kernel memory is
+generally not paged.<br>
+</p>
+<p style="margin-left: 40px;">It is easy to see why allowing the kernel
+address space to be paged is problematic.&nbsp; Imagine a page fault in
+a user process address space.&nbsp; The CPU will transfer control to
+the kernel's page fault handler.&nbsp; Now imagine that the frame
+containing the code of the kernel's page fault handler has been paged
+out.&nbsp; This would cause a <span style="font-style: italic;">recursive</span>
+page fault: a page fault while trying to handle a page fault.<br>
+</p>
+<p style="margin-left: 40px;">As another potential problem, think about
+what would happen if a pagein needs to read data from a disk file, but
+the code of the disk device driver has been paged out.<br>
+</p>
+<p style="margin-left: 40px;">Physical memory is cheap, and engineering
+an OS kernel is hard.&nbsp; Therefore, simplifying the kernel design at
+the expense of fixing some of of the kernel memory is justifiable.<br>
+</p>
+<p>Like any program, the OS kernel will need to allocate and free small
+chunks of memory as needed.&nbsp; For this purpose it generally sets
+aside a portion of its address space as the <span
+ style="font-style: italic;">kernel heap</span>.&nbsp; The kernel heap
+provides general-purpose allocation using <span
+ style="font-style: italic;">malloc</span> and <span
+ style="font-style: italic;">free</span> functions.&nbsp; E.g., in
+Linux these are called <span style="font-weight: bold;">kmalloc</span>
+and <span style="font-weight: bold;">kfree</span>.<br>
+</p>
+<p>Because malloc and free are used very frequently they need to be
+fairly fast.&nbsp; In addition to allocation/free speed, it is
+desirable that the heap allocation system use memory efficiently.&nbsp;
+The fragmentation of a heap is a measure of how much space is wasted:<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Internal
+fragmentation</span>: memory wasted because an allocated buffers are
+larger than they need to be.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">External
+fragmentation</span>: memory wasted because regions of the heap between
+allocated chunks are too small to do anything useful with.<br>
+</p>
+<p>There are a number of heap memory allocation algorithms that are
+commonly used:<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Buddy
+algorithm</span>: heap memory is divided into power-of-2 size
+regions.&nbsp; A larger region may be split in 2 to create two
+half-size regions, or "buddies".&nbsp; When a chunk is freed, a check
+is performed to see if its buddy is also free.&nbsp; If so, the buddies
+are <span style="font-style: italic;">coelesced</span> to form a
+larger (2x size) region.&nbsp; The buddy algorithm has no external
+fragmentation, but in general suffers from internal fragmentation.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Slab
+algorithm</span>: Optimized for allocation of small, fixed-size
+objects.&nbsp; The heap is divided up into <span
+ style="font-style: italic;">slabs</span>, which are large enough to
+contain a fairly good number of small objects, all of the same
+type.&nbsp; A slab can be in 2 states:<br>
+</p>
+<ol>
+  <ol>
+    <li><span style="font-weight: bold;">Empty</span>: no live objects
+are allocated in the slab.&nbsp; An empty slab can be reclaimed to be
+used to store a different kind of object.<br>
+    </li>
+    <li><span style="font-weight: bold;">Partial</span>: contains some
+live objects and some available space.<br>
+    </li>
+    <li><span style="font-weight: bold;">Full</span>: completely full
+of live objects; no available space.</li>
+  </ol>
+</ol>
+<p style="margin-left: 40px;">When an object needs to be allocated, the
+slab allocator tries to find a partial slab and allocate the object out
+of an available slot in that slab.&nbsp; If no partial slab is
+available, then the allocator finds and uses an empty slab.<br>
+</p>
+<p style="margin-left: 40px;">The slab algorithm does not have any
+internal fragmentation at all: the objects in a slab are packed in
+without any space between them.&nbsp; The algorithm can suffer from two
+kinds of internal fragmentation. A small amount of space in each slab
+might be wasted because there is some room left over after packing in
+the maximum number of objects.&nbsp; Another kind of fragmentation can
+occur if removing objects from slabs results in a situation where there
+are a large number of slabs that each contain only a small number of
+objects.<br>
+</p>
+<p>The slab allocator was introduced in Solaris, and is now used in
+both Solaris and Linux.<br>
+</p>
+<h2>I/O Interlock</h2>
+<p>In a virtual memory system, frames of memory can be stolen from VM
+objects as page faults occur.&nbsp; The resulting pageouts and pageins
+will often require I/O (generally disk I/O).&nbsp; When a frame of
+memory is being used for I/O, the OS kernel needs to be careful that
+the frame is not stolen while the I/O is taking place.&nbsp; Quite
+often, disk I/O is performed using DMA (Direct Memory Access), where
+the disk controller will transfer data to or from the disk without the
+CPU's intervention.&nbsp; To ensure that frames are not stolen while
+I/O is occurring, the OS kernel <span style="font-style: italic;">locks</span>
+the frame before starting the I/O.&nbsp; The mechanism for locking a
+frame can be as simple as simply setting a flag associated with the
+frame.&nbsp; When the I/O is complete the frame can be unlocked,
+allowing the frame to be stolen again.<br>
+</p>
+<h2>File Systems<br>
+</h2>
+<p>Basic concepts:</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">File</span>:
+a sequence of bytes.&nbsp; Generally stored on a device, ususally a
+disk.</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Directory</span>:
+a collection of files and directories.&nbsp; Each file and directory
+contained in a directory is given a name.&nbsp; Within a single
+directory, no two items (files and directories) can have the same name.</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Filesystem</span>:
+tree of directories and files.&nbsp; The <span
+ style="font-style: italic;">root directory</span> of the filesystem is
+the ancestor of all files and directories in the filesystem.&nbsp; <span
+ style="font-style: italic;">Paths</span> identify files and
+directories within the <span style="font-style: italic;">filesystem
+namespace</span>.<br>
+</p>
+<p style="margin-left: 40px;"><img alt=""
+ src="figures/filesystemHierarchy.png" style="width: 50%;"><br>
+</p>
+<p>File operations:<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Create</span>:
+create a new empty file<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Write</span>:
+write some data to the file: either appending new data at the end of
+the file, or overwriting existing data.&nbsp; Moves the <span
+ style="font-style: italic;">logical file position</span>.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Read</span>:
+read some data from the file.&nbsp; Moves the <span
+ style="font-style: italic;">logical file position</span>.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Reposition
+(Seek)</span>: move the logical position (byte offset) within the
+file.&nbsp; Next read or write will occur at this position.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Delete</span>:
+completely remove the file from the filesystem.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Truncate</span>:
+abandon all of the data currently contained in the file.&nbsp; After
+truncation, the file contains no bytes.<br>
+</p>
+<h3>Paths, Mounts, and the Filesystem Namespace<br>
+</h3>
+<p>A path is simply a sequence of names.&nbsp; Starting from the root
+directory, each component of the path specifies the name of a
+directory.&nbsp; The final component of the path specifies either a
+file or directory.<br>
+</p>
+<p>Paths are called paths because they specify a way of traversing the
+tree of directories starting from the root in order to reach a
+particular tree node.<br>
+</p>
+<p style="margin-left: 40px;">E.g.: /usr/bin/perl is a path in the
+example filesystem hierarchy above.<br>
+</p>
+<p>The <span style="font-style: italic;">filesystem namespace</span>
+is the set of all possible paths.<br>
+</p>
+<p>Most operating system allow filesystems located on the various
+devices connected to the computer to be <span
+ style="font-style: italic;">mounted</span> in user-defined locations
+within the filesystem namespace.&nbsp; Mounting a filesystem means
+overlaying the root directory of filesystem B on an existing
+directory---the <span style="font-style: italic;">mount point</span>---of
+an already-mounted filesystem A.&nbsp; After the mount, any files or
+directories that were in the mount-point directory become inaccessible
+because they have been obscured by the contents of B's root directory.<br>
+</p>
+<p>Unix/Linux allow any filesystem to be mounted over any existing
+directory.&nbsp; A typical strategy is to use a small filesystem as the
+root filesystem, and have separate larger filesystems mounted over the
+"usr" and "home" directories of the root filesystem.<br>
+</p>
+<p>Windows does not allow arbitrary mounts.&nbsp; Instead, each
+filesystem is mounted on a <span style="font-style: italic;">drive
+letter</span>, which essentially creates a new (separate) filesystem
+namespace.<br>
+</p>
+</body>
+</html>

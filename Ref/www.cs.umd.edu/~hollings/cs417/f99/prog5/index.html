@@ -1,0 +1,51 @@
+<HTML>
+
+<HEAD>
+
+<TITLE>CMSC 417 - Project #5</TITLE>
+
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#D7D3D2" LINK="#78021C" VLINK="#7F6666" ALINK="#FFFFFF" BACKGROUND="../marble.gif">
+
+<center>
+<h1>
+CMSC417 - Project #5 
+</h1>
+</center>
+
+<h2>Handout</h2>
+<menu>
+    <li><a href="prog5.html">In HTML</a>
+    <li><a href="prog5.pdf">In PDF</a>
+</menu>
+
+<li><a href="../guide5.html">Submission Guide</a>
+
+<P>
+<h2>
+Header, Source, Object, and Sample Data Files
+</h2>
+<P>
+<menu>
+<li>Updated Sockets Header File
+<menu>
+<li><a href="ipv6socket.h">ipv6socket.h</a>
+</menu>
+<li><a href="ftpApp.tar">ftpApp.tar (FTP Application)</a>
+<li>Updated ftp App files for projects written in C
+<menu>
+<li><a href="ftp_client_forC.C">ftp_client.C</a>
+<li><a href="ftp_msg_forC.h">ftp_msg.h</a>
+<li><a href="wrappers_forC.h">wrappers.h</a>
+</menu>
+<p>
+IPv6recv the length parameter should be an int not int& (i.e. its value
+does not change inside recv.  The function should return the number of bytes
+actually copied into the buffer.
+<p>
+The default filesize limit on the AITS cluster is likely too small for the ftp 
+app.  Type <b>limit filesize u</b> to increase this limit.
+<p>
+The Makefile for ftpApp expects the garbler to be in ../garb/ipv6-garb.o.  You can
+add a top-level directory (same as ftpApp and net) to hold the garbler.
+</HTML>

@@ -1,0 +1,466 @@
+<!-- ========================================= -->
+<!-- Page title (begin it with "15-410") ===== -->
+<!-- ========================================= -->
+
+
+
+
+
+<!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 3.2//EN&quot;>
+<html>
+<head><title>15-410 Approved Readings</title>
+</head>
+<body bgcolor=white>
+<table width="100%" height="100%">
+
+<tr><td valign=top width=132>
+<table width=132 bgcolor=#cccccc height="100%">
+<tr><td height=140><center><font size=-1><b>Carnegie Mellon</b></font><br>
+<img alt="SCS logo" src="/~410/img/scslogo.gif"><br>
+<font size=-1><b>Computer Science Department</b></font></center></td></tr>
+<tr><td height=30><a href="/~410"><img alt="home" src="/~410/img/home.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/syllabus.html"><img alt="syllabus" src="/~410/img/syllabus.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/staff.html"><img alt="staff" src="/~410/img/staff.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/schedule.html"><img alt="schedule" src="/~410/img/schedule.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/lecture.html"><img alt="lecture" src="/~410/img/lecture.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/projects.html"><img alt="projects" src="/~410/img/projects.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/homeworks.html"><img alt="homeworks" src="/~410/img/homeworks.gif" border=0></a></td></tr>
+<tr><td>&nbsp;</td></tr></table>
+
+</td>
+
+<td width=10>&nbsp;</td>
+
+<td height="100%" valign=top>
+<br>
+
+<H1 ALIGN=CENTER>15-410 Approved Readings</H1>
+<HR>
+<!-- Body goes here. -->
+ 
+
+<!-- ========================================= -->
+<!-- Content Begins ========================== -->
+<!-- ========================================= -->
+
+<H2>Books</H2>
+
+<P><CITE>Advanced Configuration And Power Interface Specification
+Revision 4.0</CITE>
+<A HREF="http://www.acpi.info/spec.htm">Available here</A></P>
+
+<P><CITE>Practical File System Design with the Be File System</CITE>
+<A HREF="http://www.letterp.com/~dbg/practical-file-system-design.pdf">(PDF)</A>
+
+<P>Daniel Bovet and Marco Cesati.
+<CITE>Understanding the Linux Kernel (2nd Edition or newer)</CITE>
+<BR>Note:  this book has some tendency to function as
+a play-by-play of what happens inside Linux (on an x86) as opposed to
+a design book.
+You may find <A HREF="#BSD">the BSD book</A> 
+or <A HREF="#Love">the Love book</A> 
+more design-oriented.
+</P>
+
+<P>Eppinger, Mummert, and Spector, ed.
+<CITE>Camelot and Avalon: a distributed transaction facility</CITE>
+<BR>This is the story of Mach the platform as opposed to Mach the
+OS:  Mach served as the basis for Camelot, a distributed transaction
+system based on transactional virtual memory, and Avalon, a high-level
+language built on Camelot.  The system as developed didn't enter
+popular use, but it's an interesting case study.
+</P>
+
+<P>Maurice J. Bach.
+<CITE>Design of the Unix Operating System</CITE>
+<BR>This is a very clear overview of how Unix kernels
+used to be constructed (some time ago).</P>
+
+<A NAME="Bar"></A>
+<P>Bar, Moshe.
+<CITE>Linux Internals</CITE>
+<BR>Some people have found this book dry due to extensive
+source-code walk-throughs.
+</P>
+
+<P>Joshua J. Bloch.
+<CITE>Effective Java</CITE>
+<BR>Though this isn't a book about an OS, there are
+many related topics covered from a different perspective
+(races and synchronization; access control and integrity).
+Also, this book is full of things Java programmers need
+to know (but often don't know they need to know).
+If you are a working Java programmer, you probably want to
+read the second edition rather than the first so you can
+be up to date.  If you are curious about Java, the first
+edition is probably fine.</P>
+
+<P>Joseph Boykin, David Kirschen, Alan Langerman, Susan LoVerso.
+<CITE>Programming under Mach</CITE>,
+Addison-Wesley Unix and Open Systems Series;
+Addison-Wesley Publishing Company, Inc. 1993.
+ISBN 0-201-52739-1
+<BR>This is perhaps the most straightforward book on
+what Mach provided to programmers.  Past students have
+found it somewhat dry.
+</P>
+
+<P>Niels Ferguson and Bruce Schneier.
+<CITE>Practical Cryptography</CITE>
+<BR>This is a good nuts-and-bolts book; if you
+are interested in the human-factors, managerial,
+political, or social implications of computer
+security, you might prefer <CITE>Secrets and Lies</CITE>
+(below).
+</P>
+
+<P>Brian Goetz <IT>et al</IT>.
+<CITE>Java Concurrency in Practice</CITE>
+<BR>If you want to learn a lot more about concurrency,
+this is a good chance to cover, in more detail than we
+have time for, how to carefully define the problem and
+some good tools to address it with.</P>
+
+<A NAME="Love"></A>
+<P>Robert Love.
+<CITE>Linux Kernel Development</CITE>
+<BR>We received some complaints about the 2003 edition
+containing too much play-by-play material, but the
+2005 edition has received favorable student reviews.
+You may find that <A HREF="#BSD">the BSD book</A> 
+provides more historical and design perspective.
+You should also know that people familiar with other
+operating systems may dispute some historical descriptions
+and claims of architectural novelty.
+</P>
+
+<A NAME="BSD"></A>
+<P>These both count as "the BSD book":
+<UL>
+<LI>Marshall Kirk McKusick, George V. Neville-Neil.
+<CITE>The Design and Implementation of the FreeBSD Operating System</CITE>,
+Pearson Education, 2004.
+ISBN: 0-201-70245-2
+<LI>Marshall Kirk McKusick, Keith Bostic, Michael J. Karels, John S.
+Quarterman.
+<CITE>The Design and Implementation of the 4.4 BSD Operating
+System</CITE>,
+Addison-Wesley Publishing Company, Inc., 1996.
+ISBN:0-201-54979-4
+</UL>
+<BR>You may read either edition of "the BSD book",
+though the older one will describe a system which
+seems oddly and perhaps frustratingly old.
+</P>
+
+<P>David Loshin.
+<CITE>Efficient Memory Programming</CITE>
+<BR>Note that some students reported a distracting
+number of minor errors in this book.</P>
+
+<P>Jim Mauro, Richard McDougall.
+<CITE>Solaris Internals: Core Kernel Architecture</CITE></P>
+
+<P>Mark Russinovich, David Solomon, &amp; Alex Ionescu.
+<CITE>Windows Internals, 5th edition</CITE>
+<BR>The fifth edition contains coverage of key topics
+such as 64-bit mode and hypervisor support.</P>
+
+<P>Bruce Schneier.
+<CITE>Secrets and Lies</CITE>
+<BR>Note:  his <CITE>Beyond Fear</CITE> is probably
+too layman-targeted for this class.  Meanwhile,
+<CITE>Applied Cryptography</CITE> is probably too dry.
+If you're looking for nuts and bolts, try
+<CITE>Practical Cryptography</Cite> (above); this is
+a more conceptual/high-level book.
+</P>
+
+<HR>
+
+<H2>Dissertations</H2>
+
+<P>Fay Chang,
+<CITE>Using Speculative Execution to Automatically Hide I/O Latency</CITE> (CMU-CS-01-172)
+<A HREF="http://www.pdl.cmu.edu/PDL-FTP/TIP/CMU-CS-01-172.pdf">(PDF)</A>
+<BR>To predict which data your application will fetch, clone a copy and
+run it in a world where I/O happens instantly but returns fake data.
+Replace out-of-date/inaccurate clones with newer ones as necessary.</P>
+
+<P>Ann Chervenak.
+<CITE>Performance Measurements of the First RAID Prototype</CITE>
+<A HREF="http://www.isi.edu/~annc/papers/masters.ps">(ps)</A>
+<BR>Note: this is a <STRONG>very</STRONG> dense piece of work,
+but it is an excellent
+example of what must be done to make real systems go fast.  It is
+also a good example of how to graduate even if your system doesn't
+go as fast as you expected it to.
+</P>
+
+<P>Gregory S. Hartman,
+<CITE>Attentiveness: Reactivity at Scale</CITE>
+<A HREF="http://reports-archive.adm.cs.cmu.edu/anon/isr2010/abstracts/10-111.html">(abstract and 144M PDF)</A>
+<BR>This work attempts to explain why many applications fail to react in a timely fashion to your input
+(the "cancel button problem"),
+and lays out a roadmap for implementing attentive systems.
+If you're in a hurry, you can probably get by with Chapters 1, 2, and 4.
+</P>
+
+<P>Jay Kistler,
+<CITE>Disconnected Operation in a Distributed File System</CITE>
+<A HREF="http://www.cs.cmu.edu/~coda/docdir/jjk-thesis.pdf">(PDF)</A>
+<BR>Disconnected operation is a very timely topic.</P>
+
+<P>Henry Massalin.
+<CITE>Synthesis: An Efficient Implementation of Fundamental
+Operating System Services</CITE>
+<A HREF="http://www.cs.columbia.edu/~library/TR-repository/reports/reports-1992/cucs-039-92.ps.gz">(ps.gz)</A>
+<BR>The practical implications of this work are very unclear, but
+it's definitely a good vehicle for thinking differently about
+what a kernel might be.</P>
+
+<P>Lily B. Mummert,
+<CITE>Exploiting weak connectivity
+in a distributed file system</CITE>
+<A HREF="http://www.cs.cmu.edu/~coda/docdir/lily-thesis.pdf">(PDF)</A>
+<BR>Adaptive mobility from the file system perspective.</P>
+
+<P>Hugo Patterson,
+<CITE>Informed Prefetching and Caching</CITE> (CMU-CS-97-204)
+<A HREF="http://www.pdl.cmu.edu/PDL-FTP/TIP/rhp_diss.pdf">(PDF)</A>
+<BR>Instead of an application-blind cache eviction policy such as
+LRU, use your cache space to hold data your particular application
+is likely to want in the future.</P>
+
+<P>Alfred Z. Spector,
+<CITE>Multiprocessing Architectures for Local Computer Networks</CITE>,
+STAN-CS-81-874.
+<BR>This is old and not trivial to find (I think the E&amp;S Library
+has a copy), but it's fascinating...
+</P>
+
+<P>Michael Wayne Young,
+<CITE>Exporting a User Interface to Memory Management
+from a Communication-Oriented Operating System</CITE>,
+CMU-CS-89-202.</P>
+
+<HR>
+
+<H2>Paper collections</H2>
+
+<P>If multiple tracks are listed for an area, the suggestion
+is to read one track's worth of papers on the expectation that
+they have been chosen because they work well together.</P>
+
+<UL>
+<LI>Autonet (N.B. The papers are interesting though the technology is <STRONG>dead</STRONG>)
+<UL>
+<LI><CITE>
+Autonet: a high-speed, self-configuring local area network
+using point-to-point links</CITE>,
+<A HREF="http://www.hpl.hp.com/techreports/Compaq-DEC/SRC-RR-59.html">SRC
+Research Report #59</A>
+<LI><CITE>Automatic reconfiguration in Autonet</CITE>,
+<A HREF="http://www.hpl.hp.com/techreports/Compaq-DEC/SRC-RR-77.html">SRC
+Research Report #77</A>
+</UL>
+
+<LI><A
+HREF="http://amsterdam.lcs.mit.edu/PDOS-papers.html#Exokernels">Exokernel</A>
+(see also Xen, VMware)
+<UL>
+<LI>1994:
+<CITE>The exokernel approach to extensibility</CITE> (panel statement)
+<A HREF="http://www.pdos.lcs.mit.edu/papers/exo-abstract.ps">(PS)</A>
+<LI>1995:
+<CITE>The operating system kernel as a secure programmable machine</CITE>
+<A HREF="http://www.pdos.lcs.mit.edu/papers/osr-exo.ps">(PS)</A>
+<LI>1995:
+<CITE>Exterminate all operating system abstractions</CITE> 
+<A HREF="http://www.pdos.lcs.mit.edu/papers/hotos-jeremiad.ps">(PS)</A>
+<LI>1995:
+<CITE>Exokernel: an operating system architecture for
+application-level resource management</CITE>
+<A HREF="http://www.pdos.lcs.mit.edu/papers/exokernel-sosp95.ps">(PS)</A>
+<LI>1997:
+<CITE>Application performance and flexibility on exokernel systems</CITE>
+<A HREF="http://www.pdos.lcs.mit.edu/papers/exo-sosp97/exo-sosp97.html">(HTML)</A>
+<A HREF="http://www.pdos.lcs.mit.edu/papers/exo-sosp97/exo-sosp97.ps">(PS)</A>
+<LI>2002:
+<CITE>Fast and flexible Application-Level Networking on Exokernel Systems</CITE>
+<A HREF="http://www.pdos.lcs.mit.edu/papers/exo:tocs.ps">(PS)</A>
+</UL>
+
+<LI>EROS - Yes, you can read about
+<A HREF="http://www.eros-os.org/">EROS</A>,
+but you need
+to propose a particular list of papers, see below.
+
+<LI><A HREF="http://cm.bell-labs.com/sys/doc/index.html">Plan 9</A>
+ <UL>
+ <LI>File system track
+  <UL>
+   <LI>Introduction:
+    <CITE>Plan 9 From Bell Labs</CITE>
+    <A HREF="http://cm.bell-labs.com/sys/doc/9.pdf">(PDF)</A>
+   <LI>
+    <CITE>The Plan 9 File Server</CITE>
+    <A HREF="http://cm.bell-labs.com/sys/doc/fs/fs.pdf">(PDF)</A>
+   <LI>
+    <CITE>Venti: A new approach to archival storage</CITE>
+    <A HREF="http://cm.bell-labs.com/sys/doc/venti/venti.pdf">(PDF)</A>
+  </UL>
+ <LI>Network track
+  <UL>
+   <LI>Introduction:
+    <CITE>Plan 9 From Bell Labs</CITE>
+    <A HREF="http://cm.bell-labs.com/sys/doc/9.pdf">(PDF)</A>
+   <LI>
+    <CITE>The Organization of Networks in Plan 9</CITE>
+    <A HREF="http://cm.bell-labs.com/sys/doc/net/net.pdf">(PDF)</A>
+   <LI>
+    <CITE>The IL protocol</CITE>
+    <A HREF="http://cm.bell-labs.com/sys/doc/il/il.pdf">(PDF)</A>
+  </UL>
+ <LI>Naming track
+  <UL>
+   <LI>Introduction:
+    <CITE>Plan 9 From Bell Labs</CITE>
+    <A HREF="http://cm.bell-labs.com/sys/doc/9.pdf">(PDF)</A>
+   <LI>
+    <CITE>The Use of Name Spaces in Plan 9</CITE>
+    <A HREF="http://cm.bell-labs.com/sys/doc/names.pdf">(PDF)</A>
+   <LI>
+    <CITE>Lexical File Names in Plan 9, or, Getting Dot-Dot Right</CITE>
+    <A HREF="http://cm.bell-labs.com/sys/doc/lexnames.pdf">(PDF)</A>
+  </UL>
+ <LI>Or suggest your own track of two to three other papers...
+ </UL>
+
+<LI><A
+HREF="http://www.cl.cam.ac.uk/Research/SRG/netos/xen/architecture.html">Xen</A>
+(see also Exokernel, VMware)
+ <UL>
+  <LI>
+   <CITE>Xen and the Art of Virtualization</CITE>
+   <A HREF="http://www.cl.cam.ac.uk/netos/papers/2003-xensosp.pdf">(PDF)</A>
+  <LI>
+   <CITE>Safe Hardware Access with the Xen Virtual Machine Monitor</CITE>
+   <A HREF="http://www.cl.cam.ac.uk/netos/papers/2004-oasis-ngio.pdf">(PDF)</A>
+  <LI>
+   <CITE>Live Migration of Virtual Machines</CITE>
+   <A HREF="http://www.cl.cam.ac.uk/netos/papers/2005-migration-nsdi-pre.pdf">(PDF)</A>
+ </UL>
+
+<LI><A
+HREF="http://www.vmware.com/partners/academic/resources.html">VMware</A>
+(see also Exokernel, Xen)
+ <UL>
+  <LI>
+   <CITE>Fast Transparent Migration for Virtual Machines</CITE>
+   <A HREF="http://www.vmware.com/pdf/usenix_vmotion.pdf">(PDF)</A>
+  <LI>
+   <CITE>VMI: An Interface for Paravirtualization</CITE>
+   <A HREF="http://www.vmware.com/pdf/subrahmanyam.pdf">(PDF)</A>
+  <LI>
+   <CITE>A Comparison of Software and Hardware Techniques for x86 Virtualization</CITE>
+   <A HREF="http://www.vmware.com/pdf/asplos235_adams.pdf">(PDF)</A>
+ </UL>
+
+<!-- jceirant -->
+<LI>User-level isolation &amp; execution of untrusted code
+ <UL>
+  <LI>
+   <CITE>Native Client: A Sandbox for Portable, Untrusted
+   x86 Native Code</CITE> (15 pages)
+   <A HREF="http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=5207638&isnumber=5207632&tag=1">(PDF)</A>
+  <LI>
+   <CITE>Vx32: Lightweight User-level Sandboxing on
+   the x86</CITE> (14 pages)
+   <A HREF="http://pdos.csail.mit.edu/papers/vx32:usenix08.pdf">(PDF)</A>
+  <LI>
+   <CITE>User-Level Sandboxing: a Safe and Efficient
+   Mechanism for Extensibility</CITE> (13 pages)
+   <A HREF="http://www.cs.bu.edu/techreports/pdf/2003-014-user-level-sandboxing.pdf">(PDF)</A>
+ </UL>
+
+<LI>Scheduler activations (a different threading approach)
+ <UL>
+  <LI>
+   <CITE>Scheduler Activations: Effective Kernel Support for
+   the User Level Management of Parallelism</CITE>
+   <A HREF="http://www.cs.washington.edu/homes/bershad/Papers/p53-anderson.pdf">(PDF)</A>
+  <LI>
+   <CITE>An Implementation of Scheduler Activations on the NetBSD Operating System</CITE>
+   <A HREF="http://www.mit.edu/people/nathanw/usenix/freenix-sa.ps">(PS)</A>
+ </UL>
+
+<LI>Filesystem reliability options
+ <UL>
+  <LI>
+   <CITE>Analysis and Evolution of Journaling File Systems</CITE>
+   <A HREF="http://www.usenix.org/events/usenix05/tech/general/full_papers/prabhakaran">(various)</A>
+  <LI>
+   <CITE>Soft Updates: A Technique for Eliminating Most Synchronous Writes in the Fast Filesystem</CITE>
+   <A HREF="http://www.usenix.org/publications/library/proceedings/usenix99/full_papers/mckusick">(various)</A>
+  <LI>
+   <CITE>Journaling Versus Soft Updates: Asynchronous Meta-data Protection in File Systems</CITE>
+   <A HREF="http://www.usenix.org/publications/library/proceedings/usenix2000/general/seltzer.html">(various)</A>
+ </UL>
+
+<!-- BEGIN COMMENTED-OUT SECTION -->
+
+<!-- END COMMENTED-OUT SECTION -->
+
+</UL>
+
+<HR>
+
+<P>Remember, you are not required to read something on this list.
+This is the list of <EM>pre-approved</EM> readings.  If you want to
+read something else,
+make a suggestion on the <A HREF="bookchoice.html">book choice page</A>.</P>
+
+<P>If you are proposing a collection of papers
+which has not already been approved,
+please send me a list of titles, page counts, and URLs.</P>
+
+<P>I would appreciate it if you would make submissions in
+HTML according to the format used in this document so I
+can easily add approved readings.  For example:</P>
+
+<PRE>
+
+&lt;P&gt;Author.
+&lt;CITE&gt;Title&lt;/CITE&gt;
+&lt;A HREF="..."&gt;(PDF)&lt;/A&gt;&lt;/P&gt;
+
+&lt;LI&gt;Paper collection name
+&lt;UL&gt;
+&lt;LI&gt;&lt;CITE&gt;Paper Title 1&lt;/CITE&gt; (NN pages),
+&lt;A HREF="..."&gt;(PDF)&lt;/A&gt
+&lt;LI&gt;&lt;CITE&gt;Paper Title 2&lt;/CITE&gt; (NN pages),
+&lt;A HREF="..."&gt;(PDF)&lt;/A&gt
+&lt;/UL&gt;
+
+</PRE>
+
+<A HREF="bookreport.html">(Back to Book Report page)</A>
+
+<!-- ========================================= -->
+<!-- Content Ends ============================ -->
+<!-- ========================================= -->
+
+<!-- End body. -->
+
+
+</td></tr>
+<tr><td></td><td></td><td align=center>
+
+<HR>
+<P ALIGN=CENTER>[Last modified Monday January 24, 2011]</P></td></tr>
+</table>
+
+</body>
+</html>
+ 

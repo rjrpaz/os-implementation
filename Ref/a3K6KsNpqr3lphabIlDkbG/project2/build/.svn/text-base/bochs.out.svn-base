@@ -1,0 +1,174 @@
+00000000000i[     ] Bochs x86 Emulator 2.3.5
+00000000000i[     ]   Build from CVS snapshot, on September 16, 2007
+00000000000i[     ] System configuration
+00000000000i[     ]   processors: 1 (cores=1, HT threads=1)
+00000000000i[     ]   A20 line support: yes
+00000000000i[     ]   APIC support: no
+00000000000i[     ] CPU configuration
+00000000000i[     ]   level: 5
+00000000000i[     ]   TLB enabled: yes
+00000000000i[     ]   SMP support: no
+00000000000i[     ]   FPU support: yes
+00000000000i[     ]   MMX support: yes
+00000000000i[     ]   SSE support: no
+00000000000i[     ]   CLFLUSH support: no
+00000000000i[     ]   v8086 mode support: yes
+00000000000i[     ]   VME support: yes
+00000000000i[     ]   3dnow! support: no
+00000000000i[     ]   PAE support: no
+00000000000i[     ]   PGE support: no
+00000000000i[     ]   PSE support: yes
+00000000000i[     ]   x86-64 support: no
+00000000000i[     ]   SEP support: no
+00000000000i[     ] Optimization configuration
+00000000000i[     ]   Guest2HostTLB support: no
+00000000000i[     ]   RepeatSpeedups support: no
+00000000000i[     ]   Icache support: no
+00000000000i[     ]   Host Asm support: yes
+00000000000i[     ]   Fast function calls: no
+00000000000i[     ] Devices configuration
+00000000000i[     ]   NE2000 support: no
+00000000000i[     ]   PCI support: no
+00000000000i[     ]   SB16 support: no
+00000000000i[     ]   USB support: no
+00000000000i[     ]   VGA extension support: vbe 
+00000000000i[MEM0 ] allocated memory at 0xb71c3008. after alignment, vector=0xb71c4000
+00000000000i[MEM0 ] 8,00MB
+00000000000i[MEM0 ] rom at 0xfffe0000/131072 ('/home/blind/software/bochs-2.3.5/bios/BIOS-bochs-latest')
+00000000000i[MEM0 ] rom at 0xc0000/38400 ('/usr/local/share/bochs/VGABIOS-lgpl-latest')
+00000000000i[CMOS ] Using local time for initial clock
+00000000000i[CMOS ] Setting initial clock to: Thu Nov 22 20:19:18 2007 (time0=1195759158)
+00000000000i[DMA  ] channel 4 used by cascade
+00000000000i[DMA  ] channel 2 used by Floppy Drive
+00000000000i[FDD  ] fd0: 'fd.img' ro=0, h=2,t=80,spt=18
+00000000000i[MEM0 ] Register memory access handlers: 000a0000-000bffff
+00000000000i[XGUI ] test_alloc_colors: 16 colors available out of 16 colors tried
+00000000000i[XGUI ] font 8 wide x 16 high, display depth = 24
+00000000000i[VGA  ] interval=300000
+00000000000i[MEM0 ] Register memory access handlers: e0000000-e07fffff
+00000000000i[VGA  ] VBE Bochs Display Extension Enabled
+00000000000i[     ] init_mem of 'harddrv' plugin device by virtual method
+00000000000i[     ] init_mem of 'keyboard' plugin device by virtual method
+00000000000i[     ] init_mem of 'serial' plugin device by virtual method
+00000000000i[     ] init_mem of 'parallel' plugin device by virtual method
+00000000000i[     ] init_mem of 'extfpuirq' plugin device by virtual method
+00000000000i[     ] init_mem of 'speaker' plugin device by virtual method
+00000000000i[     ] init_dev of 'harddrv' plugin device by virtual method
+00000000000i[HD   ] HD on ata0-0: 'diskc.img' 'flat' mode 
+00000000000i[HD   ] translation on ata0-0 set to 'large'
+00000000000i[HD   ] Using boot sequence floppy, none, none
+00000000000i[HD   ] Floppy boot signature check is enabled
+00000000000i[     ] init_dev of 'keyboard' plugin device by virtual method
+00000000000i[KBD  ] will paste characters every 1000 keyboard ticks
+00000000000i[     ] init_dev of 'serial' plugin device by virtual method
+00000000000i[SER  ] com1 at 0x03f8 irq 4
+00000000000i[     ] init_dev of 'parallel' plugin device by virtual method
+00000000000i[PAR  ] parallel port 1 at 0x0378 irq 7
+00000000000i[     ] init_dev of 'extfpuirq' plugin device by virtual method
+00000000000i[     ] init_dev of 'speaker' plugin device by virtual method
+00000000000i[SPEAK] Failed to open /dev/console: Success
+00000000000i[SPEAK] Deactivating beep on console
+00000000000i[     ] register state of 'harddrv' plugin device by virtual method
+00000000000i[     ] register state of 'keyboard' plugin device by virtual method
+00000000000i[     ] register state of 'serial' plugin device by virtual method
+00000000000i[     ] register state of 'parallel' plugin device by virtual method
+00000000000i[     ] register state of 'extfpuirq' plugin device by virtual method
+00000000000i[     ] register state of 'speaker' plugin device by virtual method
+00000000000i[SYS  ] bx_pc_system_c::Reset(HARDWARE) called
+00000000000i[     ] reset of 'harddrv' plugin device by virtual method
+00000000000i[     ] reset of 'keyboard' plugin device by virtual method
+00000000000i[     ] reset of 'serial' plugin device by virtual method
+00000000000i[     ] reset of 'parallel' plugin device by virtual method
+00000000000i[     ] reset of 'extfpuirq' plugin device by virtual method
+00000000000i[     ] reset of 'speaker' plugin device by virtual method
+00000000000i[XGUI ] [x] Mouse off
+00000003442i[BIOS ] $Revision: 1.183 $ $Date: 2007/09/10 20:00:29 $
+00000300000e[VGA  ] character height = 1, skipping text update
+00000317265i[KBD  ] reset-disable command received
+00000334893i[BIOS ] Starting rombios32
+00000335699i[BIOS ] ram_size=0x00700000
+00000336308i[BIOS ] Found 1 cpu(s)
+00000600000e[VGA  ] character height = 1, skipping text update
+00000623581i[VBIOS] VGABios $Id: vgabios.c,v 1.66 2006/07/10 07:47:51 vruppert Exp $
+00000623652i[VGA  ] VBE known Display Interface b0c0
+00000623684i[VGA  ] VBE known Display Interface b0c4
+00000626609i[VBIOS] VBE Bios $Id: vbe.c,v 1.58 2006/08/19 09:39:43 vruppert Exp $
+00000900000i[XGUI ] charmap update. Font Height is 16
+00000965085i[BIOS ] ata0-0: PCHS=40/8/64 translation=large LCHS=40/8/64
+00001205891i[BIOS ] Booting from 0000:7C00
+00010242257i[FDD  ] controller reset in software
+00344546000e[XGUI ] xkeypress(): keysym df unhandled!
+00345662000e[XGUI ] xkeypress(): keysym df unhandled!
+00347111000e[XGUI ] xkeypress(): keysym b4 unhandled!
+00348240000e[XGUI ] xkeypress(): keysym b4 unhandled!
+00350333000e[XGUI ] xkeypress(): keysym df unhandled!
+00351201000e[XGUI ] xkeypress(): keysym df unhandled!
+00379281000e[XGUI ] xkeypress(): keysym d6 unhandled!
+00380385000e[XGUI ] xkeypress(): keysym d6 unhandled!
+00387826000e[XGUI ] xkeypress(): keysym dc unhandled!
+00388951000e[XGUI ] xkeypress(): keysym dc unhandled!
+00391999000e[XGUI ] xkeypress(): keysym f6 unhandled!
+00392869000e[XGUI ] xkeypress(): keysym f6 unhandled!
+00394245000e[XGUI ] xkeypress(): keysym f6 unhandled!
+00395109000e[XGUI ] xkeypress(): keysym f6 unhandled!
+00396163000e[XGUI ] xkeypress(): keysym e4 unhandled!
+00396811000e[XGUI ] xkeypress(): keysym e4 unhandled!
+00397866000e[XGUI ] xkeypress(): keysym fc unhandled!
+00398513000e[XGUI ] xkeypress(): keysym fc unhandled!
+00453694000e[XGUI ] xkeypress(): keysym a7 unhandled!
+00454781000e[XGUI ] xkeypress(): keysym a7 unhandled!
+00511402000e[XGUI ] xkeypress(): keysym e4 unhandled!
+00512495000e[XGUI ] xkeypress(): keysym e4 unhandled!
+00513687000e[XGUI ] xkeypress(): keysym f6 unhandled!
+00514372000e[XGUI ] xkeypress(): keysym f6 unhandled!
+00517297000e[XGUI ] xkeypress(): keysym fc unhandled!
+00518418000e[XGUI ] xkeypress(): keysym fc unhandled!
+00797588000e[XGUI ] xkeypress(): keysym e4 unhandled!
+00798744000e[XGUI ] xkeypress(): keysym e4 unhandled!
+00804752000e[XGUI ] xkeypress(): keysym fc unhandled!
+00806274000e[XGUI ] xkeypress(): keysym fc unhandled!
+00817947000e[XGUI ] xkeypress(): keysym e4 unhandled!
+00819036000e[XGUI ] xkeypress(): keysym e4 unhandled!
+00820524000e[XGUI ] xkeypress(): keysym e4 unhandled!
+00821512000e[XGUI ] xkeypress(): keysym e4 unhandled!
+00822629000e[XGUI ] xkeypress(): keysym f6 unhandled!
+00823972000e[XGUI ] xkeypress(): keysym f6 unhandled!
+00825071000e[XGUI ] xkeypress(): keysym f6 unhandled!
+00825793000e[XGUI ] xkeypress(): keysym f6 unhandled!
+00853099000e[XGUI ] xkeypress(): keysym fc unhandled!
+00854277000e[XGUI ] xkeypress(): keysym fc unhandled!
+00862449000e[XGUI ] xkeypress(): keysym b4 unhandled!
+00863751000e[XGUI ] xkeypress(): keysym b4 unhandled!
+00864613000e[XGUI ] xkeypress(): keysym df unhandled!
+00865522000e[XGUI ] xkeypress(): keysym df unhandled!
+00876701000e[XGUI ] xkeypress(): keysym a7 unhandled!
+00877974000e[XGUI ] xkeypress(): keysym a7 unhandled!
+00893670000e[XGUI ] xkeypress(): keysym dc unhandled!
+00895166000e[XGUI ] xkeypress(): keysym dc unhandled!
+00901095000e[XGUI ] xkeypress(): keysym d6 unhandled!
+00903093000e[XGUI ] xkeypress(): keysym d6 unhandled!
+00903095000e[XGUI ] xkeypress(): keysym c4 unhandled!
+00903740000e[XGUI ] xkeypress(): keysym c4 unhandled!
+01331213000p[XGUI ] >>PANIC<< POWER button turned off.
+01331213000i[CPU  ] protected mode
+01331213000i[CPU  ] CS.d_b = 32 bit
+01331213000i[CPU  ] SS.d_b = 32 bit
+01331213000i[CPU  ] | EAX=00000000  EBX=00000000  ECX=000228f0  EDX=00001000
+01331213000i[CPU  ] | ESP=00002fb8  EBP=00002fe4  ESI=00000000  EDI=00000000
+01331213000i[CPU  ] | IOPL=0 id vip vif ac vm rf nt of df if tf sf zf AF pf cf
+01331213000i[CPU  ] | SEG selector     base    limit G D
+01331213000i[CPU  ] | SEG sltr(index|ti|rpl)     base    limit G D
+01331213000i[CPU  ] |  CS:0008( 0001| 0|  0) 00000000 000fffff 1 1
+01331213000i[CPU  ] |  DS:0010( 0002| 0|  0) 00000000 000fffff 1 1
+01331213000i[CPU  ] |  SS:0010( 0002| 0|  0) 00000000 000fffff 1 1
+01331213000i[CPU  ] |  ES:0010( 0002| 0|  0) 00000000 000fffff 1 1
+01331213000i[CPU  ] |  FS:0000( 0000| 0|  0) 001dfe40 00000006 1 1
+01331213000i[CPU  ] |  GS:0000( 0000| 0|  0) 001dfe40 00000006 1 1
+01331213000i[CPU  ] | EIP=00015948 (00015948)
+01331213000i[CPU  ] | CR0=0x00000011 CR1=0 CR2=0x00000000
+01331213000i[CPU  ] | CR3=0x00000000 CR4=0x00000000
+01331213000i[CPU  ] >> ret  : C3
+01331213000i[CMOS ] Last time is 1195760489 (Thu Nov 22 20:41:29 2007)
+01331213000i[XGUI ] Exit.
+01331213000i[     ] restoring default signal behavior
+01331213000i[CTRL ] quit_sim called with exit code 1

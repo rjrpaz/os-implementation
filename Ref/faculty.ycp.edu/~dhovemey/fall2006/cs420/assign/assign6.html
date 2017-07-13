@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Assignment 6</title>
+</head>
+<body>
+<h1>CS 420 - Assignment 6<br>
+</h1>
+<p><span style="font-weight: bold; color: rgb(255, 0, 0);">Updated:
+December 7th</span>: Added pipe testing document<br>
+</p>
+<p>Due Dates:<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Tuesday,
+December 5th by 11:59 PM:</span> Implementation of Console
+Pseudo-Filesystem<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Tuesday,
+December 12th by 11:59 PM:</span> Implementation of Pipe
+Pseudo-Filesystem<br>
+</p>
+<h2>Console and Pipe Pseudo-Filesystems<br>
+</h2>
+<p>In class we have discussed how the concepts of files and directories
+can be supported by the operating system kernel by managing storage on
+a block device such as a hard drive.&nbsp; File data can be read and
+written using <span style="font-weight: bold;">read</span> and <span
+ style="font-weight: bold;">write</span> system calls.<br>
+</p>
+<p>Most operating systems, including Unix and Windows, allow the same
+read and write system calls to be used to read data from and write data
+to hardware devices and inter-process communication mechanisms.&nbsp;
+The idea of using a common I/O mechanism for files, devices, and
+inter-process communication is called <span style="font-style: italic;">I/O
+polymorphism</span>.<br>
+</p>
+<p>In this assignment you will implement the read, write, and clone
+virtual filesystem methods for a console device and a pipe IPC
+mechanism.<br>
+</p>
+<h2>The GeekOS Virtual Filesystem<br>
+</h2>
+<p>Recall that a <span style="font-style: italic;">virtual filesystem</span>
+is essentially an object-oriented class hierarchy defining different
+implementations of files.&nbsp; Each disk filesystem will have its own
+file implementation: in GeekOS, the two disk filesystems are PFAT and
+GOSFS: you can see the implementation of these filesystems in the
+sourcefiles <span style="font-weight: bold;">pfat.c</span> and <span
+ style="font-weight: bold;">gosfs.c</span>.<br>
+</p>
+<p>The virtual methods defined for File objects are defined by the
+File_Ops struct in &lt;geekos/vfs.h&gt;:<br>
+</p>
+<pre style="margin-left: 40px;">/* Operations that can be performed on a File. */<br>struct File_Ops {<br>    int (*FStat)(struct File *file, struct VFS_File_Stat *stat);<br>    int (*Read)(struct File *file, void *buf, ulong_t numBytes);<br>    int (*Write)(struct File *file, void *buf, ulong_t numBytes);<br>    int (*Seek)(struct File *file, ulong_t pos);<br>    int (*Close)(struct File *file);<br>    int (*Read_Entry)(struct File *dir, struct VFS_Dir_Entry *entry);<br>    int (*Clone)(struct File *file, struct File **pClone);<br>};<br></pre>
+<p>The <span style="font-weight: bold;">FStat</span> operation copies
+meta-information about a file, such as its size, into a VFS_File_Stat
+struct.<br>
+</p>
+<p>The <span style="font-weight: bold;">Read</span> operation copies
+data file the file into the given buffer.&nbsp; Up to numBytes worth of
+data are copied.&nbsp; The number of bytes actually read (which may be
+less than the number of bytes requested) is returned.<br>
+</p>
+<p>The <span style="font-weight: bold;">Write</span> operation copies
+data from the given buffer into the file.&nbsp; The number of bytes
+actually written (which may be less than the number of bytes requested)
+is returned.<br>
+</p>
+<p>The <span style="font-weight: bold;">Seek</span> operation changes
+the current file position to the one given.<br>
+</p>
+<p>The <span style="font-weight: bold;">Close</span> operation is
+called when a process closes a file.<br>
+</p>
+<p>The <span style="font-weight: bold;">Read_Entry</span> operation is
+called to read the next directory entry from an open directory.&nbsp;
+(Recall that directories and files are similar, and that using a common
+data structure to represent them is a common implementation technique.)<br>
+</p>
+<p>The <span style="font-weight: bold;">Clone</span> operation is
+called when a parent process spawns a child process.&nbsp; Each open
+file in the parent process's open file table is <span
+ style="font-style: italic;">cloned</span>, and the cloned file is
+registered in the child's open file table.&nbsp; A clone is simple a
+new File object that is attached to the same data source as the
+original File object.&nbsp; File cloning (also known as duping in Unix)
+explains why when you create a child process, it uses the same keyboard
+and screen devices as its parent.&nbsp; Cloning is also how a Unix
+shell creates chains of processes connected by pipes: the parent shell
+creates the pipes, and the child<br>
+processes inherit the cloned pipe file descriptors.<br>
+</p>
+<h2>The Console Device<br>
+</h2>
+<p>Your first task is to implement a File object and associated data
+structures to implement a <span style="font-style: italic;">console
+device</span>.&nbsp; A console device is simply a keyboard and a text
+screen.&nbsp; Reading from a console reads from the keyboard, and
+writing to a console writes to the screen.&nbsp; In GeekOS, the
+functions supporting the console device are in the source file <span
+ style="font-weight: bold;">consfs.c</span>.<br>
+</p>
+<p>You will need to implement the <span style="font-weight: bold;">Console_Read</span>,
+<span style="font-weight: bold;">Console_Write</span>, and <span
+ style="font-weight: bold;">Console_Close</span> functions, which
+implement the <span style="font-weight: bold;">Read</span>, <span
+ style="font-weight: bold;">Write</span>, and <span
+ style="font-weight: bold;">Close</span> VFS operations, respectively.<br>
+</p>
+<p>Things to keep in mind:<br>
+</p>
+<p style="margin-left: 40px;">If the user types a carriage return
+character ('\r'), <span style="font-weight: bold;">Console_Read</span>
+should place a newline character (\n') in the caller's buffer.&nbsp;
+This is known as "cooking" the input.<br>
+</p>
+<p style="margin-left: 40px;">It is perfectly fine for an
+implementation of the <span style="font-weight: bold;">Read</span>
+operation to return fewer than the number of bytes of data requested.<br>
+</p>
+<p style="margin-left: 40px;">You can use the <span
+ style="font-weight: bold;">Put_Char</span> function (defined in <span
+ style="font-weight: bold;">&lt;geekos/screen.h&gt;</span> to write a
+single character to the screen.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Console_Close</span>
+doesn't really need to do anything: it can just return 0.<br>
+</p>
+<p>Once you have implemented these functions, you should be able to
+boot GeekOS in Bochs:<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/withConsole.png"
+ style="width: 730px; height: 493px;"><br>
+</p>
+<p>Verify that you can type the commands shown above, and that you get
+the same output in response.<br>
+</p>
+<h2>Pipes<br>
+</h2>
+<p>Your second task is to implement pipes, which are a unidirectional
+inter-process communication mechanism.&nbsp; You can think of a pipe as
+a bounded buffer of bytes.&nbsp; The code to implement pipes is a
+producer/consumer problem.<br>
+</p>
+<p>The source file <span style="font-weight: bold;">pipefs.c</span>
+contains the functions for creating, reading from, writing to, cloning,
+and closing <span style="font-weight: bold;">File</span> objects
+representing pipes.<br>
+</p>
+<p>Hints:<br>
+</p>
+<p style="margin-left: 40px;">Pipes are created in a parent process as
+a pair of <span style="font-weight: bold;">File</span> objects: one to
+read from the pipe and another to write to the pipe.&nbsp; The two <span
+ style="font-weight: bold;">File</span>s will share a common <span
+ style="font-style: italic;">pipe buffer</span> data structure.&nbsp;
+The pipe buffer should contain a buffer and a set of variables needed
+to solve the producer/consumer problem.&nbsp; (E.g., reader and writer
+offsets, a mutex and condition variable for synchronization, etc.)<br>
+</p>
+<p style="margin-left: 40px;">The <span style="font-weight: bold;">Clone</span>
+virtual filesystem operation is used to duplicate a <span
+ style="font-weight: bold;">File</span> object so it can be used by a
+child process.&nbsp; A cloned pipe <span style="font-weight: bold;">File</span>
+object will have a pointer to the same pipe buffer data structure as
+the pipe <span style="font-weight: bold;">File</span> object from
+which it was cloned.&nbsp; You should implement <span
+ style="font-weight: bold;">Pipe_Clone</span> by incrementing the
+reference count of the pipe buffer data structure.<br>
+</p>
+<p style="margin-left: 40px;">The <span style="font-weight: bold;">Pipe_Close</span>
+function (which is the implementation of the <span
+ style="font-weight: bold;">Close</span> virtual filesystem operation)
+should decrease the reference count of the pipe buffer, destroying the
+pipe buffer when the last <span style="font-weight: bold;">File</span>
+object containing a pointer to it is closed.<br>
+</p>
+<p style="margin-left: 40px;">There are two special conditions you
+should consider:<br>
+</p>
+<p style="margin-left: 80px;"><span style="font-weight: bold;">Pipe_Read</span>
+must be able to detect when the last process that has the pipe open for
+writing closes the pipe.<br>
+</p>
+<p style="margin-left: 80px;"><span style="font-weight: bold;">Pipe_Write</span>
+must be able to detect when the last process that has the pipe open for
+reading closes the pipe.<br>
+</p>
+<p style="margin-left: 40px;">In each of these cases, the call to
+Pipe_Read or Pipe_Write should return immediately.&nbsp; Otherwise,
+they run the risks of suspending the calling process forever.<br>
+</p>
+<h3>Testing Pipes<br>
+</h3>
+<p>Please see the following document, which describes how to test your
+pipe implementation:<br>
+</p>
+<p style="margin-left: 40px;"><a href="assign6-testing.html">assign6-testing.html</a><br>
+</p>
+<h2>Getting Started</h2>
+<p>Download <a href="project6a.zip">project6a.zip</a>.<br>
+</p>
+<h2>Submitting<br>
+</h2>
+<p>For the first deadline, you only need to have the console pseudo
+filesystem implemented.&nbsp; Submit this work as "Assignment 6, Part
+1" in the My YCP Inbox.<br>
+</p>
+<p>For the second deadline, you need to have both the console and pipe
+pseudo filesystems implemented.&nbsp; Submit this work as "Assignment
+6, Part 2" in My YCP.</p>
+</body>
+</html>

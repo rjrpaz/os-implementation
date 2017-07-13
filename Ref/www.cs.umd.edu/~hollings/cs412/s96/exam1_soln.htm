@@ -1,0 +1,365 @@
+<HTML>
+
+<HEAD>
+
+<TITLE>CMSC 412-101 (Spring 1996)</TITLE>
+
+<META NAME="GENERATOR" CONTENT="Internet Assistant for Microsoft Word 2.0z Beta">
+</HEAD>
+
+<BODY>
+
+<br>
+<CENTER><B><FONT SIZE=5>CMSC 412 Midterm #1 (Spring 1996)</FONT></B></CENTER>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">(15 points) Define the following
+terms:</FONT>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">thread</FONT>
+
+<P>
+<FONT SIZE=2>code in execution, like a process but without as
+much state (esp without an address space)</FONT>
+<LI><FONT SIZE=2 FACE="Arial">policy vs. mechanism</FONT>
+
+<P>
+<FONT SIZE=2>policy - what to do (e.g., give a class of users
+a specific priority)<BR>
+</FONT>
+<P>
+<FONT SIZE=2>mechanism - how to carry out the policy (e.g. support
+different priorities for different processes)</FONT>
+<LI><FONT SIZE=2 FACE="Arial">preemptive multi-tasking</FONT>
+
+<P>
+<FONT SIZE=2>The ability to run more than one process at a time
+(though not simultaneously) and to have the operating system switch
+between tasks without the task voluntarily giving up the prcessor.
+<BR>
+</FONT>
+<P>
+<LI>
+<FONT SIZE=2 FACE="Arial"></FONT><FONT SIZE=2> </FONT><FONT SIZE=2 FACE="Arial">critical
+section (three conditions)</FONT>
+<ol>
+<LI><FONT SIZE=2>mutual exclusion,</FONT>
+<LI><FONT SIZE=2>tasks not in the CS or waiting to enter CS can't
+hold up tasks from entering the CS.</FONT>
+<LI><FONT SIZE=2>bounded waiting time; other tasks can enter the
+CS a finite number of times before a waiting task gets in.</FONT>
+</ol>
+</OL>
+
+<LI><FONT SIZE=2 FACE="Arial">(10 points) <B>Statement:</B> In
+DOS, user programs change the hardware interrupt vector.  </FONT>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">If user programs can do this, why
+is it impossible to provide processor protection?  </FONT>
+<P>
+<FONT SIZE=2>User program could change the timer interrupt and
+prevent the OS from getting control of the processor back.</FONT>
+<LI><FONT SIZE=2 FACE="Arial">Windows NT provides processor protection
+and can run DOS programs?  Explain how this might be accomplished?</FONT>
+
+<P>
+<FONT SIZE=2>Virtualize the interrupt vector.  Processes can change
+the virtual interrupt, but the hardware timer interrupt is still
+controlled by the kernel.<BR>
+</FONT>
+</OL>
+<LI><FONT SIZE=2 FACE="Arial"> (20 points) In a system that contains
+only one instance of each resource, circular waiting is a necessary
+and sufficient condition for deadlock.</FONT>
+<OL>
+<LI><FONT SIZE=2 FACE="Arial">Why is circular waiting sufficient
+if there is only one instance of each resource, but only necessary
+if there is one instance of each resource?</FONT>
+
+<P>
+<FONT SIZE=2>If there is more than one instance of a resource,
+it is possible for a circular waiting condition to be broken when
+a third party (not involved in the circular wait) releases a resource.</FONT>
+<LI><FONT SIZE=2 FACE="Arial">Consider a system with one instance
+of each resource, and the condition that requests for resources
+must be satisfied in the order in which they are received. Give
+an algorithm that takes as input requests to allocate and release
+resources and determines if the system is deadlocked.</FONT>
+
+<P>
+<FONT SIZE=2>maintain a list of all processes waiting for each
+resource (make it a queue to ensure resources are handed out FIFO).
+ For each process, maintain  a list of resources held.<BR>
+</FONT>
+<P>
+</ol>
+<FONT SIZE=2>Deadlock() {</FONT>
+<P>
+<FONT SIZE=2>     inLoop[1..nproc] of Boolean;<BR>
+</FONT>
+<br>
+<FONT SIZE=2>   for each process p {</FONT>
+<br>
+<FONT SIZE=2>        inloop = false;</FONT>
+<br>
+<FONT SIZE=2>         while (p &lt;&gt; null)  {</FONT>
+<br>
+<FONT SIZE=2>    if inLoop[p] then return true</FONT>
+<br>
+<FONT SIZE=2> else </FONT>
+<br>
+<FONT SIZE=2>    inLoop[p] = true;</FONT>
+<br>
+<FONT SIZE=2>    p = waitOn[p];</FONT>
+<br>
+<FONT SIZE=2>         }</FONT>
+<br>
+<FONT SIZE=2>    }<BR>
+}<BR>
+</FONT>
+<br>
+<FONT SIZE=2>while not done {<BR>
+    if request is acquire</FONT>
+<br>
+<FONT SIZE=2>        if requested resource is free</FONT>
+<br>
+<FONT SIZE=2>             requested.resource.holder = requesting
+process;</FONT>
+<br>
+<FONT SIZE=2>         else</FONT>
+<br>
+<FONT SIZE=2>             enqueue(request.resource, requesting
+process);</FONT>
+<br>
+<FONT SIZE=2>              waitingOn[requesting process] = requested.resource.holder;</FONT>
+<br>
+<FONT SIZE=2>    else if request is release</FONT>
+<br>
+<FONT SIZE=2>         request.holder = dequeue(resource);</FONT>
+<LI><FONT SIZE=2 FACE="Arial">(25 points) You have to solve a
+variation of the readers-writers problem, in which multiple writers
+can write at the same time. Specifically, there are readers and
+writers. Multiple reads at the same time are allowed. Multiple
+writes at the same time are allowed. A read and a write at the
+same time is not allowed. Provide a solution using semaphores
+with the following properties:</FONT>
+<UL>
+<ol>
+<LI><FONT SIZE=2 FACE="Arial">no busy waiting.</FONT>
+<LI><FONT SIZE=2 FACE="Arial">starvation-free (i.e. a continuous
+stream of readers does not starve writers, and vice versa) is
+desirable but not compulsory (<B>but</B> <B>you will lose some
+points</B>).</FONT>
+<LI><FONT SIZE=2 FACE="Arial">you cannot use process ids and you
+cannot have a separate semaphore for every process.</FONT>
+</UL>
+
+</OL>
+
+<P>
+<FONT SIZE=2 FACE="Arial">Below is a skeleton program for you
+to build upon by supplying code for the boxes and perhaps introducing
+more variables. You are also welcome to disregard this skeleton
+and come up with something else.</FONT>
+<P>
+<TT><FONT SIZE=2 FACE="Courier New">nr_active</FONT></TT><FONT SIZE=2 FACE="Arial">:
+integer initialized to 0.  /* number of reads currently executing
+*/</FONT>
+<br>
+<TT><FONT SIZE=2 FACE="Courier New">nr_wait</FONT></TT><FONT SIZE=2 FACE="Arial">:
+integer initialized to 0.   /* number of readers currently waiting
+*/</FONT>
+<br>
+<TT><FONT SIZE=2 FACE="Courier New">r_sem</FONT></TT><FONT SIZE=2 FACE="Arial">:
+semaphore initialized to 0.  /* readers wait here */</FONT>
+<br>
+<TT><FONT SIZE=2 FACE="Courier New">nw_active</FONT></TT><FONT SIZE=2 FACE="Arial">:
+integer initialized to 0.  /* number of writes currently executing
+*/</FONT>
+<br>
+<TT><FONT SIZE=2 FACE="Courier New">nw_wait</FONT></TT><FONT SIZE=2 FACE="Arial">:
+integer initialized to 0.   /* number of writers currently waiting
+*/</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">Readers execute this code:<BR>
+</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">while (1) {</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">     P(mutex);</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">    if (nw_active + nw_waiting == 0)
+</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial"> nr_active++;</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial"> V(r_sem);</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">    else</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">    nr_waiting++;</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">    V(mutex);</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">    P(r_sem);<BR>
+</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">    Read operation;<BR>
+</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">    P(mutex);</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">    nr_active--;</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">    if (nr_active == 0) and (nw_waiting
+!= 0) </FONT>
+<br>
+<FONT SIZE=2 FACE="Arial"> while (nw_waiting)</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">     nw_active++;</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">     nw_waiting--;</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">     v(w_sem);</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">    V(mutex);</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">}</FONT>
+<br>
+<TT><FONT SIZE=2 FACE="Courier New">w_sem</FONT></TT><FONT SIZE=2 FACE="Arial">:
+semaphore initialized to 0.  /* writers wait here */</FONT>
+<br>
+<B><FONT SIZE=2 FACE="Arial">mutex: semaphore initialized to 0.
+ /* protect shared object */</FONT></B>
+<br>
+<FONT SIZE=2 FACE="Arial">Writers execute this code:<BR>
+</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">while (1) {</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">     P(mutex);</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">    if (nr_active + nr_waiting == 0)
+</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial"> nw_active++;</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial"> V(w_sem);</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">    else</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">    nw_waiting++;</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">    V(mutex);</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">    P(w_sem);<BR>
+</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">    Write operation;<BR>
+</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">    P(mutex);</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">    nw_active--;</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">    if (nw_active == 0) and (nr_waiting
+!= 0) </FONT>
+<br>
+<FONT SIZE=2 FACE="Arial"> while (nr_waiting)</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">     nr_active++;</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">     nr_waiting--;</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">     v(r_sem);</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">    V(mutex);</FONT>
+<br>
+<FONT SIZE=2 FACE="Arial">}</FONT>
+<LI><FONT SIZE=2 FACE="Arial">(15 points) Your friend, Lazy Student,
+ wants to test his implementation of multiplication (shown below)
+as a process in your kernel from assignment number two.  Why might
+Lazy not want to run multiply(5000, 2)?  Explain (in as much detail
+as possible) what would happen if he tried this.</FONT>
+
+<br>
+<TT><FONT SIZE=2 FACE="Courier New">int multiply(int x, int y)</FONT></TT>
+<br>
+<TT><FONT SIZE=2 FACE="Courier New">{ </FONT></TT>
+<br>
+<TT><FONT SIZE=2 FACE="Courier New"> if (x == 1) {</FONT></TT>
+<br>
+<TT><FONT SIZE=2 FACE="Courier New">return(y);</FONT></TT>
+<br>
+<TT><FONT SIZE=2 FACE="Courier New">} else {</FONT></TT>
+<br>
+<TT><FONT SIZE=2 FACE="Courier New">return(y + multiply(x-1,y));
+<BR>
+}</FONT></TT>
+<br>
+<TT><FONT SIZE=2 FACE="Courier New">}<BR>
+</FONT></TT>
+<br>
+<FONT SIZE=2>The stack can overflow which will overwrite memory
+(what memory is altered depends on how safe_malloc works and what
+else has been allocated in the heap).</FONT>
+<LI><FONT SIZE=2 FACE="Arial">(15 points)  Using test-and-set
+instructions, provide an algorithm that solves the dining philosophers
+problem.  Recall that in this problem, n philosophers sit at a
+round table with one chop stick between each philosopher. Philosophers
+either are thinking or eating (rather dull people :).  To eat,
+they need to acquire the chopsticks to their left and their right.
+Your solution must work for any number of philosophers and ensure
+that none of them starves to death.</FONT>
+
+<br>
+<FONT SIZE=2>// lock - only let one in at a time</FONT>
+<br>
+<FONT SIZE=2>lock() { while test-and-set(); }<BR>
+</FONT>
+<br>
+<FONT SIZE=2>// unlock - clear bit</FONT>
+<br>
+<FONT SIZE=2>unlock() { clear(); }<BR>
+</FONT>
+<br>
+<FONT SIZE=2>// waiting is an array of Booleans indicating who
+is waiting</FONT>
+<br>
+<FONT SIZE=2>// the queue ensure FIFO service</FONT>
+<br>
+<FONT SIZE=2>// solution only  lets one eat at a time</FONT>
+<br>
+<FONT SIZE=2>Phil {<BR>
+    lock();</FONT>
+<br>
+<FONT SIZE=2>   if (!eating) </FONT>
+<br>
+<FONT SIZE=2>        eating = true;</FONT>
+<br>
+<FONT SIZE=2>    else</FONT>
+<br>
+<FONT SIZE=2>        waiting[my_id] = true;</FONT>
+<br>
+<FONT SIZE=2>        enqueue(my_id);</FONT>
+<br>
+<FONT SIZE=2>    unlock();</FONT>
+<br>
+<FONT SIZE=2>    while (waiting[my_id]);</FONT>
+<br>
+<FONT SIZE=2>    // eat<BR>
+</FONT>
+<br>
+<FONT SIZE=2>    lock();</FONT>
+<br>
+<FONT SIZE=2>    if (next = dequeue()) then</FONT>
+<br>
+<FONT SIZE=2>        waiting[next] = false;</FONT>
+<br>
+<FONT SIZE=2>    else</FONT>
+<br>
+<FONT SIZE=2>        eating = false;</FONT>
+<br>
+<FONT SIZE=2>    unlock();</FONT>
+</BODY>
+
+</HTML>

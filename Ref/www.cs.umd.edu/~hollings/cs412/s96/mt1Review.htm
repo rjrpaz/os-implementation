@@ -1,0 +1,53 @@
+<HTML>
+
+<HEAD>
+
+<TITLE> </TITLE>
+
+<META NAME="GENERATOR" CONTENT="Internet Assistant for Microsoft Word 2.0z Beta">
+</HEAD>
+
+<BODY>
+
+<P>
+<CENTER>CMSC 412 - Spring 1996</CENTER>
+<P>
+<CENTER><B><FONT SIZE=4>Midterm #1 review questions<BR>
+</FONT></B></CENTER>
+<P>
+Here are a few suggested problems to help you prepare for the
+midterm.
+<OL>
+<LI>Chapter 1:  1.7
+<LI>Chapter 2:  2.3<B>, </B>2.4, 2.11
+<LI>Chapter 3: 3.5, 3.9, 3.11, 3.12
+<LI>Chapter 4: 4.7, 4.6
+<LI>What is a process and why might I want one?
+<LI>Chapter 6: 6.7, 6.8, 6.17, (solution to <a href="barber">barber problem</a>)
+<LI>Chapter 7: 7.1, 7.5, 7.15
+<LI>Assume that we are going to design a processor that makes
+a very  large number of  registers of various types available
+to an operating system. Assume that the goal is to support extremely
+fast  (just a few cycles at most) thread switching. 
+<OL>
+<LI>What kinds of registers would you want to replicate, and how
+would you  design your operating system to enhance the prospect
+of being able to carry out  fast thread switching? 
+<LI>Will it always be possible to ensure that a thread switch
+will take place within just a few cycles?  If not, give some examples
+of where difficulties might arise.
+</OL>
+
+<LI>In your project 2,  in the interrupt handler for system_service,
+the case statement for yield did a gen_interrupt call.  Why was
+it done that way?  Explain how to remove this &quot;extra&quot;
+interrupt.
+<LI>When setting up your stack segment, you pushed the address
+of proc_term on the stack.  Why did you do this?  Will this item
+always be used?  When will it be used?
+<LI>How many bits are there in address returned by safe_malloc?
+</OL>
+
+</BODY>
+
+</HTML>

@@ -1,0 +1,352 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>CMSC 412 - Project 1</title>
+</head>
+<body style="color: rgb(0, 0, 0);" alink="#ffffff" link="#78021c"
+ vlink="#7f6666">
+<center>
+<h1>CMSC 412 Project #1</h1>
+</center>
+<p>
+</p>
+<center>
+<h2>Loading Executable Files</h2>
+</center>
+<h3 align="center"><em>Due Friday, September 17 at 6pm</em></h3>
+<menu>
+<li><b><a href="p1_grading.html">Grading Criteria</a> </b>
+</li>
+<li><b><a href="p1_submission.html">Submission Instructions</a> </b>
+</li>
+<li><b>New project files: <a name="distro"></a><a
+ href="project1-cyclone.tar.gz">project1-cyclone.tar.gz</a></b> </li>
+<li><b>Slides used in recitation <a href="proj1.ppt">proj1.ppt</a></b>
+</li>
+</menu>
+<h2>Introduction</h2>
+<p>In this project, you will give GeekOS the ability to load
+executable files from disk into memory. In a future project, you will
+add the
+ability to run user programs in a safe way, but for this project we
+have
+supplied code that will execute programs as part of a kernel process.
+Your job will be to parse an executable file and fill in appropriate
+structures so that our code can execute the program. You will know that
+you have successfully loaded the program when it produces the specified
+output.</p>
+<h2>ELF Files</h2>
+ELF is a format for storing programs or fragments of programs
+on
+disk, created as a result of compiling and linking. There are
+other formats, but ELF is the one you will be working with. An ELF file
+is divided into <span style="font-style: italic;">sections</span>.&nbsp;
+For an executable program, these are the <span
+ style="font-style: italic;">text</span> section for the code, and the <span
+ style="font-style: italic;">data</span> section for global
+variables.&nbsp; The ELF file contains <span
+ style="font-style: italic;">headers </span>that describe how these
+sections should be stored in memory.&nbsp; In this project, you will
+parse ELF executable files to tell the loader about the program's
+sections so it properly can lay out segments in memory.
+<h2>Executable Image</h2>
+<p>When a program is linked, the linker specifies that the text and
+data sections of a program should be laid out in a certain pattern in
+memory.
+This allows the linker to set specific memory addresses for code and
+data
+references. We will call this pattern the <b>Executable Image</b>. The
+work for this project will be to determine what the executable image
+should be
+for the loaded program (by using the ELF headers) and to fill in some
+structures expected by the loader with this information. If you pass
+the loader wrong information, it can not
+load and run the executable correctly.</p>
+<h2>ELF File Format</h2>
+<p>The ELF file format is described in the <a
+ href="http://www.cs.umd.edu/%7Ehollings/cs412/s03/prog1/elf.pdf">ELF
+Specification</a>. The most relevant sections for this project are 1.1
+to 1.4
+and 2.1 to 2.7. </p>
+<p>The steps involved in identifying the sections of the ELF
+file are:</p>
+<p>1) Read the <b>ELF Header</b>. The ELF header will always be
+at the very beginning of an ELF file. The ELF header contains
+information about how the rest of the file is laid out.&nbsp; You are
+interested only in the program headers.<br>
+</p>
+<p>2) Find the <b>Program Headers</b>, which specify where in
+the file to find the text and data sections and where they should end
+up in the
+executable image.</p>
+<p>There are a few simplifying assumptions you can make about
+the types and location of program headers. In the files you will be
+working
+with, there will always be one text header and one data header. The
+text header
+will be the first program header and the data header will be the second
+program
+header. This is not generally true of ELF files, but it will be true of
+the
+programs you will be responsible for.</p>
+<p>The file <tt>geekos/include/geekos/elf.h</tt> provides data types
+for structures
+which match the format of the ELF and program headers. See <b><a
+ href="#cast">A
+trick in C: casting a pointer to a structure</a> </b>below for tips on
+how to
+parse the headers.</p>
+<h2>Project Requirements:</h2>
+<p>You should start this project with the new GeekOS
+<a href="#distro">distribution</a><a>. This distribution
+contains the same code as the proj0 distribution, with the addition of
+several
+files that add new functionality and a file that provides much of the
+structure
+for the code you will write for this project.&nbsp; In addition, it
+contains newer versions of the Cyclone runtime system, so be sure you
+are using the most recent version of Cyclone (version 0.8.2a) if you
+are going to use Cyclone (more on using Cyclone below).&nbsp; <span
+ style="font-style: italic;">Note that until September 11, this version
+of Cyclone is installed in </span><span
+ style="font-family: monospace; font-style: italic;">/afs/csic/projects/cmsc412/cyclone-0.8.2a/bin</span><span
+ style="font-style: italic;">, so as not to influence those working on
+project 0.</span><br>
+</a></p>
+<p><a>We added a simple filesystem for GeekOS
+called PFAT. PFAT provides basic routines for reading files from and
+writing files to disk.&nbsp; The "disks" that bochs reads from are just
+files in the LINUX filesystem. The disks are configured in the .bochsrc
+file.&nbsp; The .bochsrc file provided in the distribution includes an
+extra line that specifies how the disk should be interpreted, so do not
+simply overwrite it with the .bochsrc you used in project 0.<br>
+</a></p>
+<p><a>If you look in the <tt>geekos/src/user</tt> directory, you'll
+see
+a file called <tt>a.c</tt> which contains the source code for the ELF
+program you will need to load. When you <tt>gmake</tt> the project, <tt>a.c</tt>
+will also be compiled and the resulting ELF file, called <tt>a.exe</tt>
+will be written to the disk image <tt>hd.img</tt>
+which is the file for the C: drive on bochs. The path name
+for a.exe will be <tt>/c/a.exe</tt>.</a></p>
+<p><a>Code has been added to <tt>geekos/src/geekos/main.c</tt> to
+start a new thread that will run a function called Spawner that loads <tt>/c/a.exe</tt>
+into memory,
+calls your <tt>Parse_ELF_Executable()</tt>
+then executes the program as you have set it up.&nbsp; If you have not
+properly built the disk or used the correct .bochsrc file, the Spawner
+will not be able to load <tt>/c/a.exe</tt>.<br>
+</a></p>
+<p><a>Your code to load the ELF file will go into <tt>geekos/src/geekos/elf.c</tt>,
+where you must complete the <tt>Parse_ELF_Executable(char
+*exeFileData, ulong_t exeFileLength, struct Exe_Format *exeFormat)</tt>
+function. The executable file is read into memory and passed to you as
+the <tt>exeFileData</tt> argument, which is of course <tt>exeFileLength</tt>
+long.
+You will need to parse the
+ELF headers and fill out the <tt>Exe_Format</tt> structure.</a></p>
+<a><i>The body of this function is the only piece of code that needs be
+written for this project !</i>
+</a>
+<p><a>This is a rough guideline for what <tt>Parse_ELF_Executable()</tt>
+has to do:
+</a></p>
+<ol>
+  <li><a>Check that <tt>exeFileData</tt> is non-null and <tt>exeFileLength</tt>
+is large enough to accomodate the ELF headers and <tt>phnum</tt> program headers. </a></li>
+  <li>Check
+that the file starts with the ELF magic number (4 bytes)
+as described in figure 1-4 (and subsequent table) on page 11 in the <a
+ href="http://www.cs.umd.edu/%7Ehollings/cs412/s03/prog1/elf.pdf">ELF
+specification. </a></li>
+  <li><a>Check that the ELF file has no more than <tt>EXE_MAX_SEGMENTS</tt>
+program headers (<tt>phnum</tt> field of the <tt>elfHeader</tt>). </a></li>
+  <li><a>Fill in <tt>numSegments</tt> and <tt>entryAddr</tt> fields
+of the <tt>exeFormat</tt> output variable. </a></li>
+  <li><a>For each program header <tt>k</tt> in turn, fill in the
+corresponding <tt>segmentList[k]</tt> array element of <tt>exeFormat</tt>
+with <tt>offsetInFile</tt>, <tt>lengthInFile</tt>, <tt>startAddress</tt>,
+    <tt>sizeInMemory</tt>, <tt>protFlags</tt> with information from that program header <tt>k</tt>.
+See figure 2-1 on page 33 in the ELF specification. </a></li>
+</ol>
+<h2><a>ELF File Image vs Executable Image</a></h2>
+<p><a>This diagram shows the relationship between the <b>ELF File
+Image</b> and the <b>Executable Image</b> in memory<b>.<br>
+</b></a></p>
+<center><a><img src="./elfdiagram.jpg"></a></center>
+<a>This image is provided only to have a clearer picture about the
+differences between the
+<b>ELF File Image</b> and the <b>Executable Image</b>.
+The loader will automatically copy segments from the <b>ELF File
+Image</b> to the <b>Executable Image</b>, provided the information it
+gets from the <tt>Exe_Format</tt> structure is correct. So you don't
+need to worry about copying segments now, but you'll do it in project
+2. </a>
+<h2><a>Testing</a></h2>
+<p><a>You will know you have loaded the program correctly if you
+see the following output when you run bochs:</a></p>
+<pre><a>Hi ! This is the first string<br>Hi ! This is the second string<br>Hi ! This is the third (and last) string<br>If you see this you're happy<br></a></pre>
+<p><a>If your program prints these lines, you'll know that you've
+done it correctly.</a></p>
+<p><a> If things go wrong, try setting the <tt>lprogdebug</tt> flag in
+<tt>geekos/src/geekos/lprog.c</tt> to 1, to print some debug statements
+on the glorious way towards loading and running the executable.
+</a></p>
+<hr>
+<h2><a name="cast">A trick in C: casting a pointer to a
+structure</a></h2>
+<p><a name="cast">Part of this project involves parsing the ELF header
+structures that were read from the file. There is a specification of
+exactly
+how the elements of the header will be laid out on disk. There's a
+simple way
+in C to access the different fields of the header as the fields of a C
+structure.</a></p>
+<p><a name="cast">In the file <tt>geekos/include/geekos/elf.h</tt>,
+there are structures defined that
+correspond to the ELF header (called <tt> elfHeader</tt>)
+and the ELF program header(called <tt>programHeader</tt>).</a></p>
+<a name="cast"> </a>
+<pre><a name="cast">typedef struct {<br><br>    unsigned  char    ident[16];<br>    unsigned  short   type;<br>    unsigned  short   machine;<br>    unsigned  int     version;<br>    unsigned  int     entry;<br>    unsigned  int     phoff;<br>    unsigned  int     sphoff;<br>    unsigned  int     flags;<br>    unsigned  short   ehsize;<br>    unsigned  short   phentsize;<br>    unsigned  short   phnum;<br>    unsigned  short   shentsize;<br>    unsigned  short   shnum;<br>    unsigned  short   shstrndx;<br><br>} elfHeader;<br><br></a></pre>
+<pre><a name="cast">typedef struct {<br><br>    unsigned  int   type;<br>    unsigned  int   offset;<br>    unsigned  int   vaddr;<br>    unsigned  int   paddr;<br>    unsigned  int   fileSize;<br>    unsigned  int   memSize;<br>    unsigned  int   flags;<br>    unsigned  int   alignment;<br><br>} programHeader;<br></a></pre>
+<p><a name="cast">The data at the beginning of the ELF file is laid out
+in
+exactly the same pattern as the <tt>elfHeader</tt> structure: there
+are 16
+characters, followed by 2 short ints,
+followed by 5 ints, and so on. When you read in the ELF file, there
+will be a
+big chunk of memory containing the file contents and you will have a
+pointer-to-char that points to it.</a></p>
+<p><a name="cast">When you define a structure in C, the compiler will
+arrange
+things so that the memory for an instance of that structure will look
+exactly
+as you defined the structure. All the fields will be in the order you
+specified
+them, with no extra space in between. So the memory image that your
+char*
+points to is <b>exactly the same </b>as the memory image would be
+created if
+you created an <tt>elfHeader</tt> structure.</a></p>
+<p><a name="cast">So, here's the important part. If you create a
+pointer-to-<tt>elfHeader</tt>,
+and you point it at the memory you read in, the code that knows how to
+pull
+fields out of an <tt>elfHeader</tt> structure will be able to pull
+fields out
+of your memory. You will tell the pointer that the memory it's pointing
+at is
+an <tt>elfHeader</tt>
+structure, it will access the memory as if it were an <tt> elfHeader</tt>
+structure, and everything will work because the memory really is <b>exactly
+the
+same </b>as an <tt>elfHeader</tt> structure.</a></p>
+<p><a name="cast">Here's an example. Say we have a <tt>blah</tt>
+structure
+defined as:</a></p>
+<pre><a name="cast">typedef struct {<br><br>    int   number;<br>    char  name[10];<br>    int   age;<br><br>} blah;<br></a></pre>
+<a name="cast">and a big chunk of memory pointed to by
+</a>
+<p><a name="cast"><tt>char * exeFileData</tt></a></p>
+<p><a name="cast">We can create a pointer-to-blah and point it at our
+data: </a></p>
+<p><a name="cast"><tt>blah *myBlah = (blah *) exeFileData;</tt></a></p>
+<p><a name="cast">We cast the pointer to make <tt>myBlah</tt>
+(well, the compiler, really...) think that <tt>exeFileData</tt>
+is a pointer-to-blah, rather than a pointer-to-char.</a></p>
+<p><a name="cast">Now we can access the fields of myBlah in the usual
+fashion:</a></p>
+<p><a name="cast"><tt>printf("My blah's name is:
+%s", myBlah-&gt;name);<br>
+</tt></a></p>
+<h3>Using Cyclone</h3>
+Unfortunately, this project is one that is not terribly amenable to
+using Cyclone, because the above trick for casting a pointer is in
+general unsafe.&nbsp; For example, you could mistakenly cast a pointer
+to buffer containing garbage to an <tt>elfHeader *</tt>, leading to
+unpredictable results.<br>
+<br>
+However,&nbsp; you can write C code to perform the casts you need and
+perform the safety checks to ensure they are safe.&nbsp; Then you can
+Cyclone code to call this C code to "convert" a <tt>char *</tt> to an <tt>elfHeader
+*</tt>, and perform the operations on the <tt>elfHeader *</tt> in
+Cyclone.&nbsp;
+Here's how you might do this.<br>
+<br>
+First, you will need to define a Cyclone file for your project.&nbsp;
+Call it <tt>elf.cyc</tt>.&nbsp; You will need to modify the <tt>Makefile</tt>
+to use this
+Cyclone file; look at the project 0 <tt>Makefile</tt> for an example
+of how to do
+this.&nbsp; You can either call your Cyclone function from the C
+version in <tt>elf.c</tt>, or else remove <tt>elf.c</tt> entirely and
+use elf.cyc instead.<br>
+<br>
+Second, inside <tt>elf.cyc</tt>, you will use Cyclone's <tt>extern "C
+include"</tt>
+facility to define your C functions.&nbsp; This facility allows you to
+declare C code within your Cyclone file, and make its functions
+available to be called from Cyclone code.&nbsp; Note that C code can
+always be called directly from Cyclone code (you do not need to use
+macros like you did in project 0 for calling Cyclone from C).&nbsp; You
+can see some examples in the <a
+ href="http://www.cs.umd.edu/projects/cyclone/online-manual/main-screen013.html#toc39">Cyclone
+manual</a>.&nbsp; For
+this project, you'd do something like:<br>
+<pre>extern "C include" {<br>&nbsp; static elfHeader *getHeader(char *buf, ulong_t buflen) {<br>&nbsp;&nbsp;&nbsp; // your code here<br>&nbsp; }<br>// perhaps other functions here<br>} export { getHeader; }<br></pre>
+The code inside the first set of braces is regular C code, and the
+export statement indicates that it should be callable from
+Cyclone.&nbsp; Note that all <span style="font-family: monospace;">typedef</span>s,
+<span style="font-family: monospace;">struct</span> definitions, <span
+ style="font-family: monospace;">#define</span>s,
+etc. are exported by default; you do not need to put them in the export
+list.<br>
+<br>
+Within the same file, you will need to use <span
+ style="font-family: monospace;">extern "C include"</span> again to
+make the information in the geekos headers available for Cyclone.&nbsp;
+For example, you will need to include<span
+ style="font-family: monospace;"> geekos/screen.h </span>to be able to
+call <span style="font-family: monospace;">Print</span>, for
+example.&nbsp; Thus, you would extend the above block
+to be something like<br>
+<pre>extern "C include" {<br>#include &lt;geekos/screen.h&gt;<br>#include &lt;geekos/elf.h&gt;<br>// perhaps other includes here<br><br>&nbsp; static elfHeader *getHeader(char *buf, ulong_t buflen) {<br>&nbsp;&nbsp;&nbsp; // your code here<br>&nbsp; }<br>// perhaps other functions here<br>} export { getHeader, ...; }<br></pre>
+For every variable or function appearing in one of these headers that
+you wish to use, you will need to add it to the export list.&nbsp; In
+general, it may turn out that the C type in the geekos file you are
+including does not correspond to the Cyclone type that you need.&nbsp;
+For example, C does not specify zero-termination or other qualifiers
+that Cyclone does.&nbsp; There is a facility for defining Cyclone types
+to override the C codes, called <span style="font-family: monospace;">cyclone_override</span>,
+that is described in
+the manual.&nbsp; You should not need that for this project.&nbsp;
+However, beware that you should not <span
+ style="font-family: monospace;">#include geekos/string.h</span> or
+<span style="font-family: monospace;">geekos/malloc.h</span>, since
+these could result in problematic types (but
+your mileage may vary).<br>
+<br>
+Finally, you can define your Cyclone function for parsing the file and
+filling out the <span style="font-family: monospace;">Exe_Format</span>
+structure.&nbsp; Because the
+compiler automatically prepends any Cyclone definition with the prefix
+<span style="font-family: monospace;">Cyc_</span>, you will also need
+to define a C stub for <tt><a><tt>Parse_ELF_Executable(char
+*exeFileData, ulong_t exeFileLength, struct Exe_Format *exeFormat)</tt></a></tt><a>
+that calls the Cyclone one.&nbsp; Put this in your <span
+ style="font-family: monospace;">extern "C include"</span>
+block.<br>
+<br>
+As usual, refer to the manual, and using the mailing list or newsgroup
+if you have questions.&nbsp; Again, make sure you are using the most
+recent version of Cyclone, version 0.8.2a (upgraded since the last
+project).&nbsp; </a><a><span style="font-style: italic;">Again, note
+that until September 11, this version of Cyclone is installed in </span><span
+ style="font-family: monospace; font-style: italic;">/afs/csic/projects/cmsc412/cyclone-0.8.2a/bin</span><span
+ style="font-style: italic;">, so as not to influence those working on
+project 0.</span></a><a><br>
+</a>
+<br>
+</body>
+</html>

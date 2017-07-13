@@ -1,0 +1,493 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./GroupPaper_files/filelist.xml">
+<title>CS3120 - Operating Systems</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>hawkey</o:Author>
+  <o:Template>Normal</o:Template>
+  <o:LastAuthor>hawkey</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>223</o:TotalTime>
+  <o:LastPrinted>2003-05-23T12:53:00Z</o:LastPrinted>
+  <o:Created>2003-07-13T20:52:00Z</o:Created>
+  <o:LastSaved>2003-07-13T20:52:00Z</o:LastSaved>
+  <o:Pages>2</o:Pages>
+  <o:Words>460</o:Words>
+  <o:Characters>2625</o:Characters>
+  <o:Company>Dalhousie University</o:Company>
+  <o:Lines>21</o:Lines>
+  <o:Paragraphs>5</o:Paragraphs>
+  <o:CharactersWithSpaces>3223</o:CharactersWithSpaces>
+  <o:Version>9.2720</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:2;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:0 268435456 0 0 -2147483648 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+h1
+	{mso-style-next:Normal;
+	margin:0in;
+	margin-bottom:.0001pt;
+	text-align:center;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:20.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-font-kerning:0pt;
+	font-weight:normal;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+@list l0
+	{mso-list-id:203059801;
+	mso-list-type:hybrid;
+	mso-list-template-ids:362426128 948453168 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l0:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:.75in;
+	mso-level-number-position:left;
+	margin-left:.75in;
+	text-indent:-.25in;
+	mso-hansi-font-family:"Courier New";}
+@list l1
+	{mso-list-id:525018754;
+	mso-list-type:hybrid;
+	mso-list-template-ids:449748094 948453168 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l1:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	margin-left:1.0in;
+	text-indent:-.25in;
+	mso-hansi-font-family:"Courier New";}
+@list l1:level2
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:1.5in;
+	mso-level-number-position:left;
+	margin-left:1.5in;
+	text-indent:-.25in;
+	font-family:"Courier New";
+	mso-bidi-font-family:"Times New Roman";}
+@list l2
+	{mso-list-id:887566419;
+	mso-list-type:hybrid;
+	mso-list-template-ids:577033384 -1914301078 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l2:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0A7;
+	mso-level-tab-stop:.75in;
+	mso-level-number-position:left;
+	margin-left:.75in;
+	text-indent:-.25in;
+	mso-ansi-font-size:12.0pt;
+	font-family:Wingdings;}
+@list l3
+	{mso-list-id:927352053;
+	mso-list-type:hybrid;
+	mso-list-template-ids:963250192 948453168 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l3:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	margin-left:1.0in;
+	text-indent:-.25in;
+	mso-hansi-font-family:"Courier New";}
+@list l4
+	{mso-list-id:990597276;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1502935632 948453168 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l4:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	margin-left:1.0in;
+	text-indent:-.25in;
+	mso-hansi-font-family:"Courier New";}
+@list l5
+	{mso-list-id:1081827750;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-590293790 948453168 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l5:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	mso-hansi-font-family:"Courier New";}
+@list l5:level2
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:"Courier New";
+	mso-bidi-font-family:"Times New Roman";}
+@list l6
+	{mso-list-id:1284385072;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-2095689084 948453168 -1914301078 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l6:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	margin-left:1.0in;
+	text-indent:-.25in;
+	mso-hansi-font-family:"Courier New";}
+@list l6:level2
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0A7;
+	mso-level-tab-stop:1.5in;
+	mso-level-number-position:left;
+	margin-left:1.5in;
+	text-indent:-.25in;
+	mso-ansi-font-size:12.0pt;
+	font-family:Wingdings;}
+@list l7
+	{mso-list-id:1740128269;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-205627458 -1914301078 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l7:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0A7;
+	mso-level-tab-stop:.75in;
+	mso-level-number-position:left;
+	margin-left:.75in;
+	text-indent:-.25in;
+	mso-ansi-font-size:12.0pt;
+	font-family:Wingdings;}
+@list l8
+	{mso-list-id:2095278931;
+	mso-list-type:hybrid;
+	mso-list-template-ids:722880954 948453168 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l8:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	margin-left:1.0in;
+	text-indent:-.25in;
+	mso-hansi-font-family:"Courier New";}
+@list l9
+	{mso-list-id:2121799220;
+	mso-list-type:hybrid;
+	mso-list-template-ids:447376256 948453168 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l9:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	margin-left:1.0in;
+	text-indent:-.25in;
+	mso-hansi-font-family:"Courier New";}
+@list l9:level2
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:1.5in;
+	mso-level-number-position:left;
+	margin-left:1.5in;
+	text-indent:-.25in;
+	font-family:"Courier New";
+	mso-bidi-font-family:"Times New Roman";}
+@list l9:level3
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0A7;
+	mso-level-tab-stop:2.0in;
+	mso-level-number-position:left;
+	margin-left:2.0in;
+	text-indent:-.25in;
+	font-family:Wingdings;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+</head>
+
+<body lang=EN-US style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:20.0pt;mso-bidi-font-size:12.0pt'>CS3120 - Operating Systems<o:p></o:p></span></p>
+
+<h1>Group Paper</h1>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Final Version:<span style="mso-spacerun: yes">  </span>July
+13, 2003</p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:20.0pt;mso-bidi-font-size:12.0pt'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Format:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Intro (group work)</p>
+
+<p class=MsoNormal>Operating System 1 (individual work):</p>
+
+<p class=MsoNormal><span style='mso-tab-count:1'>            </span>History</p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l1 level1 lfo1;
+tab-stops:list 1.0in'><![if !supportLists]><span style='mso-hansi-font-family:
+"Courier New"'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>When was this OS created?</p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l1 level1 lfo1;
+tab-stops:list 1.0in'><![if !supportLists]><span style='mso-hansi-font-family:
+"Courier New"'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>By whom?</p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l1 level1 lfo1;
+tab-stops:list 1.0in'><![if !supportLists]><span style='mso-hansi-font-family:
+"Courier New"'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>Did it replace an earlier version OS?</p>
+
+<p class=MsoNormal><span style='mso-tab-count:1'>            </span>Motivation</p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l8 level1 lfo3;
+tab-stops:list 1.0in'><![if !supportLists]><span style='mso-hansi-font-family:
+"Courier New"'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>Why was it developed? To meet what needs?</p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l8 level1 lfo3;
+tab-stops:list 1.0in'><![if !supportLists]><span style='mso-hansi-font-family:
+"Courier New"'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>What was the advertising propaganda at the time?</p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l8 level1 lfo3;
+tab-stops:list 1.0in'><![if !supportLists]><span style='mso-hansi-font-family:
+"Courier New"'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>Do you think it met its purpose?</p>
+
+<p class=MsoNormal><span style='mso-tab-count:1'>            </span>Processes</p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l4 level1 lfo7;
+tab-stops:list 1.0in'><![if !supportLists]><span style='mso-hansi-font-family:
+"Courier New"'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>What states do processes move through?</p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l3 level1 lfo5;
+tab-stops:list 1.0in'><![if !supportLists]><span style='mso-hansi-font-family:
+"Courier New"'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>How does the OS execute? (within the context of user
+processes.. as a separate process?)</p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l9 level1 lfo4;
+tab-stops:list 1.0in'><![if !supportLists]><span style='mso-hansi-font-family:
+"Courier New"'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>Creation</p>
+
+<p class=MsoNormal style='margin-left:1.5in;text-indent:-.25in;mso-list:l9 level2 lfo4;
+tab-stops:list 1.5in'><![if !supportLists]><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>How are new processes created?<span
+style="mso-spacerun: yes">  </span>Who can create them?</p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l9 level1 lfo4;
+tab-stops:list 1.0in'><![if !supportLists]><span style='mso-hansi-font-family:
+"Courier New"'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>Scheduling of Processes</p>
+
+<p class=MsoNormal style='margin-left:1.5in;text-indent:-.25in;mso-list:l9 level2 lfo4;
+tab-stops:list 1.5in'><![if !supportLists]><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>What are the most important scheduling criteria for
+this OS?</p>
+
+<p class=MsoNormal style='margin-left:1.5in;text-indent:-.25in;mso-list:l9 level2 lfo4;
+tab-stops:list 1.5in'><![if !supportLists]><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>How does the short-term scheduler select the next
+process to place in the CPU?<span style="mso-spacerun: yes">  </span>What's the
+selection function?<span style="mso-spacerun: yes">  </span>What's the decision
+mode?</p>
+
+<p class=MsoNormal style='margin-left:1.5in;text-indent:-.25in;mso-list:l9 level2 lfo4;
+tab-stops:list 1.5in'><![if !supportLists]><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>Is there a single ready queue or multiple ready queues?</p>
+
+<p class=MsoNormal style='text-indent:.5in'>Concurrency</p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l6 level1 lfo8;
+tab-stops:list 1.0in'><![if !supportLists]><span style='mso-hansi-font-family:
+"Courier New"'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>What concurrency mechanisms does the operating system
+support to allow processes to synchronize their activities? (semaphores, etc)</p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l6 level1 lfo8;
+tab-stops:list 1.0in'><![if !supportLists]><span style='mso-hansi-font-family:
+"Courier New"'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>How can processes communicate?</p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l6 level1 lfo8;
+tab-stops:list 1.0in'><![if !supportLists]><span style='mso-hansi-font-family:
+"Courier New"'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>By what mechanisms can processes share data? </p>
+
+<p class=MsoNormal style='text-indent:.5in'>Deadlock</p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l6 level1 lfo8;
+tab-stops:list 1.0in'><![if !supportLists]><span style='mso-hansi-font-family:
+"Courier New"'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>Does the OS support deadlock avoidance, deadlock
+prevention, (mixture of the 2?), or ignore the issue of deadlocks completely?</p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l6 level1 lfo8;
+tab-stops:list 1.0in'><![if !supportLists]><span style='mso-hansi-font-family:
+"Courier New"'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>Describe in detail the algorithms/mechanisms in use by
+the OS with regard to the issue of deadlock.</p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l6 level1 lfo8;
+tab-stops:list 1.0in'><![if !supportLists]><span style='mso-hansi-font-family:
+"Courier New"'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>If the OS supports recovery from deadlock, what
+mechanisms/algorithms are used?</p>
+
+<p class=MsoNormal style='margin-left:.5in'>Threads</p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l6 level1 lfo8;
+tab-stops:list 1.0in'><![if !supportLists]><span style='mso-hansi-font-family:
+"Courier New"'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>Does the OS support threads?<span style="mso-spacerun:
+yes">  </span>If so, discuss in detail the threading mechanisms available to
+applications.</p>
+
+<p class=MsoNormal style='margin-left:.5in'>Memory Management</p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l6 level1 lfo8;
+tab-stops:list 1.0in'><![if !supportLists]><span style='mso-hansi-font-family:
+"Courier New"'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>Describe in detail the memory management scheme of the
+OS (fixed or dynamic partitioning, paging (demand?), segmentation,
+combo?).<span style="mso-spacerun: yes">  </span>Be sure to include in your
+discussions details such as the page replacement algorithm in use if the OS
+uses demand paging.<span style="mso-spacerun: yes">  </span>Dig deep.</p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l6 level1 lfo8;
+tab-stops:list 1.0in'><![if !supportLists]><span style='mso-hansi-font-family:
+"Courier New"'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>What is the size of the virtual address space?</p>
+
+<p class=MsoNormal style='margin-left:.5in'>User Interface</p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l9 level1 lfo4;
+tab-stops:list 1.0in'><![if !supportLists]><span style='mso-hansi-font-family:
+"Courier New"'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>No discussions of OSs would be complete without a
+discussion of the user interface provided.<span style="mso-spacerun: yes"> 
+</span>Although not covered in the course, please include a 2-3 paragraph
+discussion about the interface provided, the targeted user group, etc. and give
+your opinion about the effectiveness of the design choices.</p>
+
+<p class=MsoNormal>Operating System 2 (individual):</p>
+
+<p class=MsoNormal><span style='mso-tab-count:1'>            </span>(Same
+sections as OS 1)</p>
+
+<p class=MsoNormal>Operating System 3 (individual work):</p>
+
+<p class=MsoNormal><span style='mso-tab-count:1'>            </span>(if 3+
+group members - same sections as OS 1)</p>
+
+<p class=MsoNormal>Operating System 4 (individual work):</p>
+
+<p class=MsoNormal><span style='mso-tab-count:1'>            </span>(if 4 group
+members - Same sections as OS 1)</p>
+
+<p class=MsoNormal>Analysis (group work) :</p>
+
+<p class=MsoNormal style='margin-left:.75in;text-indent:-.25in;mso-list:l7 level1 lfo9;
+tab-stops:list .75in'><![if !supportLists]><span style='font-family:Wingdings'>§<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>Of the OSs covered by group members, which OS do you
+think is most suited to the needs of a computer science/engineering
+student.<span style="mso-spacerun: yes">  </span>Debate why, discussing the
+pros and cons of each OS.</p>
+
+<p class=MsoNormal style='margin-left:.75in;text-indent:-.25in;mso-list:l7 level1 lfo9;
+tab-stops:list .75in'><![if !supportLists]><span style='font-family:Wingdings'>§<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>Would your answer differ if the target user was a large
+company with many networked PC's? Why?</p>
+
+<p class=MsoNormal style='margin-left:.75in;text-indent:-.25in;mso-list:l7 level1 lfo9;
+tab-stops:list .75in'><![if !supportLists]><span style='font-family:Wingdings'>§<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>Would your answer differ if the target user was your
+grandmother? Why?</p>
+
+<p class=MsoNormal><span style='mso-tab-count:1'>            </span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Reminder:</p>
+
+<p class=MsoNormal style='margin-left:.75in;text-indent:-.25in;mso-list:l2 level1 lfo10;
+tab-stops:list .75in'><![if !supportLists]><span style='font-family:Wingdings'>§<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>If 2 group members covered flavours of Linux, make sure
+that you also cover what is different between the two flavours - why are both
+available on the market?<span style="mso-spacerun: yes">  </span>What features
+do they provide?</p>
+
+<p class=MsoNormal style='margin-left:.75in;text-indent:-.25in;mso-list:l2 level1 lfo10;
+tab-stops:list .75in'><![if !supportLists]><span style='font-family:Wingdings'>§<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]>Suspicions of plagiarism will be sent straight to
+senate.<span style="mso-spacerun: yes">  </span>You must reference all material
+that is not your original thought.<span style="mso-spacerun: yes"> 
+</span>Please review the guidelines on the website and clarify with me any
+questions you may have about those guidelines.<span style="mso-spacerun: yes"> 
+</span></p>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,239 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<!-- saved from url=(0051)http://www.cs.ru.nl/~hubbers/a2/exercise2004_1.html -->
+<HTML><HEAD><TITLE>Exercise 1</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=utf-8"></META>
+<LINK 
+href="hubbers.css" type=text/css rel=stylesheet></LINK>
+<META content="MSHTML 6.00.2900.2722" name=GENERATOR></HEAD>
+<BODY>
+<H1>Exercise 1: A Simple Shell</H1>
+<font face="Times" size="3"><span style="FONT-SIZE: 16px; FONT-FAMILY: Times">
+</span></font>
+<H2>Assignment</H2>
+<P>Design and implement a simple, interactive shell program that prompts the 
+user for a command, parses the command, and then executes it with a child 
+process. In your solution you are required to use <CODE>execv()</CODE>, which 
+means that you will have to read the <CODE>PATH</CODE> environment, then search 
+each directory in the <CODE>PATH</CODE> for the command file name that appears 
+on the command line. </P>
+<P>The code for this assignment should be sent as a zip file to me not later than Monday October 24th, 
+5:00. 
+Start on this immediately;&nbsp; do 
+not make the mistake to start too late. </P>
+<P>This exercise is based upon Lab Exercise 2.1 from Gary Nutt's text <EM>Operating 
+Systems</EM>. </P>
+<P>After this exercise you should: 
+<UL>
+  <LI>Understand how a command line shell works. 
+  <LI>Understand the commands <CODE>fork</CODE>, <CODE>execv</CODE> and 
+  <CODE>wait</CODE>. 
+  <LI>Feel comfortable compiling simple C-programs. </LI></UL>
+<P></P>
+<H2>Background</H2>
+<P>The shell command line interpreter is an application program that uses the 
+system call interface to implement an operator's console. It exports a 
+character-oriented human-computer interface, and uses the system call interface 
+to invoke OS functions. </P>
+<P>Every shell has its own language syntax and semantics. In conventional UNIX 
+shells a command line has the form <PRE>command argument_1 argument_2 ...
+</PRE>where the command to be executed is the first word in the command line and 
+the remaining words are arguments expected by that command. The number of 
+arguments depends on the command which is being executed. 
+<P></P>
+<P>The shell relies on an important convention to accomplish its task: the 
+command is usually the name of a file that contains an executable program. For 
+example <CODE>ls</CODE> and <CODE>cc</CODE> are the names of files (stored in 
+<CODE>/bin</CODE> on most UNIX-style machines). In a few cases, the command is 
+not a file name, but is actually a command that is implemented within the shell; 
+for example <CODE>cd</CODE> is usually implemeted within the shell rather than 
+in a file. Since the vast majority of the commands are implemented in files, 
+think of the command as actually being a file name in some directory on the 
+machine. This means that the shell's job is to find the file, prepare the list 
+of parameters for the command, and the cause the command to be executed using 
+the parameters. </P>
+<P>A shell could use many different strategies to execute the user's 
+computation. However the basic approach used in modern shells is to create a new 
+process to execute any new computation.<BR>This idea of creating a new process 
+to execute a computation may seem like overkill, but it has a very important 
+characteristic. When the original process decides to execute a new computation, 
+it protect itself from fatal errors that might arise during that execution. If 
+it did not use a child process to execute the command, a chain of fatal errors 
+could cause the initial process to fail, thus crashing the entire machine. </P>
+<H2>Steps</H2>
+<P>These are the detailed steps any shell should take to accomplish its job 
+(note that the code snippets are just examples; they might not suffice for this 
+assignment, but they provide direction): 
+<UL>
+  <LI>Printing a prompt. There is a default promptstring, sometimes hardcoded 
+  into the shell, e.g. <CODE>&gt;</CODE> or other. When the shell is started it 
+  can look up the name of the machine on which it is running, and prepend it to 
+  the standard prompt character, for example, giving a prompt string such as 
+  <CODE>zaagblad&gt;</CODE>. The shell can also be designed to print the current 
+  directory as part of the prompt, meaning that each time the user employs 
+  <CODE>cd</CODE> the prompt string is redefined. Once the prompt string is 
+  determined, the shell prints it to <CODE>stdout</CODE> whenever it is ready to 
+  accept a command line.<BR>For example this function prints a prompt: <PRE>void printPrompt() {
+/* Build the prompt string to have the machine name,
+ * current directory, or other desired information.
+ */
+  promptString = ...;
+  printf("%s ", promptString);
+}
+</PRE>
+  <LI>Getting the command line. To get a command line, the shell performs a 
+  blocking read operation so that the process that executes the shell will be 
+  blocked until the user types a command line in response to the prompt. When 
+  the command has been provided by the user (and terminated with a 
+  <CODE>newline</CODE> character, the command line string is returned to the 
+  shell. <PRE>void readCommand(char *buffer) {
+/* This code uses any set of I/O functions, such as those in the
+ * stdio library to read the entire command line into the buffer. This
+ * implementation is greatly simplified but it does the job.
+ */
+  gets(buffer);
+}
+</PRE>Note: do not use <CODE>gets</CODE> in your final code. Use <CODE>man 
+  gets</CODE> to see why. 
+  <LI>Parsing the command. For this assignment your shell doesn't need to be 
+  able to handle pipes or redirections. 
+  <LI>Finding the file. You will have to read the 
+  environment variable <CODE>PATH</CODE>. These environment variables are 
+  typically set when the shell is started, but can be modified on the 
+  commandline. The command you have to use for this depends on the shell you are 
+  using.<BR>The <CODE>PATH</CODE> environment variable is an ordered list of 
+  absolute pathnames that specifies where the shell should search for command 
+  files. If the <CODE>.login</CODE> file has a line like: <PRE>set path=(.:/bin:/usr/bin)
+</PRE>the shell will first look in the current directory (since the first 
+  pathname is "." for the current directory), then in <CODE>/bin</CODE> and 
+  finally in <CODE>/usr/bin</CODE>. If there is no file with the same name as 
+  the command from the command line in any of the specified directories, the 
+  shell responds to the user that it is unable to find the command.<BR>Your 
+  solution needs to parse the <CODE>PATH</CODE> variable before it begins 
+  reading command lines. This can de done with code like this: <PRE>int parsePath(char *dirs[]) {
+/* This function reads the PATH variable for this
+ * environment, then builds an array, dirs[], of the
+ * directories in PATH
+ */
+  char *pathEnvVar;
+  char *thePath;
+
+  for (i=0; i &lt; MAX_PATHS; i++)
+    dirs[i] = NULL;
+  pathEnvVar = (char *) getenv("PATH");
+  thePath = (char *) malloc(strlen(pathEnvVar) + 1);
+  strcpy(thePath, pathEnvVar);
+
+/* Loop to parse thePath. Look for a ":"
+ * delimiter between each path name.
+ */
+  ...
+}
+</PRE>The user may have provided a full pathname as the command name word, or 
+  only have provided a relative pathname that is to be bound according to the 
+  value of the <CODE>PATH</CODE> environment variable. If the name begins with a 
+  "<CODE>/</CODE>" then it is an absolute pathname that can be used to launch 
+  the execution. Otherwise, you will have to search each directory in the list 
+  specified by <CODE>PATH</CODE> to find the relative pathname. Each time you 
+  read a command, you will need to see if there is an executable file in one of 
+  the directories specified by the <CODE>PATH</CODE> variable. This function is 
+  intended to serve that purpose: <PRE>char *lookupPath(char **argv, char **dir) {
+/* This function searches the directories identified by the dir
+ * argument to see if argv[0] (the file name) appears there.
+ * Allocate a new string, place the full path name in it, then
+ * return the string.
+ */
+  char *result;
+  char pName[MAX_PATH_LEN];
+
+// Check to see if file name is already an absolute path
+  if (*argv[0] == '/') {
+    ...
+  }
+
+// Look in PATH directories.
+// Use access() to see if the file is in a dir.
+  for (i = 0; i  &lt;  MAX_PATHS; i++) {
+    ...
+  }
+
+// File name not found in any path variable
+  fprintf(stderr, "%s: command not found\n", argv[0]);
+  return NULL;
+}
+</PRE>
+  <LI>Execute the command. A process in UNIX is created using the 
+  <CODE>fork()</CODE> system call. I will cover the basics of processes, 
+	parent-child relationships between processes, fork(), exec(), etc. in class. For details of how <CODE>fork()</CODE> 
+	and exec() work, consult the man pages by 
+  typing <CODE>man fork</CODE> at the command prompt. </LI></UL>
+<H2>Code skeleton</H2>
+<P>It is good practice to use header files to define constants and types. In 
+particular this means that you have to make decisions on the values of these 
+constants. Here is an example <CODE>minishell.h</CODE>: <PRE>...
+#define LINE_LEN     80
+#define MAX_ARGS     64
+#define MAX_ARG_LEN  16
+#define MAX_PATHS    64
+#define MAX_PATH_LEN 96
+#define WHITESPACE   " .,\t\n"
+
+#ifndef NULL
+#define NULL ...
+#endif
+
+struct command_t {
+  char *name;
+  int argc;
+  char *argv[MAX_ARGS];
+}
+</PRE>And here is a skeleton of a very simple shell. For instance, it doesn't 
+distinguish between internal commands and file commands. Your solution needs to 
+be more sophisticated! <PRE>/* This is a very minimal shell. It finds an executable in the
+ * PATH, then loads it and executes it (using execv). Since
+ * it uses "." (dot) as a separator, it cannot handle file names
+ * like "minishell.h".
+ */
+#include
+#include "minishell.h"
+
+char *lookupPath(char **, char **);
+int parseCommand(char *, struct command_t *);
+int parsePath(char **);
+void printPrompt();
+void readCommand(char *);
+...
+int main() {
+  ...
+/* Shell initialization */
+  ...
+  parsePath(pathv); /* Get directory paths from PATH */
+
+  while(TRUE) {         /* should be while(!stdin.eof())
+      printPrompt();
+    
+  /* Read the command line and parse it */
+      readCommand(commandLine);
+    ...
+      parseCommand(commandLine, &amp;command);
+    ...
+
+  /* Get the full pathname for the file */
+      command.name = lookupPath(command.argv, pathv);
+      if (command.name == NULL) {
+           /* Report error */
+           continue;
+      }
+
+  /* Create child and execute the command */
+    ...
+
+  /* Wait for the child to terminate */
+    ...
+
+  }
+
+/* Shell termination */
+  ...
+}
+</PRE>
+<P></P></BODY></HTML>

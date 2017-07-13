@@ -1,0 +1,234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Lecture 1</title>
+</head>
+<body>
+<h1>CS 420 - Lecture 1</h1>
+<p>
+Introduce myself.&nbsp; Email/office/office hours etc.<br>
+</p>
+<p>What is an operating system?&nbsp; Question: why not just run
+programs directly on the hardware?&nbsp; [In the early days of
+programming, this is how computers were programmed.&nbsp; Even today,
+some embedded systems run directly on the hardware, without an
+operating system.]&nbsp; Discuss.<br>
+</p>
+<ul>
+  <li>Hardware-level programming is too restrictive.&nbsp; E.g., we
+want to be able to create windows on the screen without writing a video
+driver and window system.&nbsp; [But, is the window system part of the
+OS?]&nbsp; Also, disk access, keyboard, network, I/O in general.<br>
+  </li>
+  <li>Share computer among multiple users.</li>
+  <li>Share computer among multiple programs.&nbsp; Allow many programs
+to run at same time.&nbsp; Time slicing / multiprogramming.<br>
+  </li>
+</ul>
+<p>General theme: an operating system <span style="font-style: italic;">virtualizes</span>
+the resources of a single computer.&nbsp; Each process (a running
+program) is given the illusion that it has exclusive access to a
+virtual computer with virtual CPU (s), memory, I/O devices, etc.<br>
+</p>
+<p>Goal for the course: understand the algorithms and implementation
+techniques used in modern O.S. kernels.&nbsp; Gain direct experience by
+implementing them in a real operating system kernel.<br>
+</p>
+<p>Outline of the course:<br>
+</p>
+<ul>
+  <li>Processes and threads</li>
+  <li>CPU scheduling</li>
+  <li>Synchronization and deadlocks [above, 5-6 weeks]<br>
+  </li>
+  <li>Memory management, virtual memory [2-3 weeks]</li>
+  <li>Filesystems and I/O [2-3 weeks]<br>
+  </li>
+  <li>Protection and security [2 weeks]<br>
+  </li>
+  <li>Distributed systems [1 week]<br>
+  </li>
+</ul>
+<p>Computer organization:<br>
+</p>
+<p>Diagram of PC.&nbsp; Show CPU, memory, disk controller/disks, video
+card/monitor, usb controller &amp; mouse/keyboard, network card<br>
+</p>
+<p style="margin-left: 40px;"><img src="figures/compArch.png"
+ alt="Computer architecture" width="70%"><br>
+</p>
+<p>When a PC starts:<br>
+</p>
+<ol>
+  <li>CPU starts executing code from firmware: i.e., the BIOS</li>
+  <li>Firmware uses disk controller to load a <span
+ style="font-style: italic;">bootstrap</span> program from a disk
+(usually hard drive, sometimes floppy or CDROM)</li>
+  <ul>
+    <li>The bootstrap program is very simple: on PC, only 512 bytes of
+machine code<br>
+    </li>
+  </ul>
+  <li>Bootstrap program either</li>
+  <ol>
+    <li>Directly loads the OS kernel (rarely)<br>
+    </li>
+    <li>Loads a more powerful "2nd stage" bootstrap program (much more
+common) that then loads the OS</li>
+  </ol>
+  <li>Bootstrap program (or 2nd stage bootstrap) jumps to the <span
+ style="font-style: italic;">entry point</span> of the kernel</li>
+  <li>The kernel initializes memory and hardware devices, then loads
+and executes the initial <span style="font-style: italic;">user space</span>
+programs</li>
+</ol>
+<p>Even when the initial user space programs are running, the OS kernel
+is still <span style="font-style: italic;">resident</span>.<br>
+</p>
+<p>Important terminology:<br>
+</p>
+<ul>
+  <li>User space</li>
+  <li>Kernel space</li>
+</ul>
+<p>These terms refer to the kernel's code and data (kernel space) and
+the code and data of ordinary programs (user space).<br>
+</p>
+<p>When the computer is executing kernel code in "kernel space", it is
+said to be in "supervisor mode" or "kernel mode".&nbsp; This is a
+special hardware mode that allows the kernel code unlimited access to
+CPU, memory, and hardware resources.&nbsp; Examples of things kernel
+code can do:<br>
+</p>
+<ul>
+  <li>Read or write any memory address</li>
+  <li>Control any I/O device</li>
+  <li>Access special CPU functionality such as memory management
+hardware</li>
+</ul>
+<p style="margin-left: 40px;"><img alt="Kernel and user processes"
+ src="figures/kernelAndProcs.png" width="60%">
+</p>
+<p>Important distinction: "OS kernel" vs. "Operating System".&nbsp; The
+'kernel" is the only program that runs directly on the hardware.&nbsp;
+Processes run under the supervision of the kernel.&nbsp; Various
+utility programs, the window system, libraries, etc. are generally not
+part of the kernel.&nbsp; (But there are always exceptions: some OSes,
+such as Windows XP, build the window system directly into the
+kernel.)&nbsp;
+The overall term "operating system" generally refers to the kernel and
+all of the "system-level" programs and utilities.&nbsp; In this course,
+we are mainly interested in the kernel proper, although we will talk a
+little bit about other parts of the OS.<br>
+</p>
+<p>Important questions:<br>
+</p>
+<ol>
+  <li>How does the kernel know when input from an I/O device is ready?<br>
+  </li>
+  <li>How does the kernel allow multiple user process to run at the
+"same time"?</li>
+  <li>How does the kernel prevent a user process from writing to
+arbitrary memory locations?</li>
+  <ul>
+    <li>Kernel code and data structures</li>
+    <li>Other user processes</li>
+  </ul>
+  <li>How does the kernel prevent a user process from directly
+accessing a hardware device?<br>
+  </li>
+  <li>How do user processes request that the kernel perform some
+function that (at a low level) requires hardware access?&nbsp; For
+example, read from an input device, write to an output device?<br>
+  </li>
+</ol>
+<p>Take these one at a time.&nbsp; Ask for ideas how these functions
+work.<br>
+</p>
+<p>Input from I/O device: <span style="font-style: italic;">interrupts</span>.&nbsp;
+When a device (such as USB controller, disk controller, network card,
+etc.) has input data available it interrupts the CPU.&nbsp; The
+interrupt transfers control to a kernel interrupt handler, suspending
+whatever code was executing at the time of the interrupt.&nbsp; The
+interrupt handler arranges for the data to be transferred from the
+device to a kernel data structure (or possibly user memory).&nbsp; When
+the interrupt handler it completes, it may return to the interrupted
+process, or a completely different process.<br>
+</p>
+<p style="margin-left: 40px;"><img alt="Hardware interrupt"
+ src="figures/hardwareInterrupt.png" width="60%"><br>
+</p>
+<p>Running multiple processes at the same time: the <span
+ style="font-style: italic;">timer interrupt</span>.&nbsp; When a timer
+interrupt occurs, the kernel can choose to suspend the current process
+and choose a new process to run.&nbsp; As long as the time slices are
+short and the kernel uses a "fair" policy to determine how frequently a
+process gets a time slice, this creates the illusion of many processes
+running at the same time.&nbsp; Term for multiple tasks running at the
+same time: <span style="font-style: italic;">concurrency</span>.<br>
+</p>
+<p>Memory protection: many memory protection schemes are possible.<br>
+</p>
+<ol>
+  <li>No memory protection.&nbsp; Examples: Windows&nbsp; 3.1, 95, 98,
+ME, Mac OS up to version 9.&nbsp;&nbsp; This is not good for
+robustness: expect the OS to crash a lot.&nbsp; Does not require any
+hardware support.<br>
+  </li>
+  <li>Segmentation: each process gets a linear chunk of physical
+memory, cannot access outside this chunk.&nbsp; Requires hardware
+support.<br>
+  </li>
+  <li>Paging (virtual memory): physical memory is divides into small
+chunks, or "pages".&nbsp; Each process has a "map" that determines
+which "virtual addresses" correspond to which physical pages.&nbsp;
+Extremely elegant and cool solution.&nbsp; Hardware device in the CPU
+called the "MMU" (memory management unit) makes page translation
+completely transparent to user processes.&nbsp; Net result is that each
+process has its own memory space that is as large as the processor's
+address space.&nbsp; Examples: Windows NT, Windows 2000, Windows XP,
+Mac OS 10 and later, Linux, Solaris, etc.&nbsp; Requires hardware
+support (all modern CPUs have it).<br>
+  </li>
+</ol>
+<p>Paging/virtual memory makes lots of very cool OS features
+possible.&nbsp; Will discuss more later.<br>
+</p>
+<p>Preventing a user process from directly accessing hardware devices:
+kernel runs in "kernel mode" where it can do anything (including direct
+access to hardware devices).&nbsp; User processes run in "user
+mode".&nbsp; The kernel configures user mode to disallow direct access
+to hardware devices.<br>
+</p>
+<p>Requesting a service requiring hardware access: for example, say the
+process wants to write some data to a file.&nbsp; It cannot directly
+communicate with the disk controller (not possible in user mode).&nbsp;
+Instead, it issues a <span style="font-style: italic;">system call</span>
+to the kernel requesting that some data be transferred from the
+process's memory to a file on disk.&nbsp; A system call is a controlled
+transfer of control from a user process to the kernel.<br>
+</p>
+<p style="margin-left: 40px;"><img alt="System call"
+ src="figures/systemCall.png" width="60%"><br>
+</p>
+<p>System calls are also known as <span style="font-style: italic;">software
+interrupts</span>.&nbsp; They work almost exactly the same way as a
+hardware interrupt.<br>
+</p>
+<p>After handling a hardware or software interrupt, the kernel is free
+to select any process to run, not necessarily the process that was
+running when the interrupt occurred.&nbsp; This is known as preemption:<br>
+</p>
+<p style="margin-left: 40px;"><img alt="Preemption"
+ src="figures/preempt.png" width="70%">
+</p>
+<p>
+</p>
+<p>Lab exercise: download geekos, compile, run in bochs.&nbsp; If the
+software is set up and working.&nbsp; Otherwise, demonstrate on my
+laptop.<br>
+</p>
+</body>
+</html>

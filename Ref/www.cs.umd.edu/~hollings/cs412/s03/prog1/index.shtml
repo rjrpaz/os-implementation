@@ -1,0 +1,82 @@
+
+<HTML>
+
+<HEAD>
+
+<TITLE>CMSC 412 - Project #1</TITLE>
+
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#D7D3D2" LINK="#78021C" VLINK="#7F6666" ALINK="#FFFFFF" BACKGROUND="../marble.gif">
+
+<center>
+<h1>
+CMSC412 - Project #1 
+</h1>
+</center>
+
+<h2>
+<p>
+<font color="red">
+Deadline Extended until 2/27/03 (9:00 AM) due to snow conditions.
+</font>
+</h2>
+
+<h2>Handouts</h2>
+<menu>
+    <li><a href="handout.shtml">Programming Assingment</a>
+    <li><a href="checkList.html">Programming Assignment Checklist</a>
+    <li><a href="ia32ch7.pdf">IA-32 System Programmers Manual (CH 6)</a>
+    <li><a href="elf.pdf">ELF File Format Documentation</a>
+</menu>
+
+<p>
+
+<P>
+<h2>
+Header, Source, Object, and Sample Data Files
+</h2>
+<menu>
+<li>Updated Files for GeeksOS kernel
+<menu>
+<li><a href="string.c">string.c</a>
+<li><a href="bootsect.asm">bootsect.asm</a> (added 2/7/03)
+<li><a href="setup.asm">setup.asm</a> (added 2/7/03)
+<li><a href="Makefile">Makefile</a> (added 2/7/03)
+<li><a href="destroyThread">destroyThread</a> (added 2/18/03) - for kthread.c
+</menu>
+<li>Additional Files for GeeksOS kernel
+<menu>
+<li><a href="elf.h">elf.h</a>
+<li><a href="floppy.h">floppy.h</a>
+<li><a href="floppy.c">floppy.c</a> (update 2/5/03 - 11:30 AM)
+<li><a href="ide.h">ide.h</a>
+<li><a href="ide.c">ide.c</a>
+<li><a href="pfat.h">pfat.h</a>
+<li><a href="pfat.c">pfat.c</a>
+<li><a href="user.h">user.h</a>
+<li><a href="buildFat.tar.gz">buildFat.tar.gz</a>
+</menu>
+<li>User Mode Programs
+<menu>
+<li><a href="userPrograms.tar.gz">userPrograms.tar.gz</a>
+<li><a href="Makefile">Makefile.user</a>
+<li><a href="libuser.c">libuser.c</a>
+<li><a href="libuser.h">libuser.h</a>
+</menu>
+
+<P>
+You will need to update the size of the fd.img in the toplevel Makefile.
+Change the rule to make fd.img be
+<pre>
+fd.img : bootsect.bin setup.bin kernel.bin
+	$(ZEROFILE) $@ 1024
+</pre>
+<p>
+You will also want to add a rule for all:
+<pre>
+all : fd.img hd.img
+	(cd buildFat; gmake)
+	(cd userProgs; gmake)
+</pre>
+</HTML>
+

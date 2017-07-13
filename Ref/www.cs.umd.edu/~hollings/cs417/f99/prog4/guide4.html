@@ -1,0 +1,148 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<META NAME="Template" CONTENT="C:\PROGRAM FILES\MICROSOFT OFFICE\OFFICE\html.dot">
+</HEAD>
+<BODY LINK="#0000ff" VLINK="#800080" BACKGROUND="Image1.jpg">
+
+<P><!doctype html public "-//w3c//dtd html 4.0 transitional//en"></P>
+<B><U><FONT SIZE=6><P ALIGN="CENTER">Submission Guidelines</B></U></FONT> </P>
+<B><U><FONT SIZE=6><P ALIGN="CENTER">Programming Assignment #4</P>
+</B></U></FONT><P><BR>
+<BR>
+<B><FONT FACE="Arial" SIZE=4>Implementation Requirements</B></FONT> </P>
+<FONT SIZE=4><P>1- You should submit a tar file that contains the source code for your implementation.</FONT> </P>
+<FONT SIZE=4><P>2- Your main program should be a command line utility that reads a line of input in the form:</P>
+<P ALIGN="CENTER">&lt;command&gt; &lt;ipv6addr&gt;</P><DIR>
+
+<P>The command should be one of the following:</P></DIR>
+
+
+<UL>
+
+<UL>
+</FONT><B><FONT SIZE=4 COLOR="#0000ff"><LI>ping &lt;ipv6addr&gt;</B></FONT><FONT SIZE=4> : should run the ping utility.</LI></UL>
+</UL>
+<DIR>
+<DIR>
+<DIR>
+
+<P>Ex:</P></DIR>
+</DIR>
+</DIR>
+
+</FONT><FONT SIZE=4 COLOR="#ff0000"><P ALIGN="CENTER">ping fe90::0001</P>
+
+<UL>
+
+<UL>
+</FONT><B><FONT SIZE=4 COLOR="#0000ff"><LI>traceroute &lt;ipv6addr&gt;</B></FONT><FONT SIZE=4> : should run the traceroute utility.</LI></UL>
+</UL>
+<DIR>
+<DIR>
+<DIR>
+
+<P>Ex:</P></DIR>
+</DIR>
+</DIR>
+
+</FONT><FONT SIZE=4 COLOR="#ff0000"><P ALIGN="CENTER">traceroute fe90::0001</P>
+
+<UL>
+
+<UL>
+</FONT><B><FONT SIZE=4 COLOR="#0000ff"><LI>exit</B></FONT><FONT SIZE=4> : exit your code and print out statistics about the type of errors the garbler has introduced into your packets, using the routine <B><I>garb_print_stats</B></I>.</LI></UL>
+</UL>
+<DIR>
+<DIR>
+<DIR>
+
+<P>Ex:</P></DIR>
+
+</FONT><FONT SIZE=4 COLOR="#ff0000"><P ALIGN="CENTER">exit</P></DIR>
+</DIR>
+
+</FONT><FONT SIZE=4><P>4- Your code should use the </FONT><B><FONT SIZE=4 COLOR="#ff0000">garb_sendto</B></FONT><FONT SIZE=4> routine to send packets. <B><U>You should never use</B></U> </FONT><B><FONT SIZE=4 COLOR="#ff0000">sendto</B></FONT><FONT SIZE=4> function in your code.</P>
+<P>5- You should have the following options in your <B><I>Makefile</B></I>: </P><DIR>
+<DIR>
+
+<P>make clean (removes *.o, core, ping, traceroute, etc.) <BR>
+make (compiles your source code and create an executable file named </FONT><B><U><FONT SIZE=4 COLOR="#ff0000">node</B></U></FONT><FONT SIZE=4>)</P></DIR>
+</DIR>
+
+<P>6- Like the previous programs, you should submit a tar file. The tar file should include:</FONT> </P>
+<OL TYPE="a">
+<OL TYPE="a">
+
+<B><I><FONT SIZE=4><LI>Makefile</B></I> that compiles your implementation.</LI>
+<LI>Source code of your implementation.</LI>
+<LI>The typescripts output of running your implementation. There should be one typescript per node (numbered typescript.1, ...).</LI></OL>
+</OL>
+
+</FONT><B><FONT SIZE=5 COLOR="#ff0000"><P ALIGN="CENTER">The code has to compile and run on the CSC cluster, i.e. on Alpha stations</B></FONT> </P>
+<P><HR></P>
+<B><FONT FACE="Arial" SIZE=5><P>Questions</B></FONT><FONT SIZE=5> </P>
+<B><I><P>1- How are you going to run my program?</B></I></FONT> </P>
+<FONT SIZE=4><P>1. First, I'll untar the submitted file. <B><U>Please don't create any directories</B></U>.</FONT> </P>
+<FONT SIZE=4><P>2- Then, copy </FONT><A HREF="prog3/network.parameters"><FONT SIZE=4>network.parameters</FONT></A><FONT SIZE=4>, </FONT><A HREF="prog3/network.config"><FONT SIZE=4>network.config</FONT></A>, <FONT SIZE=4>and </FONT><A HREF="prog3/ipv6-garb.init"><FONT SIZE=4>ipv6-garb.init</FONT></A> <FONT SIZE=4>to the current directory. The third file will contain the parameters needed to initialize the garbler.</FONT><BR>
+<B><FONT SIZE=4 COLOR="#800000">You have to make sure that your code reads these files from the current directory.</B></FONT> </P>
+<FONT SIZE=4><P>3- Type "<B>make</B>". The name of the executable file should be </FONT><B><I><FONT SIZE=4 COLOR="#ff0000">node</B></I></FONT><FONT SIZE=4>.</FONT> <BR>
+<FONT SIZE=4>&nbsp;&nbsp; <B><U>There is no partial credit if your code does not compile successfully with no errors.</B></U></FONT> </P>
+<FONT SIZE=4><P>4- Run different tests on your program by using the command line tools.</P>
+</FONT><P><HR></P>
+<B><I><FONT SIZE=5><P>2- What is the value that I should store in hop-count field?</B></I></FONT> <BR>
+<FONT SIZE=4>The optimal value should be the diameter of the network. In this project assume that the max. hop count is </FONT><B><FONT SIZE=4 COLOR="#ff0000">16</B></FONT><FONT SIZE=4>.</P>
+</FONT><P><HR ALIGN="LEFT"></P>
+<B><I><FONT SIZE=5><P>3- How do I submit my project?</B></I></FONT> <BR>
+<FONT SIZE=4>You make a tar archive and then call a certain program from my directory called <B><I>submit</B></I>. The exact path is</FONT> </P>
+<B><I><FONT SIZE=4 COLOR="#ff0000"><P ALIGN="CENTER">~jh41701/BIN/submit</P>
+</B></I></FONT><FONT SIZE=4><P>Finally to submit your program, type</FONT> </P>
+<B><I><FONT SIZE=4 COLOR="#ff0000"><P ALIGN="CENTER">submit 4 filename</P>
+</B></I></FONT><FONT SIZE=4><P>There is only one filename which is the tar file.</FONT> </P>
+<P><A NAME="scenario"></A></P>
+<P><HR></P>
+<B><FONT FACE="Arial" SIZE=5><P>Grading Guidelines</P>
+</B></FONT><FONT SIZE=4><P>These are only guidelines to give you a hint about what I am going to test in your code. The points may be redistributed later during grading the assignment.</FONT> <BR>
+&nbsp; </P>
+<P ALIGN="CENTER"><CENTER><TABLE BORDER CELLSPACING=3 CELLPADDING=3 WIDTH=660>
+<TR><TD WIDTH="94%" VALIGN="MIDDLE">
+<P>Proper submission: submitted a tar file containing the files specified above <B><FONT COLOR="#ff0000">specially Makefile</B></FONT>.</TD>
+<TD WIDTH="6%" VALIGN="MIDDLE">
+<P ALIGN="CENTER">10</TD>
+</TR>
+<TR><TD WIDTH="94%" VALIGN="MIDDLE">
+<P>ping utility (Echo Request/ Echo Response)</TD>
+<TD WIDTH="6%" VALIGN="MIDDLE">
+<P ALIGN="CENTER">20</TD>
+</TR>
+<TR><TD WIDTH="94%" VALIGN="MIDDLE">
+<P>ping utility (Time Exceeded)</TD>
+<TD WIDTH="6%" VALIGN="MIDDLE">
+<P ALIGN="CENTER">10</TD>
+</TR>
+<TR><TD WIDTH="94%" VALIGN="MIDDLE">
+<P>ping utility (destination unreachable)</TD>
+<TD WIDTH="6%" VALIGN="MIDDLE">
+<P ALIGN="CENTER">10</TD>
+</TR>
+<TR><TD WIDTH="94%" VALIGN="MIDDLE">
+<P>traceroute</TD>
+<TD WIDTH="6%" VALIGN="MIDDLE">
+<P ALIGN="CENTER">20</TD>
+</TR>
+<TR><TD WIDTH="94%" VALIGN="MIDDLE">
+<P>Error management (corrupted data, duplicate data packet, discarded data packet, …etc). <B><U><FONT COLOR="#ff0000">You should use garb_sendto routine to send all your IPv6 packets</B></U></FONT>.</TD>
+<TD WIDTH="6%" VALIGN="MIDDLE">
+<P ALIGN="CENTER">30</TD>
+</TR>
+<TR><TD WIDTH="94%" VALIGN="MIDDLE">
+<P>Total points:&nbsp;</TD>
+<TD WIDTH="6%" VALIGN="MIDDLE">
+<B><FONT COLOR="#ff0000"><P ALIGN="CENTER">100</B></FONT></TD>
+</TR>
+</TABLE>
+</CENTER></P>
+
+<P ALIGN="CENTER"></P></BODY>
+</HTML>

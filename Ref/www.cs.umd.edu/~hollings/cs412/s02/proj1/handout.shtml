@@ -1,0 +1,1263 @@
+
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./proj1_files/filelist.xml">
+<title>\documentstyle{article}</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Jeff Hollingsworth</o:Author>
+  <o:LastAuthor>hollings</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>537</o:TotalTime>
+  <o:LastPrinted>2002-02-01T20:00:00Z</o:LastPrinted>
+  <o:Created>2002-02-04T18:26:00Z</o:Created>
+  <o:LastSaved>2002-02-04T18:26:00Z</o:LastSaved>
+  <o:Pages>4</o:Pages>
+  <o:Words>1114</o:Words>
+  <o:Characters>6350</o:Characters>
+  <o:Company> </o:Company>
+  <o:Bytes>22016</o:Bytes>
+  <o:Lines>52</o:Lines>
+  <o:Paragraphs>12</o:Paragraphs>
+  <o:CharactersWithSpaces>7798</o:CharactersWithSpaces>
+  <o:Version>9.2720</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:UpdateStylesOnOpen/>
+  <w:DoNotHyphenateCaps/>
+  <w:DisplayHorizontalDrawingGridEvery>0</w:DisplayHorizontalDrawingGridEvery>
+  <w:DisplayVerticalDrawingGridEvery>0</w:DisplayVerticalDrawingGridEvery>
+  <w:UseMarginsForDrawingGridOrigin/>
+  <w:Compatibility>
+   <w:UsePrinterMetrics/>
+   <w:WW6BorderRules/>
+   <w:FootnoteLayoutLikeWW8/>
+   <w:ShapeLayoutLikeWW8/>
+   <w:AlignTablesRowByRow/>
+   <w:ForgetLastTabAlignment/>
+   <w:LayoutRawTableWidth/>
+   <w:LayoutTableRowsApart/>
+  </w:Compatibility>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:HELVETICA;
+	panose-1:2 11 6 4 2 2 2 2 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:31367 -2147483648 8 0 255 0;}
+@font-face
+	{font-family:Courier;
+	panose-1:0 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:0;
+	mso-generic-font-family:modern;
+	mso-font-format:other;
+	mso-font-pitch:fixed;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:553679495 -2147483648 8 0 66047 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+h1
+	{mso-style-next:"Normal\,P";
+	margin-top:4.0pt;
+	margin-right:0in;
+	margin-bottom:4.0pt;
+	margin-left:.3in;
+	text-indent:-.3in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	mso-element:frame;
+	mso-element-frame-hspace:9.35pt;
+	mso-element-wrap:no-wrap-beside;
+	mso-element-anchor-vertical:paragraph;
+	mso-element-anchor-horizontal:column;
+	mso-element-top:.05pt;
+	mso-height-rule:exactly;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-font-kerning:14.0pt;
+	mso-bidi-font-weight:normal;}
+h2
+	{mso-style-next:"Normal\,P";
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:.3in;
+	text-indent:-.3in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:2;
+	font-size:11.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-bidi-font-weight:normal;}
+h3
+	{mso-style-next:"Normal\,P";
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:.9in;
+	text-indent:-.3in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:3;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-bidi-font-weight:normal;}
+h4
+	{mso-style-next:"Normal\,P";
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:1.2in;
+	text-indent:-.3in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:4;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-bidi-font-weight:normal;
+	font-style:italic;
+	mso-bidi-font-style:normal;}
+h5
+	{mso-style-next:"Normal\,P";
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:1.7in;
+	text-indent:-.5in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:5;
+	font-size:11.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Arial;
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:normal;}
+h6
+	{mso-style-next:"Normal\,P";
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:2.2in;
+	text-indent:-.5in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:6;
+	font-size:11.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Arial;
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:normal;
+	font-style:italic;
+	mso-bidi-font-style:normal;}
+p.MsoHeading7, li.MsoHeading7, div.MsoHeading7
+	{mso-style-next:"Normal\,P";
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:2.7in;
+	text-indent:-.5in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:7;
+	font-size:12.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.MsoHeading8, li.MsoHeading8, div.MsoHeading8
+	{mso-style-next:"Normal\,P";
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:3.2in;
+	text-indent:-.5in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:8;
+	font-size:12.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-style:italic;
+	mso-bidi-font-style:normal;}
+p.MsoHeading9, li.MsoHeading9, div.MsoHeading9
+	{mso-style-next:"Normal\,P";
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:3.7in;
+	text-indent:-.5in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:9;
+	font-size:9.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-style:italic;
+	mso-bidi-font-style:normal;}
+p.MsoFootnoteText, li.MsoFootnoteText, div.MsoFootnoteText
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:9.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoCommentText, li.MsoCommentText, div.MsoCommentText
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoHeader, li.MsoHeader, div.MsoHeader
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:center 3.0in right 6.0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoFooter, li.MsoFooter, div.MsoFooter
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:center 3.0in right 6.0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoCaption, li.MsoCaption, div.MsoCaption
+	{mso-style-next:"Normal\,P";
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-bottom:6.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:11.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+span.MsoFootnoteReference
+	{vertical-align:super;}
+span.MsoCommentReference
+	{mso-ansi-font-size:8.0pt;}
+span.MsoEndnoteReference
+	{mso-ansi-font-size:11.0pt;
+	mso-ascii-font-family:"Times New Roman";
+	mso-hansi-font-family:"Times New Roman";
+	vertical-align:baseline;
+	vertical-align:baseline;}
+p.MsoEndnoteText, li.MsoEndnoteText, div.MsoEndnoteText
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:5.0pt;
+	margin-left:.5in;
+	text-indent:-.5in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoList, li.MsoList, div.MsoList
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.25in;
+	margin-bottom:.0001pt;
+	text-indent:-.25in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoListBullet, li.MsoListBullet, div.MsoListBullet
+	{margin-top:1.0pt;
+	margin-right:0in;
+	margin-bottom:1.0pt;
+	margin-left:.5in;
+	text-indent:-.25in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoListNumber, li.MsoListNumber, div.MsoListNumber
+	{margin-top:1.0pt;
+	margin-right:0in;
+	margin-bottom:1.0pt;
+	margin-left:.5in;
+	text-indent:-.25in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoBodyText, li.MsoBodyText, div.MsoBodyText
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:6.0pt;
+	margin-left:0in;
+	text-indent:.5in;
+	line-height:20.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoBodyTextIndent, li.MsoBodyTextIndent, div.MsoBodyTextIndent
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:6.0pt;
+	margin-left:.25in;
+	line-height:150%;
+	mso-pagination:widow-orphan;
+	font-size:11.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+p.MsoDocumentMap, li.MsoDocumentMap, div.MsoDocumentMap
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	background:navy;
+	font-size:12.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Address, li.Address, div.Address
+	{mso-style-name:Address;
+	mso-style-next:"Normal\,P";
+	margin-top:3.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	font-style:italic;
+	mso-bidi-font-style:normal;}
+p.Blockquote, li.Blockquote, div.Blockquote
+	{mso-style-name:Blockquote;
+	margin-top:3.0pt;
+	margin-right:.25in;
+	margin-bottom:3.0pt;
+	margin-left:.25in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+span.CITE
+	{mso-style-name:CITE;
+	font-style:italic;}
+span.CODE
+	{mso-style-name:CODE;
+	mso-ansi-font-size:10.0pt;
+	mso-ascii-font-family:"Courier New";
+	mso-hansi-font-family:"Courier New";}
+p.DefinitionCompact, li.DefinitionCompact, div.DefinitionCompact
+	{mso-style-name:"Definition Compact\,DL COMPACT";
+	margin-top:3.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:.25in;
+	text-indent:-.25in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.DefinitionList, li.DefinitionList, div.DefinitionList
+	{mso-style-name:"Definition List\,DL";
+	margin-top:3.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:.5in;
+	text-indent:-.5in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+span.DefinitionTerm
+	{mso-style-name:"Definition Term\,DT";
+	mso-ansi-font-size:12.0pt;
+	mso-ascii-font-family:"Times New Roman";
+	mso-hansi-font-family:"Times New Roman";}
+span.Definition
+	{mso-style-name:"Definition\,DFN";
+	mso-ansi-font-size:12.0pt;
+	font-style:italic;}
+p.Directory, li.Directory, div.Directory
+	{mso-style-name:"Directory\,DIR";
+	mso-style-next:"Normal\,P";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.25in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:2.0in 4.0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+span.Emphasis
+	{mso-style-name:"Emphasis\,EM";
+	font-style:italic;}
+p.HorizontalRule, li.HorizontalRule, div.HorizontalRule
+	{mso-style-name:"Horizontal Rule\,HR";
+	mso-style-next:"Normal\,P";
+	margin:0in;
+	margin-bottom:.0001pt;
+	line-height:1.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	background:white;
+	mso-shading:white;
+	mso-pattern:solid white;
+	border:none;
+	mso-border-alt:solid gray 1.5pt;
+	padding:0in;
+	mso-padding-alt:0in 0in 0in 0in;
+	mso-border-shadow:yes;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+span.Hypertext
+	{mso-style-name:"Hypertext\,A";
+	color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+span.Keyboard
+	{mso-style-name:"Keyboard\,KBD";
+	mso-ansi-font-size:10.0pt;
+	mso-ascii-font-family:"Courier New";
+	mso-hansi-font-family:"Courier New";
+	text-decoration:none;
+	text-underline:none;}
+p.Menu, li.Menu, div.Menu
+	{mso-style-name:Menu;
+	mso-style-next:"Normal\,P";
+	margin-top:1.0pt;
+	margin-right:0in;
+	margin-bottom:1.0pt;
+	margin-left:.5in;
+	text-indent:-.25in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.PREWIDE, li.PREWIDE, div.PREWIDE
+	{mso-style-name:"PRE WIDE";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:38.15pt 76.3pt 114.5pt 152.65pt 2.65in 228.95pt 267.1pt 305.3pt 343.45pt 5.3in 419.75pt 457.9pt 496.1pt 534.25pt 7.95in;
+	mso-element:frame;
+	mso-element-frame-width:14.0in;
+	mso-element-frame-hspace:9.35pt;
+	mso-element-wrap:around;
+	mso-element-anchor-vertical:paragraph;
+	mso-element-anchor-horizontal:column;
+	mso-element-top:.05pt;
+	mso-height-rule:exactly;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.Preformatted, li.Preformatted, div.Preformatted
+	{mso-style-name:"Preformatted\,PRE";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:.6in 1.2in 1.8in 2.4in 3.0in 3.6in 4.2in 4.8in 5.4in 6.0in 6.6in 7.2in 7.8in;
+	mso-element:frame;
+	mso-element-frame-width:8.0in;
+	mso-element-frame-hspace:9.35pt;
+	mso-element-wrap:around;
+	mso-element-anchor-vertical:paragraph;
+	mso-element-anchor-horizontal:column;
+	mso-element-top:.05pt;
+	mso-height-rule:exactly;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.RestartList, li.RestartList, div.RestartList
+	{mso-style-name:RestartList;
+	mso-style-parent:"";
+	mso-style-next:"Normal\,P";
+	margin:0in;
+	margin-bottom:.0001pt;
+	line-height:.7pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+span.Sample
+	{mso-style-name:"Sample\,SAMP";
+	mso-ascii-font-family:"Courier New";
+	mso-hansi-font-family:"Courier New";}
+span.Strikethrough
+	{mso-style-name:"Strikethrough\,STRIKE";
+	text-decoration:line-through;}
+span.Strong
+	{mso-style-name:"Strong\,STRONG";
+	font-weight:bold;}
+span.Typewriter
+	{mso-style-name:"Typewriter\,TT";
+	mso-ansi-font-size:10.0pt;
+	mso-ascii-font-family:"Courier New";
+	mso-hansi-font-family:"Courier New";}
+span.Variable
+	{mso-style-name:"Variable\,VAR";
+	mso-ansi-font-size:12.0pt;
+	mso-ascii-font-family:"Times New Roman";
+	mso-hansi-font-family:"Times New Roman";
+	font-style:italic;}
+span.z-HTMLTag
+	{mso-style-name:"z-HTML Tag";
+	mso-ansi-font-size:12.0pt;
+	mso-ascii-font-family:"Times New Roman";
+	mso-hansi-font-family:"Times New Roman";
+	color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+p.BulletParagraph, li.BulletParagraph, div.BulletParagraph
+	{mso-style-name:"Bullet Paragraph";
+	mso-style-parent:"Body Text";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:6.0pt;
+	margin-left:.75in;
+	text-indent:-.25in;
+	line-height:20.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.CallOut, li.CallOut, div.CallOut
+	{mso-style-name:"Call Out";
+	mso-style-parent:"Body Text";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:6.0pt;
+	margin-left:.5in;
+	text-indent:-.5in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.NumberedParagraph, li.NumberedParagraph, div.NumberedParagraph
+	{mso-style-name:"Numbered Paragraph";
+	mso-style-parent:"Bullet Paragraph";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:6.0pt;
+	margin-left:.75in;
+	text-indent:-.25in;
+	line-height:20.0pt;
+	mso-line-height-rule:exactly;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:35.45pt;
+	mso-footer-margin:35.45pt;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+@list l0
+	{mso-list-id:742486404;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-738298294 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l0:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+<!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="2050"/>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout></xml><![endif]-->
+</head>
+
+<body lang=EN-US link=blue vlink=purple style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<p class=MsoNormal align=center style='text-align:center'><b style='mso-bidi-font-weight:
+normal'>CMSC 412 Programming Assignment #1<o:p></o:p></b></p>
+
+<p class=MsoNormal align=center style='margin-top:3.0pt;margin-right:0in;
+margin-bottom:3.0pt;margin-left:0in;text-align:center'>Due February 26, 2002
+(10:00 AM)</p>
+
+<h2>Introduction </h2>
+
+<p class=MsoNormal>In this project you will extend the GeeksOS operating system
+to include user mode processes and system calls. <a
+href="http://www.cs.umd.edu/~hollings/cs412/s02/proj1/ia32ch7.pdf">Chapter 6</a>
+of the IA-32 System Programmers manual will likely be helpful in explaining how
+to manage the processor.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>When GeekOS boots up, it should start the user mode process
+in the file C:\a.exe.<span style="mso-spacerun: yes">  </span>This process is
+the ancestor of all other user mode processes in the operating system.</p>
+
+<h3 style='margin-left:.3in'>Adding User Mode</h3>
+
+<p class=MsoNormal>You will need to create user mode processes.<span
+style="mso-spacerun: yes">  </span>There are two steps to creating a user mode
+process.<span style="mso-spacerun: yes">  </span>First, you must load a program
+for the process to run.<span style="mso-spacerun: yes">  </span>Second you
+should create a thread and setup the memory manager to protect the processes
+from other processes.</p>
+
+<p class=MsoCommentText><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>To load a program, you will need to write the function <span
+style='font-family:Courier'>loadElfProgram(char *programName)</span>. Programs
+are stored on disk and to read them you will need to call the appropriate file
+system routines.<span style="mso-spacerun: yes">  </span>However, since the
+“real” file system for the project is not yet written (you will write it later
+in the semester), we have provided you a temporary file system called pfat
+(pseudo FAT file system).<span style="mso-spacerun: yes">  </span>From within
+your kernel, you will be able to read files by calling the routine <span
+style='font-family:Courier'>int ReadFileAndAllocate(char *fileName, char
+**buffer)</span> which is defined in <span style='font-family:Courier'>pfat.c.</span>
+This routine will allocate memory, read the file named filename into that
+memory, and set buffer to point to the beginning of the buffer holding the
+file. You will also need to initialize the IDE subsystem of the operating
+system by calling the routine Init_IDE from the main thread of your OS kernel.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>When a program is stored in a file, it contains several
+parts that describe the program itself, how much data it will have and where
+the first instruction is located.<span style="mso-spacerun: yes">  </span>There
+are several standards that describe how a program is stored on disk.<span
+style="mso-spacerun: yes">  </span>The one we will use in this class is a file
+format called ELF.<span style="mso-spacerun: yes">  </span>The figures below
+show the layout of an ELF binary. It consists of an elf header, followed by a
+program header, followed by the program instructions and then the initialized
+program data. Your <span style='font-family:Courier'>loadElfProgram </span>routine
+will read a file into memory and then setup the correct information a<span
+style="mso-spacerun: yes">  </span><span style='font-family:Courier'>struct User_Program</span>
+that describes the program. The ELF header and program header have structures
+defined in elf.h that you can use.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<div align=center>
+
+<table border=1 cellspacing=0 cellpadding=0 style='border-collapse:collapse;
+ border:none;mso-border-alt:solid windowtext .5pt;mso-padding-alt:0in 5.4pt 0in 5.4pt'>
+ <tr>
+  <td valign=top style='border:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Elf Header</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext .5pt;border-top:none;
+  mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Program Header (Text segment)</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext .5pt;border-top:none;
+  mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Program Header (Data segment)</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext .5pt;border-top:none;
+  mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>….</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext .5pt;border-top:none;
+  mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Program Instructions</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext .5pt;border-top:none;
+  mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Program Initialized Data</p>
+  </td>
+ </tr>
+</table>
+
+</div>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b>Format of Elf
+Binary<o:p></o:p></b></p>
+
+<p class=MsoCommentText><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<div align=center>
+
+<table border=1 cellspacing=0 cellpadding=0 style='border-collapse:collapse;
+ border:none;mso-border-alt:solid windowtext .5pt;mso-padding-alt:0in 5.4pt 0in 5.4pt'>
+ <tr>
+  <td valign=top style='border-top:solid windowtext .5pt;border-left:solid windowtext .5pt;
+  border-bottom:none;border-right:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-pagination:widow-orphan lines-together;
+  page-break-after:avoid'><b>Field<o:p></o:p></b></p>
+  </td>
+  <td width=293 valign=top style='width:219.5pt;border-top:solid windowtext .5pt;
+  border-left:none;border-bottom:none;border-right:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-pagination:widow-orphan lines-together;
+  page-break-after:avoid'><b>Description<o:p></o:p></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:none;border-left:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoCommentText style='mso-pagination:widow-orphan lines-together;
+  page-break-after:avoid'>Ident</p>
+  </td>
+  <td width=293 valign=top style='width:219.5pt;border:none;border-right:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-pagination:widow-orphan lines-together;
+  page-break-after:avoid'>String to identify what’s in the file</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:none;border-left:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-pagination:widow-orphan lines-together;
+  page-break-after:avoid'>Phoff</p>
+  </td>
+  <td width=293 valign=top style='width:219.5pt;border:none;border-right:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-pagination:widow-orphan lines-together;
+  page-break-after:avoid'>Offset of first program header</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:none;border-left:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-pagination:widow-orphan lines-together;
+  page-break-after:avoid'>Phnum</p>
+  </td>
+  <td width=293 valign=top style='width:219.5pt;border:none;border-right:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-pagination:widow-orphan lines-together;
+  page-break-after:avoid'>Number of program headers</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border-top:none;border-left:solid windowtext .5pt;
+  border-bottom:solid windowtext .5pt;border-right:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-pagination:widow-orphan lines-together;
+  page-break-after:avoid'>Entry</p>
+  </td>
+  <td width=293 valign=top style='width:219.5pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-pagination:widow-orphan lines-together;
+  page-break-after:avoid'>Address of first instruction in program</p>
+  </td>
+ </tr>
+</table>
+
+</div>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b>Useful Elf Header
+Fields<o:p></o:p></b></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></b></p>
+
+<div align=center>
+
+<table border=1 cellspacing=0 cellpadding=0 style='border-collapse:collapse;
+ border:none;mso-border-alt:solid windowtext .5pt;mso-padding-alt:0in 5.4pt 0in 5.4pt'>
+ <tr>
+  <td valign=top style='border-top:solid windowtext .5pt;border-left:solid windowtext .5pt;
+  border-bottom:none;border-right:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><b>Field<o:p></o:p></b></p>
+  </td>
+  <td width=255 valign=top style='width:191.6pt;border-top:solid windowtext .5pt;
+  border-left:none;border-bottom:none;border-right:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='text-align:center'><b>Description<o:p></o:p></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:none;border-left:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Offset</p>
+  </td>
+  <td width=255 valign=top style='width:191.6pt;border:none;border-right:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Offset of region within file</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:none;border-left:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Vaddr</p>
+  </td>
+  <td width=255 valign=top style='width:191.6pt;border:none;border-right:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Address for start of region</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border-top:none;border-left:solid windowtext .5pt;
+  border-bottom:solid windowtext .5pt;border-right:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>MemSize</p>
+  </td>
+  <td width=255 valign=top style='width:191.6pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Length of region</p>
+  </td>
+ </tr>
+</table>
+
+</div>
+
+<p class=MsoNormal align=center style='text-align:center'><b><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></b></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b>Useful Fields in
+Program Header<o:p></o:p></b></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The other step in creating a user program is to compile it
+and store it onto the file system that the kernel can read.<span
+style="mso-spacerun: yes">  </span>Since your operating system is not yet ready
+to run the compiler, you will use a “cross compiler” to create the files and
+store them into the file system before booting the operating system.<span
+style="mso-spacerun: yes">  </span>The directory UserProgs contains a couple of
+test programs, and a makefile that will load them into the file system (really
+the file called hd.img).</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>To create a user mode you will write the function <span
+style='font-family:Courier'>Create_User_Process (struct *</span> <span
+style='font-family:Courier'>User_Program)</span>. It will create a new user
+mode process, setup the stack as well as the text and data segments for the
+process.<span style="mso-spacerun: yes">  </span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>To create a user mode process, you will also need to set up
+various types of data structures that describe the memory and privilege level
+associated with your new process. The steps required are:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l0 level1 lfo1;
+tab-stops:list .5in'><![if !supportLists]>1)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Create an LDT descriptor by calling the routine
+Allocate_Segment_Descriptor()</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l0 level1 lfo1;
+tab-stops:list .5in'><![if !supportLists]>2)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Create an LDT selector by calling the routine Selector()</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l0 level1 lfo1;
+tab-stops:list .5in'><![if !supportLists]>3)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Create a text segment descriptor by calling
+Init_Code_Segment_Descriptor</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l0 level1 lfo1;
+tab-stops:list .5in'><![if !supportLists]>4)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Create a data segment descriptor by calling
+Init_Data_Segment_Descriptor</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l0 level1 lfo1;
+tab-stops:list .5in'><![if !supportLists]>5)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Create an data segment selector by calling the routine
+Selector()</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l0 level1 lfo1;
+tab-stops:list .5in'><![if !supportLists]>6)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Create an text segment selector by calling the routine
+Selector()</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>You will also need to call Create_Thread to create a thread
+to be associated with the user process.<span style="mso-spacerun: yes"> 
+</span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Finally, you will need to setup the stack of your new thread
+to look like it has just been interrupted.<span style="mso-spacerun: yes"> 
+</span>This will require pushing the appropriate values onto the stack to match
+what the hardware would push for an interrupt.<span style="mso-spacerun: yes"> 
+</span>The routine Push (kthead.c) can be used to push individual values and
+the routine Push_General_Registers (kthread.c) will push all of the
+general-purpose registers at once. The layout of the stack should be:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<div align=center>
+
+<table border=1 cellspacing=0 cellpadding=0 style='border-collapse:collapse;
+ border:none;mso-border-alt:solid windowtext .5pt;mso-padding-alt:0in 5.4pt 0in 5.4pt'>
+ <tr>
+  <td valign=top style='border:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoCommentText>Stack Data Selector (data Slector)</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext .5pt;border-top:none;
+  mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Stack Pointer (end of data memory)</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext .5pt;border-top:none;
+  mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Eflags</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext .5pt;border-top:none;
+  mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Text Selector (text Selector)</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext .5pt;border-top:none;
+  mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Program Counter (entry Addr)</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext .5pt;border-top:none;
+  mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Error Code (0)</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext .5pt;border-top:none;
+  mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Interrupt Number (0)</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext .5pt;border-top:none;
+  mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>General Purpose Registers</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext .5pt;border-top:none;
+  mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Ds (data Selector)</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext .5pt;border-top:none;
+  mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Es (data Selector)</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext .5pt;border-top:none;
+  mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Fs (data Selector)</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext .5pt;border-top:none;
+  mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Ga (data Selector)</p>
+  </td>
+ </tr>
+</table>
+
+</div>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><b>Adding System Calls<o:p></o:p></b></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Your kernel should support the following system calls:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<table border=1 cellspacing=0 cellpadding=0 style='border-collapse:collapse;
+ border:none;mso-border-alt:solid windowtext .5pt;mso-padding-alt:0in 5.4pt 0in 5.4pt'>
+ <tr>
+  <td width=139 valign=top style='width:1.45in;border-top:solid windowtext .5pt;
+  border-left:solid windowtext .5pt;border-bottom:none;border-right:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><b><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>Name<o:p></o:p></span></b></p>
+  </td>
+  <td width=66 valign=top style='width:49.5pt;border:none;border-top:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><b><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>Call
+  #<o:p></o:p></span></b></p>
+  </td>
+  <td width=138 valign=top style='width:103.5pt;border:none;border-top:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><b><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>Kernel
+  Function<o:p></o:p></span></b></p>
+  </td>
+  <td width=234 valign=top style='width:175.5pt;border-top:solid windowtext .5pt;
+  border-left:none;border-bottom:none;border-right:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><b><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>User
+  Space Function<o:p></o:p></span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=139 valign=top style='width:1.45in;border:none;border-left:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>SYS_NULL<o:p></o:p></span></p>
+  </td>
+  <td width=66 valign=top style='width:49.5pt;border:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>0<o:p></o:p></span></p>
+  </td>
+  <td width=138 valign=top style='width:103.5pt;border:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>Sys_Null<o:p></o:p></span></p>
+  </td>
+  <td width=234 valign=top style='width:175.5pt;border:none;border-right:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>int
+  Null( void );<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=139 valign=top style='width:1.45in;border:none;border-left:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=RestartList style='line-height:normal'><span style='mso-bidi-font-size:
+  12.0pt'>SYS_EXIT<o:p></o:p></span></p>
+  </td>
+  <td width=66 valign=top style='width:49.5pt;border:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=RestartList style='line-height:normal'><span style='mso-bidi-font-size:
+  12.0pt'>1<o:p></o:p></span></p>
+  </td>
+  <td width=138 valign=top style='width:103.5pt;border:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>Sys_Exit<o:p></o:p></span></p>
+  </td>
+  <td width=234 valign=top style='width:175.5pt;border:none;border-right:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>void
+  Exit( void );<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=139 valign=top style='width:1.45in;border:none;border-left:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>SYS_PRINTSTRING<o:p></o:p></span></p>
+  </td>
+  <td width=66 valign=top style='width:49.5pt;border:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>2<o:p></o:p></span></p>
+  </td>
+  <td width=138 valign=top style='width:103.5pt;border:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>Sys_Print_String<o:p></o:p></span></p>
+  </td>
+  <td width=234 valign=top style='width:175.5pt;border:none;border-right:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>int
+  Print_String( const char* message);<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=139 valign=top style='width:1.45in;border:none;border-left:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>SYS_GETKEY<o:p></o:p></span></p>
+  </td>
+  <td width=66 valign=top style='width:49.5pt;border:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>3<o:p></o:p></span></p>
+  </td>
+  <td width=138 valign=top style='width:103.5pt;border:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>Sys_Get_Key<o:p></o:p></span></p>
+  </td>
+  <td width=234 valign=top style='width:175.5pt;border:none;border-right:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>Keycode
+  Get_Key( void )<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=139 valign=top style='width:1.45in;border:none;border-left:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>SYS_SPAWN<o:p></o:p></span></p>
+  </td>
+  <td width=66 valign=top style='width:49.5pt;border:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>4<o:p></o:p></span></p>
+  </td>
+  <td width=138 valign=top style='width:103.5pt;border:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>Sys_Spawn_Program<o:p></o:p></span></p>
+  </td>
+  <td width=234 valign=top style='width:175.5pt;border:none;border-right:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>int
+  Spawn_Program(char* program );<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=139 valign=top style='width:1.45in;border-top:none;border-left:
+  solid windowtext .5pt;border-bottom:solid windowtext .5pt;border-right:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>SYS_WAIT<o:p></o:p></span></p>
+  </td>
+  <td width=66 valign=top style='width:49.5pt;border:none;border-bottom:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>5<o:p></o:p></span></p>
+  </td>
+  <td width=138 valign=top style='width:103.5pt;border:none;border-bottom:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>Sys_Wait<o:p></o:p></span></p>
+  </td>
+  <td width=234 valign=top style='width:175.5pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'>int
+  Wait( unsigned int pid );<o:p></o:p></span></p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal>As discussed in class, the way a user program makes a system
+call is to trap into the operating system.<span style="mso-spacerun: yes"> 
+</span>To make this process a bit easer for user programs, you will write a
+library (called libuser.c) that will implement that user space functions listed
+in the table above.<span style="mso-spacerun: yes">  </span>Each function
+implementation will make an appropriate trap into the operating system.<span
+style="mso-spacerun: yes">  </span>Inside the operating system kernel, you will
+extend the function <span style='font-family:Courier'>Syscall_Handler </span>to
+call the various Sys_XXX kernel functions listed in the table depending on the
+system call number.<span style="mso-spacerun: yes">  </span>The signature
+(parameters and return values) of the Sys_XXX calls should be the same as their
+corresponding user space function.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The Sys_Exit call should terminate the user mode process
+that calls it.<span style="mso-spacerun: yes">  </span>The Sys_Print_String
+call should print the passed string to the screen.<span style="mso-spacerun:
+yes">  </span>The Sys_Get_Key call should block the process until a key has
+been pressed, and then return the key that was pressed.<span
+style="mso-spacerun: yes">  </span>If two processes call this system call at
+once, only one should get the character (which ones doesn’t matter). The
+Sys_Spawn_Program call creates a new user process running the program that is
+passed as its first paramter. The return value from this call should the
+process id of the new processes created, or –1 if it was not possible to create
+the process. The Sys_Wait system call should block the calling process until
+the process id that is passed as the first parameter has exited.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>To pass data from user mode to kernel mode you will need to
+copy memory from user space to kernel space as part of your system call
+handler.<span style="mso-spacerun: yes">  </span>Likewise if you wish to
+transfer data from the kernel back to user mode you will need to copy the memory.</p>
+
+<p class=MsoNormal><b style='mso-bidi-font-weight:normal'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></b></p>
+
+<h2>Requirements </h2>
+
+<p class=MsoNormal>Submit the program using the submit command.<span
+style="mso-spacerun: yes">  </span>You should submit a tar file containing all
+of the code (even the code we provided and you did not modify) for your
+kernel.<span style="mso-spacerun: yes">  </span>Do not include the binaries,
+object code, or the bochs disk images in your tar file (i.e. do a gmake clean
+before submitting the files).</p>
+
+<p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:3.0pt;
+margin-left:0in'><b><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:3.0pt;
+margin-left:0in'><b>News Files<o:p></o:p></b></p>
+
+<p class=MsoCommentText style='margin-top:3.0pt;margin-right:0in;margin-bottom:
+3.0pt;margin-left:0in'>Ide.{c,h} <span style='mso-tab-count:1'>            </span>IDE
+Device Driver</p>
+
+<p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:3.0pt;
+margin-left:0in'>Pfat.c <span style='mso-tab-count:1'>  </span><span
+style='mso-tab-count:1'>            </span>pseudo FAT filesystem code</p>
+
+<p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:3.0pt;
+margin-left:0in'>Elf.h <span style='mso-tab-count:1'>    </span><span
+style='mso-tab-count:1'>            </span>interface to read a program from a
+file</p>
+
+<p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:3.0pt;
+margin-left:0in'>User.h <span style='mso-tab-count:1'> </span><span
+style='mso-tab-count:1'>            </span>start of a user program context</p>
+
+<p class=MsoNormal style='margin-top:3.0pt;margin-right:0in;margin-bottom:3.0pt;
+margin-left:0in'>UserProgs<span style='mso-tab-count:1'>            </span>a
+directory of user programs</p>
+
+</div>
+
+</body>
+
+</html>
+

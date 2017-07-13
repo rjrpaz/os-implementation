@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<TITLE>CMSC 714 - Fl'02</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#D7D3D2" LINK="#78021C" VLINK="#7F6666" ALINK="#FFFFFF" BACKGROUND="marble.jpg">
+
+<H2 ALIGN=CENTER>CMSC 714 </H2>
+
+<H1 ALIGN=CENTER>High Performance Computing </H1>
+
+<P>This class provides an introduction to parallel computing for graduate
+students. We will cover selected topics in high-performance systems including:
+contemporary architectures, interconnection topologies, shared memory and
+message-passing systems, multi-threaded kernels, latency avoidance and
+hiding techniques, methods for data and workload partitioning, performance
+profiling, and debugging. We will also talk about how high performance
+computing is being applied to commerical systems including parallel databases
+and e-commerce applications.<BR>
+
+</P>
+
+<P><B>Academic Integrity:</B> </P>
+
+<P>&quot;Integrity without knowledge is weak and useless, and knowledge
+without integrity is dangerous and dreadful.&quot; Samuel Johnson (The
+History of Rasselas, ch. 41 (1759)). </P>
+
+<P>Please read the statement on <A HREF="integrity.html">academic integrity.
+</A></P>
+
+<p><b>Projects:</b> </p>
+
+<P>
+Every student will particpate in a 2-3 person teams on semester long
+projects.  The projects will be different for each group and will be
+open-ended research style projects (several projects from the last time this
+class was offered resulted in publications).
+
+<p>
+
+<P><B>Participants:</B> </P>
+
+<MENU>
+<LI><A HREF="/~hollings">Dr. Jeff Hollingsworth (Assoc. Prof)</A> </LI>
+
+</MENU>
+
+<P><B>Handouts:</B> </P>
+
+<MENU>
+<LI><A HREF="slyb.html">Syllabus</A>
+</LI>
+
+<li><a href="readingList.html">Reading List:</a>
+
+<li><a href="mpi-project.html">Programming Assignment</a>
+
+<menu>
+<li> <a href="mpi-project.html">Handout</a>
+<li><a href="p1.update.html">Update</a> with command line options and output files
+</menu>
+
+
+
+</MENU>
+
+
+<P><B>Exams:</B> </P>
+
+<MENU>
+<LI>Midterm - 10/22/02 (in class) </LI>
+<menu>
+<li><a href="sampleExam0.html">Sample Exam #0 (s00)</a>,
+<li><a href="sampleExam1.html">Sample Exam #1 (s99)</a>,
+<li><a href="sampleExam2.html">Sample Exam #2 (f96)</a>,
+<li><a href="sampleExam3.html">Sample Exam #3 (s95)</a>
+</menu>
+</MENU>
+
+<P><B>Lectures:</B> </P>
+<menu>
+<li><a href="lectures/lect01/index.shtml">Lecture 1 (9/3/2002)</a>
+<li><a href="lectures/lect02/index.shtml">Lecture 2 (9/5/2002)</a>
+<li><a href="lectures/lect04/index.shtml">Lecture 4 (9/12/2002)</a>
+<li><a href="lectures/lect05/index.shtml">Lecture 5 (9/17/2002)</a>
+<li><a href="lectures/lect06/index.shtml">Lecture 6 (9/19/2002)</a>
+<li><a href="lectures/lect07/index.shtml">Lecture 7 (9/24/2002)</a>
+<!--- XXLECTNUM --->
+</MENU>
+
+<P>This page will be updated throughout the class to provide online access
+to course materials. <B>This page and the assignments and lecture notes
+attached to it are copyrighted. </B>Use of these pages by individuals and
+for the class CMSC714 at the University of Maryland is permitted. Any
+other use requires permission of the author <A HREF="http://www.cs.umd.edu/~hollings">Jeffrey
+K. Hollingsworth</A> </P>
+
+</BODY>
+</HTML>

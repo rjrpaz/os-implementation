@@ -1,0 +1,120 @@
+# robots.txt for http://www.cs.umd.edu/
+#
+# a list of URL directories/files for wandering robots to ignore.
+#
+# Ref: <http://web.nexor.co.uk/mak/doc/robots/norobots.html> as of 8/31/94
+#
+# $Id: robots.txt,v 2.6 2010/01/04 14:02:53 root Exp $
+#
+# AGGGGGHH! records are separated by new lines (they are not ignored)
+# shucks, darn, and other niceties
+#
+# Comments about this webserver would be greatly appreciated.  Send to
+# webmaster@cs.umd.edu.  Poetry will be burned.
+#
+# Note: deleted uses whose URLs have been redirected to the deleted script
+# don't need to remain here - the script returns an ENOTFOUND 404 error.
+# And that should be sufficient for a web robot to ignore it.
+#
+
+#####
+# User-agent contains entries of robots that you want to match this against.
+User-agent: *
+#
+# Disallow specifies partial or full URL paths
+#
+# ignore local copies of etexts that exist elsewhere.
+Disallow: /documents/bdgtti/
+Disallow: /documents/zen-1.0/
+Disallow: /services/roget/
+#
+# ignore our local icon stores.
+#
+Disallow: /icons/
+Disallow: /pics/
+Disallow: /links/
+#
+# ignore test directory and new directory
+#
+Disallow: /test/
+Disallow: /new/
+#
+# ignore some potentially naughty cgi stuff
+Disallow: /cgi-bin/finger
+Disallow: /cgi-bin/info2www
+Disallow: /local-cgi-bin/deleted
+Disallow: /mom/
+Disallow: /TR/
+Disallow: /Server/
+Disallow: /Document/
+Disallow: /Submit/
+Disallow: /MetaServer/
+Disallow: /Misc/
+# these are going away.
+Disallow: /campus/
+# dammit, InfoSeek apparently keeps this valid.
+Disallow: /users/eron
+Disallow: /~eron
+# add 7/14/95
+Disallow: /users/pavarino
+Disallow: /~pavarino
+# add 11/1/95
+Disallow: /dept/
+# Soon To be deleted user...  11/10/95
+Disallow: /users/saday
+Disallow: /~saday
+# for his class
+Disallow: /users/pugh/java/crashCourse
+Disallow: /~pugh/java/crashCourse
+# gone
+Disallow: /ftp/pub/cyrillic
+# add July/19/96 at Tamara Gibson's request
+Disallow: /users/gibson/WIM
+Disallow: /~gibson/WIM
+# added 98/02/09 by philippe
+Disallow: /users/philippe
+Disallow: /~philippe
+# saurabhs@cs - 1/4/2010
+Disallow: /users/saurabhs/app-material
+Disallow: /~saurabhs/app-material
+
+
+#####
+# I sort of trust these programs to do Da Right Thang
+User-agent: testbot
+User-agent: MOMspider
+Disallow: /cgi-bin/finger
+Disallow: /cgi-bin/info2www
+Disallow: /local-cgi-bin/deleted
+Disallow: /mom/
+Disallow: /TR/
+Disallow: /Server/
+Disallow: /Document/
+Disallow: /Submit/
+Disallow: /MetaServer/
+Disallow: /Misc/
+# these are going away.
+Disallow: /campus/
+# add 7/14/95
+Disallow: /users/pavarino
+Disallow: /~pavarino
+# Soon To be deleted user...  11/10/95
+Disallow: /users/saday
+Disallow: /~saday
+# for his class
+Disallow: /users/pugh/java/crashCourse
+Disallow: /~pugh/java/crashCourse
+# gone
+Disallow: /ftp/pub/cyrillic
+# add July/19/96 at Tamara Gibson's request
+Disallow: /users/gibson/WIM
+Disallow: /~gibson/WIM
+# added 98/02/09 by philippe
+Disallow: /users/philippe
+Disallow: /~philippe
+
+#####
+# Homebrew.  Let it see all good and evil in the world.
+User-agent: augurbot
+Disallow:
+

@@ -1,0 +1,69 @@
+
+<HTML>
+
+<HEAD>
+
+<TITLE>CMSC 412 - Project #0</TITLE>
+
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#D7D3D2" LINK="#78021C" VLINK="#7F6666" ALINK="#FFFFFF" BACKGROUND="../marble.gif">
+
+<center>
+<h1>
+CMSC412 - Project #0 
+</h1>
+</center>
+
+<h2>Handouts</h2>
+<menu>
+    <li><a href="prog0.shtml">Programming Assignment</a>
+    <li><a href="running.shtml">Running GeekOS</a>
+</menu>
+
+<p>
+
+<h2>
+Submitting your code
+</h2>
+<P>
+The submit program is in ~hollings/bin/submit on the class Linux cluster.
+You should do your submit as follows:
+<pre>
+cd ~/prog0
+gmake clean
+cd ..
+tar cvf prog0.tar prog0
+gzip prog0.tar
+~hollings/bin/submit 0 prog0.tar.gz
+</pre>
+<p>
+<b>
+The program 0 tyar file used to produce a proj0 directory, if you
+got this version (before 11:00 AM on Thu 1/30/03), simply run
+</b>
+<pre>
+mv proj0 prog0
+</pre>
+<p>
+It is important to cleanup .o's before submitting and to make sure
+you submit a tar file that contains prog0 as the directory it creates.
+
+<h2>
+Header, Source, Object, and Sample Data Files
+</h2>
+<P>
+<menu>
+<li>Bochs Files and GeeksOS kernel
+<menu>
+<li><a href="prog0.tar.gz">prog0.tar.gz</a>
+<li><a href="bochsrc">Updated .bochsrc</a>
+<li><a href="fonts.tar.gz">fonts</a> (These need to be on your glue/wam account if your are logging in remotely)
+</menu>
+
+<p>
+There is info about running the development environment on Windows 
+availalbe on the <a href="http://geekos.sourceforge.net/docs/building.html">GeekOS</a> web site.  For the purposes of this class, this is an unsopported
+configuration. The professors and TAs do not have the time to help
+students getting this environment to run.
+</HTML>
+

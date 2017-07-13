@@ -1,0 +1,74 @@
+<HTML>
+
+<HEAD>
+
+<TITLE>CMSC 412 Project #5: submission instructions</TITLE>
+
+</HEAD>
+<BODY TEXT="#000000" LINK="#78021C" VLINK="#7F6666" ALINK="#FFFFFF">
+
+<center>
+<h1>
+CMSC412 - Project #5 : submission instructions
+</h1>
+</center>
+
+<li>
+<b>
+Linuxlab machines (accessible from console or over the network)
+are the standard, supported, development environment for the project.
+<br>
+We will test by running your projects on a linuxlab machine, without necessarily being there (e.g.remote connection with ssh).
+<br>That means *bochs runs on a linuxlab machine*.
+<p>
+So the good news is you don't have to physically be there to test it before submission; you can ssh, export DISPLAY, run bochs etc.
+<br>
+The bad news is that you must test it on a linuxlab machine.
+"It runs on my bochs at home" is not an excuse for a project that doesn't run.
+<p>
+Once again, before submitting make sure your project
+*runs atop of a bochs running on a linuxlab machine*.
+It doesn't matter whether you are at UMD in the Linuxlab or at home for that. </b>
+
+
+<hr>
+
+
+<h2>
+Submitting your code
+</h2>
+<P>
+The submit program is in ~hollings/bin/submit on the class Linux cluster.
+You should do your submit as follows:
+<pre>
+cd path_to_your_project/proj5
+gmake clean
+
+cd buildFat
+gmake clean
+
+cd ..
+cd userProgs
+gmake clean
+
+cd ../..
+tar cvf proj5.tar proj5
+gzip proj5.tar
+~hollings/bin/submit 5 proj5.tar.gz
+</pre>
+
+<p>
+<p>
+It is important to cleanup .o's before submitting and to make sure
+you submit a tar file that contains proj5 as the directory it creates.
+<br>
+You can submit as many times as you want. We will grade your last submission. 
+<p>
+<b>Checking your submission</b> 
+<pre>
+ls -l /afs/csic.umd.edu/users/hollings/Class/MP5/cs412XYZ*
+</pre>
+where XYZ is of course your account number.
+
+
+</HTML>

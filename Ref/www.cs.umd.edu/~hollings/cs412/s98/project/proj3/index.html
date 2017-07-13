@@ -1,0 +1,173 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>CMSC 412 - Project 2</TITLE>
+<META NAME="doccomm" CONTENT="&lt;META name="description" value="Project Handout"&gt;&lt;META name="keywords" value="p2"&gt;&lt;META name="resource-type" value="document"&gt;&lt;META name="distribution" value="global"&gt;">
+<META NAME="Template" CONTENT="C:\hollings\Templates\handout.dot">
+</HEAD>
+<BODY TEXT="#000000" LINK="#0000ff">
+
+<B><I><FONT FACE="Arial"><P ALIGN="CENTER">CMSC 412</P>
+</B></I><P ALIGN="CENTER">Project 3: Multiprogramming, Part II</P>
+</FONT><P ALIGN="CENTER">Due: April 1, 1998</P>
+<B><FONT FACE="Arial" SIZE=4><P><A NAME="SECTION00010000000000000000">Introduction</A></P>
+</B></FONT><P>In this assignment you will enhance your current operating system by adding three new features: (1) quantum-based preemption (making your scheduler implement a Round Robin strategy and a multi-level feedback strategy), (2) semaphore operations, and (3) blocking I/O with your keyboard handler.</P>
+<B><FONT FACE="Arial" SIZE=4><P>Files Provided</P>
+</B></FONT><P>We have provided files for your use.   These files include:</P><DIR>
+<DIR>
+<DIR>
+
+<P><A HREF="cmsc412.c">
+<P>cmsc412.c </P></DIR>
+</DIR>
+</DIR>
+</A></P><DIR>
+<DIR>
+<DIR>
+
+<P><A HREF="cmsc412.h">
+<P>cmsc412.h</P></DIR>
+</DIR>
+</DIR>
+</A></P><DIR>
+<DIR>
+<DIR>
+
+<P><A HREF="kernel.h">
+<P>kernel.h</P></DIR>
+</DIR>
+</DIR>
+</A></P><DIR>
+<DIR>
+<DIR>
+
+<P><A HREF="proc2.c">proc2.c</A></P>
+<P><A HREF="proc.c">proc.c</A></P></DIR>
+</DIR>
+</DIR>
+
+<P>You will use proc2.c to run tests on the two scheduling algorithms.  The other files have been updated and should be warning-free under Borland C++ 4.5.</P>
+<B><FONT FACE="Arial" SIZE=4><P><A NAME="SECTION00020000000000000000">Technical Description<A NAME="SECTION00021000000000000000"></A></P>
+</B></FONT><FONT FACE="Arial"><P>Sleep and Wakeup</A></P>
+</FONT><P>Most of the work in this project will go into implementing &quot;sleep&quot; and &quot;wakeup&quot; mechanisms. Your kernel will support the following two functions:</P><DIR>
+<DIR>
+<DIR>
+<DIR>
+
+<CODE><PRE>Ksleep(int semaphoreID)<BR>
+Kwakeup(int semaphoreID)<BR>
+</PRE></DIR>
+</DIR>
+</DIR>
+</DIR>
+
+</CODE><P>These functions are <I>not</I> top-level <I>system</I> calls, such as <TT>Proc_start</TT>. These are <I>function </I>calls that the <I>kernel</I> will use to help implement system calls such as <TT>P()</TT> and <TT>V()</TT>.</P>
+<P>In project 2, a process could be in one of two states.   It could be running or ready.   There were queues associated with each of these states.   In this project, a process can be in a third state.   It can be blocked. A blocked process is not ready to run, and is usually waiting for some event (such as an interrupt) to wake the process up.   If a process is blocked, it is placed on a blocked queue.</P>
+<P>Typically, a process is blocked when it is waiting for I/O (which is slow) to complete.  Such a process would normally busy wait if it were run.  By placing a PCB on a blocked  queue, busy waiting is prevented.  The scheduler only selects processes from the ready queue, not the blocked queues. An interrupt will usually signal that the I/O operation is complete and unblock the process (place it in the ready queue).  A process can also be blocked by calling <TT>P()</TT> when the value of the semaphore is 0.</P>
+<P>You will implement two <I>functions</I> that are only visible to the kernel (they are <I>not</I> system calls) which will place PCBs into a semaphore (blocked) queue, and remove them from the semaphore queue.   These functions are <TT>Ksleep</TT> and <TT>Kwakeup</TT>.</P>
+<TT><P>Ksleep</TT> will put the running process to sleep by moving the PCB from the run queue and placing it on one of several semaphore queues. The parameter, <TT>semaphoreID</TT> , indicates which queue to place it on. A suggestion for implementing the semaphore queues is to use an array.   The array will be indexed by <TT>semaphoreID</TT> . Since the running process is being put to sleep, you will need to schedule a new process by calling <TT>Scheduler().</P>
+<P>Kwakeup()</TT>will be used wake a process up. You will use <TT>semaphoreID</TT>  to index into the semaphore array, as mentioned previously, find the appropriate semaphore queue, and dequeue the first PCB (if there is one) from this queue, and place it on the ready queue. <TT>Kwakeup()</TT> will normally be called during an interrupt handler (and <TT>System_service</TT>). The process that called <TT>Kwakeup()</TT> will eventually resume (assuming it isn't context switched). Contrast this with <TT>Ksleep()</TT> which puts the running process to sleep, and schedules a new process.</P>
+<P>The <TT>V()</TT> system call will use <TT>Kwakeup()</TT> as part of its implementation. The semantics of V, as defined in your textbook, does not say anything about which process is woken up. All it says is that the value of the semaphore variable is incremented by 1.</P>
+<P>The <I>implementation</I> of <TT>V()</TT> can be done in one of many ways. In all variations, the value of the semaphore variable is incremented by 1.   You will implement a version of V() which only wakes up the PCB at the head of the semaphore queue.  (To wake up a process means to place its PCB in the ready queue). Alternatively, one could wake up an arbitrary PCB in the queue, or even place all the PCBs from the semaphore queue to the ready queue.  You should find out why no problems occur when all PCBs are placed on the ready queue (all but one should go to sleep again).  This version is somewhat inefficient but allows the scheduler to decide which process to wake up.   You will not implement this version.</P>
+<TT><P>Ksleep</TT> should only be called while executing a system call (i.e., in <TT>System_service</TT>), or while in an interrupt handler associated with a system call (specifically, <TT>Yield_process</TT>). Do not use <TT>Ksleep</TT> while executing a general ISR such as <TT>Key_handler</TT>.</P>
+<P>Why? Recall that an interrupt handler can go off at any time. <TT>Ksleep</TT> puts the current running process to sleep (i.e., blocks the current process). If you use <TT>Ksleep</TT> in a interrupt handler like <TT>Key_handler</TT>, you will be randomly putting processes to sleep. This is not a good idea. The user process should decide when it goes to sleep.  Either it goes to sleep from a <TT>P()</TT> call or a system call (typically, dealing with I/O).</P>
+<P>On the other hand, you can call <TT>Kwakeup</TT> from either a system call or an interrupt service routine -- but not directly from a user program. The reason you are allowed to call <TT>Kwakeup</TT> from an interrupt handler is because it merely moves a PCB from a semaphore queue to the ready queue. The process being interrupted will continue to execute after the interrupt completes. <TT>Kwakeup </TT>will be used in the implementation of <TT>V()</TT> which will be explained later.</P>
+<FONT FACE="Arial"><P><A NAME="SECTION00022000000000000000">Modes</A></P>
+</FONT><P>There are three modes of execution: interrupt, kernel and user. In kernel mode (i.e., while servicing a system call), the running process may not be context switched. If a timer interrupt goes off, while in kernel mode, and the process is slated to be context switched, this will occur at the end of the kernel code, and the system call will be allowed to complete. We will describe when and how to switch processes if it occurs in kernel mode.</P>
+<FONT FACE="Arial"><P><A NAME="SECTION00023000000000000000">Timer Preemption</A></P>
+</FONT><P>DOS provides a timer interrupt service routine (ISR) for the timer chip in the PC that runs continuously with a frequency of 18.2 Hz (about 55 milliseconds). You will replace the DOS timer ISR with your own. You do this by resetting the interrupt vector 8 to your ISR. Like all other interrupt handlers, make sure that you save the address of the old timer handler -- e.g., in a variable declared as void interrupt (*OldtimerISR)(void); When a timer interrupt occurs, your ISR determines whether or not the quantum has expired. You will set the quantum to be a positive integer (say, 4). Three possibilities exist: </P>
+<OL>
+
+<OL>
+
+<LI>if the quantum has not expired, decrement its value by 1. </LI>
+<LI>if the quantum has expired, and the current process is running in USER mode, you will preempt the current process by moving it from the run queue to the ready queue, and invoking the scheduler. The <TT>Yield_process</TT> interrupt can be used to switch processes for this case. The newly scheduled process should be have its quantum reset (say, back to 4). </LI>
+<LI>if the quantum has expired, but the current process is running in KERNEL mode, then a flag called <TT>preempt</TT> is set to 1 to indicate expiration. This flag is examined at the end of <TT>System_service</TT>, and the current process will be preempted at that time. Again, preemption can be performed via <TT>Yield_process</TT>. </LI></OL>
+</OL>
+
+<P>You <I>must</I> implement a command line switch which allows you to set the quantum. If you executable were called kernel, then, you should be able to do the following:</P><DIR>
+
+<PRE>&#9;<CODE>% kernel -q 4</PRE></DIR>
+
+</CODE><P>The <TT>-q</TT> option takes a single integer which represents the number of times the timer interrupt goes off before the user process uses up its quantum, and is then scheduled to be context switched. If the <TT>-q</TT> option is not there, use a default value. Make sure to check if the quantum is positive. If not, use the default value.</P>
+<P>There is one more function that must be performed in all three circumstances. Note that the old timer ISR is in charge of maintaining the TOD clock, the floppy disk drive, as well as other duties. To keep this functionality, you can make a direct &quot;call&quot; to the old ISR by simply executing <TT>OldtimerISR()</TT>. The Borland compiler is smart enough to generate code to simulate an INT instruction, while bypassing the CPU's interrupt architecture, i.e., it translates a call to <TT>OldtimerISR()</TT> to:</P><DIR>
+
+<CODE><PRE>     OldtimerISR(); ---&gt; PUSHF               ;  push flags<BR>
+                         CALLF  oldtimerISR  ;  make call<BR>
+</PRE></DIR>
+
+</CODE><P>Since the old timer ISR sends the external interrupt controller the EOF signal (&quot;outp(0x20, 0x20)&quot;), you should not do this in <I>your</I> timer ISR.  You can make a call to <TT>OldtimerISR()</TT> as the first statement in your timer interrupt handler. If so desired, the same direct calling technique can be used to interface with <TT>Yield_process()</TT> from the timer ISR.</P>
+<FONT FACE="Arial"><P><A NAME="SECTION00024000000000000000">The Effect of Modes on Scheduling</A></P>
+</FONT><P>Each PCB should now have a new field that describes the current execution mode (either USER mode or KERNEL mode). When <TT>System_service</TT> is entered, save the mode, then set it to KERNEL. Restore the saved mode on exiting. <TT>System_service</TT> now looks like this:</P><DIR>
+<DIR>
+
+<FONT FACE="Courier"><CODE><PRE>save_mode = run-&gt;mode;<BR>
+run-&gt;mode = KERNEL;<BR>
+<BR>
+      switch(type)  {<BR>
+         ...<BR>
+      }<BR>
+      run-&gt;mode = save_mode;<BR>
+      if (preempt &amp;&amp; run-&gt;mode == USER){<BR>
+        preempt = FALSE;<BR>
+        geninterrupt(0x63);  /* To Yield_process */<BR>
+      }<BR>
+      return;<BR>
+</PRE></DIR>
+</DIR>
+
+</FONT></CODE><FONT FACE="Arial"><P><A NAME="SECTION00025000000000000000">Timing</A></P>
+</FONT><P>One way to compare scheduling algorithms is to see how long it takes a process to complete from the time of creation to the termination of the process. You will investigate these differences by implementing a system call, <TT>Get_time_of_day()</TT>. </P>
+<TT><P>Get_time_of_day()</TT> will return the value of a global variable called <TT>Ticks</TT>. <TT>Ticks</TT> will be initialized to 0 in <TT>main()</TT>. Each time the timer interrupt goes off, increment <TT>Ticks</TT>. You can use this system call to determine how long a process has run in terms of ticks. You can do this by calling <TT>Get_time_of_day()</TT>once at the beginning of the process (in the user code) and once at the end. You can calculate how long the process took to run, as well as when the process first got scheduled (based on ticks).   Notice that there is no attempt to remove time spent by other processes.   For example, if your process context switches out, then runs a second process, the second process’s time during the context switch will be included in the first process’s total time.  This is known as &quot;wall clock&quot; time.   One can also just calculate the time used by the process itself.   However, you will not do this.</P>
+<FONT FACE="Arial"><P><A NAME="SECTION00026000000000000000">Implementing Multilevel Feedback</A></P>
+</FONT><P>There are many scheduling algorithms. You will implement a FIFO scheduling algorithm (the same as in project 2, but includes preemption) as well as a multilevel feedback scheduler.   In a FIFO implementation, all PCBs sit in a FIFO queue.  In a multi-level feedback scheduler, you will use 4 queues instead of 1.  Each queue is assigned a priority level.  The queues will be numbered 0 through 3, with 0 being the highest priority, and 3 being the lowest.</P>
+<P>A newly created process's PCB will be placed on the ready queue of highest priority (i.e., 0). If the process remains on the run queue for the full quantum, then when it is slated to be placed back on the ready queue, it will be placed on the next lowest priority (1, if the process was new). Each time a process completes a full quantum, it will be placed on the ready queue with the next lowest priority until it is at priority 3, at which point it can not go any lower. Hence, CPU intensive processes will be eventually placed on the lowest priority queue.  If the process is blocked, the priority level will remain the same, i.e., you will not decrement the priority, when the process is placed back on the ready queue.</P>
+<P>To schedule a new PCB to run, look at the head of the highest priority queue. If there is a PCB there, place it on the run queue. If not, go to the next lowest priority queue, and keep repeating until you find a PCB. Scheduling always attempts to look at the highest priority queue and work down. This may mean low priority processes are starved.</P>
+<P>You must implement a command line argument for choosing between multilevel feedback versus FIFO. Use a <TT>-f</TT> command line option to indicate FIFO, and a <TT>-m</TT> command line option to implement the multilevel feedback. FIFO should be used if neither of these switches are specified.</P>
+<P>The choice between which scheduler to use should be made within the function <TT>Scheduler()</TT> using some sort of <TT>if</TT> statement. Any function that calls the <TT>Scheduler()</TT> should be unaware which scheduling algorithm is being used (i.e., do not pass the scheduling type as an argument). It should only be aware that some PCB from is being placed from the ready queue to the run queue, and started up.</P>
+<FONT FACE="Arial"><P><A NAME="SECTION00027000000000000000">Keyboard Handler</A></P>
+</FONT><P>Your <TT>Get_char()</TT> routine should now be implemented as a system call. (This should be done as before, where <TT>Get_char()</TT> activates <TT>System_service</TT>, etc.)</P>
+<P>When a process attempts to read a character from the character queue, and the queue is empty, you should block the process via <TT>Ksleep</TT>. Likewise, when the keyboard ISR sees that the queue is empty, and then puts a character in, it does a corresponding <TT>Kwakeup</TT>. These calls are made by the kernel and keyboard handler. Note <TT>P()</TT> and <TT>V()</TT> are not called.</P>
+<B><I><FONT FACE="Arial" SIZE=4><P><A NAME="SECTION00028000000000000000"></P>
+<P>Semaphores</A></P>
+</B></I></FONT><P>You will add the following system calls to your kernel:</P><DIR>
+<DIR>
+
+<CODE><PRE>int Create_semaphore(char *name, int ival)<BR>
+int P (int s)<BR>
+int V (int s)<BR>
+</PRE></DIR>
+</DIR>
+
+</CODE><P>Blocking and unblocking by semaphore operations will be accomplished via <TT>Ksleep</TT> and <TT>Kwakeup</TT>.</P>
+<TT><P>Create_semaphore(name,ival)</TT> is a request by the current process to use a semaphore.  <I>A process can not call P() or V() unless it calls</I> <TT>Create_semaphore()</TT>. Think of it as a constructor.   The user gives a name for the semaphore, as well as the semaphore’s initial value.  It will get back a semaphore ID, an integer between 0 and N-1. You should be able to handle at least 20 semaphores. If there are no semaphores left (i.e., there were N semaphores with unique names already given), a negative number can be returned indicating an error. </P>
+<P> In  <TT>System_service</TT>, you will check if another process has made this system call with the same name.   If so, you must return back the semaphore ID (SID) associated with this name.   <TT>ival</TT> is ignored in this case. The SID value returned will allow the user process to tell the kernel which semaphore it wants to use. You will also add this SID to the list of semaphores the current process can use, as well increment the count of registered users which are permitted to use the semaphore.</P>
+<P>If this is the first time <TT>Create_semaphore</TT>  has been called by the name passed in, then find an unused SID, and initialize the value of the semaphore variable to <TT>ival</TT>. Again, add the SID  to the list of semaphores that the current process can use, as well as incrementing the semaphore’s count of registered users.</P>
+<P>Whenever a user process calls <TT>P()</TT> or <TT>V()</TT>, the kernel will check if the user has permission to make this call.  It will do so by checking if the process has the SID in its list of SIDs that it can access (which is why you needed to create such a list).   If it is there, it will be allowed to execute <TT>P()</TT> or <TT>V()</TT>.   If not, the kernel should return back a negative value.</P>
+<P>You will want to implement the semaphores as described in the text.   Unlike the text, the integer passed to P() or V() is NOT a semaphore variable.   It is a semaphore ID.   The kernel will be able to associate the semaphore ID with the semaphore’s value.  That way, you aren’t permitted to look at the value of the variable.   </P>
+<FONT FACE="Arial"><P><A NAME="SECTION00029000000000000000">PCB and Proc_term Modification</A></P>
+</FONT><P>A new field will be added to your PCB; that of a semaphore list. This list will contain all SIDs returned from a <TT>Create_semaphore()</TT> called by that process. When a process terminates, you will need to free up the semaphores it created.   You can write a function called <TT>Free_semaphores()</TT>will handle this.   You will need to update the number of registered users for the semaphores freed.  If this number drops to 0, then you can add the SID to the list of free SIDs that can be used.   </P>
+<FONT FACE="Arial"><P><A NAME="SECTION000210000000000000000">Scheduler</A></P>
+</FONT><P>When the scheduler picks a new process to from the ready queue to place on the run queue, it will initialize the quantum, and then call Dispatch().   The scheduler will base the choice of scheduling algorithm on a global variable indicating whether it should use a FIFO scheme or multi-level feedback scheme.</P>
+<P>If there is no process to execute and processes are still blocked, then the kernel will switch to a special stack and halt (normally, interrupts are handled on the stack of the currently running process, but if there isn't one, there's no stack either). When an interrupt breaks the CPU out of the halt, the scheduler checks the ready queue and schedules a process if there is one. This is how processes that are awakened in an interrupt service routine get to run.</P><DIR>
+<DIR>
+<DIR>
+<DIR>
+
+<CODE><PRE>while (no process on ready queue) asm HLT;<BR>
+schedule a process</PRE></DIR>
+</DIR>
+</DIR>
+</DIR>
+
+</CODE><FONT FACE="Arial"><P><A NAME="SECTION000211000000000000000">Information You Should Have Learned By Now -- Interrupts</A></P>
+</FONT><P>Normally, the kernel operates with interrupts enabled. In previous projects, you have left the interrupts disabled, but this means decreased opportunities for concurrency in the kernel. There is no need to disable interrupts for mutual exclusion with other processes executing in kernel mode, since kernel mode cannot be preempted.</P>
+<P>However, interrupts need to be turned off when a system call (such as <TT>Get_char()</TT>) manipulates the same data structures as its corresponding ISR (e.g., <TT>Key_handler()</TT>). Interrupts should be turned off when global kernel data structures are manipulated (in <TT>Ksleep()</TT> and <TT>Kwakeup()</TT>, for example).</P>
+<P>Interrupts also need to be turned off when context switching and when switching stacks (such as in the scheduler). Interrupts need to be on when the scheduler halts, since that's the only way to get out of the halted condition (e.g., the timer interrupt can start up the CPU again).</P>
+<P>The end-of-interrupt signal should be sent to the PIC (port 0x20) when the current interrupt condition is cleared. (Again, the old interrupt handler, which yours should call, does this.)</P>
+<B><I><FONT FACE="Arial"><P><A NAME="SECTION00030000000000000000">What to turn in</A></P>
+</B></I></FONT><P>As with project 2, all files necessary to run your project must be located a directory labeled by the project number (say, P3) of your 3.5" diskette. The only required filenames are proc.c, proc2.c, and makefile. Note: your new processes need to use P() and V() to insure that printed output is legible. With timer-driven scheduling, you never know when a process will be switched. If this occurs in the middle of a &quot;Cprintf&quot; invocation, your output may look like garbage.</P>
+<P>Also, run several tests on proc2.c, varying the quantum length, as well as the two scheduling algorithms.  Provide a hardcopy write-up listing the results, as well as explaining why the results occurred.  The exercise is meant to let you consider the effects of quantum length and scheduling algorithms on the run of several processes. </P>
+<P>&nbsp;</P></BODY>
+</HTML>

@@ -1,0 +1,202 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE> </TITLE>
+<META NAME="Template" CONTENT="C:\msoffice\Templates\paperDraft.dot">
+</HEAD>
+<BODY>
+
+<FONT SIZE=2><P ALIGN="CENTER"></FONT><B>CMSC 417 Programming Assignment #3</P>
+</B><P ALIGN="CENTER">Due October 29, 1999 (5:00 PM)</P>
+<B><P ALIGN="JUSTIFY">Introduction </P>
+</B><FONT SIZE=2><P ALIGN="JUSTIFY">In this project, you will implement a link state routing system.  Each node in the network will be connected to one or more other nodes.  Using hello packets and bounded flooding, you will implement a system to inform all of the nodes in the network of the current network topology. Each node will also build a routing table that minimizes the number of hops to all other nodes in the network.</P>
+<P ALIGN="JUSTIFY">This project will be the first introduction to several key ideas that will be used later in the semester.  It will also combine what you have learned (and probably most of the code) from projects one and two.</P>
+</FONT><B><P ALIGN="JUSTIFY">Timers</P>
+</B><FONT SIZE=2><P ALIGN="JUSTIFY">A key building block for this project will be the timer thread. By using the timer thread, you will be able to cause events to happen in your system at specific times in the future (for example sending hello packets at a fixed interval of time).</P>
+<P ALIGN="JUSTIFY">The implementation for the timer thread will be via the queue abstraction you built for project two.  When a thread wishes to schedule an event in the future, it enqueue’s a request to the timer thread.  When the requested time interval has elapsed, the timer thread enqueues a message indicating that the time interval has finished.</P>
+<P ALIGN="JUSTIFY">The interface for a thread that wishes to use the timer thread is:</P><DIR>
+
+</FONT><FONT FACE="Courier,Courier New" SIZE=2><P ALIGN="JUSTIFY">int createAlarm(int expireTime, Queue *respQueue, bool repeats)</P><DIR>
+
+</FONT><FONT SIZE=2><P ALIGN="JUSTIFY">Create a new alarm that will enqueue a response into the queue </FONT><FONT FACE="Courier,Courier New" SIZE=2>respQueue</FONT><FONT SIZE=2> </FONT><FONT FACE="Courier,Courier New" SIZE=2>expireTime</FONT><FONT SIZE=2> milliseconds in the future.  If the repeats parameter is true, it will en-queue a response <B>every</B> expireTime milliseconds until canceled.  If the return value is positive, it contains the unique identifier of the alarm event, and if it is negative it indicates an error in creating the alarm.</P></DIR>
+
+</FONT><FONT FACE="Courier,Courier New" SIZE=2><P ALIGN="JUSTIFY">void cancelAlarm(int alarmId)</P><DIR>
+
+</FONT><FONT SIZE=2><P ALIGN="JUSTIFY">Cancel the passed alarm.  It is possible that one or more alarm notifications may occur after the alarm is canceled due to alaram events passing the cancelAlarm request in different queues.</P></DIR>
+</DIR>
+
+<P ALIGN="JUSTIFY">Note: Alarm Ids should be globally unique and will likely be allocated in the context of the application thread making the request.  If this is the case, don’t forget to use synchronization (e.g. mutex’s) around the update of the alarm ids.</P>
+</FONT><B><P ALIGN="JUSTIFY">Messages</P>
+</B><FONT SIZE=2><P ALIGN="JUSTIFY">In this project you will need to exchange messages between different threads in your system.  In order to allow a single thread to respond to a variety of different message types such as a timer event or the arrival of a data packet, you will need to define a common message format to pass via the queues.  Each message should start with an integer field that indicates the type of the message (e.g. TIMER_REQ, TIMER_ACK, TIMER_EXPIRE, etc.). In addition, each message can contain a variety of parameters that are specific to that message (e.g. when the alarm should expire).  You should define a C struct (note: if using C++, this should still be a struct not a class) that includes a field for the message type, and a union for any message specific fields that are required.</P>
+</FONT><B><P ALIGN="JUSTIFY">Nodes</P>
+</B><FONT SIZE=2><P ALIGN="JUSTIFY">Each &quot;node&quot; in your network is a UNIX process that will receive data on a specific port from its neighbors, and send data to its neighbors on their designated ports. A node is a multi-threaded program that needs to be able to respond to packets it receives from neighbors, compute routing tables, and send information about its neighbors to other hosts.  Nodes only terminate when they are killed.</P>
+<P ALIGN="JUSTIFY">While the connectivity of the network may change over time due to node failures, the topology of the underlying "physical network" as specified by the set of links joining the virtual nodes remains constant. When a node starts running, it calls the routine </FONT><FONT FACE="Courier,Courier New" SIZE=2>config_get_info</FONT><FONT SIZE=2>.  This routine (which we will supply to you) returns the hosts list of neighbors (see config-net.h). </P>
+<P ALIGN="JUSTIFY">The format of the network configuration file is shown below. You should use ports from your assigned ports for each node.  The number after the links statement are the node numbers that are directly connected to that node.</P>
+<P ALIGN="JUSTIFY">            Node fe90::0001 (tracy, 5000) links fe90::0002 </P>
+<P ALIGN="JUSTIFY">            Node fe90::0002 (tracy, 5001) links fe90::0003 fe90::0004 </P>
+<P ALIGN="JUSTIFY">            Node fe90::0003 (tracy, 5002) links fe90::0002 fe90::0004 </P>
+<P ALIGN="JUSTIFY">            Node fe90::0004 (tracy, 5003) links fe90::0002 fe90::0003</P>
+</FONT><B><P ALIGN="JUSTIFY">Building Routing Tables</P>
+</B><FONT SIZE=2><P ALIGN="JUSTIFY">Every HELLO_INTERVAL mili-seconds, a node sends a hello packet to all of its neighbors.  When a host receives a HELLO packet, it records the link as operational. If no HELLO packet has been received from a neighboring host in the past DEAD_INTERVAL mili-seconds, it assumes the link (or host) has failed.  Every TOPOLOGY_INTERVAL mili-seconds, a host sends it current list of active neighbors to all other nodes in the network (via a flooding message).  Every ROUTE_UPDATE_INTERVAL mili-seconds, a host re-computes its routing tables based on its current knowledge of the network topology.</P>
+<P ALIGN="JUSTIFY">The routing tables should be computed using a variation of Dikstra’s algorithm.  When a new routing table is built, it should be printed to the screen.  Also, when new topology information (not currently available to that node) is received, it should also be printed.  Each node will have a routing table entry for every other node in the network, and information about the first hop to that node (i.e. the node number of the first hop).</P>
+</FONT><B><P ALIGN="JUSTIFY">Parameters File</P>
+</B><FONT SIZE=2><P ALIGN="JUSTIFY">The parameters for network operation are read from a configuration file at the start of the node operation.  For this project the required parameters (and their default values) are:</P>
+<P ALIGN="JUSTIFY"></P></FONT>
+<P ALIGN="CENTER"><CENTER><TABLE BORDER CELLSPACING=2 BORDERCOLOR="#000000" CELLPADDING=7 WIDTH=530>
+<TR><TD WIDTH="39%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">Variable</B></FONT></TD>
+<TD WIDTH="19%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">Default Value</B></FONT></TD>
+<TD WIDTH="42%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">Description</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="39%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">HELLO_INTERVAL</B></FONT></TD>
+<TD WIDTH="19%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">500</FONT></TD>
+<TD WIDTH="42%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">Frequency of Hello packets</FONT></TD>
+</TR>
+<TR><TD WIDTH="39%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">DEAD_INTERVAL</B></FONT></TD>
+<TD WIDTH="19%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">2500</FONT></TD>
+<TD WIDTH="42%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">Interval to consider a node down</FONT></TD>
+</TR>
+<TR><TD WIDTH="39%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">TOPOLOGY_INTERVAL</B></FONT></TD>
+<TD WIDTH="19%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">1000</FONT></TD>
+<TD WIDTH="42%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">Topology flooding  frequency</FONT></TD>
+</TR>
+<TR><TD WIDTH="39%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">ROUTE_UPDATE_INTERVAL</B></FONT></TD>
+<TD WIDTH="19%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">10000</FONT></TD>
+<TD WIDTH="42%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">Frequency of re-building routing table</FONT></TD>
+</TR>
+</TABLE>
+</CENTER></P>
+
+<FONT SIZE=2><P ALIGN="JUSTIFY">&nbsp;</P>
+<P ALIGN="JUSTIFY">The parameters in the file are represented one per line.  Each line is a variable name, a space, and then an integer value for the parameter value.  A line that starts with # is a comment line, and it should be ignored.</P>
+</FONT><B><P ALIGN="JUSTIFY">Threads</P>
+</B><FONT SIZE=2><P ALIGN="JUSTIFY">This project will have a variety of threads that perform specific functions.  I would suggest having three threads (in addition to the initial thread).  One thread should manage timer events, the second thread should receive packets from the network and en-queue them to the appropriate handler thread.  The third thread would be responsible for building routing tables.  It might make sense to split the routing thread into two separate threads, one for maintaining topology information, and the other for building the routing tables.</P>
+</FONT><B><P ALIGN="JUSTIFY">Packet Format</P>
+</B><FONT SIZE=2><P ALIGN="JUSTIFY">Each message you send over the wire (between hosts) should be an IPv6 packet.  The format of an IPv6 packet is:</P>
+<P ALIGN="JUSTIFY">&#9;</P></FONT>
+<P ALIGN="CENTER"><CENTER><TABLE BORDER CELLSPACING=2 BORDERCOLOR="#000000" CELLPADDING=7 WIDTH=314>
+<TR><TD WIDTH="43%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">Field</B></FONT></TD>
+<TD WIDTH="29%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">Size (in bits)</B></FONT></TD>
+<TD WIDTH="28%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">Notes</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="43%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">Version</B></FONT></TD>
+<TD WIDTH="29%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">4</FONT></TD>
+<TD WIDTH="28%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">Always 6</FONT></TD>
+</TR>
+<TR><TD WIDTH="43%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">Priority</B></FONT></TD>
+<TD WIDTH="29%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">4</FONT></TD>
+<TD WIDTH="28%" VALIGN="TOP">&nbsp;</TD>
+</TR>
+<TR><TD WIDTH="43%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">Flow Label</B></FONT></TD>
+<TD WIDTH="29%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">24</FONT></TD>
+<TD WIDTH="28%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">Always zero</FONT></TD>
+</TR>
+<TR><TD WIDTH="43%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">Payload Length</B></FONT></TD>
+<TD WIDTH="29%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">16</FONT></TD>
+<TD WIDTH="28%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">In bytes</FONT></TD>
+</TR>
+<TR><TD WIDTH="43%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">Next Header</B></FONT></TD>
+<TD WIDTH="29%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">8</FONT></TD>
+<TD WIDTH="28%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">See table</FONT></TD>
+</TR>
+<TR><TD WIDTH="43%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">Hop Limit</B></FONT></TD>
+<TD WIDTH="29%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">8</FONT></TD>
+<TD WIDTH="28%" VALIGN="TOP">&nbsp;</TD>
+</TR>
+<TR><TD WIDTH="43%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">Source Address</B></FONT></TD>
+<TD WIDTH="29%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">128</FONT></TD>
+<TD WIDTH="28%" VALIGN="TOP">&nbsp;</TD>
+</TR>
+<TR><TD WIDTH="43%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">Destination Address</B></FONT></TD>
+<TD WIDTH="29%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">128</FONT></TD>
+<TD WIDTH="28%" VALIGN="TOP">&nbsp;</TD>
+</TR>
+<TR><TD WIDTH="43%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">Data</B></FONT></TD>
+<TD WIDTH="29%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">Variable</FONT></TD>
+<TD WIDTH="28%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">Up to 64KB</FONT></TD>
+</TR>
+</TABLE>
+</CENTER></P>
+
+<B><FONT SIZE=3><P ALIGN="CENTER">IPv6 Header Format</P>
+</B></FONT><FONT SIZE=2><P ALIGN="JUSTIFY">In addition, you will need to generate packets in specific formats.  During the rest of the semester, you will need to be able to generate ICMP, POSPF, and PTCP packets. In particular for this project, you will need to generate POSPF (Pseudo Open Shortest Path First) packets, the routing protocol for CMSC417.  You will design the specific format for these packets to meet your needs. The protocol types and their value for the nextHeader field of the IPv6 packet are:</P>
+<P ALIGN="JUSTIFY"></P></FONT>
+<P ALIGN="CENTER"><CENTER><TABLE BORDER CELLSPACING=2 BORDERCOLOR="#000000" CELLPADDING=7 WIDTH=323>
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">Value</B></FONT></TD>
+<TD WIDTH="21%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">Protocol</B></FONT></TD>
+<TD WIDTH="62%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">Description</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">58</B></FONT></TD>
+<TD WIDTH="21%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">ICMP</FONT></TD>
+<TD WIDTH="62%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">Control (ping)</FONT></TD>
+</TR>
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">101</B></FONT></TD>
+<TD WIDTH="21%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">POSPF</FONT></TD>
+<TD WIDTH="62%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">Routing (for 417)</FONT></TD>
+</TR>
+<TR><TD WIDTH="17%" VALIGN="TOP">
+<B><FONT SIZE=2><P ALIGN="JUSTIFY">106</B></FONT></TD>
+<TD WIDTH="21%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">PTCP</FONT></TD>
+<TD WIDTH="62%" VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">Transport protocol</FONT></TD>
+</TR>
+</TABLE>
+</CENTER></P>
+
+<B><P ALIGN="CENTER">Extension (Next) Header Values</P>
+<P ALIGN="JUSTIFY">Implementation Requirements</P>
+</B><FONT SIZE=2><P ALIGN="JUSTIFY">You should submit a tar file that contains the source code for your implementation of the queue abstraction. Like the earlier programs, you should submit a tar file.  The tar file should include a Makefile that compiles your code. </P>
+<P ALIGN="JUSTIFY">You should also submit a script file for <B>each</B> of the nodes using the configuration files supplied.</P>
+<P ALIGN="JUSTIFY">Each node should read its topology configuration file from the file name </FONT><FONT FACE="Courier,Courier New" SIZE=2>network.config </FONT><FONT FACE="TIMES" SIZE=2>in the current directory where the node it started (the routine config_get_info handles this).  It should also read the parameters file </FONT><FONT FACE="Courier,Courier New" SIZE=2>network.parameters</FONT><FONT FACE="TIMES" SIZE=2> from the current working directory.</P></FONT></BODY>
+</HTML>

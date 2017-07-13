@@ -1,0 +1,169 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>CMSC 412 (Spring 1998)</TITLE>
+<META NAME="Template" CONTENT="C:\Program Files\Microsoft Office\Office\html.dot">
+</HEAD>
+<BODY LINK="#0000ff" VLINK="#800080">
+
+<B><FONT SIZE=5><P ALIGN="CENTER">CMSC 412 Midterm #1 (Spring 1998)</P>
+<P ALIGN="CENTER">&nbsp;</P>
+</B></FONT><FONT FACE="Arial" SIZE=2><P ALIGN="JUSTIFY">1) (20 points) Deadlock</P>
+<OL TYPE="a">
+<OL TYPE="a">
+
+<LI>What are the four necessary conditions for deadlock?</LI>
+<I><P>Mutual exclusion: only one process may use resource at a time</P>
+<P>Hold-and-wait: resources held by one process, and other must wait until granted access</P>
+<P>No Preemption: once one process has a resource, no other process can take it away.</P>
+<P>Circular Wait: process a holds resource 1, needs resource 2; process b holds 2, needs 1.</P>
+</I><LI>Why are these four conditions necessary, but not sufficient?</LI>
+<I><P>If multiple instances of a resource exist, can have four conditions, but still not be deadlocked because a process not involved in the cycle could release a resource.</P>
+</I><P ALIGN="JUSTIFY">2) (15 points) Synchronization</P>
+<LI VALUE=1>If you computer has an atomic swap instruction, but not test-and-set, show the code to simulate test-and-set using swap.</LI>
+</FONT><PRE>Test-and-set(int *loc) {
+&#9;Int word = 1;
+&#9;Swap word, *loc
+&#9;Return word
+}</PRE>
+<FONT FACE="Arial" SIZE=2><LI>In a multi-processor system, why is turning off interrupts on a processor not a sufficient solution to the critical section problem?</LI></OL>
+</OL>
+<DIR>
+<DIR>
+<DIR>
+
+<I><P>Other process can access shared data because interrupts on only one processor are turned off.</P></DIR>
+</DIR>
+</DIR>
+
+</I><P ALIGN="JUSTIFY">3) (25 points) You have to solve a variation of the readers-writers problem, in which multiple writers can write at the same time. Specifically, there are readers and writers. Up to 5 reads at the same time are allowed, but only one write at the same time are allowed. A read and a write at the same time is not allowed. Provide a solution using semaphores with the following properties:</P>
+
+<UL>
+
+<UL>
+<LI>no busy waiting. </LI>
+<LI>starvation-free (i.e. a continuous stream of readers does not starve writers, and vice versa) is desirable but not compulsory (<B>but</B> <B>you will lose some points</B>). </LI>
+<LI>you cannot use process ids and you cannot have a separate semaphore for every process.</LI></UL>
+</UL>
+<DIR>
+<DIR>
+
+<P>Below is a skeleton program for you to build upon by supplying code for the boxes and perhaps introducing more variables. You are also welcome to disregard this skeleton and come up with something else.</P>
+<P>Declare variables and semaphores here. Please indicate initial values.</P><DIR>
+
+</FONT><PRE>&nbsp;
+Semaphore mutex = 1
+Semaphore writer = 0
+Semaphore reader = 0
+&nbsp;
+int nReader = 0
+int nWriter = 0
+int wReader = 0
+int wWriter = 0
+&nbsp;
+Writers execute this code:
+&nbsp;
+while (1) {
+&nbsp;
+P(mutex);
+if (nReader + wWriter + nWriter == 0) {
+&#9;nWriter++;
+&#9;V(mutex);
+} else {
+&#9;wWriter++;
+&#9;V(mutex);
+&#9;P(writer);
+}
+&nbsp;
+Write operation;
+&nbsp;
+P(mutex);
+NWriter = 0;
+If (wReaders &gt; 0) {
+&#9; for i = 1 to min(wReaders,5) {
+&#9;&#9;V(readers)
+&#9;&#9;nReaders++;
+&#9;&#9;wReaders--;
+&#9;}
+else if (wWriters &gt; 0) {
+&#9;wWriters--;
+&#9;nWriters++;
+&#9;V(writer);
+}
+V(mutex);
+}
+&nbsp;
+Readers execute this code:
+&nbsp;
+while (1) {
+&nbsp;
+P(mutex)
+if (nWriters + wWriter == 0 &amp; nReader &lt; 5) {
+&#9;nReaders++;
+&#9;V(mutex);
+} else {
+&#9;wReaders++;
+&#9;V(mutex);
+&#9;P(reader);
+}
+&nbsp;
+Read operation;
+&nbsp;
+P(mutex);
+nReaders--;
+if (wWriters &gt; 0 &amp; nReaders == 0) {
+&#9;wWriters--; 
+nWriters++;
+&#9;V(writer);
+} else if (wReaders &gt; 0 &amp; wWriters == 0) {
+&#9;nReaders++; 
+&#9;wReaders--;
+&#9;V(reader);
+}
+V(mutex);</PRE></DIR>
+</DIR>
+</DIR>
+
+<FONT FACE="Arial" SIZE=2><P ALIGN="JUSTIFY">4) (20 points) Consider the following code from the project, part 2:</P><DIR>
+<DIR>
+
+</FONT><PRE>void interrupt yield_process ()
+{
+...
+&nbsp;
+_AX = FP_SEG(dispatch); /* Push the address of dispatch */
+asm push ax
+_AX = FP_OFF(dispatch); /* on the top of the stack */
+asm push ax
+&nbsp;
+<FONT FACE="Courier">runq.stack_top = MK_FP(_SS,_SP);
+&nbsp;
+...
+}</PRE></DIR>
+</DIR>
+
+<OL TYPE="a">
+<OL TYPE="a">
+
+</FONT><FONT FACE="Arial" SIZE=2><LI>Why is the statement </FONT><FONT FACE="Courier" SIZE=2>runq.stack_top = ... </FONT><FONT FACE="Arial" SIZE=2>needed? We have already set the stack up when we created the process?</LI>
+<I><P>The stack might have changed while running the thread, so we need to save the current value.</P>
+</I><LI>Why is </FONT><FONT FACE="Courier" SIZE=2>yield_process </FONT><FONT FACE="Arial" SIZE=2>an interrupt handler? We only call it from inside </FONT><FONT FACE="Courier" SIZE=2>system_service </FONT><FONT FACE="Arial" SIZE=2>which is already an interrupt handler.</LI>
+<I><P>Alhtough system_service has already saved the state on the stack when it starts, yield_process is called within system_service which may have changed the state (for example due to local variables on the stack in system_serivce).</P>
+</I><P ALIGN="JUSTIFY">5) (20 points) Scheduling. It has been claimed that for every scheduling strategy, there is a counter strategy (a way for a user to exploit the policy to their advantage and the detriment of other users). For each scheduling policy below, describe a counter strategy. For all cases, assume we are using a mulit-level feedback queue that does round-robin scheduling within each priority level.</P>
+<LI VALUE=1>To penalize compute bound jobs, any jobs that use an entire scheduling quantum are dropped to the next lowest priority level.</LI>
+<I><P>Yield the processor an epsilon before your time is up, and the process will remain at the highest priority level.</P>
+</I><LI>To help I/O bound jobs, any process that performs an I/O operation during its scheduling quantum is moved up to the next highest priority level.</LI>
+<I><P>Just before the end of a quantum, perform a I/O operation such as write a character to the screen.</P>
+</I><LI>Any time left in a scheduling quanta when the process voluntarily yields the processor is added to the next scheduling quanta. </LI></OL>
+</OL>
+<DIR>
+<DIR>
+<DIR>
+
+<I><P>Start the process before it is needed and have it repeatedly yield the processors to save up credits. When the process is ready to run, it can then hold the processor for a long time. For example, start a process a midnight, and yield til 8 AM when work is ready to be done</FONT><FONT SIZE=2>.</P></DIR>
+
+<P>&nbsp;</P></DIR>
+</DIR>
+</I></FONT></BODY>
+</HTML>

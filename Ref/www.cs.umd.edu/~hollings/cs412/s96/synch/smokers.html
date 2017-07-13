@@ -1,0 +1,85 @@
+<HTML>
+
+<HEAD>
+
+<TITLE>412--Cigarette Smoker's Problem</TITLE>
+
+</HEAD>
+
+<BODY>
+
+<H1>Cigarette Smoker's Problem</H1>
+
+<h2>
+Problem
+</h2>
+There are four processes in this problem: three smoker processes
+and an agent process.   Each of the smoker processes will make
+a cigarette and smoke it.   To make a cigarette requires 
+tobacco, paper, and matches.   Each smoker process has one of
+the three items.  I.e., one process has tobacco, another has
+paper, and a third has matches.   The agent has an infinite 
+supply of all three.   The agent places two of the three items
+on the table, and the smoker that has the third item makes the
+cigarette.   Synchronize the processes.
+<p>
+Please note this is the formulation of the problem used in recent
+OS texbooks, but not the problem as originally described by Parnas in
+CACM March 1975.
+<h2>
+Solution
+</h2>
+   This seems like a fairly easy solution.   The three smoker
+processes will make a cigarette and smoke it.   If they can't
+make a cigarette, then they will go to sleep.   The agent process
+will place two items on the table, and wake up the appropriate
+smoker, and then go to sleep.   All semaphores except <tt>lock</tt> are
+initialized to 0.  <tt>lock</tt> is initialized to 1, and is a mutex
+variable.
+<P>
+   Here's the code for the agent process.
+<PRE>
+ 1   do forever {
+ 2     P( lock );
+ 3     randNum = rand( 1, 3 ); // Pick a random number from 1-3
+ 4     if ( randNum == 1 ) {
+ 5        // Put tobacco on table
+ 6        // Put paper on table
+ 7        V( smoker_match );  // Wake up smoker with match
+ 8      } else if ( randNum == 2 ) {
+ 9        // Put tobacco on table
+10        // Put match on table
+11        V( smoker_paper );  // Wake up smoker with paper
+12      } else {
+13        // Put match on table
+14        // Put paper on table
+15        V( smoker_tobacco ); } // Wake up smoker with tobacco
+16      V( lock );
+17      P( agent );  //  Agent sleeps
+18     }  // end forever loop
+</PRE>
+<p>
+   I will give code to one of the smokers.   The others are
+analogous.
+<PRE>
+ 1   do forever {
+ 2      P( smoker_tobacco );  // Sleep right away
+ 3      P( lock );
+ 4      // Pick up match
+ 5      // Pick up paper
+ 6      V( agent );
+ 7      V( lock );
+ 8      // Smoke (but don't inhale).
+ 9   }
+</PRE>
+<p>
+    The smoker immediately sleeps.   When the agent puts the two
+items on the table, then the agent will wake up the appropriate
+smoker.   The smoker will then grab the items, and wake the agent.
+While the smoker is smoking, the agent can place two items on
+the table, and wake a different smoker (if the items placed
+aren't the same).   The agent sleeps immediately after placing
+the items out.   This is something like the producer-consumer
+problem except the producer can only produce 1 item (although
+a choice of 3 kinds of items) at a time.
+</HTML>

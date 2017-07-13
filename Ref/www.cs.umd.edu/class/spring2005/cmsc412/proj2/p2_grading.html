@@ -1,0 +1,121 @@
+<html>
+<head><title>CMSC412 Project 2 Grading Criteria</title></head>
+
+
+<body><center><b>Project 2 Grading Criteria</b></center></p>
+
+<b>Good faith</b><br>
+
+We've decided to grant <i>partial credit</i> to those students whose projects won't even run <tt>null.exe</tt>, but show a 'good faith' attempt at implementing the project. Since the margin for error in P2 was small, we considered it a bit unfair to have an 'all or nothing' policy for the first 50 points. Therefore, we'll take a look at your code while grading and even if your project crashes and won't run the minimum required (<tt>null.exe</tt>), you might still be able to get <font color=blue>up to 30 points</font> of credit, depending on how far you've got (e.g. setting up selectors and descriptors, arguments, stack, context switch). Note that partial credit might be subjective and not as clearly delineated as the grading criteria below.</p>
+
+<p>Here's a rough guideline on how much individual components will weigh</p>
+<table border="1" cellpadding="0" cellspacing="0">
+  <tbody>
+    <tr>
+     <tr> <td valign="left">Computing memory image size</td><td valign="right">2</td></tr>
+     <tr> <td valign="left">User Context : Setting up selectors and descriptors</td><td valign="right">9</td></tr>
+     <tr> <td valign="left">User Context : Setting up remaining fields</td><td valign="right">2</td></tr>
+     <tr> <td valign="left">Setting up the user thread</td><td valign="right">7</td></tr>
+     <tr> <td valign="left">Command line arguments</td><td valign="right">3</td></tr>
+     <tr> <td valign="left">Context switching</td><td valign="right">2</td></tr>
+    <tr>  <td valign="left">Miscellaneous</td><td valign="right">5</td></tr>
+    <tr>  <td valign="left">&nbsp</td><td valign="right">&nbsp</td></tr>
+    <tr>  <td valign="left">Total</td><td valign="right">&nbsp;&nbsp;30</td></tr>
+    </tr>
+    <tr>
+</tbody>
+</table>
+<p></p>
+<b>Load program/shell</b><br>
+
+When your GeekOS boots, it automatically starts <tt>shell.exe</tt>. If <tt>shell.exe</tt> loads and
+the prompt shows up and nothing crashes, you have passed this test.
+This is good for <font color=blue>35</font> additional points.</p>
+
+<b>Alternate Load program test</b><br>
+
+If you can't get the <tt>shell.exe</tt> to work but you can load a program
+and call SYS_NULL, that is worth <font color=blue>20</font> additional points. If this is the
+case with your program, alter <tt>main.c</tt> so that <tt>null.exe</tt> is loaded
+when GeekOS boots (see the <tt>#define INIT_PROGRAM</tt> in <tt>main.c</tt>),
+ and add a print statement to the Null syscall
+handler. Printing "Have mercy upon my soul!" might be appropriate.
+If this prints at startup and nothing crashes, you will receive
+<font color=blue>50</font> points and <font color=red>no other tests will be performed</font>.</p>
+
+<b>Get_Key()</b><br>
+
+If keys can be pressed at the <tt>shell.exe</tt> prompt and they show up properly,
+this will earn you an additional <font color=blue>5</font> points.</p>
+
+<b>Spawn_Program() and command line arguments</b><br>
+
+This will test the Spawn() system call and proper command line arguments recovery. 
+We'll use <tt>/c/b.exe</tt>, which is a simple program that prints its command line arguments.
+ 
+For example, if at the prompt, the grader will type:</p>
+
+
+<pre>$ /c/b.exe innie minnie miny moe</pre>
+The output should be :
+
+<pre>
+I am the b program
+Arg 0 is /c/b.exe
+Arg 1 is innie
+Arg 2 is minnie
+Arg 3 is miny
+Arg 4 is moe
+</pre>
+
+<p>This output will earn you an additional <font color=blue>10</font> points.</p>
+
+<p>Obviously, we'll use some other command line parameters than 'innie minnie miny moe'
+(e.g. 'Catch tiger by its toe', or 'My name is John Doe'), so
+if you have trouble with the arguments don't bother hardcoding a 
+<tt>Print('innie minnie miny moe')</tt>
+for that won't do you any good. 
+ 
+</p>
+
+<b>Exit()</b><br>
+
+After <tt>b.exe</tt> finishes, control should return to <tt>shell.exe</tt>. If this
+happens without a crash, this will earn you an additional <font color=blue>5</font> points.</p>
+
+<b>Wait()</b><br>
+
+At the prompt, the grader will type:</p>
+
+<pre>  /c/long.exe</pre></p>
+
+The output should be:</p>
+
+<pre>  Start Long
+  End Long
+  $
+
+</pre>The prompt should not appear until <tt>long.exe</tt> has exited. If your
+output is something like:</p>
+
+<pre>  Start Long
+  $End Long
+
+</pre>This indicates a problem in your Wait() syscall.</p>
+
+Passing this test will earn you an additional <font color=blue>5</font> points.</p>
+
+<b>Security</b><br>
+
+There will be two security tests that will test if you are
+properly checking data passed through syscalls. These programs
+will not be made available to you until after grading is
+finished. These tests are worth <font color=blue>5</font> points each.</p>
+
+Just to give you an idea, in those tests we'll try to pass illegal pointers 
+to system calls. The system calls should fail returning -1; the kernel and the 
+shell should continue running.
+</body></html>
+
+
+

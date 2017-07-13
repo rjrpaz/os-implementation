@@ -1,0 +1,213 @@
+<!-- ----------------------------------------- -->
+<!-- Page title (begin it with "15-410") ----- -->
+<!-- ----------------------------------------- -->
+
+
+
+
+
+<!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 3.2//EN&quot;>
+<html>
+<head><title>15-410 Software Setup Guide</title>
+</head>
+<body bgcolor=white>
+<table width="100%" height="100%">
+
+<tr><td valign=top width=132>
+<table width=132 bgcolor=#cccccc height="100%">
+<tr><td height=140><center><font size=-1><b>Carnegie Mellon</b></font><br>
+<img alt="SCS logo" src="/~410/img/scslogo.gif"><br>
+<font size=-1><b>Computer Science Department</b></font></center></td></tr>
+<tr><td height=30><a href="/~410"><img alt="home" src="/~410/img/home.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/syllabus.html"><img alt="syllabus" src="/~410/img/syllabus.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/staff.html"><img alt="staff" src="/~410/img/staff.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/schedule.html"><img alt="schedule" src="/~410/img/schedule.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/lecture.html"><img alt="lecture" src="/~410/img/lecture.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/projects.html"><img alt="projects" src="/~410/img/projects.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/homeworks.html"><img alt="homeworks" src="/~410/img/homeworks.gif" border=0></a></td></tr>
+<tr><td>&nbsp;</td></tr></table>
+
+</td>
+
+<td width=10>&nbsp;</td>
+
+<td height="100%" valign=top>
+<br>
+
+<H1 ALIGN=CENTER>15-410 Software Setup Guide</H1>
+<HR>
+<!-- Body goes here. -->
+ 
+
+<!-- ----------------------------------------- -->
+<!-- Content Begins -------------------------- -->
+<!-- ----------------------------------------- -->
+
+<table width=100% bgcolor=#ffffff height="100%">
+<td height="100%" valign=top>
+
+<!-- Body goes here. -->
+
+    <center><h2>Before you begin...</h2>
+            <h3>(15-410 Software Setup Guide)</h3></center>
+
+    <p>
+      This document describes the procedures you may follow to update
+      your development environment for working on the projects in this course.
+      Besides the tools described below, you will need access to the standard
+      set of x86 C development tools (<tt>gcc</tt>, <tt>ld</tt>, etc.).
+    </p>
+
+    <p>
+    <h2>1. One-time Setup</h2>
+    <h3>A. Simics</h3>
+
+    <p>
+    Simics is the instruction set simulator inside which your projects
+    will run. From your perspective, it is a full-fledged x86 machine whose
+    display appears as an X application on your desktop. Although Simics
+    runs on a variety of platforms, we recommend you work with it on
+    Linux.
+    </p>
+
+    <p>
+    Simics is a commercial product with special license restrictions. CMU
+    has obtained a number of academic licenses which allow hosts with
+    128.2/128.237/... IP addresses to run the simulator.
+	If you have a non-128.2 IP address (e.g., Comcast),
+	you will need to use the
+	<A HREF="http://www.cmu.edu/computing/network/vpn/">Computing
+	Services VPN</A>.
+    </p>
+
+    <p>
+      If you will be developing on a
+
+    <ul>
+      <li><b>AFS-connected machine</b> (dorms, clusters, etc.),
+        no special steps are necessary. Simics is already fully set up
+        on AFS and will run smoothly on Linux via a simple script we
+        will provide in <tt>410/bin</tt>.  If you want to use a
+        Solaris machine, you can ssh into linux.andrew.cmu.edu and
+        compile and run there.
+
+
+      <li><b>Non-AFS-connected machine</b>, you will need to
+        get our Simics tarball (<tt>simics.tar.gz</tt>) from
+        <tt>/afs/cs.cmu.edu/academic/class/15410-s11/pub</tt> or
+        by downloading it <a
+        href="http://www-2.cs.cmu.edu/~410/files/simics.tar.gz">here</a>
+        and untar (<tt>tar -zxvf</tt>) it on your own linux machine. No
+        compilation is necessary -- the tarball contains a good-to-go
+        binary. The Simics installation contained in it is fully
+        self-contained; if you wish to uninstall it at any time,
+        simply remove the entire directory.
+    </ul>
+    </p>
+
+    <p>
+      <b>NOTE:</b> Simics appears to perform very poorly on slow (less
+      than campus Ethernet) links. If you experience this, you may
+      want to consider installing Simics locally (refer to the
+      instructions above for Non-AFS-connected machines).
+    </p>
+
+    <h3>B. Mtools</h3>
+    <p>
+    Simics simulates a real IDE hard drive using a disk image (.img)
+    file. It will boot and run your kernel off a FAT-formatted "disk"
+    represented by such a file.  We will provide you with a raw disk
+    image, but to test your code, your compiled kernel will need to be
+    copied onto it using a utility called mcopy that is provided by
+    the Mtools package. This copying process is automated in the
+    Makefile provided to you in the project tarball.
+
+    </p>
+
+    <p>
+    If you do not have mtools installed, source and binaries are available
+    <a href="http://www.tux.org/pub/knaff/mtools/">here</a>.
+    </p>
+
+    <p>
+    <b>NOTE:</b> Mtools is installed on most Linux machines, but if it
+    is not present on your's, you will need to obtain it.  Follow the
+    link above.
+    </p>
+
+    <h2>2. For each project</h2>
+
+	<p>You will probably need to edit <KBD>UPDATE_METHOD</KBD>
+	in the config.mk to use "web" instead of "afs".
+
+<!-- BEGIN COMMENTED-OUT SECTION -->
+
+<!-- END COMMENTED-OUT SECTION -->
+
+<!-- BEGIN COMMENTED-OUT SECTION -->
+
+<!-- END COMMENTED-OUT SECTION -->
+
+<!-- BEGIN COMMENTED-OUT SECTION -->
+
+<!-- END COMMENTED-OUT SECTION -->
+
+<!-- BEGIN COMMENTED-OUT SECTION -->
+
+<!-- END COMMENTED-OUT SECTION -->
+
+<!--
+    <h3>C. simics-linux.sh</h3>
+    <p>
+    This is the script that runs simics.
+    <p>
+    If you are on a <b>Non-AFS-connected machines</b>, you will need
+    to change <tt>SIMICS_PATH</tt> in <tt>simics-linux.sh</tt>
+    (provided in your project tarball) to point to the top level of
+    your simics-1.4.7 installation directory.  In addition, you will
+    need to download another tarball with each project (except for the
+    first project) containing some additional files that will need to
+    be unzipped in the home subdirectory within your simics directory.
+-->
+    <h2>3. Other Important Information</h2>
+    <p>
+    <h3>A. gcc</h3>
+    Since we will be running and testing your code on Andrew Linux
+    machines, you may wish to install the versions of the compiler
+	and linker on your machine (run "gcc --version" and "ld --version").
+	<STRONG>Regardless, you are strongly advised to run your code
+	on an Andrew Linux machine at least once a day.</STRONG>
+
+<!-- BEGIN COMMENTED-OUT SECTION -->
+
+<!-- END COMMENTED-OUT SECTION -->
+
+    <h2>4. Questions?</h2>
+    <p>
+    <img src="http://www-2.cs.cmu.edu/~410/img/staff-410.gif" alt="staff-410 at the CS domain">
+    </p>
+
+
+
+<!-- End body. -->
+
+</td>
+</tr></table>
+
+<!-- ----------------------------------------- -->
+<!-- Content Ends ---------------------------- -->
+<!-- ----------------------------------------- -->
+
+<!-- End body. -->
+
+
+</td></tr>
+<tr><td></td><td></td><td align=center>
+
+<HR>
+<P ALIGN=CENTER>[Last modified Friday January 29, 2010]</P></td></tr>
+</table>
+
+</body>
+</html>
+ 

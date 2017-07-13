@@ -1,0 +1,41 @@
+int SetAcl(char *fileName, int uid, int permissions)
+{
+    mountPoint *mp;
+
+    mp = findMountPoint(fileName);
+    if (!mp) return -1;
+
+    switch (mp->fsType) {
+        case FS_TYPE_PFAT:
+            return -1;
+
+        case FS_TYPE_GOSFS:
+            return GOSFS_SetAcl(mp, &fileName[strlen(mp->mountPoint)], uid, permissions);
+            break;
+
+        default:
+            return -1;
+    }
+    return 0;
+}
+
+int SetSetUid(char *fileName, int setUid)
+{
+    mountPoint *mp;
+
+    mp = findMountPoint(fileName); 
+    if (!mp) return -1;
+
+    switch (mp->fsType) {
+        case FS_TYPE_PFAT:
+	    return -1;
+	
+	case FS_TYPE_GOSFS: 
+	    return GOSFS_SetSetUid(mp, &fileName[strlen(mp->mountPoint)], setUid);
+	    break;
+
+	default:
+	    return -1;
+    }
+    return 0;
+}

@@ -1,0 +1,167 @@
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos
+END
+setup.asm
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/setup.asm
+END
+keyboard.c
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/keyboard.c
+END
+segment.c
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/segment.c
+END
+symbol.asm
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/symbol.asm
+END
+trap.c
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/trap.c
+END
+io.c
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/io.c
+END
+malloc.c
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/malloc.c
+END
+tss.c
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/tss.c
+END
+fd_boot.asm
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/fd_boot.asm
+END
+util.asm
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/util.asm
+END
+crc32.c
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/crc32.c
+END
+gdt.c
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/gdt.c
+END
+mem.c
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/mem.c
+END
+defs.asm
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/defs.asm
+END
+screen.c
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/screen.c
+END
+idt.c
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/idt.c
+END
+bootsect.asm
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/bootsect.asm
+END
+timer.c
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/timer.c
+END
+bget.c
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/bget.c
+END
+kthread.c
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/kthread.c
+END
+main.c
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/main.c
+END
+synch.c
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/synch.c
+END
+depend.mak
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/depend.mak
+END
+lowlevel.asm
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/lowlevel.asm
+END
+int.c
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/int.c
+END
+README.txt
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/README.txt
+END
+irq.c
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/2/project0/src/geekos/irq.c
+END

@@ -1,0 +1,29 @@
+int Set_Scheduling_Policy( int policy, int quantum )
+{
+   return -1;
+}
+
+unsigned long Get_Time( void )
+{
+   return -1;
+}
+
+int Init_Semaphore(char *name, int initval)
+{
+   return -1;
+}
+
+int P(int sid)
+{
+   return -1;
+}
+
+int V(int sid)
+{
+   return -1;
+}
+
+int Finish_Semaphore(int sid)
+{
+   return -1;
+}

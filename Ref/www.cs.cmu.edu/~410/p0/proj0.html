@@ -1,0 +1,638 @@
+<!-- ========================================= -->
+<!-- Page title (begin it with "15-410") ===== -->
+<!-- ========================================= -->
+
+
+
+
+
+<!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 3.2//EN&quot;>
+<html>
+<head><title>15-410 Project 0: Traceback</title>
+</head>
+<body bgcolor=white>
+<table width="100%" height="100%">
+
+<tr><td valign=top width=132>
+<table width=132 bgcolor=#cccccc height="100%">
+<tr><td height=140><center><font size=-1><b>Carnegie Mellon</b></font><br>
+<img alt="SCS logo" src="/~410/img/scslogo.gif"><br>
+<font size=-1><b>Computer Science Department</b></font></center></td></tr>
+<tr><td height=30><a href="/~410"><img alt="home" src="/~410/img/home.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/syllabus.html"><img alt="syllabus" src="/~410/img/syllabus.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/staff.html"><img alt="staff" src="/~410/img/staff.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/schedule.html"><img alt="schedule" src="/~410/img/schedule.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/lecture.html"><img alt="lecture" src="/~410/img/lecture.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/projects.html"><img alt="projects" src="/~410/img/projects.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/homeworks.html"><img alt="homeworks" src="/~410/img/homeworks.gif" border=0></a></td></tr>
+<tr><td>&nbsp;</td></tr></table>
+
+</td>
+
+<td width=10>&nbsp;</td>
+
+<td height="100%" valign=top>
+<br>
+
+<H1 ALIGN=CENTER>15-410 Project 0: Traceback</H1>
+<HR>
+<!-- Body goes here. -->
+ 
+
+<!-- ========================================= -->
+<!-- Content Begins ========================== -->
+<!-- ========================================= -->
+
+    <h3>Table of Contents</h3>
+    <ul>
+      <li><a href="#overview">Project Overview</a></li>
+      <li><a href="#details">Traceback Details</a></li>
+      <li><a href="#formatting">Output Formatting</a></li>
+      <li><a href="#goals">Goals</a></li>
+      <li><a href="#starting">Getting Started</a></li>
+      <li><a href="#dates">Important Dates</a></li>
+      <li><a href="#testing">Testing</a></li>
+      <li><a href="#doxygen">Documenting</a></li>
+      <li><a href="#notes">Other Important Notes</a></li>
+      <li><a href="#handin">Hand-in Instructions</a></li>
+      <li><a href="#hints"><TT>evil_test</TT> Hints</a></li>
+    </ul>
+
+    <!-- ========================================= -->
+    <a name="overview"><h3>Project Overview</h3></a>
+    <!-- ========================================= -->
+
+    <P>In this project you will be writing a "library" which contains a
+    single function called <CODE>traceback()</CODE>. <CODE>traceback()</CODE>
+	prints out a stack trace of the program it is called from. The stack trace will
+    include all of the function calls made to reach the current location in
+    the program. You will be provided with information about the
+    functions available in the program and their arguments.</P>
+
+    <P>One example of a possible use for such a function would be to call it
+    from a segmentation fault handler to help debug the program.</P>
+
+    <!-- ========================================= -->
+    <a name="details"><h3>Traceback Details</h3></a>
+    <!-- ========================================= -->
+
+    <P>The prototype for trackback, as defined in traceback.h, is<br>
+    <br>
+    <CODE>void traceback(FILE *);</CODE><br>
+    <br>
+    The argument to traceback is the file stream to which the stack trace
+    should be printed. For most programs, this will probably be <CODE>stderr</CODE>,
+	but taking it as an argument allows for greater flexibility in the use of
+    traceback.</P>
+    
+    <P>Defined in traceback_globals.c is a table containing an entry for
+	each function in the program
+	(to the extent feasible:  in some corner cases, some executable
+	code may lack a function-table entry).
+	Each entry in the function table has the type
+	<CODE>functsym_t</CODE> (defined in traceback_internal.h),
+	which contains the name of the function and the address at which the function
+	begins along with a list of arguments.
+	Each argument is defined as an <CODE>argsym_t</CODE> containing the
+    argument type and name of the argument. The type is stored as an integer
+	and can be matched with the definitions in traceback_internal.h.
+	For the sake of simplicity,
+    we are requiring you to recognize only char, int, float, double, char*,
+    char**, and void*. All subsequent references to 'string' in this document
+	refer to C-style character strings.</P>
+
+	<P>If the function list contains fewer than <CODE>FUNCTS_MAX_NUM</CODE>
+	entries
+	it will be terminated by a function with a zero-length name.
+    Similarly, if the argument list
+    for a function contains fewer than <CODE>ARGS_MAX_NUM</CODE> arguments
+	it will be terminated by an argument with zero length name. The
+    functions in the list are sorted by address.</P>
+
+    <P>For each function invocation you should print the name of the function
+	and all of the arguments.
+	When printing each argument you should output the name and
+    the actual argument whenever the type is known. This means you must print
+    the string in the case of a char* and some (see below) of the strings in
+	the case of a char**.
+	Be warned that <CODE>traceback()</CODE> must not cause a program
+	calling it to terminate due to a segmentation fault.  If the type of an
+	argument is not known, we do not expect you to print the value (see
+	below).</P>
+
+    <P>For those of you wondering how you can have a global table containing
+	a program's function names and argument types, this is not normally possible
+	within the the C language framework.
+	Each test program linked against the traceback library will obtain the
+	code for your <CODE>traceback()</CODE> function and a blank function
+	table.  After the program is built, a perl script will decode the
+	object file and modify it so that the table slots are filled in
+	with the correct information (see the lecture notes for a diagram).
+	This is not really the correct way to obtain this
+    information; one should obtain it at runtime by having a long and complicated
+	conversation with a large confusing library which understands how to parse
+	executable files.
+	The correct approach,
+    however, is significantly more work than intended for this project and does
+    not really add to the learning experience as it is just an exercise in
+    jumping through hoops
+	(hoops which not only are on fire but also move
+	around and/or shrink unpredictably).</P>
+
+    <!-- ========================================= -->
+    <a name="formatting"><h3>Formatting</h3></a>
+    <!-- ========================================= -->
+
+    <P><CODE>traceback()</CODE> should output the function invocations
+	in order from the last (most recent) function
+    called to the first function called.  The output should contain
+	the names and values
+    of all of the arguments (and "void" if there are no arguments).
+    The output of traceback() should match the following sample partial
+    output:<br><br>
+    <tt>
+      Function foo(int i=5, float f=35.000000), in<br>
+      Function foobar(char c='k', char *str="test", char *unprintable=0xffff0000), in<br>
+      Function bar(void), in<br>
+    </tt>
+	</P>
+
+    <P>
+    This indicates that some function (not shown) called <CODE>bar()</CODE>
+	with no arguments.
+	<CODE>bar()</CODE> then called <CODE>foobar()</CODE> with a character
+	'k', a string "test",
+    and a string called unprintable, located at 0xffff0000 in memory, which
+	<CODE>traceback()</CODE> was unable to print.
+	<CODE>foobar()</CODE> in turn called <CODE>foo()</CODE> with the
+	arguments 5 and 35,
+	and then <CODE>foo()</CODE> invoked <CODE>traceback()</CODE>.</P>
+    
+	<p> If you determine that a function invocation does not conform to
+	the calling
+	conventions at all (for example, the value for its stack pointer could
+	not possibly be a stack frame), traceback should terminate.
+	If you wish, you may emit a single line, beginning with <KBD>FATAL: </KBD>
+	if your implementation runs into a situation which qualifies as a
+	fatal error.
+	Note that
+	this does not cover the case of wild pointers or other 'illegal' values
+	in a function's <EM>arguments</EM>: perfectly legal programs can pass
+	wild pointers around without violating calling conventions.</p>
+
+	<p> If a stack frame is generally well-formed but the return address
+	(say 0x20002ab0) indicates a call site within a function which is not
+	in the functions table, you should print a line of the form:<br><br>
+	<tt>
+		Function 0x20002ab0(...), in <br>
+	</tt>
+	<br>
+	In this case, you should keep tracing the stack frames after this function
+	if possible.
+	</p>
+
+    <P>All arguments are printed as "type name=value", but the following special
+    rules should also be applied:
+    <ul>
+	  <li> <p> For this assignment, 'printable' characters are those for
+	  which the standard library <CODE>isprint()</CODE> function
+	  returns true (see <CODE>ctype.h</CODE>). A string that contains an
+	  unprintable character is considered an unprintable string.
+	  (Code or comments
+	  containing an unprintable word is considered immature
+	  but at times understandable, but that doesn't affect the
+	  output of your <CODE>traceback()</CODE> implementation.) </p>
+
+      <li> <p> Chars should be printed between single quotes if printable.
+	  If not, the chars should be printed (still within single quotes)
+	  as escaped octal characters: for example, if
+	  an argument <CODE> c </CODE> contains the ASCII 'ACK' character, the 
+	  argument should be printed as follows:
+	  <tt>
+	  	char c='\6'
+	  </tt>. This applies to unprintable characters only - see below for
+	  what to do with unprintable strings. </p>
+
+      <li> <p> Integers and floating-point numbers should be printed in base 10.
+	  The default behavior of <CODE>printf()</CODE> is acceptable for floats
+	  and doubles, both in terms of number of digits printed and in terms of
+	  what is printed for unusual floating point values (NaN, plus or minus
+	  infinity). </p>
+
+	  <li> <p> void*'s should be printed in hexadecimal, except that
+	  instead of "0x" the hexadecimal value should be prefixed with
+	  "0v". </p>
+
+      <li> <p> Strings should be printed between double quotes. </p>
+
+      <li> <p> String arrays are generally displayed in this format:
+	{"string1", "string2", "string3"}.
+	The quotation marks are to be added around 
+	each string by <CODE>traceback()</CODE>; they are not (generally)
+	part of the string. </p>
+
+	<P> Printing of char** arrays is heuristic only.  Because there
+	is no way to determine the number of elements in an array given
+	a pointer to the base of the array (or, even worse, a pointer
+	into the middle of the array), there is no way to in every
+	situation print all the "valid strings" in a string array without
+	printing "non-valid strings" too--unless some special private
+	contract is in place, such as the <code>int argc</code> parameter
+	of <code>main()</code>.
+	Thus we will provide you with some rules to use for this
+	assignment; of necessity they are somewhat arbitrary.</P>
+
+	<P>If a string in the array is not printable, the address of that
+	string should be printed in its place.  However, because it matches
+	many common usages, you should treat a null (zero) pointer in a
+	string array not as an "unprintable string" but as an indication
+	that the array has come to an end before the null pointer.
+	In the other direction, if it appears that a string array contains
+	four or more strings, only the first three should be printed,
+	followed by "...".
+	For example, 
+	{"string1", "string2", "string3", "string4"} should be printed as
+	{"string1", "string2", "string3", ...}.
+	Unprintable strings count toward the number of elements in the
+	array (i.e., you need look at only the first four elements
+	no matter what). </P>
+
+      <li> <p> If a printable string has more than 25 characters, only the first 25
+	should be printed, followed by a "..." (e.g., "this string has more
+	than 25 characters" should be printed as "this string has more than...").
+	</p>
+
+      <li> <p> Anything that cannot have its value printed
+	  <EM>for any reason</EM>
+	  should have its address printed in hex, except if it is a
+	  valid char value that happens to contain a single unprintable character.
+	  If part of a char* string is printable and any part is not, then the
+	  entire string is considered to be unprintable.  A string array with one
+	  or more unprintable strings within it is still considered printable
+	  itself as long as the string array is itself a valid array of strings.
+	  </p>
+
+      <li> <p> Anything of an unknown type should be displayed as if it had some
+	  type "UNKNOWN" and as though it were an unprintable constant, that is,
+	  with the address in hex. </p>
+
+      <li> <p> Please note that your program will be graded by an automatic
+	  test system, so these formatting requirements are not suggestions!
+	  If you mix up parentheses versus braces, leave commas out, etc., you
+	  will probably lose half of the points for the automated test section
+	  of the assignment.  Please see the README file distributed with
+	  the assignment for further information on formatting. </p>
+    </ul>
+	</P>
+
+    <!-- ========================================= -->
+    <a name="goals"><h3>Goals</h3></a>
+    <!-- ========================================= -->
+
+    <P>Despite the fact that this is the smallest project of the five that will
+    be assigned in this class, it is important to pay attention to the key
+    concepts in Project 0. The ideas taught here will provide the foundation
+    for the next four projects. In particular, we would like you to be
+    comfortable with:</P>
+
+    <ol>
+    <li><P>Writing clean code in C. Many people like the C programming language
+        because it gives the programmer a lot of freedom (pointers, casting,
+        etc).  It is very easy to hang yourself with this rope.  Developing (and
+        sticking with) a consistent system of variable definitions,
+        commenting, and separation of functionality is essential.</P>
+
+		<P>People have asked about using C++ in this class.  Writing your
+		kernels in C++ is probably
+        much harder than you think, since you would need to begin by
+        implementing your own thread-safe (or, at least, interrupt-aware)
+        versions of <TT>new</TT> and <TT>delete</TT>.  In addition, you would
+        probably find yourself implementing other pieces of C++ runtime code;
+        this could turn into quite a hobby.  As a result, you should do
+		this program in C as a way of re-familiarizing yourself with the
+		language you'll be using for the remainder of the course.</P>
+
+    <li><P>Writing pseudocode (or otherwise designing before coding).  For
+		systems programming, it is very important to
+        think out crucial data structures and algorithms ahead of time since
+        they become important primitives for the rest of the system.</P>
+
+    <li><P>Commenting.  Though you will not be working with a partner for the
+        first two projects, you will be on all subsequent projects.  It is
+        important to include comments so someone else looking at or
+        maintaining your code can quickly understand what your code is doing
+        without having to look at its internals.  For this assignment,
+		which is a refresher, it should not be hard to comment it
+		appropriately and you may do so in the standard fashion.  However,
+		since the remainder of the assignments will use it, we will
+		describe below the <a href="#doxygen">doxygen</a> system,
+		similar to javadoc, but targeted at C.</P>
+
+    <li><P>Using common development tools (gcc, ld).</P>
+
+    <li><P>Communicating with the course staff using various channels of
+        communication (bulletin board, 
+        <img src="../img/staff-410.gif" alt="staff-410 at the CS domain">,
+        Q&amp;A archive, course web page, office hours).</P>
+    </ol>
+
+	<P><STRONG>Since code quality (layout, modularity, defensive
+	programming) and readability will be so important in this class
+	(and after you leave CMU), they will have a substantial impact
+	on your project grades.</STRONG>
+	In the case of Project 0, expect that
+	they will determine 10-20% of your project grade.
+	The <A HREF="../doc/doxygen.html">410 doxygen documentation</A>
+	points to two acceptable coding style guides.</P>
+
+	<P>
+	To receive the benefits offered by this assignment
+	(including design practice and
+	sanity-checking whether you might be prepared to take this class this semester)
+	you need to <EM>complete</EM> it.
+	Because issues (and solutions) interact in a non-linear way,
+	doing "50% of the features" probably delivers
+	30% of the learning, and will be graded accordingly.
+	Said another way,
+	in keeping with the grading philosophy outlined in
+	<A HREF="/~410/syllabus.html">the syllabus</A>,
+	grades of C or better are reserved for solutions that address
+	all parts of the problem.
+	Passing only one or two of the tests we provide you with definitely
+	doesn't qualify.
+
+    <!-- ========================================= -->
+    <a name="starting"><h3>Getting Started</h3></a>
+    <!-- ========================================= -->
+
+	<P>To get started with the project, download the support-code
+	tarball and extract the files contained within.  You should
+	probably study all of the files, including the Makefile but
+	excluding the update script, before beginning to ask questions.
+	The answers to many popular questions are contained in the
+	code.</P>
+
+	<P>You will probably find yourself wishing for some information
+	which is not portably available within the C language framework,
+	so you will need to write a scrap or two of x86 assembly language.
+	We <STRONG>strongly</STRONG> suggest you do this by writing a
+	C-callable function in a <TT>.S</TT>
+	file (note that the 'S' is upper-case) rather than using the
+	<TT>asm()</TT> in-line assembly language facility.
+	Either one can be made to work, but in practice it is
+	<EM>very easy</EM> to write
+	code with <TT>asm()</TT> which works with one version of your
+	program or a particular version of your compiler but which
+	breaks mysteriously later.  In addition, littering your
+	C code with <TT>asm()</TT> calls makes it <EM>extremely</EM> painful
+	to port the code from one hardware platform to another.</P>
+
+	<P>The support code includes a sample <TT>.S</TT> file (<TT>add_one.S</TT>),
+	and you can find <TT>asm()</TT> covered in the
+	<A HREF="http://gcc.gnu.org/onlinedocs/gcc-4.3.5/gcc/Extended-Asm.html">
+	"Assembler Instructions with C Expression Operands"</A>
+	section of the gcc documentation.
+	If, despite our advice, you decide to use <TT>asm()</TT>,
+	keep in mind that for correctness you <STRONG>must</STRONG>
+	use the "complicated" version which correctly communicates
+	your intent to the compiler.
+	All uses of <TT>asm()</TT> will be regarded with suspicion
+	by the course staff.  You have been warned!</P>
+
+	<P>In terms of getting <TT>make</TT> to build <CODE>.S</CODE>
+	files, note that <CODE>.S</CODE> files are isomorphic to
+	<CODE>.c</CODE> files
+	in the sense that <TT>make</TT> contains default rules for
+	building each variety of source file to <CODE>.o</CODE>.</P>
+
+    <!-- ========================================= -->
+    <a name="dates"><h3>Important Dates</h3></a>
+    <!-- ========================================= -->
+
+	<UL>
+    <LI><B>Wednesday, January 12th:</B> Project 0 assigned.
+    <LI><B>Wednesday, January 19th:</B> Project 0 is due at 11:59pm.
+	</UL>
+
+    <!-- ========================================= -->
+    <a name="testing"><h3>Testing</h3></a>
+    <!-- ========================================= -->
+
+	<P>It is <STRONG>strongly</STRONG> suggested that you carefully read
+	each test program we provide to you and understand what it
+	does and what your <CODE>traceback()</CODE> implementation
+	should print when it is run.
+	<STRONG>In order to be considered
+	for a passing grade on this project, a submission
+	must at least successfully complete all tests we give you!
+	Furthermore, if your submission doesn't pass <CMD>make verify</CMD>
+	(see below) the grade will be capped at 25%.</STRONG>
+	</P>
+
+    <P>It is important that your <CODE>traceback()</CODE> function be able to
+	deal with any sort of program in which someone might wish to use it.  You
+	must ensure that it will work properly regardless of where it is called within
+	any program, and ensure that <CODE>traceback()</CODE> does not damage the
+	correct operation of the program after it returns.
+	Note that
+	<CODE>traceback()</CODE> is obviously intended as a debugging aid -
+	therefore assuming that the project that is calling it has a perfectly
+	formed stack is not a good plan. While <CODE>traceback()</CODE> may
+	not always be able to print out a well-formed stack with 100% valid arguments,
+	it should never crash nor loop forever.</P>
+
+	<P>Also, you should recall from previous classes, certain traditional C
+	functions, such as sprintf(), are unsafe. Please take a moment to reacquaint
+	yourself with the details of the issue, its implications, and what you could
+	use instead.
+	</P>
+
+	<P>
+	Take some time to develop the harshest cases that you can
+    because while grading we will submit your code to the most diabolical
+    tests we can imagine.  Of course, if your code is well written, it should
+    have no problems passing these tests.</P>
+
+	<P> We will provide a simple output verification script
+    which will ensure that your output format matches our script's expectations;
+	see the 'verify' target in your Makefile. 
+	</p>
+
+    <!-- ========================================= -->
+    <a name="doxygen"><h3>Documenting</h3></a>
+    <!-- ========================================= -->
+
+    <P>Commenting is an important part of writing code.  If you wish,
+	you may get a jump on future assignments by using <TT>doxygen</TT>; see our
+    <a href="../doc/doxygen.html">doxygen documentation</a> to see how to
+    include comments in your code that can be read by doxygen.</P>
+
+	<P>When we grade
+    your projects, we will begin with your documentation.
+	Lack of
+    documentation will be reflected in your grade.</P>
+
+	<P>The provided
+    traceback_internal.h
+    file contains example doxygen comments with the sort of information we are
+    expecting to see.
+	<EM>Although we put the doxygen comments for our functions
+    in the .h file, you should typically put yours in the .c file, with each
+	function's comment block adjacent to the code</EM>.
+	In
+    addition, we have provided a rule in the Makefile to take care of
+    generating the documents for you.  This rule is <tt>make html_doc</tt> and
+	if you have set this up to work we will run it as part of grading.</P>
+
+    <!-- ========================================= -->
+    <a name="notes"><h3>Other Important Notes</h3></a>
+    <!-- ========================================= -->
+
+    <ul>
+    <li><P>Since we will be running and testing your code on Andrew Linux
+        machines, your code will be compiled, linked, and run under gcc 4.3.5
+		(available as <CMD>410-gcc</CMD> on Andrew Linux).
+        If you are working on standard cluster machines, then you don't have to
+		worry about anything.  If you are working on a non-cluster personal machine,
+		you can check the
+        version of gcc you are using by running <KBD>gcc --version</KBD> on the
+        command line.  If your version is not the same as the one which will
+		be used for grading, <STRONG>you must make sure that your code compiles,
+		links, and runs fine in the grading environment</STRONG>.
+
+    <li><P>Please do not change any of the provided files except for traceback.c
+        and config.mk. Modifying config.mk should allow you to make any
+        changes necessary for compiling the traceback library and any test
+        programs. We will run your code using our versions of the other files,
+		so any changes you make to them will be overwritten.</P>
+
+    <li><P>As compiling many different tests can take a noticable amount of time,
+	we just wanted to mention that the Makefile allows you to build
+	a subset of your tests.
+	Typing <KBD>make tests/foobar</KBD> will compile the
+	foobar test (after updating the traceback library if necessary).</P>
+
+	<LI><P>You will need to ensure that the directory containing
+	15-410 executable programs,
+	<TT>/afs/cs.cmu.edu/academic/class/15410-s11/bin</TT>, is on your <TT>$PATH</TT>.
+	In addition, it will be convenient for you to make
+	an easy-to-type symbolic link to the root of the course AFS
+	volume, e.g.,
+	<BR><KBD>% ln -s /afs/cs.cmu.edu/academic/class/15410-s11 $HOME/410</KBD>
+	<BR>
+	Note that in order to access some 15-410 files located in the CS
+	AFS cell you might need to acquire cross-realm tickets as
+	specified on the <A HREF="../afs.html">15-410 AFS page</A>.
+	Do not be surprised if this doesn't work for a day or two,
+	see below.
+	</P>
+
+	<LI><P> <A HREF="../afs.html">Your AFS volumes</A> have not been
+	configured yet.  Luckily Project 0 is small and simple enough that
+	you can work on it in your personal AFS space for the present.
+	Please do not ask course staff about AFS volumes until after
+	a bulletin board post announcing their creation has been made.
+	</P>
+
+	<LI>For purposes of this assignment, you can assume that the
+	largest function (in terms of number of bytes worth of instructions)
+	is 1 megabyte. We have provided a <tt>#define</tt> in
+	traceback_internal.h that encodes this constant. </P>
+
+	<LI>While you may find it necessary to write assembly code to complete
+	this assignment, your code does not need to understand x86 opcodes.
+	It is very very hard to write code which correctly disassembles and
+	understands function body code.
+	Meanwhile, it is entirely possible, and much preferred,
+	for your code not to do this.  So if you believe your
+	<code>traceback()</code> code needs to decode x86 opcodes,
+	please step back and re-think your design.</P>
+
+	<LI>You may wish to consider what would happen if you ran your <code>traceback()</code>
+	in a multi-threaded program.  It is <em>very</em> hard, if not impossible, to solve all
+	the issues this raises, so don't worry too much about it.  It may be easier to consider
+	the restricted case where <code>traceback()</code> will only ever be called by one thread
+	at a time (that is, where <code>traceback()</code> will be guarded by a mutual exclusion
+	facility of the type you will write later in the semester.) </P>
+
+    </ul>
+
+    <!-- ========================================= -->
+    <a name="handin"><h3>Hand-in Instructions</h3></a>
+    <!-- ========================================= -->
+
+    You will be required to hand in all your .c, .S, .h, and any other
+    files necessary to run your code.  Minimally this will include the
+    traceback function and any support functions that it requires. When
+    we run your code, it should display the behavior described in the
+    <a href="#details">Traceback Details</a> section above.
+    <p>
+
+    See <A HREF="handinP0.html">http://www.cs.cmu.edu/~410/p0/handinP0.html</A>
+    for details.
+
+    <!-- ========================================= -->
+	<a name="hints"><h3>evil_test Hints</h3></a>
+    <!-- ========================================= -->
+
+	<P>You may be wondering how your program can determine whether
+	a given address is valid (i.e., backed by memory) at run-time.
+	Like many other questions which will arise as this course unfolds,
+	there are multiple approaches, with different tradeoffs.  In general you
+	should strive to identify two to three approaches, choose among them
+	based on weighing a variety of criteria, and briefly document
+	the thinking behind your choice.</P>
+
+	<P>But since Project 0 is a warm-up, it seems appropriate to
+	give a few hints.</P>
+
+	<ul>
+	<li>A segmentation fault need not necessarily kill your program.
+	Recall from 15-213 what causes a segmentation fault, how a typical
+	Unix kernel reacts, and what control you have over that sequence
+	of events.  If you follow this path, we suggest you not try to
+	code "from memory", but instead carefully study the relevant
+	C library documentation accessible via the <KBD>man</KBD> command.
+
+	<li>If you carefully study the documentation for various VM-related
+	system calls, e.g., <TT>mmap()</TT>, <TT>mprotect()</TT>, and
+	<TT>msync()</TT>, you may find a way to
+	(ab)use one or more of them to your benefit.  These system calls
+	have some undocumented behaviors, so you should carefully test
+	your usage to make things work the way you expect them to.
+
+	<li>You may also find it possible to use <TT>write()</TT> and
+	related system calls as well (again, not everything works the
+	way you might expect, so do some testing).
+
+	<li>The documentation for the <TT>proc</TT> pseudo-file-system may
+	be of use to you.
+	</ul>
+
+	<p> Whichever way you choose, we recommend that you test the
+	behavior of your solution thoroughly - think about strange cases and try
+	them by hand if necessary. If your solution has any limitations, 
+	document them. </p> 
+
+	<P>For this assignment it is more important that whichever way
+	you address this issue is done <EM>well</EM> (completely and
+	cleanly) than that you choose the alternative which is our
+	favorite.</P>
+
+<!-- ========================================= -->
+<!-- Content Ends ============================ -->
+<!-- ========================================= -->
+
+<!-- End body. -->
+
+
+</td></tr>
+<tr><td></td><td></td><td align=center>
+
+<HR>
+<P ALIGN=CENTER>[Last modified Wednesday January 12, 2011]</P></td></tr>
+</table>
+
+</body>
+</html>
+ 

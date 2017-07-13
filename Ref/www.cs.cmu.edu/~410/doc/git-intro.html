@@ -1,0 +1,609 @@
+
+
+
+
+<!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 3.2//EN&quot;>
+<html>
+<head><title>15-410 Git Quickstart</title>
+</head>
+<body bgcolor=white>
+<table width="100%" height="100%">
+
+<tr><td valign=top width=132>
+<table width=132 bgcolor=#cccccc height="100%">
+<tr><td height=140><center><font size=-1><b>Carnegie Mellon</b></font><br>
+<img alt="SCS logo" src="/~410/img/scslogo.gif"><br>
+<font size=-1><b>Computer Science Department</b></font></center></td></tr>
+<tr><td height=30><a href="/~410"><img alt="home" src="/~410/img/home.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/syllabus.html"><img alt="syllabus" src="/~410/img/syllabus.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/staff.html"><img alt="staff" src="/~410/img/staff.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/schedule.html"><img alt="schedule" src="/~410/img/schedule.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/lecture.html"><img alt="lecture" src="/~410/img/lecture.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/projects.html"><img alt="projects" src="/~410/img/projects.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/homeworks.html"><img alt="homeworks" src="/~410/img/homeworks.gif" border=0></a></td></tr>
+<tr><td>&nbsp;</td></tr></table>
+
+</td>
+
+<td width=10>&nbsp;</td>
+
+<td height="100%" valign=top>
+<br>
+
+<H1 ALIGN=CENTER>15-410 Git Quickstart</H1>
+<HR>
+<!-- Body goes here. -->
+ 
+
+<!--
+TODO:
+
+Finish bottom section?
+
+[20:53:48] <Gracana> The confusion I had with it stems from the fact
+that it tells you how to do things, but it doesn't really tell me why I'm
+doing them. I didn't understand how data flows through a git system, so
+saying "push here, pull there, clone this, init that" has little meaning
+aside from a bunch of steps to something that ends up working somehow.
+
+So, consider adding a section less like a recipe-book, and more like a quick
+description of the dataflow?  not sure
+
+-->
+                     
+
+<blockquote><i>This document is a work in progress.  It may not be complete. 
+To the best of our knowledge, the information that is here is correct.  If
+you have issues following the instructions in this document, or you have
+suggestions to make this document clearer, please send e-mail to <img
+src="/~410/img/staff-410.gif" alt="staff-410 at the CS
+domain">.</i></blockquote>
+
+<p>To the end of more facile development of your projects, we've written
+this quick-start guide for using a modern and popular system for source control: the <a
+href="http://git-scm.com/"> Git version control system</a>.  This document
+will serve first as a <i>user's reference</i>, second as an <i>explanation
+of concepts</i> (although you need not understand all of the concepts to use
+Git), and third as <i>evangelism</i> for Git and other distributed version
+control systems (although you need not drink my kool-aid to use Git).  In
+theory, each part should stand alone; you need not know of the concepts to
+use the reference, and you need not know of the reference to be evangelized
+to.  In practice, you may find it useful to read <i>all three</i> parts to
+get a deeper understanding of what Git is doing while you aren't looking.</p>
+
+<p>Should you use Git, or something simpler?
+On the one hand, other things might be simpler and faster to learn right now.
+On the other hand, time spent
+learning Git will pay off if join a project that already uses Git.
+Because there are so many revision-control systems currently in use,
+there is no guarantee you won't have to learn something else,
+but Git is among the more popular systems, so it's a plausible investment.</p>
+
+<h1>Quick-start</h1>
+
+<h2>Obtaining/installing Git</h2>
+
+<ul>
+
+<li><p><b>On Andrew UNIX</b>, Git is available for you in the 15-410
+<tt>bin</tt> directory.  Please refer to 15-410 course documentaiton for
+adding our <tt>bin</tt> directory to your <tt>PATH</tt>.</p></li>
+
+<li><p><b>On non-Andrew Linux systems</b>, Git is typically installed through the distribution's package manager. For Ubuntu, Git is installed by the command <tt>sudo apt-get install git-core</tt> or <tt>sudo apt-get install git</tt> depending on release; for Fedora, Git is installed by the command <tt>su -c "yum install git"</tt>. For other distributions, refer to system documentation.</p></li>
+
+<li><p><b>On other systems</b>, or if no Git package is available, the latest version of Git can be obtained
+from the <a href="http://git-scm.com/download">official download site</a>. 
+It is buildable with the traditional <tt>./configure &amp;&amp; make
+&amp;&amp; sudo make install</tt> procedure.</p></li>
+
+</ul>
+
+<h2>Adding your project to Git</h2>
+
+<ul>
+
+<li><b>To create a Git project</b>, run <tt>git init</tt> in the top level
+directory of the project.  The project should already exist.  Git will
+create a hidden folder called <tt>.git</tt>, which will store all of Git's
+state.
+
+<p>You should only do this once per project -- <i>not</i> once per person,
+<i>not</i> once per directory, <i>not</i> once per day!  If you run <tt>git
+init</tt> again, all of Git's state will be reinitialized.  To make a copy
+of Git's view of the world, take a look at the section <i>Cloning Git's
+state</i> below.</p></li>
+
+<li><p><b>To add your files to Git's world</b> for the first time, which should
+be done immediately after creating the Git project, first make sure that you
+don't have any files in your project directory that you don't want Git to
+track; in my case, I'm starting from a fresh untar of the project 1 sources.
+Inside your Git project directory, run <tt>git add .</tt>, then run <tt>git
+commit -m &quot;Initial commit&quot;</tt>.  Git will acknowledge that you
+have made a commit by giving a message like: <tt>Created initial commit
+311b98a: Initial commit</tt> along with a list of files that it added.</p></li>
+
+<li><p><b>To tell Git which files it shouldn't bother you about</b> (which is
+probably something you want to do), you need to add a file called
+<tt>.gitignore</tt> to your repository.  We have provided a starting point
+for one in <tt>410/pub/gitignore</tt>; you can copy it in to your
+repository as <tt>.gitignore</tt> and add it as per the directions
+below.</p></li>
+
+</ul>
+
+<h2>Sharing your project with your partner</h2>
+
+In general, these steps should only need to be performed once per project. 
+You may need to perform some of these steps (in particular, <b>to clone a
+copy of the repository</b>) more than once if you are working on more than
+one computer.
+
+<ul>
+
+<li><p><b>To put a Git repository in your 410 AFS <tt>repository</tt>
+directory</b>, first <tt>cd</tt> into your AFS <tt>repository</tt>
+directory.  Next, create a &quot;bare&quot; repository (i.e., with only
+Git's view of the world, not a human-readable view of the world) by running
+the command <tt>git clone --bare <i>path_to_your_working_folder</i></tt>,
+where <i>path_to_your_working_folder</i> is the path in which you did the
+<tt>git init</tt> previously.</p></li>
+
+<li><p><b>To put a shared Git repository on your local server</b>, give your partner a userid, and create a system group called (for example) <i>cs410</i>. Add your partner and yourself to the <i>cs410</i> group. Create a folder to use for hosting your project, making sure that both you and your partner can access it. For purposes of these directions, we will assume that the directory is named <i>p1</i> From within the <i>p1</i> directory, run <tt>git init --bare --shared=group</tt>. Run <tt>chown -R :cs410 <i>p1</i></tt> to change ownership to the <i>cs410</i> group. Set appropriate permissions using the command <tt>chmod -R ug+rwX <i>p1</i></tt>. Finally, make sure that new files are group-owned by using the command <tt>chmod g+s <i>p1</i>/objects</tt>. From your <i>local</i> repository, you can then establish a relation with this new repository by using the command <tt>git remote add origin <i>path_to_shared_repository</i></tt>. Note that the path may also be of the form <i>ssh://your.server/shared/repo/path</i>. Then follow the directions for "pointing your original Git instance at the newly cloned repository" below. Note that a personal setup is not required -- if this seems complicated, you can just use Git on AFS.
+
+<li><p><b>To clone a copy of the repository</b>, like your partner will want to
+do for the first time, run <tt>git clone <i>path_to_repository</i></tt>,
+where <i>path_to_repository</i> is the path to the bare repository inside
+your AFS <tt>repository</tt> folder.  Git will create a folder to clone
+into.</p>
+
+<p>If your repository is not on AFS (or your partner is not on AFS!), the
+clone command will look something like <tt>git clone
+<i>you@some.other.machine:path_to_repository</i></tt>, where <i>you</i> is
+your username on the remote system, <i>some.other.machine</i> is the other
+machine's hostname, and <i>path_to_repository</i> is the path to the bare
+repository.  This is not required if you are only working on AFS.</p></li>
+
+<li><p><b>To point your original Git instance at the newly cloned
+repository</b>, edit the <tt>.git/config</tt> file in your original Git
+instance with your favorite text editor, and add the following lines to the
+bottom (you can cut and paste as needed):<pre><tt>[remote "origin"]
+url = <i>path_to_repository</i>
+fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "master"]
+remote = origin
+merge = refs/heads/master
+</pre></tt> where <i>path_to_repository</i> is the path to the bare
+repository. If you do not have any changes in your original repository, it
+might just be easier to <tt>rm</tt> it, and do a fresh clone as in the step
+above.</p>
+
+<p>You'll need to do this so that when you do a <tt>git push</tt> or <tt>git
+pull</tt>, Git knows where to push or pull from; this is done automatically
+for you when you do a <tt>git clone</tt>. If this wasn't set up correctly,
+then when you do a push or a pull (see below), you will get an error like
+<tt>fatal: 'origin': unable to chdir or not a git archive</tt>.</li>
+
+</ul>
+
+<h2>Working with Git on a day-to-day basis</h2>
+
+These operations will become your new best friends.  You will use them many
+times per day; it will pay off to become familiar with their operation and
+their quirks.
+
+<ul> <li><p><b>To record changes to every file that Git is tracking</b>, run
+<tt>git commit -a</tt>.  Git will bring up your editor (if it brings up the
+wrong editor, set your <tt>EDITOR</tt> environment variable by adding a line
+like &quot;<tt>export EDITOR=joe</tt>&quot; to your bashrc) to prompt you
+for a commit message.  To make the best use of some of Git's other features,
+you should endeavor to make changes in an order that will make sure that
+your project still compiles and runs when you commit.  This will only record
+the change in your local repository, and not yet make your changes visible
+to your partner; see the section on pushing and pulling later.</p>
+
+<p>This command will <b>not</b> add new files to Git! If you add a new file
+to your repository and use <tt>git commit -a</tt> without first running
+<tt>git add</tt>, your partner will be very sad when you go to sleep, they
+wake up to work, and the file is not there (and they will probably call you
+and wake you up).</p>
+
+<p>If you wish to add a short message to your commit on the command line,
+you can do so with the <tt>-m &quot;<i>message</i>&quot;</tt> option. 
+Before you begin committing, you might wish to read our guidance below about
+what makes a good commit!</p></li>
+
+<li><p><b>To record changes to <i>just a few files</i> that Git is
+tracking</b>, run <tt>git commit <i>file1</i> <i>file2
+...</i></tt>, where <i>file1</i>... are files that you'd like to record
+changes to, and <i>file2...</i> are optional.</p></li>
+
+<li><p><b>To record changes to a few <i>parts</i> of some of your changed
+files</b> (i.e., patch chunks), run <tt>git commit --interactive</tt>.  This
+will bring up an interactive prompt that will allow you to choose what you'd
+like to commit; to get started, try typing &quot;<tt>status</tt>&quot; at
+the &quot;<tt>What now?&gt;</tt>&quot; prompt to see what's changed, and
+then &quot;<tt>patch</tt>&quot; to interactively make choices.  (Resist the
+urge to shout &quot;<i>whatnow?!</i>&quot; whenever you see the
+prompt.)</p></li>
+
+<li><p><b>To add a new file to Git</b>, run <tt>git add <i>file1 file2
+...</i></tt>, where <i>file1</i>... are files that you'd like to add, and
+<i>file2...</i> are optional.  Then, to record the newly added file, run
+<tt>git commit -m &quot;<i>message</i>&quot;</tt>.  If you do this on a file
+that already exists, Git will record the <i>changed state at the time you
+ran the <tt>add</tt></i>.</p></li>
+
+<li><p><b>To delete a file from Git</b>, run <tt>git rm <i>file1 file2
+...</i></tt>, where <i>file1</i>... are files that you'd like to delete, and
+<i>file2...</i> are optional.  Then, to record the newly deleted file, run
+<tt>git commit -m &quot;<i>message</i>&quot;</tt>. The delete is not
+permanent; you can still check out older revisions with that file
+intact.</p></li>
+
+<li><p><b>To rename or move a file in Git</b>, run <tt>git mv <i>oldname</i>
+<i>newname</i></tt>, where <i>oldname</i> and <i>newname</i> are the
+obvious.  (<tt>git mv</tt> also has similar semantics to the UNIX command
+<tt>mv</tt>; this is just the most common usage.) To record the moved files,
+run <tt>git commit</tt>.</p></li>
+
+<li><p><b>To see what changes you've made</b> to files that Git is tracking,
+run <tt> git status</tt> to get a list of changed files (and at the same
+time, a list of new files and a list of deleted files).  To look at the
+specific changes, run <tt>git diff</tt>.  Git will produce
+<tt>diff</tt>-formatted output about all of the current unrecorded changes
+in your repository.</p></li>
+
+<li><p><b>To make your changes visible to your partner</b>, run <tt>git
+push</tt>.  This will &quot;push&quot; your changes into the bare
+repository.  If your repository is not already up to date with the bare
+repository, then <tt>git push</tt> will fail with a message like <tt>remote
+is not a strict subset of local</tt>, or comments about things not being
+&quot;fast-forward&quot;s.  <i>Resist the urge to use the <tt>-f</tt>
+option!</i> You'll be sad if you do that.  See the section on getting your
+partner's changes.</p></li>
+
+<li><p><b>To get your partner's changes</b>, run <tt>git pull</tt>.  This
+will &quot;pull&quot; changes from the bare repository into your local
+repository.  If you and your partner have changed the same sections of the
+same file in non-trivial ways that Git could not resolve, then the
+<tt>pull</tt> will leave your repository in a &quot;conflicted&quot; state
+with a message beginning with <tt>CONFLICT:</tt>.  Edit the conflicted files
+to resolve the conflicts, make sure your project builds, and then run
+something like <tt>git commit -m &quot;Fix merge conflict&quot;</tt> to
+record the fix.  Your fix will not be visible to your partner until you
+push.</p></li>
+
+</ul>
+
+<p>It behooves you to try to make &quot;good&quot; commits, both for yourself
+and for your partner.  To see what a
+&quot;good&quot; commit looks like, we should probably first look at what a
+&quot;bad&quot; commit is.  Here's a transcript of one of your TAs making
+quite a few mistakes, all in one short command:</p>
+
+<pre><tt>joshua@escape:~/school/15-410-ta/p3-s09p4$ <b>git commit -a -m "wee"</b>
+[master 6946f54] wee
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+joshua@escape:~/school/15-410-ta/p3-s09p4$</tt></pre>
+
+<p>What's so wrong about this?  Well, the most obvious is the message; the
+message &quot;wee&quot; conveys absolutely <b>no</b> information to your
+TA's partner (well, maybe it tells my partner that I was excited about this,
+but not much more than that).  But there are more substantial issues here. 
+Let's go back and do this again and see what your TA missed.</p>
+
+<pre><tt><!--joshua@escape:~/school/15-410-ta/p3-s09p4$ <b>git reset HEAD^</b>
+kern/mutex.c: locally modified
+user/progs/vm_explode.c: locally modified
+-->joshua@escape:~/school/15-410-ta/p3-s09p4$ <b>git status</b>
+# On branch master
+# Changed but not updated:
+#   (use "git add <file>..." to update what will be committed)
+#   (use "git checkout -- <file>..." to discard changes in working
+#   directory)
+#
+#       modified:   kern/mutex.c
+#       modified:   user/progs/vm_explode.c
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#       user/progs/mytest.c
+no changes added to commit (use "git add" and/or "git commit -a")
+joshua@escape:~/school/15-410-ta/p3-s09p4$ <b>git diff</b>
+diff --git a/kern/mutex.c b/kern/mutex.c
+index 4a13af1..55f4569 100644
+--- a/kern/mutex.c
++++ b/kern/mutex.c
+@@ -39,7 +39,7 @@ void mutex_init(mutex_t *mp)
+ void mutex_lock(mutex_t *mp)
+ {
+-       make_mutexes_work();
++       make_mutexes_not_work();  // XXX changed briefly to test my demo program
+        mutex_level++;
+diff --git a/user/progs/vm_explode.c b/user/progs/vm_explode.c
+index ee8c2b9..94c8c94 100644
+--- a/user/progs/vm_explode.c
++++ b/user/progs/vm_explode.c
+@@ -72,7 +72,7 @@ int main() {
+         vanish();
+       }
+     }
+-    printf("parent: all balls accounted for!\n");
++    printf("parent: all children accounted for!\n");
+     set_status(0);
+     vanish();
+   }
+joshua@escape:~/school/15-410-ta/p3-s09p4$ <b>git add user/progs/vm_explode.c user/progs/mytest.c</b>
+joshua@escape:~/school/15-410-ta/p3-s09p4$ <b>git commit</b>
+<i>in your TA's editor...</i>
+<b>Modify vm_explode to more accurately describe what it's doing instead of punning
+on the P2 test 'juggle', and create a spinoff, mytest.
+
+mytest makes sure that the frubulator is frobbed in the mutexes; you can
+make it fail by commenting out the call to make_mutexes_work() in kern/mutex.c.
+But make sure not to commit that change!  Otherwise we'll both be sad.</b>
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# Committer: Joshua Wise &lt;joshua@escape.joshuawise.com&gt;
+#
+# On branch master
+# Changes to be committed:
+#   (use "git reset HEAD &lt;file&gt;..." to unstage)
+#
+#       new file:   user/progs/mytest.c
+#       modified:   user/progs/vm_explode.c
+#
+# Changed but not updated:
+#   (use "git add &lt;file&gt;..." to update what will be committed)
+#   (use "git checkout -- &lt;file&gt;..." to discard changes in working directory)
+#
+#       modified:   kern/mutex.c
+<i>and back at the shell...</i>
+".git/COMMIT_EDITMSG" 30L, 1112C written
+[master 6ef906e] Modify vm_explode to more accurately describe what it's doing instead
+of punning on the P2 test 'juggle', and create a spinoff, mytest.
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+ create mode 100644 user/progs/mytest.c
+joshua@escape:~/school/15-410-ta/p3-s09p4$</tt></pre>
+
+<p>Much better!  This time, your TA checked to see what he was changing
+before he committed it, added only the files he wanted to commit, and then
+wrote a descriptive commit message so that his partner could test this for
+himself.  Importantly, your TA did <b>not</b> commit the change that would
+break his kernel's mutexes while doing this, and hence did not get strangled
+in his sleep by his partner.</p>
+
+<p>Strive to emulate this workflow.  You may find that you don't need quite
+such verbose messages, and <tt>git commit -m</tt> will work fine for you. 
+That's OK; but try to make your commit messages at least somewhat
+useful.</p>
+
+<h2>Time travel with Git</h2>
+
+In an ideal world, we would make no errors while writing code.  Sadly,
+sometimes we wish to travel back to the past and determine what broke.  It
+is generally considered inadvisable to modify history; if you do, you run
+the risk of killing one or more of your parents, and being in a paradoxical
+state of existance.  If you wish to modify history, you might wish to create
+an alternate universe; in Git, we call these alternate universes
+&quot;branches&quot;.  Luckily, branches aren't needed to just go back and
+look.  You may use these commands somewhat less frequently, but they are no
+less important.
+
+<ul>
+
+<li><p><b>To get a graphical view of your repository's history</b>, run
+<tt>gitk</tt>.  Ogle at all the pretty colors.  Each time in the past that
+you or your partner recorded changes using the <tt>commit</tt> command will
+be represented by a line in the pane at the top.  Select a line, and more
+details about the change will show up in the bottom panes, including the
+change's <i>SHA1 ID</i>.</p></li>
+
+<li><p><b>To get a non-graphical list of all changes in a file's
+history</b>, run <tt>git log <i>file</i></tt>, where <i>file</i> is the file
+that you wish to get a change list for.  Each change will start with a line
+starting with <tt>commit</tt>, and ending in the change's <i>SHA1 ID</i>. 
+Some short information about the change will be given to you, including the
+message that you specified with the <tt>-m</tt> option to <tt>git
+commit</tt>.</p></li>
+
+<li><p><b>To go back and view the repository's state as it was after a
+change in the past</b>, run <tt>git checkout <i>sha1</i></tt>, where
+<i>sha1</i> consists of enough characters from the change's SHA1 ID to
+disambiguate it from all other changes.  For instance, if the change you're
+looking for has ID <tt>311b98a0a1c40ad176103ee8026131fcd0fcc919</tt>, then
+you may only need to run <tt>git checkout 311b98</tt> to get the change
+you're looking for.</p>
+
+<p>Do not make any changes when you are viewing the past like this.  If you
+wish to make changes from the past, use a branch.  If you have outstanding
+changes that you have not run <tt>git commit</tt> on when you attempt to
+switch to viewing an old version of the repository, Git will give you an
+error message like <tt>error: You have local changes</tt>..., and will
+refuse to change what version you are viewing.</p></li>
+
+<li><p><b>To view the most recent change in the repository</b> (i.e.,
+recover from viewing a change in the past), run <tt>git checkout
+master</tt>.  Any changes that you may have committed from viewing the past
+will be lost into the abyss (they are not irrecoverable, but doing so is
+beyond the scope of this document).</p></li>
+
+<li><p><b>To revert one or more files</b> to the state in which they were
+after you last <tt>commit</tt>ted changes or ran a <tt>checkout</tt>, run
+<tt>git checkout <i>file1 file2 ...</i></tt>, where <i>file1</i>... are
+files that you'd like to revert changes to, and <i>file2...</i> are
+optional.</p></li>
+
+<li><p><b>To <i>temporarily</i> save what you're working on to do something
+else</b>, you can use the <tt>git stash</tt> command.  When you run <tt>git
+stash</tt>, then anything that you haven't <tt>commit</tt>ted gets saved as a
+diff onto a &quot;stash stack&quot;, and the repository takes on the
+appearance of the last commit.</p></li>
+
+<li><p><b>To restore something that you have <tt>stash</tt>ed</b>, run
+<tt>git stash pop</tt>.  This will apply the diff on the top of the stack to
+whatever the current state of the repository may be.  For more info on
+<tt>git stash</tt>, run <tt>git stash --help</tt>; you may find it to be an
+extremely useful tool!</p></li>
+
+</ul>
+
+<h2>Splitting reality with Git</h2>
+
+At some point, you may wish that you could make a change on a previous
+version of your tree without affecting the current version (yet); or you
+may wish to split reality in half, and work on an experimental side-project
+without disrupting main development of your project.  Branches in Git are
+designed to allow you to do just those things; split away from the main view
+of reality from some point in time (be that time now or the past).
+
+<ul>
+
+<li><p><b>To create a new branch from some point in the past</b>, run
+<tt>git checkout -b <i>branchname</i> <i>sha1</i></tt>, where
+<i>branchname</i> is what you want your new branch to be called (pick
+something descriptive and without spaces; <tt>Experimental_COW</tt> might be
+a good name if you're experimenting with copy-on-write), and <i>sha1</i> is
+the SHA1 ID of the change that you wish to branch from (see the section
+<i>go back and view</i> above).  Git will change you over to that branch,
+and you can begin recording changes on it immediately.</p></li>
+
+<li><p><b>To change to a different branch</b>, run <tt>git checkout
+<i>branchname</i></tt>.  The branch name that you started on was
+<tt>master</tt>; so to return to the version that's in the bare repostiory,
+run <tt>git checkout master</tt>.  (The astute reader will note that this is
+the same command as to recover from being in the past.)</p></li>
+
+<li><p><b>To merge from one branch to another branch</b>, first change to
+the branch that you want to merge <i>to</i>, then run <tt>git pull .
+<i>branchname</i></tt>, where <i>branchname</i> is the branch that you want
+to merge <i>from</i>.  This can be done as many times as you like; there are
+no negative consequences from merging repeatedly.  (Git considers your other
+branch as a 'virtual partner' to pull from.) To publish the pulled and
+merged changes from your branch to your partner, you can just run a <tt>git
+push</tt> when you are on the <tt>master</tt> branch, as normal.</p></li>
+
+<li><p><b>To create a branch based on the current state of your
+repository</b>, run <tt>git checkout -b <i>branchname</i></tt>.  The
+semantics are similar to creating a branch from some point in the
+past.</p></li>
+
+<li><p><b>To create a tag</b>, run <tt>git tag <i>tagname</i></tt>.  By
+convention, tag names are capitalized, but this is not enforced by Git.  A
+tag name can be used anywhere a SHA1 ID would otherwise be used; to go back
+to the point at which you first got your shell running in Project 3, then
+you might run <tt>git checkout SHELL_RUNNING</tt>.  The usual rules apply if
+you don't create a branch there; namely, recording changes would be a bad
+idea unless you proceed to create a branch.</p></li>
+
+<li><p><b>To rewrite history to clean it up</b>, <i>stop!</i> You might not
+want to do this.  You might have heard someone talk about using <tt>git
+rebase</tt> to &quot;clean up&quot; history of branches, and you might have
+heard someone say that &quot;all <tt>git</tt> gurus know about
+<tt>rebase</tt>!&quot;.  <tt>rebase</tt> has its uses, to be sure, but it's
+worth doing a <i>lot</i> of research before using it.  To that end, <a
+href="http://book.git-scm.com/4_rebasing.html">here's</a> the documentation
+from the Git book; <a
+href="http://changelog.complete.org/archives/586-rebase-considered-harmful">here's</a>
+an article arguing that <tt>rebase</tt> should <i>never</i> be used; <a
+href="http://jeffkreeftmeijer.com/2010/the-magical-and-not-harmful-rebase/">here's</a>
+a more balanced article; and <a
+href="http://progit.org/book/ch3-6.html">here's</a> an explanation from the
+Pro Git book, which one of your TAs thinks is a pretty good usage overview. 
+The choice is yours; <tt>rebase</tt> is a very powerful tool, but it is also
+capable of making a pretty substantial mess.</p></li>
+
+</ul>
+
+<h1>Explanation of Concepts</h1>
+
+The above involved some simplifications of the underlying concepts of Git
+for the purposes of readability and for the purposes of understandability of
+an introduction.  The simplifications are not disastrous in terms of your
+comprehension of what Git is doing behind your back, but you may find it
+helpful to know how Git stores data to better work with Git.  Tommi
+Virtanen's excellent page <a
+href="http://eagain.net/articles/git-for-computer-scientists/">Git for
+Computer Scientists</a> may provide some insight as well, for those who like
+to talk about DAGs and are big fans of arrows pointing every which way.
+
+<h2>Commits</h2>
+
+<p>The basic unit of a <i>point in time</i> stored in Git is a <b>commit</b>. 
+Each time we spoke of recording changes earlier, it would have been more
+correct to say &quot;creating a commit&quot;; I used the words
+&quot;recording changes&quot; to distinguish the operation from pushing and
+publishing your changes to your partner.  A <b>commit</b>, by its nature, is
+comprised of a few pieces of information:</p>
+<ul>
+<li><b>A <i>reference</i> to a parent commit</b>: Each commit has one or
+more parent commits that refer to where the commit was derived from; you can
+think of the parent commits as previous steps in time from this commit.  The
+very first commit you make (we called this the initial import earlier) has a
+special referenced parent of all zeroes, which Git takes to mean that a
+given commit is an initial import.</li>
+<li><b>A description</b>: This is the text that you enter in the <tt>-m</tt>
+option to <tt>git commit</tt>.</li>
+<li><b>One or more changed files</b>: When files are changed, Git records
+either a <i>delta</i> -- a binary patch against a file's version in the
+parent commit -- or a full version of the file in association with the
+commit.  The file is technically not stored in the commit; instead, it is
+stored as a <b>blob</b>, and the commit contains a reference to the blob. 
+Each blob can be referenced by many commits, but for most purposes, blobs
+behave as if they are &quot;owned&quot; by a commit.</li>
+</ul>
+
+<p>A commit is identified by the SHA1 hash of all of the information that it
+contains.  This hash is one common form of a <i>refspec</i> -- that is to
+say, it is one common way to specify a single commit.  Recall that when you
+did a <tt>checkout</tt> to go back in time, you specified a SHA1 hash; in
+that case, you were using the SHA1 hash as a <i>refspec</i>.</p>
+
+<p>You may have inferred by now that commits exist in a sort of a tree.  Each
+commit may have one or more parent commits (a commit with more than one
+parent is called a <b>merge commit</b>), and each commit may have zero or
+more child commits.  You can view the commit tree using <tt>gitk</tt>, as we
+saw above; each commit was identified by a dot, and <tt>gitk</tt> drew lines
+for us between each commit to explicitly show the branches of the tree.</p>
+
+<p>This tree of cryptographic hashes gives Git a few very useful properties. 
+Git can assure you that nobody has changed the tree that you have based your
+work on, because every element in the tree, down to the blobs, is identified
+by its cryptographic hash (its SHA1).  If a parent object has changed,
+either by malicious intent or by disk corruption, Git simply will not be
+able to find the parent object, instead of giving you the incorrect data. 
+This makes Git relatively immune to AFS corrupting its metadata.</p>
+
+<p>Further, it makes it impossible to throw away history.  Some version
+control systems that we discussed in lecture have versions per file; so
+deleting a file may delete its version history, or otherwise create a
+discontinuity in how the file is linked in terms of time.  Similarly,
+renaming a file is not disastrous (although somewhat quirky); the only
+changes happen <i>locally in the commit object</i>.  If a delete required a
+change of history, then the cryptographic hashes would change, and the
+<i>entire tree</i>'s parent hash would have to change.  The cryptographic
+hash system, then, makes Git resistant to inadvertant deletion of
+history.</p>
+
+<h2>Branches, tags, and refspecs -- oh my!</h2>
+
+<p>In this section, until now, you've seen only one kind of <i>refspec</i>
+-- a SHA1 hash of a commit.  But in the quick-start above, you've worked
+with more types of refspecs; when you checked out a branch, you used the
+refspec that refers to the branch.</p>
+
+<!-- End body. -->
+
+
+</td></tr>
+<tr><td></td><td></td><td align=center>
+
+<HR>
+<P ALIGN=CENTER>[Last modified Wednesday February 02, 2011]</P></td></tr>
+</table>
+
+</body>
+</html>
+ 

@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Assignment 3</title>
+</head>
+<body>
+<h1>CS 420 - Assignment 3</h1>
+<p><span style="font-weight: bold;">Due: Thursday, Sept. 21st by 11:59
+PM</span><br>
+</p>
+<p>In class we have discussed how running programs (and the kernel) use
+a stack of activation records to store the parameters, local variables,
+temporary data, and return addresses associated with procedure calls.<br>
+</p>
+<p>Each time you invoke a procedure (i.e., call a function or method),
+a new activation record is created for that call.&nbsp; A special
+processor register, the <span style="font-style: italic;">stack pointer</span>,
+keeps track of which activation record is being used, and also points
+to a specific data item within the activation record.&nbsp; On x86
+CPUs, this is the <span style="font-weight: bold;">esp</span>
+register.&nbsp; Sometimes, programs may use an additional register, the
+<span style="font-style: italic;">frame pointer</span>, to point to the
+current activation record.&nbsp; On x86 CPUs, this is the <span
+ style="font-weight: bold;">ebp</span> register.&nbsp; However, the
+frame pointer is not strictly necessary, and many compilers simply use
+it as an extra general-purpose register.<br>
+</p>
+<p>Usually, the activation record stack grows down in memory, from
+higher addresses to lower addresses.<br>
+</p>
+<h2>Your Task<br>
+</h2>
+<p>Your task is to write a program that when executed will determine
+whether the stack of procedure activation records grows down or up in
+memory.<br>
+</p>
+<p>Here is the output of my solution (a C++ program) when run on
+Windows:<br>
+</p>
+<pre style="margin-left: 40px;">Stack grows down<br></pre>
+<h2>Hints<br>
+</h2>
+<p>This is an easy program to write in C and C++.&nbsp; It is
+impossible to write in Java (and probably hard or impossible in C#).<br>
+</p>
+<p>There is a way to write this program that does not involve any
+assembly language.&nbsp; (If you want to use some assembly language in
+your program---for example, to inspect the contents of processor
+registers---that is fine.&nbsp; However, the program itself should be
+written in a high level language like C or C++.)<br>
+</p>
+<h2>Submitting Your Work<br>
+</h2>
+<p>Package the source code for your program in a zip file along with a
+short text document containing a report.<br>
+</p>
+<p>The report should explain the technique you used to solve the
+problem and the output of running it on at least one operating system
+(state which OS you used.)<br>
+</p>
+<p>Submit the zip file via the My YCP Inbox under "Assignment 3".<br>
+</p>
+</body>
+</html>

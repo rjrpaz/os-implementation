@@ -1,0 +1,100 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1253">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>exam2.soln</TITLE>
+<META NAME="Template" CONTENT="C:\Program Files\Microsoft Office\Office\html.dot">
+</HEAD>
+<BODY LINK="#0000ff" VLINK="#800080">
+
+<B><FONT SIZE=5><P ALIGN="CENTER">CMSC 412 Midterm #2 (Spring 1998)</P>
+<P ALIGN="CENTER">&nbsp;</P>
+<OL>
+
+</B></FONT><FONT FACE="Arial" SIZE=2><P ALIGN="JUSTIFY"><LI>(20 points) Disks: consider a disk with one surface and 100 tracks recorded evenly spaced between 0.5" to 3.5" from the center of the platter.</LI></P>
+<OL TYPE="a">
+
+</FONT><FONT FACE="Arial" SIZE=2><LI>Assume that you have a disk that can store 20 sectors per 2π inches of magnetic media that passes under the disk head, that the disk drive can have a d</FONT><FONT FACE="Arial" SIZE=2>ifferent number of sectors per track for each track, and fractional sectors per track. What is the maximum capacity of this disk in sectors?</LI>
+</FONT><FONT FACE="Times New Roman" SIZE=2 COLOR="#ff0000"><P>Inside track is 2 π 1/2in and we can store 20 sectors per 2 π inches so there are 10 sectors.</P>
+<P>Outside track is 2 π 7/2in and we can store 20 sectors per 2 π inches so there are 70 sectors.</P>
+</FONT><FONT SIZE=2 COLOR="#ff0000"><P>Total sectors is the sum from 1 to 100 of evenly space values from 10 to 70 sectors, so we compute the average value and multiple by 100 to get total sectors (10 + 70)/2 * 100 = 4,000 sectors</P>
+</FONT><FONT FACE="Arial" SIZE=2><LI>Assume the disk can only record at a single density (i.e., the sectors per track will be the same for each track), and the maximum density is still 20 sectors per 2π inches, what is the capacity of the disk?</LI></OL>
+
+</FONT><FONT SIZE=2 COLOR="#ff0000"><P>We must record everything at the inside density of 10 sectors per track so there are 10 * 100 = 1,00 sectors.</P>
+</FONT><FONT FACE="Arial" SIZE=2><P ALIGN="JUSTIFY"><LI>(20 points) Synchronization: Recall that binary semaphore can only have values of 0 and 1, and counting semaphores can have values from 0 to n. Using binary semaphores, show how you can implement counting semaphores. Please indicate the binary semaphores and variables used, and their initial values.</LI></P>
+</FONT><FONT SIZE=2><P>&nbsp;</P>
+</FONT><FONT SIZE=2 COLOR="#ff0000"><P>P<SUB>c</SUB>: &#9;P(mutex)</P>
+<P>&#9;If (sem &gt; 0) { sem--; V(mutex); }</P>
+<P>&#9;else { wait++; V(mutex); P(turn) }</P>
+<P>&#9;</P>
+<P>V<SUB>c</SUB>:&#9;P(mutex)</P>
+<P>&#9;If (sem == limit) V(mutex)</P>
+<P>&#9;Else if (!waiting) { sem++; V(mutex); }</P>
+<P>&#9;Else { waiting--; V(mutex); V(turn); }</P>
+<P>&nbsp;</P>
+<P>Semaphores: mutex, turn</P>
+<P>Variables: waiting, sem, limit</P>
+</FONT><FONT SIZE=2><P>&nbsp;</P>
+</FONT><FONT FACE="Arial" SIZE=2><P ALIGN="JUSTIFY"><LI>(20 Points) Consider a reference string 1,2,3,4,2,5,7,2,3,2,1,7,8</LI></P>
+<OL TYPE="a">
+
+<LI>How many page faults would there be using FIFO replacement and 4 page frames?</LI>
+</FONT><FONT SIZE=2 COLOR="#ff0000"><P>10 faults</P>
+</FONT><FONT FACE="Arial" SIZE=2><LI>How many faults with LRU and 4 page frames?</LI>
+</FONT><FONT SIZE=2 COLOR="#ff0000"><P>9 faults</P>
+</FONT><FONT FACE="Arial" SIZE=2><LI>How many faults using an optimal algorithm and 4 page frames?</LI></OL>
+
+</FONT><FONT SIZE=2 COLOR="#ff0000"><P>7 faults</P>
+</FONT><FONT FACE="Arial" SIZE=2><P ALIGN="JUSTIFY"><LI>(20 points) Security</LI></P>
+<OL TYPE="a">
+
+<LI>UNIX file protection is applied on a per file basis, but AFS uses per-directory file protection, explain why AFS used per-directory file protection even though it is based on UNIX.</LI>
+</FONT><FONT SIZE=2 COLOR="#ff0000"><P>AFS uses ACL’s, which take more space to store than the 9 bits UNIX uses.</P>
+</FONT><FONT FACE="Arial" SIZE=2><LI>A user has write privilege to a UNIX directory "goodStuff", but not to the file "protected" in the "goodStuff" directory, explain how the user can still modify the file "protected".</LI>
+</FONT><FONT SIZE=2 COLOR="#ff0000"><P>cp goodStuff temp</P>
+<P>rm -f goodStuff</P>
+<P>mv temp goodStuff</P>
+</FONT><FONT FACE="Arial" SIZE=2><LI>In an attempt to save storage space, someone suggests that rather than storing the salt characters for the UNIX password in the password file that we use the first two characters of the user’s name as the salt. Explain how this would impact the security of accounts on a single machine and on multiple machines.</LI></OL>
+
+</FONT><FONT SIZE=2 COLOR="#ff0000"><P>Within a node, all users that have the same first two letters in their user name will have the same salt which will allow multiple accounts to be tested for a single try of a dictionary attack. Between nodes, if the same account name uses the same password, this fact will be apparent if the password file is readable.</P>
+</FONT><FONT FACE="Arial" SIZE=2><P ALIGN="JUSTIFY"><LI>(20 points) File-systems</LI></P>
+<OL TYPE="a">
+
+<LI>A UNIX system has just been rebooted (i.e., the file buffer and name translation caches are empty). What is the minimum number of disk blocks that must be read to get to the millionth byte of the file "/a/big/file" assuming the file-system uses 4KB blocks, and 32-bit inode numbers?</LI></OL>
+</OL>
+
+</FONT><FONT SIZE=2><P>&nbsp;</P>
+<OL>
+<OL>
+<OL>
+
+</FONT><FONT SIZE=2 COLOR="#ff0000"><LI>read root inode (#2)</LI>
+<LI>read root directory and find "a"</LI>
+<LI>read inode for "/a"</LI>
+<LI>read directory chunk and find "big"</LI>
+<LI>read inode for "/a/big"</LI>
+<LI>read directory chunk and find "file"</LI>
+<LI>read inode for "/a/big/file"</LI>
+<LI>read indirect block for the file (since 4KB blocks hold 1024 inodes, files up to 4MB are in direct or indirect block)</LI>
+<LI>read the data block</LI></OL>
+</OL>
+</OL>
+
+</FONT><FONT SIZE=2><P>&nbsp;</P>
+<OL TYPE="a">
+<OL TYPE="a">
+
+</FONT><FONT FACE="Arial" SIZE=2><LI>Explain why a bit vector implementation of a free block list can provide increased reliability and performance compared with keeping a list of free blocks where the first few bytes of each free block provide the logical sector number of the next free block.</LI></OL>
+</OL>
+<DIR>
+<DIR>
+<DIR>
+<DIR>
+
+</FONT><FONT SIZE=2 COLOR="#ff0000"><P>Performance: bit vectors provide fast access to find clusters of adjacent free blocks</P>
+<P>Reliability: if an item in a linked list is lost, the rest of the list is lost. With a bit vectors only the items are lost. Also, it’s possible to have multiple copies of the bit vector since it is a more compact representation.</P></DIR>
+</DIR>
+</DIR>
+</DIR>
+</FONT></BODY>
+</HTML>

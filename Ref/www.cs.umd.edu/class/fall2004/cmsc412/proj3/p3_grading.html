@@ -1,0 +1,83 @@
+<html>
+<head><title>CMSC412 Project 3 Grading Criteria</title></head>
+
+
+<body><center><b>Project 3 Grading Criteria</b></center></p>
+
+
+
+<ol>
+<li> <b>Testing for ampersand '&'</b><br>
+At the shell prompt, typing:</p>
+
+<pre> /c/long.exe & </pre>
+
+should return the shell prompt immediately and <b><tt>long.exe</b></tt> should run in the background. This gets you <font color=blue>5</font> points. </p>
+
+<li> <b>Semaphores</b> using <b><tt>semtest1.c</b></tt>,<b><tt>p1.c</b></tt>, <b><tt>p2.c</b></tt>, and <b><tt>p3.c</b></tt>
+<p>At the shell prompt, typing:</p>
+
+<pre> /c/semtest1.exe </pre>
+
+should output
+<pre> 
+Semtest1 begins
+p3 created
+Produced 0
+Consumed 0
+Produced 1
+Consumed 1
+Produced 2
+Consumed 2
+Produced 3
+Consumed 3
+Produced 4
+Consumed 4
+p3 executed
+</pre>
+
+Correct implementation of semaphores is worth <font color=blue>25</font> points.</p>
+
+<li> <b>Semaphore invalid cases</b> using <b><tt>semtest2.c</b></tt> <br>
+<pre>semtest2.c</pre> will check handling of invalid arguments to semaphore operations. At the prompt typing:</p>
+<pre> /c/semtest2.exe </pre> 
+should output (actual value returned by Init_Semaphore not important).
+<pre>
++ Identified unauthorized call
++ Identified invalid SID
+Create_Semaphore() called
+Create_Semaphore() returned 0
+P() called
+P() returned 0
+V() called
+V() returned 0
+Destroy_Semaphore() called
+Destroy_Semaphore() returned 0
++ Removed authority after finish
+</pre>
+Correct output gets you <font color=blue>10</font> points</p>
+
+<li> <b>Scheduling</b> will be tested using <b><tt>ping.c</b></tt> and <b><tt>pong.c</b></tt>. <br>
+
+Correct output gets you <font color=blue>25</font> points</p>
+
+
+<li> <b>Scheduling </b> using <b><tt>schedtest.c</b></tt>,<b><tt>sched1.c</b></tt>, <b><tt>sched2.c</b></tt>, and <b><tt>sched3.c</b></tt>.  At the prompt typing:</p> <pre>
+/c/schedtest.ex [rr|mlf] 10</pre> should output a string consisting of
+many <tt>1</tt>s and <tt>2</tt>s and a single <tt>3</tt>. <tt>3</tt>
+should never appear as the first character.  A sample session is 
+<pre>
+%/c/schedtest.ex rr 10 
+111111222222111111222222<b>3</b>11111122222212
+%/c/schedtest.ex mlf 10 
+11111222222111111<b>3</b>222222111111222222112
+</pre> </p> 
+A few trials runs will usually (but not certainly) show the
+<tt>3</tt> appearing earlier when running MLF than when running RR In case
+of doubt, code will be checked. Correct implementation of scheduling
+carries <font color=blue>30</font> points.  </p>
+
+<li> <b>INTERPRETATION file</b>: the writeup is worth <font color=blue>5</font> points <br>
+
+</ol>
+

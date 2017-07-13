@@ -1,0 +1,292 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>CMSC 412--Project 4</TITLE>
+<META NAME="doccomm" CONTENT="&lt;META name="description" value="No Title"&gt;&lt;META name="keywords" value="proj4"&gt;&lt;META name="resource-type" value="document"&gt;&lt;META name="distribution" value="global"&gt;">
+</HEAD>
+<BODY LINK="#0000ff">
+
+<FONT SIZE=4><P ALIGN="CENTER">CMSC 412</P>
+</FONT><B><FONT SIZE=2><P ALIGN="CENTER">Project 4: Loading and Executing Modules </P>
+</B><P ALIGN="JUSTIFY">&nbsp;</P>
+<P ALIGN="CENTER">Due: April 22, 1998, in recitation</P>
+</FONT><B><P ALIGN="JUSTIFY">&nbsp;</P>
+</B><FONT SIZE=2><P ALIGN="JUSTIFY">&nbsp;</P>
+<P ALIGN="CENTER"><IMG SRC="Image2.gif" WIDTH=440 HEIGHT=270></P>
+<P ALIGN="JUSTIFY">&nbsp;</P>
+<P ALIGN="JUSTIFY">&nbsp;</P>
+<P ALIGN="JUSTIFY">&nbsp;</P><DIR>
+
+</FONT><B><P ALIGN="JUSTIFY">Introduction</P></DIR>
+
+</B><FONT SIZE=2><P ALIGN="JUSTIFY">In this project we dynamically load application modules from disk. This involves a new system architecture, which is illustrated in the figure above. As can be seen, there is now one </FONT><TT>main()</TT><FONT SIZE=2> module, containing the kernel and associated files, as well as many application modules. Each module is separately compiled into an individual executable file.</P>
+<P ALIGN="JUSTIFY">To enable this effort, we have provided the following new files:</P>
+<P ALIGN="JUSTIFY"></FONT><A HREF="io412.c"><U><FONT SIZE=2 COLOR="#0000ff">io412.c</U></FONT></A><FONT SIZE=2> The standard IO functions from cmsc412.c.</P>
+<P ALIGN="JUSTIFY"></FONT><A HREF="io412.h"><FONT SIZE=2>io412.h</FONT></A><FONT SIZE=2> The header file for io412.c</P>
+<P ALIGN="JUSTIFY"></FONT><A HREF="base412.c"><FONT SIZE=2>base412.c</FONT></A><FONT SIZE=2> The memory management functions from cmscs412.c, and new file management functions.</P>
+<P ALIGN="JUSTIFY"></FONT><A HREF="base412.h"><FONT SIZE=2>base412.h</FONT></A><FONT SIZE=2> The header file for base412.c</P>
+<P ALIGN="JUSTIFY"></FONT><A HREF="c0grh.obj"><FONT SIZE=2>c0grh.obj</FONT></A><FONT SIZE=2> The version of </FONT><TT>c0h</TT><FONT SIZE=2> to be linked in with the application modules. </P>
+<P ALIGN="JUSTIFY">io412, base412 and c0h are linked in with the main module; io412 and c0grh should be linked in with each application file.</P>
+<P ALIGN="JUSTIFY">When linking an application module, the order in which you specify the object files matters. Here is a generalized makefile rule that produces an application module from a .c file (the dollar signs indicate special built-in make variables):</P>
+</FONT><PRE>.c.mod:<BR>
+        bcc -v -mh -c $&lt;<BR>
+        tlink /v c0grh $*.obj klib io412, $*.mod, $*, emu mathh ch<BR>
+</PRE>
+<FONT SIZE=2><P ALIGN="JUSTIFY">The link command for your kernel should have the form below, with c0h coming first and including both base412 and io412:</P>
+</FONT><PRE>&#9;tlink /v c0h base412 io412 ..., myos, myos, emu mathh ch<BR>
+</PRE>
+<FONT SIZE=2><P ALIGN="JUSTIFY">Each application file must contain a special process (function) called </FONT><TT>Proc(),</TT><FONT SIZE=2> which is the module's sole public entry point.</P><DIR>
+<DIR>
+
+</FONT><B><FONT SIZE=3><P ALIGN="JUSTIFY"><A NAME="SECTION00020000000000000000">Splitting Your Kernel</A></P></DIR>
+</DIR>
+
+</B></FONT><FONT SIZE=2><P ALIGN="JUSTIFY">If you have not already done so, split your kernel into two groups of files. The first group (which we call </FONT><TT>klib.c</TT><FONT SIZE=2>) contains the system calls directly callable by application processes. These do not include </FONT><TT>System_service()</TT><FONT SIZE=2>, however. The second group (which we call </FONT><TT>kernel.c</TT><FONT SIZE=2>) contains </FONT><TT>System_service()</TT><FONT SIZE=2>, those functions which are <EM>only</EM> invoked by </FONT><TT>System_service()</TT><FONT SIZE=2> and all ISRs.</P>
+</FONT><TT><P ALIGN="JUSTIFY">Put_char()</TT><FONT SIZE=2> should be implemented as a system call just like </FONT><TT>Proc_start()</TT><FONT SIZE=2>, etc. It should be in klib.c and it should generate an interrupt to </FONT><TT>System_service()</TT><FONT SIZE=2>. Otherwise, in each of the modules, the </FONT><TT>Cprintf()</TT><FONT SIZE=2> in </FONT><TT>io412.c</TT><FONT SIZE=2> would refer to a </FONT><TT>Put_char()</TT><FONT SIZE=2> which is not the one we have implemented (since the modules are linked separately).</P>
+<P ALIGN="JUSTIFY">The reason for this separation is that we want only one kernel, while the function interfaces for system calls (such as </FONT><TT>Proc_start()</TT><FONT SIZE=2>) must be linked in with every application module.</P>
+<P ALIGN="JUSTIFY">To verify that you have created the files properly, test out an old application (using only the main module). Make sure to link in io412.c and base412.c, and <EM>not</EM> the obsolete </FONT><TT>cmsc412.c</TT><FONT SIZE=2>.</P><DIR>
+<DIR>
+
+</FONT><B><FONT SIZE=3><P ALIGN="JUSTIFY"><A NAME="SECTION00030000000000000000">Memory Management</A></P></DIR>
+</DIR>
+
+</B></FONT><FONT SIZE=2><P ALIGN="JUSTIFY"><A NAME="memory">&nbsp;</A> In this project, application processes will now be allowed to dynamically allocate and free memory. You will write the following system calls (to be written in </FONT><TT>klib.c</TT><FONT SIZE=2>).</P>
+</FONT><PRE>   void *Kmalloc(int numBytes);  /* Request numBytes of memory.  */<BR>
+   void  Kfree(void *ptr);       /* Release segment at ptr. */<BR>
+</PRE>
+<FONT SIZE=2><P ALIGN="JUSTIFY">These functions simply generate interrupts to system service, which in turn directly calls </FONT><TT>Safe_malloc()</TT><FONT SIZE=2> and </FONT><TT>Safe_free()</TT><FONT SIZE=2>, respectively.</P><DIR>
+<DIR>
+
+</FONT><B><FONT SIZE=3><P ALIGN="JUSTIFY"><A NAME="SECTION00040000000000000000">Loading and Executing Modules</A></P></DIR>
+</DIR>
+
+</B></FONT><FONT SIZE=2><P ALIGN="JUSTIFY">The new kernel will now be able to open an application module's file, allocate memory for it, load it into memory, initialize the module, and finally, issue a </FONT><TT>Proc_start()</TT><FONT SIZE=2> for the </FONT><TT>Proc()</TT><FONT SIZE=2> function in the module. Accomplishing these tasks requires adding new system calls, as well as modifyin<A NAME="SECTION00041000000000000000">g existing parts of the kernel.</P><DIR>
+<DIR>
+<DIR>
+<DIR>
+
+</FONT><B><P ALIGN="JUSTIFY">The Open Module List (OML)</A></P></DIR>
+</DIR>
+</DIR>
+</DIR>
+
+</B><FONT SIZE=2><P ALIGN="JUSTIFY">For the sake of bookkeeping, the kernel keeps a list of all modules currently residing in main memory. Each node in the open module list (OML) should contain at least the following fields:</P></FONT>
+<P ALIGN="CENTER"><CENTER><TABLE BORDER CELLSPACING=1 BORDERCOLOR="#000000" CELLPADDING=6 WIDTH=214>
+<TR><TD VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">File name </FONT></TD>
+</TR>
+<TR><TD VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">Start address for module</FONT></TD>
+</TR>
+<TR><TD VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">End address for module </FONT></TD>
+</TR>
+<TR><TD VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">Address for "Proc" function </FONT></TD>
+</TR>
+<TR><TD VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">Reference Count (initially 0) </FONT></TD>
+</TR>
+<TR><TD VALIGN="TOP">
+<FONT SIZE=2><P ALIGN="JUSTIFY">Address for "Module_init" function </FONT></TD>
+</TR>
+</TABLE>
+</CENTER></P>
+
+<FONT SIZE=2><P ALIGN="JUSTIFY">The start address must be the pointer returned by </FONT><TT>Safe_malloc()</TT><FONT SIZE=2>, as that is the only one that can be freed by </FONT><TT>Safe_free()</TT><FONT SIZE=2>, which expects a tag above the pointer. The filename is the DOS name of the module, and the </FONT><TT>Proc()</TT><FONT SIZE=2> address is a pointer to its </FONT><TT>Proc()</TT><FONT SIZE=2> function. While there may be other local functions that can serve as code for process in the module, </FONT><TT>Proc()</TT><FONT SIZE=2> is the only process that will be visible to the <EM>outside world</EM>. The reference count denotes the number of processes executing code in the module.</P>
+<P ALIGN="JUSTIFY">One may still wish to have the </FONT><TT>Init()</TT><FONT SIZE=2> process (and other processes) reside in the </FONT><TT>main()</TT><FONT SIZE=2> module. If so, the module list should be initialized with a single node in it, which represents the main module. The filename in this node can be set to </FONT><TT>"_main"</TT><FONT SIZE=2>. The start address should be a pointer to the first process lexically appearing in the main module, and the end address should point to the last process. The </FONT><TT>Proc()</TT><FONT SIZE=2> address should just be the start address of the </FONT><TT>Init()</TT><FONT SIZE=2> function.</P><DIR>
+<DIR>
+<DIR>
+<DIR>
+
+</FONT><B><P ALIGN="JUSTIFY"><A NAME="SECTION00042000000000000000">A New PCB Field</A></P></DIR>
+</DIR>
+</DIR>
+</DIR>
+
+</B><FONT SIZE=2><P ALIGN="JUSTIFY">The PCB structure should contain a field that contains the filename (called <B>fn</B>) of the PCB's process module.</P><DIR>
+<DIR>
+<DIR>
+<DIR>
+
+</FONT><B><P ALIGN="JUSTIFY"><A NAME="SECTION00043000000000000000">Changes to System_service for Proc_Start</A></P></DIR>
+</DIR>
+</DIR>
+</DIR>
+
+</B><FONT SIZE=2><P ALIGN="JUSTIFY">The PROC_START code must now use the process address argument to ensure that the referenced module is resident. First, the <B>fn</B> field of the running PCB is obtained. Then, the node corresponding to the <B>fn</B> is found in the OML. If the process address falls between the start address and end address for this module, we know that the process resides within the current module. Ergo, we know that the module is resident. In this case, the reference count in the node is incremented, and a copy (made with </FONT><TT>Safe_malloc</TT><FONT SIZE=2>) of the same <B>fn</B> is placed in the new PCB. When comparing pointers (e.g., p &lt; q), you must convert them to 20-bit addresses and compare them as longs, not pointers. This is because of bugs in the compiler's handling of pointer comparisons. (You may wish to verify if this is still the case in Borland 4.5).</P>
+<P ALIGN="JUSTIFY">Otherwise, the new process must be in another module. Recall that the only entry point into each module is the </FONT><TT>Proc()</TT><FONT SIZE=2> function, the address for which is stored in the module's OML node. This being the case, the OML is searched for a node with its </FONT><TT>Proc()</TT><FONT SIZE=2> field equal to the process argument. If one is found, the node's reference count is incremented, and the <B>fn</B> is placed in the new PCB. Make sure that you make a copy of the filename in the PCB of a new process during </FONT><TT>Proc_start</TT><FONT SIZE=2>, just as you did before for </FONT><TT>argv</TT><FONT SIZE=2>.</P>
+<P ALIGN="JUSTIFY">If neither of the above cases is true, we know that the module is nonresident (i.e., not loaded into memory). In this case an error should be returned by </FONT><TT>Proc_start()</TT><FONT SIZE=2> (e.g., a pid of <B>-1</B>).</P><DIR>
+<DIR>
+
+</FONT><B><FONT SIZE=3><P ALIGN="JUSTIFY"><A NAME="SECTION00044000000000000000">Changes to System_service for Proc_Term</A></P></DIR>
+</DIR>
+
+</B></FONT><FONT SIZE=2><P ALIGN="JUSTIFY">Obtain the <B>fn</B> from the current PCB, and retrieve the corresponding OML node. Then, decrement the node's reference count. If it is now 0, perform a </FONT><TT>Kwakeup</TT><FONT SIZE=2> on the address of the node (see below).</P><DIR>
+<DIR>
+<DIR>
+<DIR>
+
+</FONT><B><P ALIGN="JUSTIFY"><A NAME="SECTION00045000000000000000">Load_Module</A></P></DIR>
+</DIR>
+</DIR>
+</DIR>
+
+</B><FONT SIZE=2><P ALIGN="JUSTIFY">The &quot;top&quot; level of this process is initiated by the following new kernel call:</P>
+<pre>
+typedef (*Procptr) ( int, char ** );
+/* Load module into memory and return its start address  */
+Procptr  Load_module( char *pathname );    
+</pre>
+<P ALIGN="JUSTIFY">The argument &quot;pathname&quot; is the name of the file to be loaded, which should be in standard DOS format. The function generates an interrupt to </FONT><TT>System_service()</TT><FONT SIZE=2>, which loads the new module into memory. </FONT><TT>System_service()</TT><FONT SIZE=2> then passes back to </FONT><TT>Load_module()</TT><FONT SIZE=2> a pointer to the module's </FONT><TT>Proc()</TT><FONT SIZE=2> function. This pointer, in turn, is passed up to the caller of </FONT><TT>Load_module()</TT><FONT SIZE=2>.</P>
+<P ALIGN="JUSTIFY">Recall that when a function's return value is a pointer, the segment is passed back in DX, while the offset is passed in the AX register.</P><DIR>
+<DIR>
+<DIR>
+<DIR>
+
+</FONT><B><P ALIGN="JUSTIFY"><A NAME="SECTION00046000000000000000">Loading the Module</A></P></DIR>
+</DIR>
+</DIR>
+</DIR>
+
+</B><FONT SIZE=2><P ALIGN="JUSTIFY">Since loading the module requires about 30 lines of C code, the code should not be within the body of </FONT><TT>System_service()</TT><FONT SIZE=2>. Instead, </FONT><TT>System_service()</TT><FONT SIZE=2> should pass the module's pathname to an auxiliary function, </FONT><TT>Kload_module()</TT><FONT SIZE=2>, which should be local to the kernel:</P>
+</FONT><TT><P ALIGN="JUSTIFY">Kload_module()</TT><FONT SIZE=2> will load the module and update various data structures as needed. It returns the address of </FONT><TT>Proc()</TT><FONT SIZE=2> back to </FONT><TT>System_service</TT><FONT SIZE=2> (which then returns it to the system call, </FONT><TT>Load_module()</TT><FONT SIZE=2>).</P>
+<P ALIGN="JUSTIFY">We provide three new functions to help do the disk IO, which can be found in </FONT><TT>base412.c</TT><FONT SIZE=2>.</P>
+</FONT><FONT SIZE=1><PRE>int Open_exe(char *pathname, long *hsize);<BR>
+    /*  Opens an .exe file with name pathname, puts the _header_ size into */<BR>
+    /*  hsize and returns a file descriptor. Returns -1 on io error (file  */<BR>
+    /*  not found, etc.).  If file is not an exe file, -2 is returned.     */<BR>
+<BR>
+int Read_exe(int fd, unsigned pos, unsigned len, void *buf);<BR>
+    /*  Reads len bytes from .exe file, starting at position pos, into     */<BR>
+    /*  buffer. Returns the number of bytes read. On error, returns -1.    */<BR>
+<BR>
+int Close_exe(int fd);<BR>
+    /*  Closes an open .exe file. On error, returns -1.                    */<BR>
+</PRE>
+</FONT><FONT SIZE=2><P ALIGN="JUSTIFY">Executable files are separated into two <EM>contiguous</EM> parts: the header, followed by the code. Note that </FONT><TT>Open_exe()</TT><FONT SIZE=2> returns the size of the file's header. The header itself contains the actual size of the entire file, including the header.</P>
+<P ALIGN="JUSTIFY">The loading/locating algorithm contains the following steps:</P>
+<OL>
+
+<P ALIGN="JUSTIFY"><LI>Open the </FONT><TT>.exe</TT><FONT SIZE=2> file, allocate a buffer large enough to store its header, and read in the header.</LI></P>
+<P ALIGN="JUSTIFY"><LI>Allocate a buffer sufficiently large to store the code, read it in, and close the file.</LI></P>
+<P ALIGN="JUSTIFY"><LI>Perform address relocation.</LI></P>
+<P ALIGN="JUSTIFY"><LI>Initialize the module.</LI></P></OL>
+<DIR>
+<DIR>
+<DIR>
+<DIR>
+
+</FONT><B><P ALIGN="JUSTIFY"><A NAME="SECTION00046100000000000000">Opening the Exe File</A></P></DIR>
+</DIR>
+</DIR>
+</DIR>
+
+</B><FONT SIZE=2><P ALIGN="JUSTIFY">First compare the requested filename against all of those already in the OML. If a node for it exists, simply return the </FONT><TT>Proc()</TT><FONT SIZE=2> address field from the OML.</P>
+<P ALIGN="JUSTIFY">Otherwise, create a new OML node for the new module, put it on the OML list and initialize its <B>fn</B> field.</P>
+<P ALIGN="JUSTIFY">Then, call </FONT><TT>Safe_malloc()</TT><FONT SIZE=2> to get a buffer for the header. Since all of the header fields are 16 bits wide, it is a good idea to declare the buffer of type </FONT><TT>unsigned *</TT><FONT SIZE=2>. Then, using </FONT><TT>Read_exe()</TT><FONT SIZE=2>, read the header into the buffer.</P>
+<P ALIGN="JUSTIFY">A module's header has the following format (entries marked with </FONT><TT>*</TT><FONT SIZE=2> are used in this project).</P>
+</FONT><PRE>Bytes      Description<BR>
+------     -----------<BR>
+00-01      File type<BR>
+02-03    * Number of bytes in the last block of the file.<BR>
+04-05    * File size in 512-byte blocks, including the header.<BR>
+06-07    * Number of relocation table items.<BR>
+08-09      Header size in 16-byte paragraphs.<BR>
+0A-0B    * Number of 16-byte paragraphs that must follow module in memory.<BR>
+0C-0D      High/Low loader switch.<BR>
+0E-0F      Stack segment.<BR>
+10-11      Stack offset.<BR>
+12-13      Checksum.<BR>
+14-15    * Relative offset of init code (if start of code is at CS=0, IP=0).<BR>
+16-17    * Relative segment of init code (if start of code is at CS=0, IP=0).<BR>
+18-19    * Offset of relocation table with respect to start of header.<BR>
+</PRE><DIR>
+<DIR>
+<DIR>
+<DIR>
+
+<B><P ALIGN="JUSTIFY"><A NAME="SECTION00046200000000000000">Allocate Memory and Read Module</A></P></DIR>
+</DIR>
+</DIR>
+</DIR>
+
+</B><FONT SIZE=2><P ALIGN="JUSTIFY">First, we must calculate the amount of space needed, in bytes. The total is</P>
+</FONT><PRE>        &lt;num of bytes is last block of file&gt;     (1)<BR>
+     + (&lt;num of blocks&gt; - 1) * 512               (2)<BR>
+     +  &lt;num of paragraphs at end&gt; * 16          (3)<BR>
+     +  15                                       (4) <BR>
+     -  &lt;size of header&gt;                         (5) <BR>
+    ----------------------------------------<BR>
+        &lt;number bytes necessary&gt;</PRE>
+<FONT SIZE=2><P ALIGN="JUSTIFY">Lines (1)-(2) are obvious. Line (3) is needed for uninitialized data following the code. Line (4) is due to a technicality: the start address of the code must be on a segment boundary. This means that its 20-bit address must have the lowest 4 bits equal to 0. Thus, regardless of the address returned by </FONT><TT>Safe_malloc()</TT><FONT SIZE=2>, we must have sufficient room to load the code starting on the first segment boundary.</P>
+<P ALIGN="JUSTIFY">If </FONT><TT>Safe_malloc()</TT><FONT SIZE=2> returns a pointer </FONT><TT>p</TT><FONT SIZE=2>, the first segment boundary address is </FONT><TT>startseg:0</TT><FONT SIZE=2>, where</P>
+</FONT><PRE>  /* Make twenty-bit paragraph address, and then get segment part.   */ <BR>
+  startseg =  (((long) FP_SEG(p) &lt;&lt; 4) + FP_OFF(p) + 0x0F) &gt;&gt; 4   </PRE>
+<FONT SIZE=2><P ALIGN="JUSTIFY">Thus, </FONT><TT>startseg:0</TT><FONT SIZE=2> is the start location for the code to be read in via </FONT><TT>Read_exe()</TT><FONT SIZE=2>. After the code is read in, the file should be closed.</P>
+<P ALIGN="JUSTIFY">At this point, the start and end address fields can be filled in the OML node. (Make sure that the start address is </FONT><TT>p</TT><FONT SIZE=2>, and not </FONT><TT>startseg:0</TT><FONT SIZE=2>.)</P><DIR>
+<DIR>
+<DIR>
+<DIR>
+
+</FONT><B><P ALIGN="JUSTIFY"><A NAME="SECTION00046300000000000000">Address Relocation</A></P></DIR>
+</DIR>
+</DIR>
+</DIR>
+
+</B><FONT SIZE=2><P ALIGN="JUSTIFY">Each relocation record is 32 bits wide, and gives the location of <EM>the segment part</EM> of some address in the code. To calculate the true location with respect to the code buffer, extract the offset and segment parts from the relocation record, and calculate the resulting 20-bit address (as shown below). This number gives the offset, with respect to the start of the code, of the address to be patched.</P>
+</FONT><PRE>   unsigned long x, seg, off;<BR>
+<BR>
+   seg = ((unsigned long) FP_SEG (addr)) &lt;&lt; 4;<BR>
+   off = (unsigned long) FP_OFF (addr);<BR>
+   x   = seg + off;<BR>
+</PRE>
+<FONT SIZE=2><P ALIGN="JUSTIFY">For example, assume that the instruction CALL 0012:292F is in the code. Then, there is some relocation record that gives the byte offset, with respect to the start of the code, of the </FONT><TT>0012</TT><FONT SIZE=2> segment part. Since all addresses in the file are relative to </FONT><TT>0000:0000</TT><FONT SIZE=2>, one must change </FONT><TT>0012</TT><FONT SIZE=2> to </FONT><TT>0012 + startseg()</TT><FONT SIZE=2> (recall that the start offset is always 0).</P>
+<P ALIGN="JUSTIFY">To relocate all addresses, first use the <EM>relocation table offset</EM> to find the relocation table. Then, simply relocate every address listed in the table. Make sure to make all variables of type char unsigned. Shifting a signed character produces incorrect code.</P><DIR>
+<DIR>
+<DIR>
+<DIR>
+
+</FONT><B><P ALIGN="JUSTIFY"><A NAME="SECTION00046400000000000000">Initializing the Module</A></P></DIR>
+</DIR>
+</DIR>
+</DIR>
+
+</B><FONT SIZE=2><P ALIGN="JUSTIFY">There is an initialization function in each code module, which must be called to set up the data areas. This function has the added benefit of returning a pointer to </FONT><TT>Proc()</TT><FONT SIZE=2> (in DX and AX), which is exactly what must be returned from </FONT><TT>Kload_module()</TT><FONT SIZE=2> itself.</P>
+<P ALIGN="JUSTIFY">Note that the init function's address is listed in the header (both its relative segment and offset parts). If a (unsigned) character pointer </FONT><TT>codeptr</TT><FONT SIZE=2> points to the start of the code (i.e., </FONT><TT>startseg:0</TT><FONT SIZE=2>), then the initialization function is at</P>
+</FONT><PRE>     Module_init = codeptr + (segment_part &lt;&lt; 4) + offset_part</PRE>
+<FONT SIZE=2><P ALIGN="JUSTIFY">where </FONT><TT>Module_init</TT><FONT SIZE=2> is defined as follows:</P>
+</FONT><PRE>     procptr  (*Module_init)(unsigned int, void (*), void (*));</PRE>
+<FONT SIZE=2><P ALIGN="JUSTIFY">At this point the header buffer can be freed, since it is no longer used. Then the initialization function can be called as follows, and the return value should be put in the </FONT><TT>Proc()</TT><FONT SIZE=2> field of the OML node.</P>
+</FONT><PRE>     result = Module_init(_psp, proc_term, proc_term)</PRE>
+<FONT SIZE=2><P ALIGN="JUSTIFY">Finally, the same result should be returned as the result of </FONT><TT>Kload_module()</TT><FONT SIZE=2>.</P>
+</FONT><TT><P ALIGN="JUSTIFY">_psp</TT><FONT SIZE=2> is the segment of the program segment prefix, a block of memory used by DOS (mainly for file handling). The second argument to </FONT><TT>Module_init</TT><FONT SIZE=2>is the function to use for </FONT><TT>_exit</TT><FONT SIZE=2>; the third is the function to use for abort.</P><DIR>
+<DIR>
+<DIR>
+<DIR>
+
+</FONT><B><P ALIGN="JUSTIFY"><A NAME="SECTION00047000000000000000">Closing the Module</A></P></DIR>
+</DIR>
+</DIR>
+</DIR>
+
+</B><FONT SIZE=2><P ALIGN="JUSTIFY">For our purposes, closing a module consists of freeing up the memory area that the module occupies. This is done by the following kernel call:</P>
+</FONT><PRE>  void Close_module(char *pathname);   /* Close the module. */</PRE>
+<FONT SIZE=2><P ALIGN="JUSTIFY">Again, the function generates an interrupt to </FONT><TT>System_service(), </TT><FONT SIZE=2>which then calls an auxilary function</P>
+</FONT><PRE>  void Kclose_module(char *pathname);</PRE>
+<FONT SIZE=2><P ALIGN="JUSTIFY">First, the OML is searched, looking for a node with the correct filename. If the file is not in resident in memory, simply return.</P>
+<P ALIGN="JUSTIFY">Otherwise, retrieve the proper OML node. If the reference count is 0, the memory can be reclaimed. However, if the count is not 0, it means that some process is still using the module. In this case, call </FONT><TT>Ksleep()</TT><FONT SIZE=2> on the OML node. When </FONT><TT>Proc_term()</TT><FONT SIZE=2> finally decrements the count to 0, a corresponding </FONT><TT>Kwakeup()</TT><FONT SIZE=2> will be called.</P>
+<P ALIGN="JUSTIFY">At that point, make sure that the OML node for that filename still exists, in case another process has closed it first. You can do so using a loop.</P>
+<P ALIGN="JUSTIFY">Reclaim the module's memory by simply calling </FONT><TT>Safe_free()</TT><FONT SIZE=2> on the OML node's start address. Then call the OML node's </FONT><TT>Module_init</TT><FONT SIZE=2> function with 0 for all three parameters to make it clean up. Finally, free up the memory of the OML node itself.</P><DIR>
+<DIR>
+<DIR>
+<DIR>
+
+</FONT><B><P ALIGN="JUSTIFY"><A NAME="SECTION00048000000000000000">The Initial Module</A></P></DIR>
+</DIR>
+</DIR>
+</DIR>
+
+</B><FONT SIZE=2><P ALIGN="JUSTIFY">You should load </FONT><TT>init.mod</TT><FONT SIZE=2> as your first module and </FONT><TT>Proc_start()</TT><FONT SIZE=2> the </FONT><TT>Proc()</TT><FONT SIZE=2> of this module. This module may </FONT><TT>Proc_start()</TT><FONT SIZE=2> other processes within itself or it might load another module and </FONT><TT>Proc_start()</TT><FONT SIZE=2> the </FONT><TT>Proc()</TT><FONT SIZE=2> of that module, etc. So, we can test your code by substituting our </FONT><TT>init.mod</TT><FONT SIZE=2>.</P></FONT></BODY>
+</HTML>

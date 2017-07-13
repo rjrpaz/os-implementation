@@ -1,0 +1,751 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 11 (filtered)">
+<title>CMSC 412 Project #5 </title>
+
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:"MS Mincho";
+	panose-1:2 2 6 9 4 2 5 8 3 4;}
+@font-face
+	{font-family:"\@MS Mincho";
+	panose-1:0 0 0 0 0 0 0 0 0 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	font-family:"Times New Roman";}
+h1
+	{margin-right:0pt;
+	margin-left:0pt;
+	font-size:24.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+h2
+	{margin-right:0pt;
+	margin-left:0pt;
+	font-size:18.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+h3
+	{margin-right:0pt;
+	margin-left:0pt;
+	font-size:13.5pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+h4
+	{margin-right:0pt;
+	margin-left:0pt;
+	font-size:11.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+p
+	{margin-right:0pt;
+	margin-left:0pt;
+	font-size:11.0pt;
+	font-family:"Times New Roman";}
+pre
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Courier New";}
+tt
+	{font-family:"Courier New";}
+@page Section1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 54.0pt 72.0pt 54.0pt;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0pt;}
+ul
+	{margin-bottom:0pt;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US link=blue vlink=purple>
+
+<div class=Section1>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:18.0pt'>CMSC 412 Project #5</span></b><span style='font-size:
+18.0pt'> </span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:13.5pt'>File System (Part 1)</span></b><span style='font-size:
+13.5pt'> </span><span style='font-size:12.0pt'><br>
+<b>Due Friday, May 7, at 6:00pm </b></span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:12.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+style='font-size:12.0pt'>  </span><b><a href="p5_grading.html">Grading Criteria</a></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+style='font-size:12.0pt'>  <b><a href="proj5_section.pdf">Slides used in
+recitation</a> </b></span></p>
+
+<p class=MsoNormal><b><span style='font-size:18.0pt'>New project files</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:24.0pt'>Introduction</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>The purpose of this project
+is to add a new filesystem to GeekOS, as well as the standard operations for
+file management</span></p>
+
+<p class=MsoNormal><b><span style='font-size:24.0pt'>GOSFS - GeekOS FileSystem</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>The main part of this project
+is to develop a new filesystem for the GeekOS. This filesystem will reside on
+the second IDE disk drive in the Bochs emulator. This will allow you to
+continue to use your existing PFAT drive to load user programs while you test
+your filesystem. The second IDE disk's image is called </span><span
+style='font-size:10.0pt;font-family:"Courier New"'>diskd.img</span><span
+style='font-size:12.0pt'>. </span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>GOSFS will provide a
+filesystem that includes multiple directories and long file name support.</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>The <b>Mount</b> system call
+allows you to associate a filesystem with a place in the file name hierarchy. The
+<b>Mount</b> call is implemented as part of the VFS code we supply. You will
+need to modify the init code to call <b>Mount</b> to mount the PFAT file system
+on drive 0 onto </span><span style='font-size:10.0pt;font-family:"Courier New"'>/c</span><span
+style='font-size:12.0pt'>.</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>Then you can mount the GOSFS
+file system on drive 1 onto </span><span style='font-size:10.0pt;font-family:
+"Courier New"'>/d</span><span style='font-size:12.0pt'>, for instance. </span></p>
+
+<p class=MsoNormal><b><span style='font-size:24.0pt'>VFS and file operations</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>Since GEEKOS will have two
+types of filesystems (PFAT and GOSFS), it will have a virtual filesystem layer
+(VFS) to handle sending requests to an appropriate filesystem (see figure
+below). We have provided an implementation of the VFS layer in the file <a
+href="http://www.cs.umd.edu/%7Ehollings/cs412/s04/proj5/vfs.c">vfs.c</a>. The
+VFS layer will call the appropriate GOSFS routines when a file operation refers
+a file in the GOSFS filesystem. </span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:12.0pt'><img border=0 width=217 height=229
+src="project5_files/image001.gif"></span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>The </span><span
+style='font-size:10.0pt;font-family:"Courier New"'>System Call</span><span
+style='font-size:12.0pt'> layer is already implemented i<span style='color:
+black'>n syscall.c an</span>d the PFAT in </span><span style='font-size:10.0pt;
+font-family:"Courier New"'>pfat.c</span><span style='font-size:12.0pt'>. Thus
+the only component you need to take care of is the GOSFS one. </span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>Each user space process will
+have a file descriptor table that keeps track of which files that process can
+currently read and write. Any user process should be able to have up to 10
+files open at once. </span><span style='font-size:10.0pt'><br>
+The file descriptors for a user process are kept in the </span><span
+style='font-size:10.0pt;font-family:"Courier New"'>files[MAX_OPEN_FILES]</span><span
+style='font-size:10.0pt'> array in </span><span style='font-size:10.0pt;
+font-family:"Courier New"'>struct User_Context</span><span style='font-size:
+10.0pt'>. Note that not all the entries in the </span><span style='font-size:
+10.0pt;font-family:"Courier New"'>files</span><span style='font-size:10.0pt'>
+are open files, since usually a process has less than 10 files open at once. If
+the field openFile.fsType == FS_TYPE_NONE that represents a free slot (file
+descriptor not used)</span><span style='font-size:12.0pt'>. But the good news
+is that file descriptor management is already implemented for you (see </span><span
+style='font-size:10.0pt;font-family:"Courier New"'>Open()</span><span
+style='font-size:12.0pt'> function in <a
+href="http://www.cs.umd.edu/%7Ehollings/cs412/s04/proj5/vfs.c">vfs.c</a>). </span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>Your filesystem should
+support fixed length filenames (at most 64 bytes, including a null at the end
+for a file/directory name). A full path to a file will be no more than 1024
+characters. </span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>You should keep track of free
+disk blocks using a bit vector (as described in class). A library called <i>bitset</i>
+is provided (see </span><span style='font-size:10.0pt;font-family:"Courier New"'>bitset.h</span><span
+style='font-size:12.0pt'> and </span><span style='font-size:10.0pt;font-family:
+"Courier New"'>bitset.c</span><span style='font-size:12.0pt'>) that manages a
+set of bits and provides functions to find bits that are 0 (i.e. correspond to
+free disk blocks). </span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>All disk allocations will be
+in units of 4KB (i.e. 8 physical disk blocks). Thus one bit in a bitset
+corresponds to a 4KB block. A bitset that is 8192 bits (1024 bytes) large will
+obviously keep track of 8192 * 4KB = 32 MB of data. </span></p>
+
+<p class=MsoNormal><b><span style='font-size:24.0pt'>Directory Structure</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>See the recitation slides for
+details on directory structure. Each directory in GOSFS takes up a single disk
+block. The structure of the directory is defined in gosfs.h. A directory is an
+array of </span><span style='font-size:10.0pt;font-family:"Courier New"'>GOSFSfileNode</span><span
+style='font-size:12.0pt'>s (36 elements, since they have to fit in a single 4KB
+block). Each filenode can represent either a file in the directory or a
+subdirectory.</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>The filenode for a directory
+is distinguished by the </span><span style='font-size:10.0pt;font-family:"Courier New"'>isDirectory</span><span
+style='font-size:12.0pt'> bit. The location of the block that holds the data
+for the directory will be stored in the first entry in the </span><span
+style='font-size:10.0pt;font-family:"Courier New"'>blocks</span><span
+style='font-size:12.0pt'> array of the directory's filenode (hence entries </span><span
+style='font-size:10.0pt;font-family:"Courier New"'>blocks[1]..blocks[7]</span><span
+style='font-size:12.0pt'> are unused). </span></p>
+
+<p class=MsoNormal><b><span style='font-size:24.0pt'>Files</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>Unlike directories, that have
+a fixed size of one blocks (irrespective of how many files the hold), files can
+take up an arbitrary number of disk blocks. You will use a version of indexed
+allocation to represent the data blocks of your filesystem. The </span><span
+style='font-size:10.0pt;font-family:"Courier New"'>blocks</span><span
+style='font-size:12.0pt'> field (GOSFSfileNode, <a
+href="http://www.cs.umd.edu/%7Ehollings/cs412/s04/proj5/gosfs.h">gosfs.h</a>)
+keeps track of data blocks for a file. The first eight 4KB-blocks are direct
+blocks, the ninth points to a single indirect block, the tenth to a double
+indirect block. See the recitation slides for a detailed layout. </span></p>
+
+<p class=MsoNormal><b><span style='font-size:24.0pt'>New System Calls</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>You have to implement the
+sematics of the new system calls as described below. As you see, the semantics
+is very similar to the UNIX one.</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol;color:black'>·</span><span
+style='font-size:12.0pt;color:black'>  All user-supplied pointers (e.g.
+strings, buffers) must be checked for validity. The checking functions are
+automatically called in <a
+href="http://www.cs.umd.edu/%7Ehollings/cs412/s04/proj5/vfs.c"><span
+style='color:black'>vfs.c</span></a> but you need still to implement </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>Validate_User_Memory().</span><span
+style='font-size:12.0pt;color:black'> </span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol;color:black'>·</span><span
+style='font-size:12.0pt;color:black'>  The new syscalls in <a
+href="http://www.cs.umd.edu/%7Ehollings/cs412/s04/proj5/syscall.c.add"><span
+style='color:black'>syscall.c.add</span></a> assume you use paging (and add
+0x80000000 to user pointers to convert them to kernel ones). If your paging
+doesn't work then use your Project 3 as a base, instead of Project 4. You'll
+still get full credit, but you need to replace (+ 0x8000 0000) with (+
+User_Context-&gt;program) or whatever mechanism you used in P3 to convert user
+pointers to kernel pointers. </span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+style='font-size:12.0pt'>  Although the <b>Mount</b> call is implemented as
+part of the VFS code we supply, you 'll still have to add code to the Mount()
+function <span style='color:black'>in <a
+href="http://www.cs.umd.edu/%7Ehollings/cs412/s04/proj5/vfs.c"><span
+style='color:black'>vfs.c</span></a> to chec</span>k the magic number prior to
+mounting a GOSFS disk. </span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>&nbsp;</span></p>
+
+<table class=MsoNormalTable border=1 cellpadding=0 width="108%"
+ style='width:108.16%'>
+ <tr>
+  <td width="27%" style='width:27.88%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><b><span style='font-size:12.0pt'>System Call</span></b></p>
+  <p class=MsoNormal><b><span style='font-size:12.0pt'>User Function</span></b></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><b><span style='font-size:12.0pt'>Return on success</span></b></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><b><span style='font-size:12.0pt'>Return on failure</span></b></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><b><span style='font-size:12.0pt'>Reasons for failure</span></b></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><b><span style='font-size:12.0pt'>Comment</span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width="27%" style='width:27.88%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>SYS_MOUNT</span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt'>&nbsp;</span></p>
+  <p class=MsoNormal>Mount(char *dev, char *prefix, char *fstype)</p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal>0</p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal>-1</p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  a filesystem already mounted under </span><span
+  style='font-size:10.0pt;font-family:"Courier New"'>name</span><span
+  style='font-size:12.0pt'> </span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  illegal value for one of the parameters</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal>Your Mount function should not &quot;validate&quot; the
+  filesystem settings except for magic and version fields, and that block size
+  is support-able (a multiple of 512, or 512/1024/4096 at least). Other items,
+  e.g., the number and start location of inodes and the total number of blocks,
+  can be arbitrary.</p>
+  </td>
+ </tr>
+ <tr>
+  <td width="27%" style='width:27.88%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>SYS_OPEN</span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt'>&nbsp;</span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt'>Open(char *name, int
+  permissions)</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>new file descriptor number</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>-1</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>name</span><span style='font-size:12.0pt'> does not exist (if </span><span
+  style='font-size:10.0pt;font-family:"Courier New"'>permissions</span><span
+  style='font-size:12.0pt'> don't include </span><span style='font-size:10.0pt;
+  font-family:"Courier New"'>O_CREATE </span><span style='font-size:12.0pt'>) </span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>path to name</span><span style='font-size:12.0pt'> does not
+  exist (if </span><span style='font-size:10.0pt;font-family:"Courier New"'>permissions</span><span
+  style='font-size:12.0pt'> include </span><span style='font-size:10.0pt;
+  font-family:"Courier New"'>O_CREATE </span><span style='font-size:12.0pt'>) </span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>O_WRITE and O_CREATE</span><span style='font-size:12.0pt'> not
+  allowed for directories, use </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>CreateDirectory</span><span style='font-size:12.0pt'> instead</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  there's no <i>create</i> syscall, so setting
+  O_CREATE will create the file. If the file exists, the call succeeds (return
+  &gt;= 0) but its data contents is not affected. </span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  Should NOT create directories recursively if
+  needed, e.g. </span><span style='font-size:10.0pt;font-family:"Courier New"'>Open(&quot;/d/d1/d2/d3/xFile&quot;,
+  O_CREATE)</span><span style='font-size:12.0pt'>, will NOT create d1 inside of
+  d, d2 inside of d1, etc. if they don't exist already. If the leading path
+  /d/d1/d2/d3 does not exist, the syscall fails, returning -1 </span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  The permissions values are flags and may be or'ed
+  together in a call. For example: </span></p>
+  <ul type=disc>
+   <li class=MsoNormal><span style='font-size:12.0pt'>O_CREATE|O_READ </span></li>
+   <li class=MsoNormal><span style='font-size:12.0pt'>O_READ|O_WRITE </span></li>
+   <li class=MsoNormal><span style='font-size:12.0pt'>O_CREATE|O_READ|O_WRITE </span></li>
+  </ul>
+  </td>
+ </tr>
+ <tr>
+  <td width="27%" style='width:27.88%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>SYS_CLOSE</span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt'>Close(int fd)</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>0</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>-1</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>fd</span><span style='font-size:12.0pt'> not within 0-9 </span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>fd</span><span style='font-size:12.0pt'> is not an open file </span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>&nbsp;</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width="27%" style='width:27.88%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>SYS_DELETE</span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt'>Delete(char *name)</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>0</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>-1</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>name</span><span style='font-size:12.0pt'> does not exist </span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>name</span><span style='font-size:12.0pt'> is a non-empty
+  directory </span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>if </span><span
+  style='font-size:10.0pt;font-family:"Courier New"'>Delete(file)</span><span
+  style='font-size:12.0pt'> is called and </span><span style='font-size:10.0pt;
+  font-family:"Courier New"'>file</span><span style='font-size:12.0pt'> is
+  still open in other threads or even in the thread that called </span><span
+  style='font-size:10.0pt;font-family:"Courier New"'>Delete()</span><span
+  style='font-size:12.0pt'>, all the subsequent operations on that file (except
+  Close()) should fail</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width="27%" style='width:27.88%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>SYS_READ</span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt'>Read(int fd, char *buffer,
+  int length)</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>number of bytes read</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>-1</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>fd</span><span style='font-size:12.0pt'> not within 0-9 </span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>fd</span><span style='font-size:12.0pt'> is not an open file </span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>fd</span><span style='font-size:12.0pt'> was not open with
+  O_READ flag </span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  it's OK if </span><span style='font-size:10.0pt;
+  font-family:"Courier New"'>return value &lt; length</span><span
+  style='font-size:12.0pt'>, for instance reading close to end of file </span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  increase the </span><span style='font-size:10.0pt;
+  font-family:"Courier New"'>filePos</span><span style='font-size:12.0pt'>, if
+  successful</span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt'>There is special behavior
+  when SYS_READ is called on a directory: </span></p>
+  <ul type=disc>
+   <li class=MsoNormal><span style='font-size:12.0pt'>The data put into the
+       buffer should be formatted as an array of dirEntry structs. </span></li>
+   <li class=MsoNormal><span style='font-size:12.0pt'>The length argument specifies
+       the number of dirEntries to return </span></li>
+   <li class=MsoNormal><span style='font-size:12.0pt'>The return value equals
+       the number of dirEntries read </span></li>
+  </ul>
+  <p class=MsoNormal style='margin-left:36.0pt'><span style='font-size:10.0pt;
+  font-family:"Courier New"'>dirEntry</span><span style='font-size:12.0pt'> is
+  defined in <a
+  href="http://www.cs.umd.edu/%7Ehollings/cs412/s04/proj5/fileio.h">fileio.h</a>
+  </span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width="27%" style='width:27.88%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>SYS_WRITE</span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt'>Write(int fd, char *buffer,
+  int length)</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>number of bytes written</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>-1</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>fd</span><span style='font-size:12.0pt'> not within 0-9 </span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>fd</span><span style='font-size:12.0pt'> is not an open file </span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>fd</span><span style='font-size:12.0pt'> was not open with
+  O_WRITE flag </span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>fd</span><span style='font-size:12.0pt'> is a directory </span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  increases </span><span style='font-size:10.0pt;
+  font-family:"Courier New"'>filePos</span><span style='font-size:12.0pt'> is
+  successful </span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  &quot;Grow on write&quot;- allocate blocks
+  &quot;on the fly&quot; if past end of file</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width="27%" style='width:27.88%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>SYS_STAT</span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt'>Stat(int fd, fileStat
+  *stat)</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>0</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>-1</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>fd</span><span style='font-size:12.0pt'> not within 0-9 </span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>fd</span><span style='font-size:12.0pt'> is not an open file </span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>&nbsp;</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width="27%" style='width:27.88%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>SYS_SEEK</span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt'>Seek(int fd, int offset)</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>0</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>-1</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>fd</span><span style='font-size:12.0pt'> not within 0-9 </span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>fd</span><span style='font-size:12.0pt'> is not an open file </span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>offset &gt; fileSize </span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New"'>offset</span><span
+  style='font-size:12.0pt'> is an absolute position; could be equal to </span><span
+  style='font-size:10.0pt;font-family:"Courier New"'>fileSize</span><span
+  style='font-size:12.0pt'>, then </span><span style='font-size:10.0pt;
+  font-family:"Courier New"'>Write</span><span style='font-size:12.0pt'>
+  appends, see above</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width="27%" style='width:27.88%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>SYS_CREATEDIR</span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt'>CreateDirectory(char *name)</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>0</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>-1</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>name</span><span style='font-size:12.0pt'> already exists, as
+  file or directory </span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  regular file encountered on the path to </span><span
+  style='font-size:10.0pt;font-family:"Courier New"'>name</span><span
+  style='font-size:12.0pt'> </span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>Should create directories
+  recursively if needed, e.g. </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>CreateDirectory(&quot;/d/d1/d2/d3/d4&quot;)</span><span
+  style='font-size:12.0pt'>, will create d1 inside of d, d2 inside of d1, etc.
+  if they don't exist already.<span style='color:maroon'> This operation should
+  be atomic, in the sense that either the whole directory chain is created or
+  no directory is created.</span></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width="27%" style='width:27.88%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>SYS_FORMAT</span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt'>Format(int drive)</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>0</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>-1</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  illegal value for </span><span style='font-size:
+  10.0pt;font-family:"Courier New"'>drive</span><span style='font-size:12.0pt'>
+  (it must work with 1, higher is optional) </span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>drive</span><span style='font-size:12.0pt'> is in use, i.e.
+  mounted </span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>formats a drive with GOSFS;
+  don't need to support formatting with PFAT ; don't need to format in init
+  code; so you can save your data between sessions</span></p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal><b><span style='font-size:24.0pt'>Disk Layout</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'><img border=0 width=720
+height=316 src="project5_files/image002.gif" alt="disk layout"></span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>A guideline is provided
+above. First block (0) is called SUPERBLOCK, and contains filesystem
+housekeeping data. Blocks &gt;= 1 contain files and directories. </span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+style='font-size:12.0pt'>  <a name=magic>The </a></span><span style='font-size:
+10.0pt;font-family:"Courier New"'>Magic</span><span style='font-size:12.0pt'>
+number at the very beginning should be <i>0xDEADBEEF</i>. This tells you that
+the disk has a GOSFS filesystem on it. If you try to mount a drive and you
+don't find the magic signature, return error. </span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+"Courier New"'>Root Dir Pointer</span><span style='font-size:12.0pt'> holds the
+block number of the block containing the root directory. </span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+"Courier New"'>Size</span><span style='font-size:12.0pt'> is the size of the
+disk, in 4KB blocks. (32M / 4K = 8K for the example above) </span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+"Courier New"'>Free Blocks Bitmap</span><span style='font-size:12.0pt'> is : </span><span
+style='font-size:10.0pt;font-family:"Courier New"'>Size</span><span
+style='font-size:12.0pt'> bits large, that is </span><span style='font-size:
+10.0pt;font-family:"Courier New"'>Size/8</span><span style='font-size:12.0pt'>
+bytes large. ( 8K / 8 = 1K for the example above). Every block has an
+associated bit. </span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>When you do a </span><span
+style='font-size:10.0pt;font-family:"Courier New"'>Format()</span><span
+style='font-size:12.0pt'> , you make a raw disk usable with GOSFS. That is: </span></p>
+
+<ol start=1 type=1>
+ <li class=MsoNormal><span style='font-size:12.0pt'>Get drive's size, convert
+     it in # of blocks. </span><span style='font-size:10.0pt;font-family:"Courier New"'>IDE_getNumBlocks()</span><span
+     style='font-size:12.0pt'> in </span><span style='font-size:10.0pt;
+     font-family:"Courier New"'>ide.c</span><span style='font-size:12.0pt'>
+     tells you that. </span></li>
+ <li class=MsoNormal><span style='font-size:12.0pt'>Figure out </span><span
+     style='font-size:10.0pt;font-family:"Courier New"'>Free Blocks Bitmap</span><span
+     style='font-size:12.0pt'> size, mark them all free. </span></li>
+ <li class=MsoNormal><span style='font-size:12.0pt'>Create a valid, but empty
+     directory. That will be the root directory. Make </span><span
+     style='font-size:10.0pt;font-family:"Courier New"'>Root Dir Pointer</span><span
+     style='font-size:12.0pt'> point to it. </span></li>
+ <li class=MsoNormal><span style='font-size:12.0pt'>Mark superblock and block
+     for root directory as used in the </span><span style='font-size:10.0pt;
+     font-family:"Courier New"'>Free Blocks Bitmap</span><span
+     style='font-size:12.0pt'> </span></li>
+ <li class=MsoNormal><span style='font-size:12.0pt'>If everything went OK,
+     write the </span><span style='font-size:10.0pt;font-family:"Courier New"'>Magic</span><span
+     style='font-size:12.0pt'>. Now the disk is ready to be mounted and used. </span></li>
+</ol>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>Keep in mind that the superblock
+and root directory have no associated </span><span style='font-size:10.0pt;
+font-family:"Courier New"'>GOSFSfileNode</span><span style='font-size:12.0pt'>.
+</span><a name=howto></a></p>
+
+<p class=MsoNormal><b><span style='font-size:24.0pt'>Notes</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>You do not need to consider
+situations where two processes have the same file open. You do not need to
+consider situations where one process opens the same file twice without closing
+it in between.</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>All changes should be
+committed to disk before the system returns from the syscall that made the
+changes. If you cache any structures while processing a call, you should write
+any changes to them to disk before returning from the syscall.</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>If a read() is called on a
+directory, the data returned should be in the form of an array of dirEntry
+structures. The length argument and the return value will indicate the number
+of entries to read and the number of entries that were read, rather than the
+number of bytes. </span></p>
+
+<p class=MsoNormal><b><span style='font-size:24.0pt'>Requirements</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+style='font-size:12.0pt'>  Make sure your </span><span style='font-size:10.0pt;
+font-family:"Courier New"'>Mount()</span><span style='font-size:12.0pt'> works
+well, so that we can test your project. If we cannot </span><span
+style='font-size:10.0pt;font-family:"Courier New"'>Mount()</span><span
+style='font-size:12.0pt'> a GOSFS, we cannot grade your project. </span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+style='font-size:12.0pt'>  You might also want to mount &quot;/d&quot; (dee)
+automatically in </span><span style='font-size:10.0pt;font-family:"Courier New"'>Main</span><span
+style='font-size:10.0pt;font-family:"Courier New"'>()</span><span
+style='font-size:12.0pt'> to speed up your testing, but the code you submit
+should not mount &quot;/d&quot; automatically. &quot;/c&quot; (cee) should be
+mounted automatically in </span><span style='font-size:10.0pt;font-family:"Courier New"'>Main</span><span
+style='font-size:10.0pt;font-family:"Courier New"'>()</span><span
+style='font-size:12.0pt'> though. </span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+style='font-size:12.0pt'>  You should support disk sizes of <b>at least</b> 32
+MB. More than 32 MB is optional. Following the procedure described in the
+&quot;How to create an arbitrary size big </span><span style='font-size:10.0pt;
+font-family:"Courier New"'>diskd.img</span><span style='font-size:12.0pt'>&quot;
+section above, in your submitted project, when someone types </span><span
+style='font-size:10.0pt;font-family:"Courier New"'>gmake</span><span
+style='font-size:12.0pt'>, a 32 MB file should be created. </span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+style='font-size:12.0pt'>  You should support file sizes of <b>at least</b> 5
+MB (double indirect threshold crossed, yes). More than 5 MB is optional. </span></p>
+
+<p class=MsoNormal><b><span style='font-size:24.0pt'>Testing</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>As you saw at the top, in </span><span
+style='font-size:10.0pt;font-family:"Courier New"'>src/user</span><span
+style='font-size:12.0pt'> there are some programs that can be used to test your
+file management syscalls: </span><span style='font-size:12.0pt'>cp,c, ls.c,
+mkdir.c, mount.c, p5test.c.</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>&nbsp;</span></p>
+
+</div>
+
+</body>
+
+</html>

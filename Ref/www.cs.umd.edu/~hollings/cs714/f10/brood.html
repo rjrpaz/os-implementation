@@ -1,0 +1,91 @@
+<html>
+<head><title>Instructions for setting up the Bug cluster</title></head>
+
+<body>
+<h1>Instructions for setting up the Bug cluster (CMSC 714)</h1>
+<p>
+This document describes how to set up for the Bug cluster. If you need more information, look at <a href="https://wiki.umiacs.umd.edu/umiacs/index.php/ClusterGuide">the UMIACS cluster guide</a> and <a href="https://wiki.umiacs.umd.edu/umiacs/index.php/BugCluster">the Bug cluster guide</a> first.
+</p>
+
+<ol>
+
+<li><b>Logging in:</b> Direct access to the cluster is limited to two submit nodes: <tt>brood00.umiacs.umd.edu</tt> and <tt>brood01.umiacs.umd.edu</tt>. Access to these is restricted to CS department/UMIACS machines only. If you are working at home, you should first use ssh to login to a department server (e.g., <a href="http://www.cs.umd.edu/faq/guides/manual_unix/node44.html">Linux</a> or <a href="http://www.cs.umd.edu/faq/guides/manual_unix/node45.html">Solaris</a>) using your department account. Refer to the <a href="http://www.cs.umd.edu/faq/guides/manual_unix/node45.html">department guide</a> for details. Once you're logged in, then connect to the cluster with your class account (<tt>cs714xx</tt>).</li><br>
+
+<li><b>Generate SSH keys (first login only):</b> All the cluster nodes need to be able to talk to each other from your account without using passwords, so you need to set up SSH keys the first time you log in. You can do it like so:
+
+<pre>
+$ ssh -l username brood00.umiacs.umd.edu
+$ cd $HOME
+$ ssh-keygen -t rsa1 -N "" -f $HOME/.ssh/identity
+$ ssh-keygen -t rsa  -N "" -f $HOME/.ssh/id_rsa
+$ ssh-keygen -t dsa  -N "" -f $HOME/.ssh/id_dsa
+$ cd .ssh
+$ touch authorized_keys authorized_keys2
+$ cat identity.pub >> authorized_keys
+$ cat id_rsa.pub id_dsa.pub >> authorized_keys2
+$ chmod 640 authorized_keys authorized_keys2
+</pre>
+</li><br>
+
+<li><b>Setting up your environment (first login only):</b>
+This class will be using a non-default version of LAM (v7.1.4). To do this you need to add some directories to the beginning of your search path. Add the following lines to your <tt>.tcshrc</tt> (create this file in your home directory is it doesn't exist):
+
+<pre>
+setenv PATH "/usr/local/stow/lam-7.1.4-gm/bin:${PATH}"
+setenv LD_LIBRARY_PATH "/usr/local/stow/lam-7.1.4-gm/lib:${HOME}"
+</pre>
+
+We are adding your home directory to your library path because we need to create a link that renames a library file. From your home directory, run:
+
+<pre>
+$ ln -s /opt/UMtorque/lib/libtorque.so.2.0.0 libtorque.so.0
+</pre>
+
+You should see a file named <tt>libtorque.so.0</tt> in your home directory. Log out and log back in. Make sure your shell is now finding the correct binaries; if the output of the <tt>which</tt> command isn't the same as below, you've done something in this step wrong.
+
+<pre>
+$ which mpicc
+/usr/local/stow/lam-7.1.4-gm/bin/mpicc
+</pre>
+</li><br>
+
+<li><b>Compiling programs:</b> For MPI programs, you compile with mpicc, which works much like <tt>cc</tt> or <tt>gcc</tt>:
+<pre>
+$ mpicc -o foo foo.c
+</pre>
+compiles <tt>foo.c</tt> into an executable called <tt>foo</tt>.</li><br>
+
+
+<li><b>Running programs:</b>
+To run programs, you'll generally want to use a submit script (although you can run in interactive mode as described <a href="https://wiki.umiacs.umd.edu/umiacs/index.php/ClusterGuide#Requesting_interactive_usage">here</a>). A submit script will look something like the following:
+
+<pre>
+#!/bin/tcsh
+#PBS -l walltime=00:02:00
+#PBS -l nodes=4
+cd ~/&lt;YOUR EXECUTABLE DIRECTORY&gt;
+mpiexec -machinefile ${PBS_NODEFILE} -ssi rpi gm C &lt;YOUR EXECUTABLE AND PARAMETERS&gt;
+</pre>
+
+The second and third line are directives to the batch system specifying that your program will require 2 minutes of wall-time on each of 4 nodes. To run this job on the cluster, type:
+
+<pre>
+$ qsub foo.sh
+NNNNN.queen.umiacs.umd.edu
+</pre>
+
+The <tt>NNNNN</tt> that get returned is your job number. You can check the status of all your running jobs with the <tt>qstat</tt> command, and you can delete a job with <tt>qdel NNNNN</tt>. The standard output and standard error streams of your job are redirected to files named <tt>foo.sh.oNNNNN</tt> and <tt>foo.sh.eNNNNN</tt>, respectively. There will be a couple extra lines in the former file which read:
+
+<pre>
+Warning: no access to tty (Bad file descriptor).
+Thus no job control in this shell.
+</pre>
+
+This will always show up at the beginning of the output file; it's just part of the way the system runs. On a normal execution the error file will be empty.
+</li><br>
+
+</ol>
+
+</body>
+
+</html>

@@ -1,0 +1,223 @@
+<HTML>
+
+<HEAD>
+
+<TITLE>412--Locks</TITLE>
+
+</HEAD>
+
+<BODY>
+
+<H1>Locks and Condition Variables</H1>
+
+<h2>
+Problem
+</h2>
+   In the Nachos operating system project, semaphores were provided
+as "objects".   Semaphores were initialized with constructors.
+An initial value of the semaphore was given, and a pointer to this
+object returned. The semaphore class had two member functions, namely,
+<tt>P()</tt> and <TT>V()</TT>, and were atomic function calls.
+An early project requires implemeting locks and condition variables
+using the Semaphore class.
+<P>
+   Locks and condition variables are an attempt to implement monitors
+in languages that do not have them.   Normally, monitors are part
+of the language definition and there needs to be syntax to allow
+programmers to declare a monitor.   The main reason that it has to
+be part of a language is that normal languages can not enforce the
+mutual exclusiveness of monitor procedure calls. However, you can attempt
+to get similar behavior by using semaphores.
+<P>
+    One way to approximate a monitor is to create a lock class and
+a condition variable class.   Recall that condition variables are
+only allowed to be declared in monitor procedures, and that 
+two operations were allowed on condition variables, namely, 
+<i>wait</i> and <i>signal</i>.
+<P> 
+   Unlike semaphores, there is no semaphore variable.   Hence,
+waiting automatically causes the process to go to sleep and
+signalling attempts to wake one process up.   If there aren't
+any sleeping processes, then the signal operation is basically 
+a no-op.   No values are incremented and decremented in condition
+variables as they are in semaphores.
+<P>
+   It is difficult to implement Hoare-style monitors
+because signalling a process requires the waking process to be 
+placed immediately on the run queue, and the signalling process
+is put immediate to sleep on some sort of priority stack
+(similar to a blocked queue).   Because of this difficulty, we will 
+use Mesa-style monitors where signalled processes are merely placed
+on the ready queue.   This means that the signalled process
+usually needs to check if the condition it was waiting for
+still holds when it wakes up (hence, it usually checks for
+a Boolean condition in while loop).  If the condition is not
+true, then it goes back to sleep.
+<h2>
+Solution
+</h2>
+    The solution will be rather lengthy.   I will talk about
+how to implement a lock.   A lock is basically a mutex semaphore.
+Any process attempting to use a condition variable needs to acquire
+the associated lock.   The lock is the part of the monitor-like
+implementation that provides mutual exclusiveness.
+<P>
+   The following is code for locks written in a C++ like style.
+<PRE>
+   Lock::Lock()   // Constructor
+   {
+      value = 1;
+      numSleepers = 0; // Number of process blocked on this semaphore
+      processID = -1; // No process holds this lock
+      mutex = new Semaphore( 1 );  // Initialize semaphore to 1.
+      sleep = new Semaphore( 0 );  // Initialize semaphore to 0.
+   }
+   Lock::Acquire()  // Acquire a lock
+   {
+      while ( 1 )
+      {
+         mutex->P();
+         if ( value <= 0 )
+         {
+            numSleepers++;
+            mutex->V();
+            sleep->P();
+         }
+         else 
+         {
+            value--;
+            processID = process->getPID(); // Record PID of process
+            mutex->V();
+            break;  // exit while loop
+         }
+       }
+   }
+   Lock::Release()  // Release a lock
+   {
+      mutex->P();
+      value++;
+      if ( value > numSleepers ) exit();  // abort if release not used properly
+      numSleepers--;
+      sleep->V();  // Wake up one sleeper
+      mutex->V();
+   }
+</PRE>
+<P>
+   The next code implements the condition variable class (called
+<TT>CV</TT>).   The main trick here is that once a process goes
+to sleep on wait, it needs to release the lock which allows other
+processes trying to access the monitor procedures to go through.
+<PRE>
+    CV::CV( Lock *lock1 ) // Constructor
+    {
+       lock = lock1;  // The associated lock with this condition variable
+       numSleepers = 0;  // number of sleepers on this CV.
+       CV_sleep = new Semaphore( 0 );
+       mutex = new Semaphore( 1 );
+    }
+
+    CV::Wait()
+    {
+       mutex->P();
+// quit if process does not have lock
+       if ( lock->processID != process->GetPID() ) exit(); 
+
+       numSleepers++;  
+       lock->Release(); // Release lock associated with this CV.
+       mutex->V();
+       CV_sleep->P();  // Sleep
+       lock->Acquire(); // When woken up, reacquire lock
+    }
+
+    CV::Signal()
+    {
+       mutex->P();
+// quit if process does not have lock
+       if ( lock->processID != process->GetPID() ) exit(); 
+
+       if( numSleepers > 0 )
+         {
+            CV_sleep->V();  // Wake single process up
+            numSleepers--;
+          }
+       mutex->V();
+    }
+</PRE>
+<P>
+   The following is code that would typical for using
+a lock.
+<PRE>
+    monitorLock->Acquire();
+    ....
+    while ( bufferNum < 0 ) // check for condition in while loop
+      bufferNotEmpty->Wait();
+
+    // consume
+    bufferNotFull->Signal();
+    monitorLock->Release();
+</PRE>
+<P>
+    Hence, the condition variables, <tt>bufferNotEmpty</tt> and
+<tt>bufferNotFull</tt>, are associated with lock, <tt>monitorLock</tt>.
+The member variable, <tt>numSleepers</tt>, is needed to make sure
+that if no one is sleeping on a particular variable, then the signal
+should do nothing.   The semaphores are used to make the acquiring
+and releasing of a lock, and the signalling and waiting atomic.
+<P>
+  Note that when a process wakes up, it needs to reacquire the
+lock.  The reason is that it will be woken up in the middle of
+critical section code, and should have the lock before proceeding.
+Also, when it goes to sleep, it must release the associated lock
+so that other processes can access monitor functions.
+<P>
+   Another interesting feature is the while loop in the sample
+code.   In Hoare-style monitors, a process that is signalled
+is immediately woken up and placed in the <I>run</I> queue.
+The process that called signal goes immediately to sleep.
+Since the woken process starts right away, it can be guaranteed
+that the condition it went to sleep on is true (presuming the
+signalling process did signal when that condition was true, not
+for some bogus reason).   Hence, if we had Hoare-style locks
+and condition variables, we could use an <I>if</I> statement
+rather than a <I>while</I> (though a while shouldn't cause
+problems either.
+<P>
+   However, since semaphores can't cause processes to be
+placed in the run queue, then the best we can do is to allow
+the signalling process to complete the monitor function, and
+place the signalled process on the ready queue.   However,
+a given process may have signalled two processes.   The first
+process to run is guaranteed to have the condition satisfied 
+as long as the signalling process properly signalled, and made
+sure the condition held upon exiting the monitor procedure.
+<P>
+   The first process may, however, alter the value of some
+variables or data structures, and thus invalidate a condition
+that was once originally true.  Thus, the second process, when
+run, may not find the condition true that it thought was true.
+By checking for the condition in a <I>while</I> statement, the
+second process double-checks if a condition held true, and if
+so, proceeds, and if not, it goes back to sleep.
+<P>
+   I added a safety condition to using condition variables.
+A process should not be allowed to call <tt>wait</tt> and
+<tt>signal</tt> if it does not currently own the lock.  Hence,
+I basically record the PID of the process that grabs the lock
+and this is double-checked when a process tries to use
+condition variables.   This is one of the things needed to
+prevent a process from abusing how locks and condition
+variables are used.
+<P>
+   The final observation is more about semaphores than locks
+and condition variables.   Note that if you use a mutex
+semaphore, and you want the process to sleep on a different
+semaphore, you need to release the mutex first, and then
+sleep.  Otherwise, a process will be holding the mutex "token",
+then sleeping on a second semaphore.   Other processes wanting
+to use the mutex semaphore can not because the sleeping process
+is still holding on the token.   And, if the process that is
+supposed to wake the sleeping process needs the mutex (which
+it typically will) then no process will wake up this sleeping
+process, and worse still, processes may deadlock as they attempt
+to grab the mutex, and find they can not.
+</HTML>

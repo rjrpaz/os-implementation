@@ -1,0 +1,109 @@
+
+			 Lecture Notes (Sept.9,`97) 
+				- CMSC 417 -
+			       Kyung Dong Ryu 
+
+		Overview of socket interface & project #1
+		=========================================
+
+1. What's the difference bet'n TCP and UDP.
+	. connection-oriented
+		- first, connection is established bet'n two ends.
+		- then, they communicate each other thru the connection.
+	. connectionless (datagram)
+		- whenever, one sends message to the other, dest. address
+		is included. (no connection).
+		- packet could be lost or delivered out of order.
+
+2. Socket system calls for connection-oriented protocol (TCP)
+	- server		- client
+	. socket()		socket()
+	. bind()
+	. listen()
+	. accept()
+		  <------------	connect()
+	. read()  <------------	write()
+	. (process req)
+	. write()  ----------->	read()
+
+3. Socket system calls for connectionless protocol (UDP)
+	- server		- client
+	. socket()		socket()
+	. bind()		bind()
+	. recvfrom() <---------	sendto()
+	. (process req)
+	. sendto()   ---------> recvfrom()
+
+4. Elementary Socket System Calls
+	. int socket(int family, int type, int protocol);
+		- open a socket, specifying the type of protocol desired
+
+	. int bind(int sockfd, struct sockaddr *myaddr, int addlen);
+		- assignes a name (local address) to a socket
+
+	. int connect(int sockfd, struct sockaddr *servaddr, int addrlen);
+		- a client establish a connection with a server
+
+	. int listen(int sockfd, int backlog);
+		- indicate it is willing to receive connections
+
+	. int accept(int sockfd, struct sockaddr *peer, int *addrlen);
+		- wait and accept the connection request (blocking)
+
+	. int send(int sockfd, char *buff, int nbytes, int flags);
+		- send message to the other end of connection (TCP)
+
+	. int sendto(int sockfd, char *buff, int nbytes, int flags,
+		     struct sockaddr *to, int addrlen);
+		- send message to the specified receiver (UDP)
+
+	. int recv(int sockfd, char *buff, int nbytes, int flags);
+		- receive message from the other end of connection (TCP)
+
+	. int recvfrom(int sockfd, char *buff, int nbytes, int flags,
+		     struct sockaddr *from, int addrlen);
+		- recevie message from any sender (UDP)
+
+	. int read(int fdesc, char *buff, int nbytes);
+		- read(receive) the message
+
+	. int write(int fd, char* buff, int nbytes);
+		- write(send) the message
+
+	. htons(), htonl(), ntohs(), ntohl().
+		- translate host byte ordering to network byte ordering
+		  or vice versa.
+
+5. Other System Calls for Request Processing
+	. struct hostent *gethostbyname(char *name);
+		- get host addr info using string host name.
+		- may contains more than one inet address.
+		- only h_addr field will be used for the project.
+
+	. char *inet_ntoa(struct in_addr in);
+		- turn in_addr type address into string.
+
+	. int stat(char *path, struct stat *buf);
+		- get all info for the specified file.
+		- only st_size field will be used for the project.
+
+	. netstat 
+		- unix command - /usr/sbin/netstat in CSC class alpha cluster
+		- netstat -f inet (limits reports to the inet address family)
+
+6. Requirements
+	. names of the executables should be server and client.
+	. show everything your program can do in your transcript.
+	. how to submit.
+		1) tar all the source files, transcript and Makefile.
+			> tar cvf prog1.tar *.*
+			  (pls, don't include binary or object files)
+		2) submit it using submit program
+			> ~jh01/BIN/submit 1 prog1.tar	
+		3) no late submission will be accepted and repeated submission
+		   will overwrite the previous one.
+
+7. Q&A session.
+	. reliable transfer	- not required
+	. data representation mismatch problems on different platforms
+			- not required, but worth doing.

@@ -1,0 +1,56 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>CMSC 417 (Fall 1997) Exam #2 - Solutions</TITLE>
+</HEAD>
+<BODY LINK="#0000ff" VLINK="#800080">
+
+<B><FONT SIZE=5><P ALIGN="CENTER">CMSC 417 Midterm #2 (Fall 1997)- Solutions</P>
+<P ALIGN="CENTER">&nbsp;</P>
+<OL>
+
+</B></FONT><FONT FACE="Arial,Helvetica" SIZE=2><P ALIGN="JUSTIFY"><LI>(15 points) Define <B>and</B> explain the following terms:</LI></P>
+<OL TYPE="a">
+
+<LI>forbidden region</LI>
+</FONT><I><FONT SIZE=2><P>Values of a packet sequence numbers that are not permitted since it is impossible to distinguish a new packet from and old one. (3 points)</P>
+</I></FONT><FONT FACE="Arial,Helvetica" SIZE=2><LI>TSAP</LI>
+</FONT><I><FONT SIZE=2><P>Transport service access point. A end-point for communication at the transport layer. This is generally specified with a host name and port. (3 points)</P>
+</I></FONT><FONT FACE="Arial,Helvetica" SIZE=2><LI>two army problem</LI>
+</FONT><I><FONT SIZE=2><P>The problem that two generals can’t agree when to attack over a channel that looses messages. This is analogous to the problem of having two parties agree to shutdown a transport level connection. (3 points)</P>
+</I></FONT><FONT FACE="Arial,Helvetica" SIZE=2><LI>CIDR</LI>
+</FONT><I><FONT SIZE=2><P>Classless Inter-Domain Routing: A replacement for the class A,B,C networks used on the Internet. It is designed to reduce routing table size and internal fragmentation of the IP address space. (3 points)</P>
+</I></FONT><FONT FACE="Arial,Helvetica" SIZE=2><LI>Exponential average</LI></OL>
+
+</FONT><I><FONT SIZE=2><P>A way to combine multiple samples that assigns a greater weight to recent values than older ones. Avg = </FONT><FONT FACE="Symbol" SIZE=2>a</FONT><FONT SIZE=2> Sample + (1- </FONT><FONT FACE="Symbol" SIZE=2>a</FONT><FONT SIZE=2> ) Avg (3 points)</P>
+</I></FONT><FONT FACE="Arial,Helvetica" SIZE=2><P ALIGN="JUSTIFY"><LI>(12 points) An alternative to having a separate timer thread for a packet level re-transmission timeouts is to have each connection thread call the UNIX sleep function (which suspends a thread for a specified amount of time) whenever the thread needs a time-based pause. Why would using sleep make it more difficult to process ACK packets?</LI></P>
+</FONT><I><FONT SIZE=2><P>The problem is that sleep is a blocking call, and it would be difficult to wakeup a sleeping process when the ack arrives. It is a specific instance of the problem that is experienced when trying to have a thread wait on the OR of two or more conditions.</P>
+</I></FONT><FONT FACE="Arial,Helvetica" SIZE=2><P ALIGN="JUSTIFY"><LI>(20 points) Connection Management</LI></P>
+<OL TYPE="a">
+
+<LI>Explain why using a timestamp as an initial sequence number for a three-way handshake and then incrementing the sequence number with each packet limits the number of connections per unit time, but not the number of bytes/sec. </LI>
+</FONT><I><FONT SIZE=2><P>The initial time stamp is used in the connect request and connect ack packets. Once the initial sequence number has been agreed upo,. it can’t be re-used until the maximum lifetime of the packet on the network has been exceeded to prevent a stale packet form being confused with a new one. However, once the connection is established, any sequence number can be used for each packet as long as the sequence number is not repeated within the maximum lifetime of a packet. (10 points)</P>
+</I></FONT><FONT FACE="Arial,Helvetica" SIZE=2><LI>Why should the tick rate of the clock from part a be neither too fast nor too slow.</LI></OL>
+
+</FONT><I><FONT SIZE=2><P>If the tick rate is too fast, it will role over before the maximum packet lifetime and could cause an old connection request to be confused with a current one. If it is too slow, it will limit the rate at which connections can be made (10 points)</P>
+</I></FONT><FONT FACE="Arial,Helvetica" SIZE=2><P ALIGN="JUSTIFY"><LI>(18 points) Bandwidth is growing faster than latency (and we are getting very close to speed of light latencies for some networks). Describe two specific changes that have either been made, or will likely be required to adapt existing networking systems to accommodate this trend. </LI></P>
+</FONT><I><FONT SIZE=2><P>To efficiently use the network, a protocol must be able to have a window size at least as large as the end-to-end delay bandwidth product. The TCP option to shift the bits of the window size to permit more outstanding bytes is one way to meet this need. (9 points)</P>
+<P>Since more data can be transferred in the same roundtrip time, making requests and responses larger can reduce the apparent latency of a message. For example, a directory protocol could request the contents of the entire directory rather than one file at a time. (9 points)</P>
+</I></FONT><FONT FACE="Arial,Helvetica" SIZE=2><P ALIGN="JUSTIFY"><LI>(20 points) Traffic Shaping </LI></P>
+<OL TYPE="a">
+
+<LI>Token bucket and leaky bucket are ways to limit traffic data rates. Explain how they are different in terms of their ability to permit bursts onto the network, and ensure the average data rate. </LI>
+</FONT><I><FONT SIZE=2><P>Leaky bucket permits a network device to accept a large burst of data and then slowly transmit it onto the network. A token bucket permits the burst to go directly onto the network (if there are tokens available). Either approach will ensure that the average traffic rate will be maintained. (108 points)</P>
+</I></FONT><FONT FACE="Arial,Helvetica" SIZE=2><LI>Traffic shaping can be performed on a per connection or per host basis, give one example where you would want to do it each way.</LI></OL>
+
+</FONT><I><FONT SIZE=2><P>Per connection traffic shaping is useful when there are several different classes of traffic using the same link and hosts. By performing shaping on a per connection basis, applications with different (even conflicting) resource requirements can be accommodated. (5 points)</P>
+<P>Per host traffic shaping is useful when two connections represent traffic that must travel over the same resource constrained link. By shaping the traffic as a unit, we can ensure that the capacity of the single link is not exceeded. (5 points)</P>
+</I></FONT><FONT FACE="Arial,Helvetica" SIZE=2><P ALIGN="JUSTIFY"><LI>(15 points) <I>go-back-n</I> and <I>selective-repeat</I> are retransmission strategies used with sliding window protocols. Describe and discuss the relative advantages of each. How does using one or the other change the requirements for buffers in the sending and receiving windows?</LI></P></OL>
+<DIR>
+<DIR>
+
+</FONT><I><FONT SIZE=2><P>Selective-repeat is good for communication channels with high probability of packet corruption or loss since it conserves bandwidth by only re-transmitting the damaged packet. Go-back-n is useful for more reliable links since it permits the receiver side to have only one buffer since all packets will arrive in order even after a loss. Go-back-n has less efficient utilization of link bandwidth since packets that were received correctly may still need to be re-transmitted. With go-back-n, packets will arrive in-order so the receive window is reduced to one.</P></DIR>
+</DIR>
+</I></FONT></BODY>
+</HTML>

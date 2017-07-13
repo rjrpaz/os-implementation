@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Lecture 11</title>
+</head>
+<body>
+<h1>CS 420 - Lecture 11<br>
+</h1>
+<h2>Synchronization<br>
+</h2>
+<p>Coordinate the actions of two or more threads (or processes) that
+are accessing shared data.<br>
+</p>
+<p>As we have seen previously, these threads will have critical
+sections defining accesses and updates to the shared data.&nbsp; Only
+one thread must be allowed to be executing a critical section at any
+given time.<br>
+</p>
+<p>Example: producer/consumer using a bounded buffer<br>
+</p>
+<p style="margin-left: 40px;"><img alt=""
+ src="figures/producerConsumer.png" style="width: 40%;"><br>
+</p>
+<p>The producer thread is adding new data items to the buffer: the "in"
+variable indicates where the next produced item should be placed.&nbsp;
+The consumer thread is removing produced items from the buffer.&nbsp;
+The "out" variable indicates where the next consumed value should be
+taken from.&nbsp; A shared "numItems" variable indicates how many items
+are currently in the buffer.&nbsp; Initially, <br>
+</p>
+<pre style="margin-left: 40px;">in == out<br>numItems == 0<br></pre>
+<p>The shared "numItems" variable keeps track of how many produced
+items are currently in the buffer.<br>
+</p>
+<p>The buffer is <span style="font-style: italic;">bounded</span>
+because there are only a fixed number of locations in the buffer.&nbsp;
+(I.e., it is an array.)<br>
+</p>
+<p>Note that a pipe used for inter-process communication is a bounded
+buffer of precisely this form!&nbsp; Also note that the buffer is being
+used as a <span style="font-style: italic;">queue</span>: items
+entering and leave the buffer in the same order.<br>
+</p>
+<p>There is one situation where the producer must wait.&nbsp; [What is
+it?]<br>
+</p>
+<p>There is one situation where the consumer must wait.&nbsp; [What is
+it?]<br>
+</p>
+<p>Code for the producer:<br>
+</p>
+<pre style="margin-left: 40px;">while (true) {<br>    item = produceItem();<br><br>    while (numItems == BUFFER_SIZE) {<br>        // do nothing<br>    }<br><br>    buffer[in] = item;<br>    in = (in + 1) % BUFFER_SIZE;<br>    numItems++;<br>}<br></pre>
+<p>Code for the consumer:<br>
+</p>
+<pre style="margin-left: 40px;">while (true) {<br>    while (numItems == 0) {<br>        // do nothing<br>    }<br><br>    item = buffer[out];<br>    out = (out + 1) % BUFFER_SIZE;<br>    numItems--;<br><br>    doSomething(item);<br>}<br></pre>
+<p>Recall that incrementing or decrementing a variable is actually
+implemented by a sequence of several instructions that do not execute <span
+ style="font-style: italic;">atomically</span>:<br>
+</p>
+<pre style="margin-left: 40px;">tmp = variable;<br>tmp = tmp + 1;<br>variable = tmp;<br></pre>
+<p>The variable "tmp" is generally a processor register, or a local
+variable (located in the thread's private stack memory).<br>
+</p>
+<p>As we saw in <a href="lecture9.html">lecture 9</a>, updating a
+shared counter without synchronization does not always work
+correctly.&nbsp; Specifically, it is vulnerable to <span
+ style="font-style: italic;">lost updates</span>.&nbsp; That means that
+after an item has been added to or removed from the buffer, the counter
+variable (numItems) may not reflect the correct number of items in the
+queue.<br>
+</p>
+<p>Consider possible interleavings of the following instruction
+sequences if executed by two concurrent threads:<br>
+</p>
+<blockquote>
+  <table style="text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+    <tbody>
+      <tr>
+        <td style="vertical-align: top;">
+        <pre>   // Thread 1 (Producer)<br><br>1: tmp = variable;<br>2: tmp = tmp + 1;<br>3: variable = tmp;<br></pre>
+        </td>
+        <td style="vertical-align: top;">
+        <pre>   // Thread 2 (Consumer)<br><br>4: tmp = variable;<br>5: tmp = tmp - 1;<br>6: variable = tmp;<br></pre>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+<p>The interleavings 1,2,3,4,5,6 and 4,5,6,1,2,3 yield the correct
+result: no net change in the variable.<br>
+</p>
+<p>The problem is that there are many interleavings that do NOT yield
+the correct result.&nbsp; For example, consider the interleavings that
+start with the sequences 1,4 or 4,1.&nbsp; Regardless of what
+instructions execute next, we are guaranteed to lose one of the
+updates.&nbsp; The two threads are now <span
+ style="font-style: italic;">racing</span> to see which one will reach
+the store (instructions 3 or 6) first.&nbsp; Whenever the behavior of a
+program depends on the order of instructions which execute concurrently
+and access shared data, we say that there is a <span
+ style="font-style: italic;">race condition</span> in the
+program.&nbsp; Race conditions are often serious bugs.&nbsp; In the
+case of the producer and consumer, some items may be lost (because the
+numItems counter was not incremented properly).<br>
+</p>
+<p>The solution is to define the instruction sequences where shared
+data is accessed as critical sections, and use synchronization to
+prevent multiple threads from entering critical sections simultaneously.<br>
+</p>
+<h2>Criteria for Solutions to the Critical Section Problem<br>
+</h2>
+<ol>
+  <li><span style="font-weight: bold;">Mutual exclusion</span>.&nbsp;
+This is the most obvious requirement: to prevent undesirable
+interleavings we must prevent simultaneous execution of critical
+sections by multiple threads.<br>
+  </li>
+  <li><span style="font-weight: bold;">Progress</span>.&nbsp; If no
+thread is currently executing a critical section---there is no
+contention---then it should be possible for a thread to enter the
+critical section.<br>
+  </li>
+  <li><span style="font-weight: bold;">Bounded waiting</span>.&nbsp; If
+there is contention, then each thread waiting to enter a critical
+section must be allowed to enter the critical section in a finite
+amount of time.&nbsp; No thread should have to wait indefinitely.</li>
+</ol>
+<p>Many possible solutions to the critical section that meet these
+criteria are possible.<br>
+</p>
+<h2>Preemptive vs. Nonpreemptive OS kernels<br>
+</h2>
+<p>A really simple solution to the critical section problem, for kernel
+code only, is to make the kernel nonpreemptive.&nbsp;&nbsp; This means
+that at most one kernel thread may be executing kernel code at a time.<br>
+</p>
+<p style="margin-left: 40px;">Note that interrupt handlers are still
+usually allowed to run while a kernel thread is executing.&nbsp; What
+is explicitly disallowed in a nonpreemptive kernel is for a kernel
+thread to be suspended while executing kernel code (i.e., before
+returning to user mode) and another kernel thread (executing kernel
+code) to dispatched.<br>
+</p>
+<p>A nonpreemptive kernel trivially solves the critical section problem
+because it is not possible for multiple kernel threads to be executing
+kernel code at the same time.<br>
+</p>
+<p>The nonpreemptive design is used in<br>
+</p>
+<ul>
+  <li>Early versions of Unix</li>
+  <li>Linux prior to 2.6</li>
+  <li>Windows 2000, XP</li>
+</ul>
+<p>For uniprocessor systems, a nonpreemptive kernel is fine.&nbsp;
+However, on a multiprocessor system, such a design can greatly hurt
+parallelism.&nbsp; For example, consider two processes running on
+different CPUs that make system calls at the same time:<br>
+</p>
+<p>[diagram]<br>
+</p>
+<p>Because the system calls are handled in kernel mode, only one system
+call can be processed at a time.<br>
+</p>
+<p>Another problem with nonpreemptive kernel designs is that a
+kernel-only process may need to perform an operation that takes a
+noticeable amount of time.&nbsp; This can degrade the responsiveness of
+the system, because user-mode processes cannot run while the
+kernel-only process is running.<br>
+</p>
+<p>In a preemptive kernel, multiple kernel threads may be executing
+kernel code "at the same time".&nbsp; This means that all critical
+sections must be protected by explicit synchronization mechanisms, such
+as mutex locks.&nbsp; Preemptive designs tend to naturally accomodate
+multiprocessor systems, because there is no problem with multiple
+kernel threads executing kernel code (such as system call handlers) at
+the same time.<br>
+</p>
+<p>Examples of preemptive designs:<br>
+</p>
+<ul>
+  <li>Linux 2.6 or later</li>
+  <li>Solaris<br>
+  </li>
+</ul>
+<p>One issue with preemptive kernels is <span
+ style="font-style: italic;">lock granularity</span>.&nbsp; [what to
+say about this?]<br>
+</p>
+<h2>Implementing Critical Sections<br>
+</h2>
+<p>There are lots of ways to solve the critical section problem.<br>
+</p>
+<h3>Disabling and Enabling Interrupts<br>
+</h3>
+<p>Easy solution (GeekOS): disable interrupts when entering a critical
+section.&nbsp; The timer interrupt handler will not run, and therefore
+the system will not switch threads.&nbsp; Re-enable interrupts when
+leaving the critical section.&nbsp; Works on a uniprocessor machine,
+but not on a multiprocessor machine.&nbsp; Useful for very short
+critical sections.&nbsp; We don't want to disable interrupts for too
+long, since that will hurt responsiveness (e.g., we won't be able to
+handle keyboard interrupts.)<br>
+</p>
+<p>[Issue: nesting of critical sections.]<br>
+</p>
+<h3>Peterson's Solution<br>
+</h3>
+<p>Peterson's solution is a way of protecting critical sections for two
+threads (0 and 1) which uses two shared data variables/data structures:<br>
+</p>
+<pre style="margin-left: 40px;">bool flag[2];<br>int turn;<br></pre>
+<p>Let "i" be the id (0 or 1) of the current thread, and "j" be the
+id&nbsp; of the other thread.</p>
+<p>Enter a critical section</p>
+<pre style="margin-left: 40px;">flag[i] = true;<br>turn = j;<br>while (flag[j] &amp;&amp; turn == j) {<br>    // wait<br>}<br></pre>
+<p>Leave a critical section</p>
+<pre style="margin-left: 40px;">flag[i] = false;</pre>
+<p>The "flag" array is an indication of whether or not a thread needs
+to execute a critical section.&nbsp; If flag[i] false, thread i is has
+left (or never entered) the critical section.<br>
+</p>
+<p>This works.&nbsp; Why?<br>
+</p>
+<p>In the uncontended case (only one thread trying to use the critical
+section), it obviously works, because the other thread's flag will be
+set to false.<br>
+</p>
+<p>If a thread shows up while the other thread is currently executing
+the critical section, it will have to wait (in the while loop) until
+the other thread sets its flag to false, then it can run.<br>
+</p>
+<p>If both threads try to enter the critical simultaneously, they will
+both set their flags to true, and they will both set "turn" to the
+other thread's id.&nbsp; So, one of them will "win" and start executing
+the critical section.&nbsp; When the winner leaves the critical
+section, it will set its flag to false, allowing the other thread to
+run.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Note</span>:
+implementing this technique requires some care because both the
+compiler and the processor can re-order loads from and stores to
+memory.&nbsp; For example, the instruction setting the thread's flag
+could be reordered with the instruction setting the turn
+variable.&nbsp; This could allow both threads to enter the critical
+section at the same time.<br>
+</p>
+<p style="margin-left: 40px;">[TODO: show interleaving?]<br>
+</p>
+</body>
+</html>

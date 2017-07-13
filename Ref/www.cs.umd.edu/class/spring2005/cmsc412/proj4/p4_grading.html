@@ -1,0 +1,67 @@
+<html>
+<head><title>CMSC412 Project 4 Grading Criteria</title></head>
+
+
+<body><center><b>Project 4 Grading Criteria</b></center></p>
+
+<h3>Intermediate submission (Tuesday, March 29th, worth 10 points)</h3>
+This will test kernel mapping. 
+You should have paging turned on, as described in item 1 below. 
+We'll test by looking at the output. If your kernel crashes or paging 
+doesn't turn on, we'll check your code and will determine whether 
+you've made a 'good faith' attempt at kernel mapping or not.
+Note that doing random changes to pretend you've started the kernel mapping
+will not bring you the 10%. 
+
+<h3>Project 4 (Friday, April 8th, worth 90 points)</h3>
+
+<ol>
+<li> <b> Turning On Paging</b>:<br>
+  - Modify the  <tt>Enable_Paging()</tt> call (in Init_VM(), <tt>paging.c</tt>); to  be <tt>checkPaging(); Enable_Paging(); checkPaging()</tt>;</p>
+
+Launching bochs should output:</p>
+
+<pre>
+Paging on?: 0
+Paging on?: 1
+</pre>
+when bochs starts up.  Nothing should crash and the shell prompt should come up.  Enabling paging is worth <font color=blue>27</font> points.</p>
+
+<li> <b>Dynamically Growing Stack</b> using <tt>rec.c</tt>.<br>
+At the shell prompt, typing:</p>
+
+<pre> /c/rec.exe 300</pre>
+
+should output
+<pre>
+300
+349
+348
+...
+1
+%
+</pre>
+
+Correct implementation is worth <font color=blue>27</font> points. </p>
+
+<li> <b>Paging Out to a Swapfile</b> using <tt>rec.c</tt>.<br>
+At the shell prompt, typing:</p>
+
+<pre> /c/rec.exe 3300</pre>
+
+should output
+<pre>
+3300
+3299
+3298
+...
+1
+%
+</pre>
+
+Correct implementation is worth <font color=blue>36</font> points.</p>
+
+<li> <b>Extra Credit</b><br>
+You can receive <font color=red>10 points</font> of extra credit if you make page tables pageable too,
+as described in the project description in the <a href="index.html#ExtraCredit">Extra Credit section</a>.
+</ol>

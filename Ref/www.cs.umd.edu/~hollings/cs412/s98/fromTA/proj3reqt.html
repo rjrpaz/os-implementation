@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+<TITLE>CMSC 412 Spring 1998 Project 3 - Additional Requirements</TITLE>
+</HEAD>
+
+<BODY TEXT="#000000" BGCOLOR="#D7D3D2"
+	LINK="#78021C" VLINK="#7F6666" ALINK="#FFFFFF"
+	>
+
+<basefont size="4" font="Times">
+
+<table width="100%">
+<tr>
+	<td align="left">
+<I><font size="-1">
+Operating Systems - <A
+HREF="../index.html">CMSC 412</A>
+</font></I>
+	</td>
+	<td align="right">
+<I><font size="-1">
+Spring 1998
+</font></I>
+	</td>
+</tr>
+</table>
+
+<hr noshade>
+ <P>
+
+<table width="90%" align="center">
+<tr>
+	<td align="left">
+
+<B><font size="+3"><center>Project 3:</center></font></B>
+<B><font size="+2"><center>Additional Requirements</center></font></B> <P>
+
+<B><font size="+1">Interface Header File</font></B> <li> Please put
+all global names <I>visible to the user</I> in a header file <font
+color="red"><CODE>user412.h</CODE></font> which will be included by
+the user code (<CODE>proc.c</CODE> and alike) together with
+<CODE>cmsc412.h</CODE> as well as Borland (standard) header files, as
+needed. (This means that you do not have to duplicate names declared
+in <CODE>cmsc412.h</CODE> file.) The global names include (1) function
+prototypes; (2) global variables, if any; (3) also macro definitions.
+Make sure that file <CODE>user412.h</CODE> lists <I>all</I> names that
+can be used in the user code, to let it work with the keyboard,
+screen, timer, etc. Also, make sure no names are listed that the user
+is not supposed to use. This time, I <B>will</B> read your source
+code. <P>
+
+<B><font size="+1">Scheduling Experiments</font></B> <li> Please run
+experiments with both scheduling algorithms you are supposed to
+implement and write a short (one-paragraph) description of your
+observations. This could include processes' order of execution,
+latency, effective throughput, average latency, etc., for different
+quantum sizes, perhaps different types of batches. You do not have to
+make an essay of this, please. However, your observations will be
+compared with ours. <P>
+
+<B><font size="+1">Compiler Warnings</font></B> <li> Starting with the
+<I>next</I> project, we will require that your code compiles without
+warnings (without errors too). In this project, we ask you to try and
+get rid of the warnings too, so you will be comfortable the next time.
+<P>
+
+In general, you will need to polish your code so that it would not
+look "suspicous" for the compiler. However, sometimes we need to write
+code that would cause wanrings to be generated (as is the case with
+the <CODE>System_service()</CODE> function, for instance). To force
+particular conditions that generate warnings to be checked, or not
+checked, you can use either <CODE>-w</CODE> option of the Borland
+compiler or <CODE>#pragma&nbsp;warn</CODE> for a more selective
+choice. Please read the appropriate Borland help files to familiarize
+yourself with these features. <P>
+
+By default, the compiler disables some warnings and enables the
+others. We do not want you to <I>disable</I> warnings using the
+compiler option <CODE>-w</CODE> and you can only use the
+<CODE>#pragma&nbsp;warn</CODE> for this purpose. If you want to
+<I>enable</I> warnings that are disabled by default, feel free to use
+either method. <P>
+
+	</td>
+</tr>
+</table>
+
+ <P>
+<hr noshade>
+
+<table width="100%">
+<tr>
+	<td align="left">
+<I><font size="-1">
+Simon Hawkin - <A
+HREF="mailto:cema@cs.umd.edu?subject=Project 3
+ Additional Requirements">cema@cs.umd.edu</A>
+</font></I>
+	</td>
+	<td align="right">
+<I><font size="-1">
+March 27, 1998
+</font></I>
+	</td>
+</tr>
+</table>
+
+</BODY>
+</HTML>

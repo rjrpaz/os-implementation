@@ -1,0 +1,33 @@
+10 tests, 10 points each.
+
+Grade "=number" means, the tests gets this number.
+Grade "-number" means, the grade is reduced by the number.
+
+Grades per test (never less than zero):
+- Test crashes =0
+- Test freezes =0
+- Test exits prematurely, through "no more processes", w/error msgs =6
+- Test -"-              , -"-                        , w/o error msgs =6
+- Test -"-              , w/o "no more processes"    , w/error msgs =4
+- Test -"-              , -"-                        , w/o error msgs =4
+- Test exits prematurely, tries to die gracefully, but cannot (crashes or
+  freezes). =1 
+- Test does not terminate (return to DOS). -1
+- Notices an error and continues as if it was okay.  -1
+- After test, DOS cursor is not restored. -0
+- After test, the project cursor does not disappear. -0
+- When the test is run 2nd time in a row, the hardware cursos does not
+  disappear. -0
+- When the test is run 2nd time in a row, freezes. -3
+- Screen output garbled at some point in the test. =0 if crash; -2 if not.
+- Extra output (typically, remnants of the debugging output). -0
+
+Per project:
+- No makefile. -5
+- Wrong makefile name. -0
+- Wrong makefile contents: directories. -0
+- Wrong makefile contents: dependencies. -4
+- Does not process '\n' properly. -5
+- "Press Enter to continue..." but processes TAB, Backspace, etc, as if it
+  waits for a line of input. -2
+

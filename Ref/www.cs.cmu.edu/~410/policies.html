@@ -1,0 +1,451 @@
+<!-- ========================================= -->
+<!-- Page title (begin it with "15-410") ===== -->
+<!-- ========================================= -->
+
+
+
+
+
+<!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 3.2//EN&quot;>
+<html>
+<head><title>15-410 Policies and Mechanisms</title>
+</head>
+<body bgcolor=white>
+<table width="100%" height="100%">
+
+<tr><td valign=top width=132>
+<table width=132 bgcolor=#cccccc height="100%">
+<tr><td height=140><center><font size=-1><b>Carnegie Mellon</b></font><br>
+<img alt="SCS logo" src="/~410/img/scslogo.gif"><br>
+<font size=-1><b>Computer Science Department</b></font></center></td></tr>
+<tr><td height=30><a href="/~410"><img alt="home" src="/~410/img/home.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/syllabus.html"><img alt="syllabus" src="/~410/img/syllabus.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/staff.html"><img alt="staff" src="/~410/img/staff.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/schedule.html"><img alt="schedule" src="/~410/img/schedule.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/lecture.html"><img alt="lecture" src="/~410/img/lecture.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/projects.html"><img alt="projects" src="/~410/img/projects.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/homeworks.html"><img alt="homeworks" src="/~410/img/homeworks.gif" border=0></a></td></tr>
+<tr><td>&nbsp;</td></tr></table>
+
+</td>
+
+<td width=10>&nbsp;</td>
+
+<td height="100%" valign=top>
+<br>
+
+<H1 ALIGN=CENTER>15-410 Policies and Mechanisms</H1>
+<HR>
+<!-- Body goes here. -->
+ 
+
+<!-- ========================================= -->
+<!-- Content Begins ========================== -->
+<!-- ========================================= -->
+
+<H2>About This Document</H2>
+
+<P>This document sets forth specific policies and mechanisms for
+this class.  You must also read the companion document on
+high-level <A HREF="expectations.html">Expectations</A>.</P>
+
+<A NAME="prerequisites"><H2>Prerequisites</H2></A>
+
+<P>If you have not completed 15-213 with a grade of C or above,
+you <STRONG>must</STRONG> contact the course staff and complete
+a skill assessment exercise to remain registered in the class.
+This requirement <STRONG>specifically</STRONG> includes all
+graduate students, exchange students, non-degree students,
+and any other special students.
+This also includes all students who have taken Operating System
+classes other than 15-410.</P>
+
+<A NAME="auditing"><H2>Auditing</H2></A>
+
+<P>Please see the "Audit Grades" section of the
+University's
+<A HREF="http://www.cmu.edu/policies/documents/Grades.html">Grading
+Policies</A> document.  Students auditing a class are required
+to to commit to some level of participation, and to meet that
+commitment in order to receive an audit grade at the end
+of the semester.
+</P>
+
+<H2>Getting Help</H2>
+
+<P>The class web site is
+<A HREF="http://www.cs.cmu.edu/~410/">http://www.cs.cmu.edu/~410/</A>.</P>
+
+<P>You should read and participate in <TT>academic.cs.15-410.qa</TT>
+and <STRONG>are required to monitor</STRONG>
+<TT>academic.cs.15-410.announce</TT> (if your mail client can be
+set to alert you of new messages, that would be a good idea).</P>
+
+<P>Issues particular to you or your group, and time-critical
+issues, can be addressed to
+<IMG SRC="img/staff-410.gif" ALT="staff-410@cs.cmu.edu">.
+If you need to discuss a genuinely confidential issue you
+should contact the instructor(s) directly.
+But you <STRONG>should not</STRONG>
+send e-mail to randomly-selected
+staff members to ask clarification or
+guidance questions--if nothing else, you may choose somebody
+who is sick or out of town.</P>
+
+<P>Please <STRONG>do not</STRONG> send us files via electronic
+mail.  Really!  If you want us to look at some of your files, you
+should put them into a private AFS directory, make sure we can read
+it, and send us the filename.  If you use course-issued AFS space,
+this is easy, since 410 staff can automatically read that.  If you
+use some other AFS space, you will need to do something like
+this:</P>
+
+<P><CODE>% fs sa . de0u:410staff rl</CODE><BR>
+<CODE>% fs sa .. de0u:410staff l</CODE><BR>
+<CODE>% fs sa ../.. de0u:410staff l</CODE><BR>
+Eventually you will be told "permission denied" and then you are
+probably done.</P>
+
+<H2>AFS access control lists</H2>
+
+<P>Be sure to store your work in a protected area.  Since a new 
+AFS directory inherits its parent's access control list, it is
+possible to create a directory which inadvertently is public.</P>
+
+<H2>AFS problems</H2>
+
+<P>Like any other large complicated thing, AFS can have problems.
+If it happens to you, please <STRONG>start</STRONG> by re-reading
+<a href="afs.html">About your 15-410 AFS Space</a>--please don't
+e-mail us a question which is already answered in that document.</P>
+
+<H2>Formatting</H2>
+
+<P>"Documents" should be submitted in a document interchange/publication
+format such as PDF or HTML (or, if appropriate,
+Unix-line-delimited 7-bit ASCII).  Microsoft Word, WordPerfect,
+OpenOffice XML, FrameMaker editable-document format, etc.,
+<STRONG>are not interchange formats</STRONG>.
+PostScript is really a printer transport language
+rather than a document interchange format, but it will generally
+suffice.</P>
+
+<P>Also, if we ask you to use a particular filename for something, please
+do that.  We probably intend to use a program to perform some action
+(such as printing) on all 100-odd files, and if your file doesn't have
+the right name maybe the right thing won't happen to it.</P>
+
+<H2>Hazards</H2>
+
+<H3>Medical issues</H3>
+
+<P>If you experience a medical problem which disrupts your studies,
+please go to Student Health Services (or another medical provider)
+and have them emit some piece of paper
+describing the situation and what you are <EM>medically required</EM>
+to do about it.  If there are privacy concerns, we will accept
+a firm statement of the restrictions on your activities without
+a description of the condition itself.</P>
+
+<P>Please <STRONG>do not</STRONG> come to the course
+staff and tell us that you've been too sick to attend class and
+code for two weeks but that it hasn't "been bad enough" to merit
+medical attention.  If nothing else, it probably <EM>has</EM> been
+"bad enough" for your partner.</P>
+
+<P>You may prefer to disclose an ongoing medical situation to
+Mark Stehlik and/or Catharine Fichtner (or your home department's
+undergraduate chair and/or administrator).
+They can then take care of notifying all of your instructors.</P>
+
+<H3>Partner problems</H3>
+
+<P>Please try to avoid having partner trouble.  Seriously!  Share
+your hopes before they turn into concerns, your concerns before
+they become problems, and your problems before they inflate into
+crises.</P>
+
+<P>Also, in order for the course staff to help you and your partner
+work through issues, or for us to provide special treatment in
+response to serious partner problems, you <STRONG>must</STRONG>
+contact us <STRONG>well before</STRONG> the relevant due date.
+While some problems can never be truly solved, it is likely that
+your career after CMU will require you to "involve management"
+to address issues with co-workers... if you find yourself in
+a situation which you can't resolve, this will provide you with
+an opportunity to practice interacting with management.
+</P>
+
+<P>One special case to avoid is coming to us a day or two before
+a major deadline to tell us that your partner has been ill for
+multiple weeks.  We, and thus you, have many more options if
+you inform us <STRONG>while</STRONG> a problem is developing,
+as opposed to after the fact.
+
+<H2>Exams</H2>
+
+<P>Exams will be closed-book.  For the final exam you will
+probably be permitted to bring in a single sheet of notes.</P>
+
+<P>At CMU, standard operating procedure is that final
+exams take place after classes end, during a special
+period of time.  Each class is assigned an exam period
+according to a university-wide procedure which attempts
+to minimize conflicts.</P>
+
+<P>What this means is that the date and time of the 15-410
+final exam will not be decided by the course staff, and
+we do not know
+when the university will make the decision (the schedule
+is posted at approximately the same time every semester,
+but there is some variation).</P>
+
+<P>It is <STRONG>your</STRONG> responsibility to alert the
+course staff to any exam conflicts.  If we haven't heard from
+you seven days after a 15-410 exam date has been published,
+we will expect that to mean you do not have a conflict.  In
+any case, notify us as soon as possible.</P>
+
+<H2>Collaboration and Group Work</H2>
+
+<P>We think a lot can be learned by talking to other students,
+and, since we're pro-learning, this is generally ok with us.
+Discussing your data structures, module boundaries, and even
+the flow through your code is fine.  Writing down snippets
+of code on a whiteboard is also ok (especially if you
+gesticulate wildly while doing so and use several colors).</P>
+
+<P>However, some sorts of "collaboration", which reduce or
+impede learning, are not acceptable, such as:
+<UL>
+<LI>"Discussing" code in sufficient detail to
+fully specify it (see, for example, Jonathan Baccash's
+<A HREF="http://www-2.cs.cmu.edu/~dst/DeCSS/Baccash/">BabelBuster
+C to English to C Translator</A>.
+<LI>Copying or typing in code from other people, or any
+OS class you might have taken before (if you can meaningfully
+do the latter, there is a good chance you shouldn't be taking
+this class for credit).  You should also not be <EM>reading</EM>
+code produced by other people for OS classes at CMU or elsewhere,
+or components from "how to write your own mini-OS" kits.
+<LI>Allowing other people to type in code for you or debug your
+code.
+<LI>Allowing other people to read your code before it is turned
+in or before they have turned in their own code.
+This includes keeping any network-accessible copies of your
+code protected (note that the default settings on many
+repository-hosting services such as bitbucket or gitorious
+are <STRONG>not</STRONG> correct).
+</UL></P>
+
+<P>In the other direction:
+<UL>
+<LI>You may read books about operating system internals and
+browse "professional" OS code (e.g., a BSD kernel,
+the Linux kernel, etc.).
+<LI>It's ok to re-use basic code from lower-level classes.
+<!--
+If you have to sort something, it's fine to consult a book
+or even type in code from one (giving appropriate credit,
+of course). -->
+However, you may not use other code which you did not
+write without <STRONG>prior</STRONG> permission
+of the course staff.
+</UL></P>
+
+<P>If you think you have encountered a gray area,
+please contact the course staff <STRONG>before</STRONG>
+making a decision.</P>
+
+<P>You should have a reasonable understanding of all code
+your group turns in, even parts you didn't write.  One easy
+way to think about this is that exam questions which assume
+understanding of project components are fair game.
+Also, while we hope this will be a rare occurence, we
+we reserve the right to assign partners different grades
+for a project.</P>
+
+<P>Homework assignments are individual.  Your model should be
+that you can talk about the problems, but then you must erase
+the whiteboard or shred the napkin, retreat to your cave,
+and write them up yourself.</P>
+
+<P>If you question the legality of any type of collaboration or
+consultation, please ask.  If you are in a real bind, do what feels
+right and discuss the issue with a staffer as soon as is possible.
+If you discuss the issue with us before you turn in your solution
+or document it as part of your solution, it will not be considered
+to be academic dishonesty (of course, it might not qualify for full
+credit, either).</P>
+
+<P>You should be aware that there are several
+sophisticated code-similarity analysis tools based on
+machine-learning techniques.  Fooling them is possible,
+but probably requires enough work (and worry) that it
+is probably better for you to do the assignments yourself.</P>
+
+<P>Academic dishonesty may result in a failing course grade,
+and will typically be reported to your home academic unit
+and/or the Dean of Students.  Please don't get involved
+in this--it costs everybody <STRONG>enormous</STRONG>
+amounts of time during which nothing can be learned about
+operating systems.</P>
+
+<H3>Distribution of Coursework Solutions</H3>
+
+<P>As a condition of your participation in the course,
+you may not make publicly available or distribute to
+others code you write to solve problems posed by
+course assignments.</P>
+
+<H2>Working Alone on "Group" Projects</H2>
+
+<P>While it is possible to complete the major programming
+projects while working alone, that is not the best approach
+for most students.  If you intend to work alone, you must
+obtain permission from the instructor(s).</P>
+
+<H2>Grades</H2>
+
+<P>Documentation will be a component of your course grades.
+The exact percentage may vary from one assignment to the next,
+and may be adjusted in response to class performance, but
+your model should probably be that documentation will be
+worth approximately 5% of each programming assignment.</P>
+
+<P>In general we will have a "7 CMU business day" deadline on
+grade appeals.  That is not to say that we will <EM>never</EM>
+engage in grading archaeology, but we believe we can obtain
+a greater degree of consistency inside a smaller time window.</P>
+
+<P>Here is a <EM>tentative, approximate</EM> grading breakdown.</P>
+
+<TABLE BORDER=1>
+  <TR><TH>Weight</TH><TH> Item</TH></TR>
+  <TR><TD>5%</TD><TD>Zeroth Programming Project</TD></TR>
+  <TR><TD>5%</TD><TD>First Programming Project</TD></TR>
+  <TR><TD>15%</TD><TD>Second Programming Project</TD></TR>
+  <TR><TD>25%</TD><TD>Third Programming Project</TD></TR>
+  <TR><TD>5%</TD><TD>Fourth Programming Project</TD></TR>
+  <TR><TD>15%</TD><TD>Midterm Exam</TD></TR>
+  <TR><TD>20%</TD><TD>Final Exam</TD></TR>
+  <TR><TD>10%</TD><TD>Homeworks (~3) and book report</TD></TR>
+</TABLE>
+
+<P>There is an excellent chance that the weight of the kernel
+project will be increased somewhat, probably at the expense of
+the homeworks.</P>
+
+<P><FONT SIZE="+1"><STRONG>In addition, your weighted project average and weighted exam
+average must each be a passing grade in order to pass the course.</STRONG></FONT></P>
+
+<P>Cutoff points for grades will be set by the course staff
+based on an examination of the quality of the work turned in by students
+near the border.  Likewise, individual students, especially those
+near a cutoff, may receive adjustments upward or downward based
+on factors such as quality improvement, final exam scores,
+dramatic differences between partners,
+or
+other circumstances relevant to the estimation of the staff
+of which grade best represents the student's work.</P>
+
+<P>Finally, while we do our best to specify our expectations
+in advance, grade assignment is at the discretion of the course
+instructor.</P>
+
+<H2>Policy on Late Work</H2>
+
+Here is a somewhat traditional OS policy on late work:<BR>
+<BLOCKQUOTE>
+Each student may grant himself or herself an extension <b>on any
+homework assignment or project deadline/checkpoint</b> -- but
+<b>only three (3) days worth of extensions</b>
+are available during the course of the
+semester under this policy. Possible configurations include turning in three
+projects one day late apiece, turning in each homework assignment one day late, etc.
+</BLOCKQUOTE>
+If a team wishes an extension under this policy, the number of days available
+is the <b>minimum</b> of the number of days that each member has available.
+Because this might become an issue if you switch partners, it is probably
+unwise to use up too many late days on the earlier assignments.</P>
+
+<P>Please understand that the use of extensions may, perhaps severely, 
+delay the grading of your assignment. This isn't intended as punishment, 
+it is just the natural consequence of the need to have all of the
+staff assembled to fairly assign grades. We'll do our best to be timely,
+but once extensions are injected into the system, this can sometimes
+become difficult.</P>
+
+<P>We encourage you to reserve extensions for the inevitable:
+minor illnesses, conferences, University trips, bad karma, &amp;c.
+But you are free to use them for any reason that you'd like. Just please remember
+that you have only a small fixed number of extensions.</P>
+
+<P>Extensions beyond the standard quota will only be granted for extremely
+unusual, extremely unforeseeable, and/or extremely incapacitating circumstances. 
+It is likely that we would require significant evidence of the circumstance 
+and would consult with administrators and/or academic advisors before 
+granting any further extensions.  Your grade could be affected, and it is
+possible that you would be required to take an incomplete grade.</P>
+
+<P>To grant yourself a <STRONG>one-day</STRONG> extension under this
+policy, use the
+<A HREF="late.html">late-day registration form</A>.  Please do
+so by 00:30 (thirty minutes after the deadline) if possible.
+You may grant yourself multiple one-day extensions for a single
+project if that turns out to be necessary.</P>
+
+<!-- BEGIN COMMENTED-OUT SECTION -->
+
+<!-- END COMMENTED-OUT SECTION -->
+
+<H2>A note on the Simics license</H2>
+
+<P>Your use of the Simics simulation software takes place under
+a software license.  Before using Simics for anything other than
+15-410 class assignments, please see the instructor to ensure that
+your planned activities are in accordance with CMU's license.</P>
+
+<H2>Recording of lectures</H2>
+
+<P>Classroom activities may be taped or recorded by a student for
+the personal use of that student or for all students presently
+enrolled in the class only,
+but may not be further copied, distributed, published or otherwise
+used for any other purpose without the express written consent of
+the instructor(s).</P>
+
+<!--
+No student may record or tape any classroom activity without the express
+written consent of [insert name of faculty member].  Students seeking
+permission to record or tape classroom activities should contact [insert
+name of faculty member] or the Office of Disability Resources as appropriate.
+-->
+
+<H2>Reminder About This Document</H2>
+
+<P>This document sets forth specific policies and mechanisms for
+this class.  You must also read the companion document on
+high-level <A HREF="expectations.html">Expectations</A>.</P>
+
+<H2>Acknowledgements</H2>
+<P>Ideas (and even some text) were stolen from Greg Kesden's 15-412 syllabus and Randy Bryant &amp;
+Hui Zhang's 15-441 syllabus.</P>
+
+<!-- ========================================= -->
+<!-- Content Ends ============================ -->
+<!-- ========================================= -->
+
+<!-- End body. -->
+
+
+</td></tr>
+<tr><td></td><td></td><td align=center>
+
+<HR>
+<P ALIGN=CENTER>[Last modified Monday January 11, 2010]</P></td></tr>
+</table>
+
+</body>
+</html>
+ 

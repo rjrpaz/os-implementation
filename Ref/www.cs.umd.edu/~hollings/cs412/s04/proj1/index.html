@@ -1,0 +1,547 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./proj1_files/filelist.xml">
+<link rel=Edit-Time-Data href="./proj1_files/editdata.mso">
+<!--[if !mso]>
+<style>
+v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style>
+<![endif]-->
+<title>CMSC 412 - Project 1</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Preferred Customer</o:Author>
+  <o:LastAuthor>Preferred Customer</o:LastAuthor>
+  <o:Revision>5</o:Revision>
+  <o:TotalTime>253</o:TotalTime>
+  <o:Created>2003-09-13T07:14:00Z</o:Created>
+  <o:LastSaved>2003-09-13T07:38:00Z</o:LastSaved>
+  <o:Pages>4</o:Pages>
+  <o:Words>1441</o:Words>
+  <o:Characters>8219</o:Characters>
+  <o:Company>Dell Computer Corporation</o:Company>
+  <o:Lines>68</o:Lines>
+  <o:Paragraphs>16</o:Paragraphs>
+  <o:CharactersWithSpaces>10093</o:CharactersWithSpaces>
+  <o:Version>9.2720</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+p
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+pre
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Courier New";
+	mso-bidi-font-family:"Times New Roman";}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+@list l0
+	{mso-list-id:373309254;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1682623048 67698703 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+</head>
+
+<body lang=EN-US link=blue vlink=purple style='tab-interval:.5in'>
+
+<div class=Section1>
+
+
+
+<center><font size=+2><b>CMSC 412 Project #1</b> </font></center>
+<p>
+<center><font size=+1><b>Loading Executable Files</b></p></font></center>
+
+<center><b><p>Due Thursday February 12th, 2003 (09:00 AM)</b></p></center>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+<li><b><a href="grading_criteria.html">Grading Criteria</a> </b>
+<li><b><a href="submission.html">Submission Instructions</a> </b>
+<li><b>New project files: <a href="proj1.tar.gz">proj1.tar.gz</a></b>
+<li><b>Slides used in recitation <a href="proj1.ppt">proj1.ppt</a></b>
+<br><br>
+
+<p class=MsoNormal><b>Introduction<o:p></o:p></b></p>
+
+
+<p class=MsoNormal>In this project, you will give GeekOS the ability to load
+executable files from disk into memory. In a future project, you will add the
+ability to run user programs in a safe way, but for this project we have
+supplied code that will execute the loaded program as part of a kernel process.
+Your job will be to write a function to load a program and lay it out correctly
+in memory. You will know that you have successfully loaded the program when
+running it produces the specified output.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><b>ELF Files<o:p></o:p></b></p>
+
+<p class=MsoNormal>ELF is a format for storing programs on disk. There are
+other formats, but ELF is the one you will be working with. An ELF file
+contains text (or code) and data sections for an executable program, as well as
+extra information about where these sections are stored in the file and how
+they should be arranged in memory when the program is loaded. The extra
+information is stored in sections of the ELF file called <b>Headers</b>. An ELF
+file is the result of the linking process.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>In this project, you will be loading ELF files and using the
+information in the headers to determine how to lay out the sections of the
+program in memory.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><b>Executable Image<o:p></o:p></b></p>
+
+<p class=MsoNormal>When a program is linked, the linker assumes the text and
+data sections of a program will be laid out in a certain pattern in memory.
+This allows the linker to set specific memory addresses for code and data
+references. We will call this pattern the <b>Executable Image</b>. Most of the
+work for this project will be to determine what the executable image should be
+for the loaded program (by using the ELF headers) and to copy the sections of
+the program to the correct places in memory so that the program will be laid
+out as the linker assumed. If the program is not laid out right, it will not
+run correctly.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>In addition to laying out the sections of the program
+correctly, you will need to allocate some extra memory at the end of the
+executable image that will be used as the stack space for the program as it
+runs. For this project, you should make the stack 4096 bytes. The stack should
+begin immediately after the end of the data section.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>After your code has determined how much space is needed for
+the program and the stack, you should round the total size of the memory
+allocated for the executable image up to an even multiple of 4096 bytes (this
+will become important in later projects). For rounding, you might want to use 
+the function <tt>Round_Up_To_Page()</tt> defined in <tt>mem.h</tt>.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><b>ELF File Format<o:p></o:p></b></p>
+
+<p class=MsoNormal>The ELF file format is describe in the <a
+href="http://www.cs.umd.edu/~hollings/cs412/s03/prog1/elf.pdf">ELF
+Specification</a>. The most relevant sections for this project are 1.1 to 1.4
+and 2.1 to 2.7. </p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The steps involved in identifying the sections of the ELF
+file are:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>1) read the <b>ELF Header</b>. The ELF header will always be
+at the very beginning of an ELF file. The ELF header contains information on
+how to...</p>
+
+<p class=MsoNormal>2) find the <b>Program Headers</b>, which specify where in
+the file to find the text and data sections and where they should end up in the
+executable image.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>There are a few simplifying assumptions you can make about
+the types and location of program headers. In the files you will be working
+with, there will always be one text header and one data header. The text header
+will be the first program header and the data header will be the second program
+header. This is not generally true of ELF files, but it will be true of the
+programs you will be responsible for.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The file <b>ELF.h</b> provides data types for structures
+which match the format of the ELF and program headers. See <b><a href="#cast">A
+trick in C: casting a pointer to a structure</a> </b>below for tips on how to
+parse the headers.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>This diagram shows the relationship between the <b>ELF File
+Image</b> and the <b>Executable Image</b>:</p>
+
+<p class=MsoNormal><!--[if gte vml 1]><v:shapetype id="_x0000_t75" coordsize="21600,21600"
+ o:spt="75" o:preferrelative="t" path="m@4@5l@4@11@9@11@9@5xe" filled="f"
+ stroked="f">
+ <v:stroke joinstyle="miter"/>
+ <v:formulas>
+  <v:f eqn="if lineDrawn pixelLineWidth 0"/>
+  <v:f eqn="sum @0 1 0"/>
+  <v:f eqn="sum 0 0 @1"/>
+  <v:f eqn="prod @2 1 2"/>
+  <v:f eqn="prod @3 21600 pixelWidth"/>
+  <v:f eqn="prod @3 21600 pixelHeight"/>
+  <v:f eqn="sum @0 0 1"/>
+  <v:f eqn="prod @6 1 2"/>
+  <v:f eqn="prod @7 21600 pixelWidth"/>
+  <v:f eqn="sum @8 21600 0"/>
+  <v:f eqn="prod @7 21600 pixelHeight"/>
+  <v:f eqn="sum @10 21600 0"/>
+ </v:formulas>
+ <v:path o:extrusionok="f" gradientshapeok="t" o:connecttype="rect"/>
+ <o:lock v:ext="edit" aspectratio="t"/>
+</v:shapetype><v:shape id="_x0000_i1025" type="#_x0000_t75" style='width:9in;
+ height:405.75pt'>
+ <v:imagedata src="./elfdiagram.jpg" o:title="ELFdiagram"/>
+</v:shape><![endif]--><![if !vml]><img border=0 src="./elfdiagram.jpg" ><![endif]></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><b>Project Requirements:<o:p></o:p></b></p>
+
+<p class=MsoNormal>You should start this project with the new GeekOS
+distribution in <a href="proj1.tar.gz">proj1.tar.gz</a>. This distribution
+contains the same code as the proj0 distribution, with the addition of several
+files that add new functionality and a file that provides much of the structure
+for the code you will write for this project.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The biggest addition is a simple filesystem for GeekOS
+called PFAT. PFAT provides the function <span style='font-family:"Courier New"'>ReadFileAndAllocate()</span>,
+which will read a named file off of the disk and into a buffer in memory. The
+&quot;disks&quot; that bochs reads from are just files in the LINUX filesystem.
+The disks are configured in the .bochsrc file.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>There is also a new subdirectory called elfProgs. This
+directory contains a file called a.c which contains the source code for the ELF
+program you will need to load. There is also a Makefile in this directory that
+compiles a.c and builds an ELF file called a.exe. You will need to gmake in the
+elfProgs directory before you can load the program. The Makefile will also copy
+a.exe into hd.img, which is the file for the C: drive on bochs. The path name
+for a.exe will be &quot;/c/a.exe&quot;.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>There is also a new subdirectory called buildFat. This
+contains a program called buildFat which can add files to PFAT drives. It is
+used by the Makefile in elfProgs.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The order of compilation should be:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<ol style='margin-top:0in' start=1 type=1>
+ <li class=MsoNormal style='mso-list:l0 level1 lfo1;tab-stops:list .5in'>gmake
+     in the buildFat directory (this only needs to be done the first time you
+     compile)</li>
+ <li class=MsoNormal style='mso-list:l0 level1 lfo1;tab-stops:list .5in'>gmake
+     in the main project directory (proj1)</li>
+ <li class=MsoNormal style='mso-list:l0 level1 lfo1;tab-stops:list .5in'>gmake
+     in the elfProgs directory (this only need to be done the first time you
+     compile, unless you change a.c or you remove the hd.img file)</li>
+</ol>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Code has been added to main.c to start a new thread that
+will run a function called Spawner that calls your code to load the ELF file
+and then executes the program as you have set it up.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Your code to load the ELF file will go into ELF.c, where you
+must complete the Read_ELF_Executable() function. You will need to parse the
+ELF headers, malloc a piece of memory big enough for the executable image
+(including the stack), copy the text and data sections from the ELF file image
+to the correct places within this memory, and fill in the Loadable_Program
+structure that will provide information to our functions (and later to your
+functions) that will run the code. You should also free the buffer that was
+read in by ReadFileAndAllocate().</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>You will know you have loaded the program correctly if you
+see the following output when you run bochs:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.25in'><span style='font-family:"Courier New"'>Hi
+! This is the first string<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.25in'><span style='font-family:"Courier New"'>Hi
+! This is the second string<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.25in'><span style='font-family:"Courier New"'>Hi
+! This is the last string<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.25in'><span style='font-family:"Courier New"'>If
+you see this you're happy</span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>If your program prints these lines, you'll know that you've
+done it correctly. There are some other debug statements that will be printed
+too.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+<p class=MsoNormal><a name=cast><b>A trick in C: casting a pointer to a
+structure</b></a><b><o:p></o:p></b></p>
+
+<p class=MsoNormal>Part of this project involves parsing the ELF header
+structures that were read from the file. There is a specification of exactly
+how the elements of the header will be laid out on disk. There's a simple way
+in C to access the different fields of the header as the fields of a C
+structure.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>In the file ELF.h, there are structures defined that
+correspond to the ELF header and the ELF program header:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<pre style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'>typedef struct {<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style='mso-tab-count:1'>    </span>unsigned<span style="mso-spacerun: yes">  </span>char<span
+style='mso-tab-count:1'>    </span>ident[16];<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style='mso-tab-count:1'>    </span>unsigned<span style="mso-spacerun: yes">  </span>short<span
+style='mso-tab-count:1'>   </span>type;<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style='mso-tab-count:1'>    </span>unsigned<span style="mso-spacerun: yes">  </span>short<span
+style='mso-tab-count:1'>   </span>machine;<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style='mso-tab-count:1'>    </span>unsigned<span style="mso-spacerun: yes">  </span>int<span
+style='mso-tab-count:1'>     </span>version;<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style='mso-tab-count:1'>    </span>unsigned<span style="mso-spacerun: yes">  </span>int<span
+style='mso-tab-count:1'>     </span>entry;<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style='mso-tab-count:1'>    </span>unsigned<span style="mso-spacerun: yes">  </span>int<span
+style='mso-tab-count:1'>     </span>phoff;<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style='mso-tab-count:1'>    </span>unsigned<span style="mso-spacerun: yes">  </span>int<span
+style='mso-tab-count:1'>     </span>sphoff;<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style='mso-tab-count:1'>    </span>unsigned<span style="mso-spacerun: yes">  </span>int<span
+style='mso-tab-count:1'>     </span>flags;<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style='mso-tab-count:1'>    </span>unsigned<span style="mso-spacerun: yes">  </span>short<span
+style='mso-tab-count:1'>   </span>ehsize;<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style='mso-tab-count:1'>    </span>unsigned<span style="mso-spacerun: yes">  </span>short<span
+style='mso-tab-count:1'>   </span>phentsize;<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style='mso-tab-count:1'>    </span>unsigned<span style="mso-spacerun: yes">  </span>short<span
+style='mso-tab-count:1'>   </span>phnum;<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style='mso-tab-count:1'>    </span>unsigned<span style="mso-spacerun: yes">  </span>short<span
+style='mso-tab-count:1'>   </span>shentsize;<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style='mso-tab-count:1'>    </span>unsigned<span style="mso-spacerun: yes">  </span>short<span
+style='mso-tab-count:1'>   </span>shnum;<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style='mso-tab-count:1'>    </span>unsigned<span style="mso-spacerun: yes">  </span>short<span
+style='mso-tab-count:1'>   </span>shstrndx;<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'>} ELFHeader;<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'>typedef struct {<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style="mso-spacerun: yes">   </span><span
+style='mso-tab-count:1'> </span>unsigned<span style="mso-spacerun: yes">  </span>int<span style="mso-spacerun: yes">   </span>type;<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style="mso-spacerun: yes">   </span><span
+style='mso-tab-count:1'> </span>unsigned<span style="mso-spacerun: yes">  </span>int<span style="mso-spacerun: yes">   </span>offset;<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style="mso-spacerun: yes">   </span><span
+style='mso-tab-count:1'> </span>unsigned<span style="mso-spacerun: yes">  </span>int<span style="mso-spacerun: yes">   </span>vaddr;<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style="mso-spacerun: yes">   </span><span
+style='mso-tab-count:1'> </span>unsigned<span style="mso-spacerun: yes">  </span>int<span style="mso-spacerun: yes">   </span>paddr;<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style="mso-spacerun: yes">   </span><span
+style='mso-tab-count:1'> </span>unsigned<span style="mso-spacerun: yes">  </span>int<span style="mso-spacerun: yes">   </span>fileSize;<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style="mso-spacerun: yes">   </span><span
+style='mso-tab-count:1'> </span>unsigned<span style="mso-spacerun: yes">  </span>int<span style="mso-spacerun: yes">   </span>memSize;<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style="mso-spacerun: yes">   </span><span
+style='mso-tab-count:1'> </span>unsigned<span style="mso-spacerun: yes">  </span>int<span style="mso-spacerun: yes">   </span>flags;<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style="mso-spacerun: yes">   </span><span
+style='mso-tab-count:1'> </span>unsigned<span style="mso-spacerun: yes">  </span>int<span style="mso-spacerun: yes">   </span>alignment;<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'>} programHeader;<o:p></o:p></span></pre>
+
+<p class=MsoNormal style='text-indent:.25in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The data at the beginning of the ELF file is laid out in
+exactly the same pattern as the <span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>ELFHeader</span> structure: there are 16
+characters, followed by<span style="mso-spacerun: yes">  </span>2 short ints,
+followed by 5 ints, and so on. When you read in the ELF file, there will be a
+big chunk of memory containing the file contents and you will have a
+pointer-to-char that points to it.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>When you define a structure in C, the compiler will arrange
+things so that the memory for an instance of that structure will look exactly
+as you defined the structure. All the fields will be in the order you specified
+them, with no extra space in between. So the memory image that your char*
+points to is <b>exactly the same </b>as the memory image would be created if
+you created an <span style='font-family:"Courier New";mso-bidi-font-family:
+"Times New Roman"'>ELFHeader</span> structure.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>So, here's the crazy part. If you create a pointer-to-<span
+style='font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'>ELFHeader</span>,
+and you point it at the memory you read in, the code that knows how to pull
+fields out of an <span style='font-family:"Courier New";mso-bidi-font-family:
+"Times New Roman"'>ELFHeader</span> structure will be able to pull fields out
+of your memory. You will tell the pointer that the memory it's pointing at is
+an <span style='font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'>ELFHeader</span>
+structure, it will access the memory as if it were an<span style='font-family:
+"Courier New";mso-bidi-font-family:"Times New Roman"'> ELFHeader</span>
+structure, and everything will work because the memory really is <b>exactly the
+same </b>as an <span style='font-family:"Courier New";mso-bidi-font-family:
+"Times New Roman"'>ELFHeader</span> structure.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Here's an example. Say we have a <span style='font-family:
+"Courier New";mso-bidi-font-family:"Times New Roman"'>blah</span> structure
+defined as:</p>
+
+<pre><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-bidi-font-family:
+"Courier New"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'>typedef struct {<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style="mso-spacerun: yes">   </span><span
+style='mso-tab-count:1'> </span>int<span style="mso-spacerun: yes">   </span>number;<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style="mso-spacerun: yes">   </span><span
+style='mso-tab-count:1'> </span>char<span style='mso-tab-count:1'>  </span>name[10];<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'><span style='mso-tab-count:1'>    </span>int<span
+style='mso-tab-count:1'>   </span>age;<o:p></o:p></span></pre><pre
+style='text-indent:.25in'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-bidi-font-family:"Courier New"'>} blah;<o:p></o:p></span></pre><pre><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-family:"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></pre><pre><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-family:"Times New Roman"'>And we have a pointer-to-char that points to data we read in somewhere:</span><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-bidi-font-family:"Courier New"'><o:p></o:p></span></pre>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='text-indent:.25in'><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>char *data = ReadFileAndAllocate(...<o:p></o:p></span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>We can create a pointer-to-blah and point it at our data: </p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='text-indent:.25in'><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>blah *myBlah = (blah *) data;<o:p></o:p></span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>We cast the pointer to make <span style='font-family:"Courier New"'>myBlah</span>
+(well, the compiler, really...) think that <span style='font-family:"Courier New"'>data</span>
+is a pointer-to-blah, rather than a pointer-to-char.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Now we can access the fields of myBlah in the usual fashion:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='text-indent:.25in'><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>printf(&quot;My blah's name is:
+%s&quot;, myBlah-&gt;name);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New";mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal>Ain't C great?</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+</body>
+<hr>
+<script language="JavaScript">
+          <!---//hide script from old browsers
+          var theDate = new Date(document.lastModified);
+	  var theLocalDate = theDate.toLocaleString();
+          document.write( "<i>Last updated: "+ theLocalDate +"</i>");
+          //end hiding contents --->
+</script> 
+
+</html>

@@ -1,0 +1,11 @@
+# Frequency of Hello packets
+HELLO_INTERVAL 500
+
+# Interval to consider a node down
+DEAD_INTERVAL 2500
+
+# Topology flooding frequenc
+TOPOLOGY_INTERVAL 1000
+
+# Frequency of re-building routing table
+ROUTE_UPDATE_INTERVAL 10000

@@ -1,0 +1,183 @@
+
+<HTML>
+
+<HEAD>
+
+<TITLE>Operating Systems (412)</TITLE>
+
+</HEAD>
+
+<BODY TEXT="#000000" BGCOLOR="#D7D3D2" LINK="#78021C" VLINK="#7F6666"
+ALINK="#FF FFFF" BACKGROUND="marble.gif">
+
+
+<H2 align=center>CMSC 412</h2>
+<h1 align=center>Operating Systems</H1>
+
+<center>
+<table>
+<tr>
+    <td width = 250><b>Professor:</b>
+    <td width = 250><b>TAs:</b>
+    <td wdith = 250> 
+    <td wdith = 250>
+</tr>
+<tr>
+<td width = 250><a href="http://www.cs.umd.edu/~hollings">Dr. Jeff Hollingsworth</a>
+<td width = 250><a href="http://www.cs.umd.edu/~dgreenfi">David Greenfieldboyce</a>
+<td width = 250><a href="http://www.cs.umd.edu/~sri">Srinivasan Parthasarathy</a>
+<td width = 250><a href="http://www.cs.umd.edu/~aram">Aram Khalili</a>
+</tr>
+<tr>
+<td>      4155 AV Williams      
+<td>1151 AV Williams
+<td>1151 AV Williams
+<td>1151 AV Williams
+</tr><tr>
+<td>      301 405-2708          <td>
+</tr><tr>
+<td><a href="mailto:hollings@cs.umd.edu?subject=CMSC 412">hollings@cs.umd.edu</a>
+<td><a href="mailto:dgreenfi@cs.umd.edu?subject=CMSC 412">dgreenfi@cs.umd.edu</a>
+<td><a href="mailto:sri@cs.umd.edu?subject=CMSC 412">sri@cs.umd.edu</a>
+<td><a href="mailto:aram@cs.umd.edu?subject=CMSC 412">aram@cs.umd.edu</a>
+</tr><tr>
+    <td>      Office Hours:         
+    <td>Office Hours:
+    <td>Office Hours:
+    <td>Office Hours:
+</tr><tr>
+<td>	Tu 11-12	
+<td>	Tu 10:45-12:30
+<td>	 M  1-3
+<td>	 M 12-2
+</tr><tr>
+<td>	Th 11-12
+<td>	Fi 8:30-10:45
+<td>	Tu  3-5
+<td>	Tu  2-4
+</table>
+</center>
+
+<TABLE>
+<TR VALIGN=CENTER>
+<TD ALIGN=RIGHT>
+<A HREF="fromTA/index.shtml"><IMG SRC="smallHotNews.gif" ALT="Hot News" BORDER=0
+HEIGHT=103 WIDTH=90></A>
+</TD><TD>
+<H2><A HREF="hotNews">Hot News</A></H2>
+<p>
+<font color="red">
+Project #1 - Deadline Extended until 2/27/03 due to snow conditions.
+<p>
+Project #3 - Deadline Extended until 4/11/03 - 5:00 PM.
+<p>
+Project #4 - Deadline Extended until midnight
+<p>
+A summary of <a href="readingList.html">reading assignments</a> has been posted.
+
+</font>
+
+</table>
+
+<P>
+This page contains information relating to the Course CS412 on
+operating systems offered during the Spring 2003 semester. 
+<P>
+
+<p>
+<B>Academic Integrity:</B>
+
+<P>&quot;Integrity without knowledge is weak and useless, and knowledge
+without integrity is dangerous and dreadful.&quot; Samuel Johnson (The
+History of Rasselas, ch. 41 (1759)). </P>
+
+<P>
+Please read the statement on <A href="integrity.html">academic integrity. </A>
+<P>
+
+<B>Handouts:</B> 
+<MENU>
+<LI><A href="slyb.shtml">Syllabus</A> <A href="slyb.pdf">(PDF)</A>
+</MENU>
+
+<B>Exams:</B> 
+<MENU>
+<LI>Midterm #1 - 3/6/03 (in class) (<a href="exam1Soln.html">soln</a>)
+<menu>
+<li><a href="sampleExam1a.html">Sample Exam #1</a>,
+<li><a href="sampleExam1b.html">Sample Exam #2</a>,
+(<a href="sampleExam1b.soln.html">Solution</a>)
+<li><a href="sampleExam1c.html">Sample Exam #3</a>,
+(<a href="sampleExam1c.soln.html">Solution</a>)
+</menu>
+<LI>Midterm #2 - 4/15/03 (in class) (<a href="exam2Soln.html">soln</a>)
+<menu>
+<li><a href="sampleExam2a.html">Sample Exam #1</a>,
+<li><a href="sampleExam2b.html">Sample Exam #2</a>,
+(<a href="sampleExam2b.soln.html">Solution</a>)
+<li><a href="sampleExam2c.html">Sample Exam #3</a>,
+</menu>
+<li>Final - 5/17/03 (8:00 - 10:00 AM)
+<menu>
+<li><a href="sampleFinal1.shtml">Sample Final #1</a>,
+<li><a href="sampleFinal2.shtml">Sample Final #2</a>,
+<li><a href="sampleFinal3.html">Sample Final #3</a>,
+</menu>
+
+</menu>
+
+<B>Lectures:</B> 
+<MENU>
+<li><a href="lectures/lect01/index.shtml">Lecture 1 (1/28/2003)</a>
+<li><a href="lectures/lect02/index.shtml">Lecture 2 (1/30/2003)</a>
+<li><a href="lectures/lect03/index.shtml">Lecture 3 (2/4/2003)</a>
+<li><a href="lectures/lect04/index.shtml">Lecture 4 (2/6/2003)</a>
+<li><a href="lectures/lect05/index.shtml">Lecture 5 (2/11/2003)</a>
+<li><a href="lectures/lect06/index.shtml">Lecture 6 (2/13/2003)</a>
+<li><a href="lectures/lect07/index.shtml">Lecture 7 (2/20/2003)</a>
+<li><a href="lectures/lect08/index.shtml">Lecture 8 (2/25/2003)</a>
+<li><a href="lectures/lect09/index.shtml">Lecture 9 (2/27/2003)</a>
+<li><a href="lectures/lect10/index.shtml">Lecture 10 (3/4/2003)</a>
+<li><a href="lectures/lect11/index.shtml">Lecture 11 (3/11/2003)</a>
+<li><a href="lectures/lect12/index.shtml">Lecture 12 (3/13/2003)</a>
+<li><a href="lectures/lect13/index.shtml">Lecture 13 (3/18/2003)</a>
+<li><a href="lectures/lect14/index.shtml">Lecture 14 (3/20/2003)</a>
+<li><a href="lectures/lect15/index.shtml">Lecture 15 (4/1/2003)</a>
+<li><a href="lectures/lect16/index.shtml">Lecture 16 (4/3/2003)</a>
+<li><a href="lectures/lect17/index.shtml">Lecture 17 (4/8/2003)</a>
+<li><a href="lectures/lect18/index.shtml">Lecture 18 (4/10/2003)</a>
+<li><a href="lectures/lect19/index.shtml">Lecture 19 (4/17/2003)</a>
+<li><a href="lectures/lect20/index.shtml">Lecture 20 (4/22/2003)</a>
+<li><a href="lectures/lect21/index.shtml">Lecture 21 (4/24/2003)</a>
+<li><a href="lectures/lect22/index.shtml">Lecture 22 (4/29/2003)</a>
+<li><a href="lectures/lect23/index.shtml">Lecture 23 (5/1/2003)</a>
+<li><a href="lectures/lect24/index.shtml">Lecture 24 (5/6/2003)</a>
+<li><a href="lectures/lect25/index.shtml">Lecture 25 (5/13/2003)</a>
+<!--- XXLECTNUM --->
+</menu>
+
+<B>Projects </B>(<A href="latePolicy.shtml">late policy</a>): 
+
+<MENU>
+<LI><A href="prog0/index.shtml">Project #0 (Due 2/4/03)</A>
+<LI><A href="prog1/index.shtml">Project #1 (Due 2/25/03)</A> <font color="red">- Changed to 2/27/03 due to snow</font>
+<LI><A href="prog2/index.shtml">Project #2 (Due 3/17/03)</A> 
+<LI><A href="prog3/index.shtml">Project #3 (Due 4/10/03)</A>
+<LI><A href="prog4/index.shtml">Project #4 (Due 5/1/03) - extended 7 hours to midnight</A> 
+<LI><A href="prog5/index.shtml">Project #5 (Due 5/14/03 - 5:00 PM)</A> 
+</MENU>
+
+<P>
+This page will be updated throughout the class to provide online
+access to course materials. 
+This page and all problem sets, lecture notes, and exams linked to it
+are copyrighted.
+Use of these pages for the class CMSC412 at the University of Maryland is
+permitted.
+Any other use requires permission of the author (Jeffrey K. Hollingsworth,
+<a href="mailto:hollings@cs.umd.edu?subject=CMSC 412">hollings@cs.umd.edu</a>).
+
+</BODY>
+</HTML>
+
+

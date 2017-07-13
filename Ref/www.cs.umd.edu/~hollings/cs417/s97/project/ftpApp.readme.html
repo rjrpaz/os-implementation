@@ -1,0 +1,22 @@
+<center>
+<h1>
+CMSC417 FTP Application README
+</h1>
+</center>
+<P>
+The FTP application is both a client and a server.  Each copy spawns a thread
+for the server and one for the client command line prompt.  In addition, each
+active connection results in a thread being created.
+<P>
+To compile this application, you need to collect your network and session
+code into a UNIX archive file.  To create an archive file, add the
+following lines to your project Makefile:
+<P>
+<pre>
+libcmsc417.a: <all of your .o files>
+	ar crv libcmsc417.a $?
+</pre>
+<P>
+You then need to set the NETWORK macro in the Makefile to be the path to your
+libcmsc417.a file.  For example ../network/libcmsc417.a. 
+<P>

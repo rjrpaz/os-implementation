@@ -1,0 +1,351 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 11 (filtered)">
+<title>CMSC 412 Project #6 </title>
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:"MS Mincho";
+	panose-1:2 2 6 9 4 2 5 8 3 4;}
+@font-face
+	{font-family:"\@MS Mincho";
+	panose-1:0 0 0 0 0 0 0 0 0 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	font-family:"Times New Roman";}
+h1
+	{margin-right:0pt;
+	margin-left:0pt;
+	font-size:24.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+h2
+	{margin-right:0pt;
+	margin-left:0pt;
+	font-size:18.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+h3
+	{margin-right:0pt;
+	margin-left:0pt;
+	font-size:13.5pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+h4
+	{margin-right:0pt;
+	margin-left:0pt;
+	font-size:11.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+p
+	{margin-right:0pt;
+	margin-left:0pt;
+	font-size:11.0pt;
+	font-family:"Times New Roman";}
+pre
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Courier New";}
+tt
+	{font-family:"Courier New";}
+@page Section1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 54.0pt 72.0pt 54.0pt;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0pt;}
+ul
+	{margin-bottom:0pt;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US link=blue vlink=purple>
+
+<div class=Section1>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:18.0pt'>CMSC 412 Project #6</span></b><span style='font-size:
+18.0pt'> </span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:13.5pt'>File System (Aka Project #5 Part 2)</span></b><span
+style='font-size:13.5pt'> </span><span style='font-size:12.0pt'><br>
+<b>Due Tuesday, May 11, at 6:00pm </b></span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:12.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+style='font-size:12.0pt'>  </span><b><a href="p6_grading.html">Grading Criteria</a></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+style='font-size:12.0pt'>  <b><a href="proj6_section.pdf">Slides used in
+recitation</a> </b></span></p>
+
+<p class=MsoNormal><b><span style='font-size:12.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:18.0pt'>Introduction </span></b></p>
+
+<p class=MsoNormal style='margin-top:3.1pt;margin-right:0pt;margin-bottom:3.1pt;
+margin-left:0pt'><span style='font-size:12.0pt'>The purpose of this project is
+to add the notion of users and access control lists to the Geek OS
+kernel.&nbsp; This will allow different processes to access only files they are
+allowed to see.</span></p>
+
+<p class=MsoNormal style='margin-top:3.1pt;margin-right:0pt;margin-bottom:3.1pt;
+margin-left:0pt'><span style='font-size:12.0pt'>&nbsp;</span></p>
+
+<p class=MsoNormal><b><span style='font-size:18.0pt'>Users and I/O Protection</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>This project will also
+introduce the idea of user's and I/O protection to the OS.&nbsp; Adding the
+system calls </span><span style='font-size:10.0pt;font-family:"Courier New"'>SetAcl</span><span
+style='font-size:12.0pt'>, </span><span style='font-size:10.0pt;font-family:
+"Courier New"'>SetSetUid</span><span style='font-size:12.0pt'>, and </span><span
+style='font-size:10.0pt;font-family:"Courier New"'>SetEffectiveUid</span><span
+style='font-size:12.0pt'> will do this.&nbsp; The key idea to adding users is
+simply to have a field in the user context data structure that identifies the
+current user that is running this process. The user will be represented by an
+integer called the uid.&nbsp; There is a special user (uid 0) that is the super
+user. The super user (and only the super user) may change the user id of a
+running process via the </span><span style='font-size:10.0pt;font-family:"Courier New"'>SetEffectiveUid
+</span><span style='font-size:12.0pt'>system call.&nbsp; If the uid of a
+process is 0 (superuser) when this system call is made, the uid is changed to
+the passed uid. The </span><span style='font-size:10.0pt;font-family:"Courier New"'>GetUid
+</span><span style='font-size:12.0pt'>call returns the current uid of the
+process. When the shell starts, it runs with uid 0, i.e. super-user privileges.
+When a process is spawned, it normally will inherit the uid of the parent
+process.&nbsp; There may be instances where a process may need more rights than
+its parent (think of the passwd command in unix). In order to allow this, there
+is a special bit, setUid stored in the GOSFSFileNode. If this bit is enabled
+(set to 1) for the executable, the process should inherit the uid of  the owner
+of the <b>executable file</b> rather than the parent process. The function </span><span
+style='font-size:10.0pt;font-family:"Courier New"'>SetSetUid</span><span
+style='font-size:12.0pt'> is used to set this bit for a file. Each file in the
+file system can be “owned” by exactly one user. </span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'> </span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>The uid is also used by the
+file system to check if a particular user is able to perform a particular
+operation on a given file.&nbsp; A process running with the uid of the
+superuser can open any file regardless of the ACLs. If the uid is any other
+value, the I/O operation will only succeed if the uid has appropriate privilege
+based on the ACL of the file (or directory).&nbsp; For the Open system call, if
+the file exists the current uid must have the requested access level (i.e. Read
+privilege if the file is being opened with read access).&nbsp; If the file does
+not exist, then the user must have write access to the parent directory. The
+read, write, seek, stat, and close system calls do <b>not</b> require checking
+the ACL since the check is made on the Open call. The createDirectory call
+requires write access to the parent directory. The delete and setAcl calls
+require write access to the named file. </span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>The </span><span
+style='font-size:10.0pt;font-family:"Courier New"'>SetAcl </span><span
+style='font-size:12.0pt'>system call sets the file permissions for the passed
+uid on the named file.&nbsp; If the permissions are 0, this should delete any
+access that uid had to the passed file.&nbsp; If the request is for a new uid
+to have some privilege for a file, and the ACL table for that file is full, you
+should return -1 as an error code.&nbsp; This code should also be used for
+invalid permissions or for non-existent files.  The SetAcl system call can also
+be used to change the owner of a file.  However, the effective id of the
+process making the SetAcl system call must be 0 if you are changing a file’s
+ownership. The files owner is defined as the uid of the zeorith entry of the
+ACL table for that file. All ACL information must be stored on disk as part of
+the file’s meta data (i.e. in the GOSFSfileNode).</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>No new project files will be
+provided for this project.  You should use your project #5 implementation as
+the starting point. An updated gosfs.h file has been checked into the svn
+repository for project #5 that includes the ACL field.</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'> </span></p>
+
+<p class=MsoNormal><b><span style='font-size:18.0pt'>New System Calls</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:13.5pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>The following system calls
+will need to be added to your operating system.</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>&nbsp;</span></p>
+
+<table class=MsoNormalTable border=1 cellpadding=0 width="115%"
+ style='width:115.56%'>
+ <tr>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><b><span style='font-size:12.0pt'>Call/User Function</span></b></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><b><span style='font-size:12.0pt'>Return on success</span></b></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><b><span style='font-size:12.0pt'>Return on failure</span></b></p>
+  </td>
+  <td width="23%" style='width:23.78%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><b><span style='font-size:12.0pt'>Reasons for failure</span></b></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><b><span style='font-size:12.0pt'>Comment</span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>SYS_SET_ACL</span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt'>SetAcl(char *name, int uid,
+  int permissions)</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>0</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>-1</span></p>
+  </td>
+  <td width="23%" style='width:23.78%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>name</span><span style='font-size:12.0pt'> does not exist </span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  illlegal value for </span><span style='font-size:
+  10.0pt;font-family:"Courier New"'>uid</span><span style='font-size:12.0pt'>
+  (it must be greater than 0) </span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  illegal value for </span><span style='font-size:
+  10.0pt;font-family:"Courier New"'>permissions</span><span style='font-size:
+  12.0pt'> </span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  the ACL table for </span><span style='font-size:
+  10.0pt;font-family:"Courier New"'>name</span><span style='font-size:12.0pt'>
+  is full </span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  The permissions values are flags and may be OR'ed
+  together in a call. For example: </span></p>
+  <ul type=disc>
+   <li class=MsoNormal><span style='font-size:12.0pt'>O_READ </span></li>
+   <li class=MsoNormal><span style='font-size:12.0pt'>O_WRITE </span></li>
+   <li class=MsoNormal><span style='font-size:12.0pt'>O_READ|O_WRITE</span></li>
+   <li class=MsoNormal><span style='font-size:12.0pt'>O_OWNER </span></li>
+   <li class=MsoNormal><span style='font-size:12.0pt'>0 (zero) </span></li>
+  </ul>
+  </td>
+ </tr>
+ <tr>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>SYS_SET_SET_UID</span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt'>SetSetUid(char *name, int
+  setUid)</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>0</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>-1</span></p>
+  </td>
+  <td width="23%" style='width:23.78%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  </span><span style='font-size:10.0pt;font-family:
+  "Courier New"'>name</span><span style='font-size:12.0pt'> does not exist </span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  illegal value for </span><span style='font-size:
+  10.0pt;font-family:"Courier New"'>setUid</span><span style='font-size:12.0pt'>
+  (it can only be 0 or 1) </span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  This call will set the setUid bit in the
+  GOSFSFileNode structure for the file corresponding to </span><span
+  style='font-size:10.0pt;font-family:"Courier New"'>name</span><span
+  style='font-size:12.0pt'> </span></p>
+  </td>
+ </tr>
+ <tr>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>SYS_SET_EFFECTIVE_UID</span></p>
+  <p class=MsoNormal><span style='font-size:12.0pt'>SetEffectiveUid(int uid)</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>0</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>-1</span></p>
+  </td>
+  <td width="23%" style='width:23.78%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt;font-family:Symbol'>·</span><span
+  style='font-size:12.0pt'>  current Uid is not superuser </span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>Set the user id for the
+  current process</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>GetUid()</span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>uid </span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>-1</span></p>
+  </td>
+  <td width="23%" style='width:23.78%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>&nbsp; </span></p>
+  </td>
+  <td style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><span style='font-size:12.0pt'>Return the user id of the
+  current process </span></p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal><a name=redirection><b><span style='font-size:13.5pt'>&nbsp;</span></b></a></p>
+
+<p class=MsoNormal><b><span style='font-size:13.5pt'>Testing</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:13.5pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>You should modify your
+implementation of stat from the first part of this project to return the ACL
+information and setuid information as part of the </span>fileStat.</p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>You should write some new
+user mode programs that test out your new system calls. The examples in the
+directory src/user should provide a starting point.</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt'>&nbsp;</span></p>
+
+</div>
+
+</body>
+
+</html>

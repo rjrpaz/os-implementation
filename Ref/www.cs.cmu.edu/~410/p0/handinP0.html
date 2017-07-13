@@ -1,0 +1,156 @@
+<!-- ========================================= -->
+<!-- Page title (begin it with "15-410") ===== -->
+<!-- ========================================= -->
+
+
+
+
+
+<!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 3.2//EN&quot;>
+<html>
+<head><title>15-410 Project 0 Hand-in</title>
+</head>
+<body bgcolor=white>
+<table width="100%" height="100%">
+
+<tr><td valign=top width=132>
+<table width=132 bgcolor=#cccccc height="100%">
+<tr><td height=140><center><font size=-1><b>Carnegie Mellon</b></font><br>
+<img alt="SCS logo" src="/~410/img/scslogo.gif"><br>
+<font size=-1><b>Computer Science Department</b></font></center></td></tr>
+<tr><td height=30><a href="/~410"><img alt="home" src="/~410/img/home.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/syllabus.html"><img alt="syllabus" src="/~410/img/syllabus.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/staff.html"><img alt="staff" src="/~410/img/staff.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/schedule.html"><img alt="schedule" src="/~410/img/schedule.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/lecture.html"><img alt="lecture" src="/~410/img/lecture.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/projects.html"><img alt="projects" src="/~410/img/projects.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/homeworks.html"><img alt="homeworks" src="/~410/img/homeworks.gif" border=0></a></td></tr>
+<tr><td>&nbsp;</td></tr></table>
+
+</td>
+
+<td width=10>&nbsp;</td>
+
+<td height="100%" valign=top>
+<br>
+
+<H1 ALIGN=CENTER>15-410 Project 0 Hand-in</H1>
+<HR>
+<!-- Body goes here. -->
+ 
+
+<!-- ========================================= -->
+<!-- Content Begins ========================== -->
+<!-- ========================================= -->
+
+<OL>
+
+<LI><P>
+Your files should be placed in your <STRONG>p0</STRONG> directory,
+<STRONG>not</STRONG> somewhere else, such as <TT>hw1</TT>.  If you
+haven't stored files in your AFS volume yet, please
+refer to <A HREF="/~410/afs.html">About your 15-410 AFS Space</A>
+for help if you run into trouble.  We are <STRONG>not responsible</STRONG>
+if you wait until 23:50 to try out your AFS volume and run into trouble.
+</P>
+
+<LI><P>
+Please do <STRONG>not</STRONG> add levels of indirection when
+turning in your files.  For example, do not place your
+<TT>traceback.c</TT> in <TT>p0/project_zero/traceback/traceback.c</TT> or
+turn in <TT>p0/my_project_zero.tar.gz.bz2</TT>.  Please use the most
+straightforward arrangement, i.e., your <TT>p0</TT> directory
+should contain <TT>config.mk</TT>, 
+<TT>traceback/traceback.c</TT>, etc.
+
+<LI><P>
+When the deadline arrives, we will write-lock your hand-in directory.
+You will continue to be able to view the contents.
+</P>
+
+<!-- BEGIN COMMENTED-OUT SECTION -->
+
+<!-- END COMMENTED-OUT SECTION -->
+
+<LI><P>
+Your deliverables are:
+<UL>
+<LI>Various .c and .s files.
+<LI>.h files
+<LI>README.dox (if you wrote one for P0)
+<LI>Makefile
+<LI>Any *.mk files -- since you needed to configure them
+for your project to build/print/etc., if you don't turn them in,
+your project won't build/print/etc....
+</UL></P>
+<P>
+Please <STRONG>do not include</STRONG>:
+<UL>
+<LI>.o files
+<LI><EM>executable</EM> files such as <TT>test</TT>
+<LI>.a files
+</UL>
+<!-- (so you should probably <TT>make clean</TT> before midnight). -->
+</P>
+
+<P>
+Things not mentioned on either list above are <STRONG>at your discretion</STRONG>.
+You can assume that if
+we gave them to you once we won't mind giving them to you
+again.
+</P>
+
+<P>You can roughly simulate how we will build your code as follows:</P>
+
+<OL COMPACT>
+<LI>% <KBD>cd /afs/cs.cmu.edu/academic/class/15410-s11/usr/$USER/p0</KBD>
+<LI>% <KBD>make clean</KBD>
+<LI>% <KBD>make update</KBD>
+<LI>% <KBD>du -sk .</KBD>
+<LI>% <KBD>make</KBD>
+<LI>% <KBD>make verify</KBD>
+<!-- BEGIN COMMENTED-OUT SECTION -->
+
+<!-- END COMMENTED-OUT SECTION -->
+<LI>% <KBD>make clean</KBD>
+</OL>
+
+<P>The "<KBD>du</KBD>" step reports the disk space usage of
+the directory you're in, in kilobytes.  Anything over 150 kilobytes
+for Project 0 probably means you're turning in something unnecessary.
+The final "<KBD>make clean</KBD>" should leave things in a nice
+hand-in state.</P>
+
+<LI><P>
+If you need to take a late day for Project 0 (you shouldn't!),
+use the <A HREF="/~410/late.html">Late Day Registration Page</A>,
+by roughly 00:30.
+Assuming your message is received,
+the next morning somebody will unlock your hand-in
+directory so you can again save your work.
+<!-- BEGIN COMMENTED-OUT SECTION -->
+
+<!-- END COMMENTED-OUT SECTION -->
+Of course, your request must be in accordance with the
+policy published in <A HREF="/~410/syllabus.html">the syllabus</A>.
+</P>
+
+</OL>
+
+<!-- ========================================= -->
+<!-- Content Ends ============================ -->
+<!-- ========================================= -->
+
+<!-- End body. -->
+
+
+</td></tr>
+<tr><td></td><td></td><td align=center>
+
+<HR>
+<P ALIGN=CENTER>[Last modified Wednesday January 14, 2009]</P></td></tr>
+</table>
+
+</body>
+</html>
+ 

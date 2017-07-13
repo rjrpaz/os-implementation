@@ -1,0 +1,164 @@
+
+<HTML>
+
+<HEAD>
+<TITLE>CMSC 412 - Hot News</TITLE>
+</HEAD>
+
+<BODY
+	TEXT="#000000" BGCOLOR="#d7d3d2"
+	LINK="#0000FF" VLINK="#008080" ALINK="#FF0000"
+	>
+
+<H1 ALIGN=CENTER><IMG
+	SRC="hotNews.gif" ALT="CS 412 HOTNEWS" HEIGHT=75 WIDTH=281></H1>
+
+
+<h2 align=center>for
+<a href="http://www.cs.umd.edu/~hollings/cs412/s02">CMSC&nbsp;412</a></h2>
+
+<div align="center"><font face="Helvetica">
+This page contains late breaking announcements
+from Dr.&nbsp;Hollingsworth and the&nbsp;TAs.<br>
+Please check this page a couple of times a week.
+</font></div> 
+
+<hr>
+
+<p>
+Additional steps to load fonts on WAM machines:
+<pre>
+1- Start XFS
+    xfs -config /afs/wam.umd.edu/home/wam/s/o/sodre/pub/bochs.xfs &
+
+2- Set XFS in the current display
+    xset +fp tcp/you.are.working.machine:7100
+
+3- Rehash it
+    xset fp rehash
+</pre>
+<hr>
+<P>
+The submit program is now installed in ~jh41201/BIN/submit.
+<hr>
+<p>
+Please delete the file hd.img before submitting your program.
+<hr>
+<p>
+Buildfat has been added to the list of files on the project #1 web page.
+It should be a subdirectory off your main project1 directory.
+<hr>
+<p>
+The project should use only one TSS.  When you switch to user mode,
+just update the one TSS to refer to the appropriate LDT.
+<p>
+When you dispatch a user mode process, you will need to load the
+ldt selector for that process (via the assembler instruction lldt).
+You will probably need to add code to lowlevel.asm near the label
+(.restore) and in the function Restore_Thread to do this.
+<p>
+Likewise the various code/data/stack selectors for that process will get 
+pushed onto the stack so that the iret instruction can finish the context
+switch.
+<p>
+On context switch to use mode, you will also want to to set the TSS ring0 
+stack to be a stack for the kernel thread.  The easiest thing to do is to 
+set it to be the current kthread's stack plus one page.
+<hr>
+<p>
+There is an issue with the gcc compiler trying to use special inlined
+versions of string functions.  <b>The improved solution is to add
+the compiler flag -fno-builtin to the CFLAGS variable in the kernel
+Makefile.</b>
+<hr>
+<p>
+Clarification on setting up the ldt descriptor and ldtSelector. The
+following bit of code shows the sequence required.
+<pre>
+    context->ldtDescriptor = Allocate_Segment_Descriptor();
+    Init_LDT_Descriptor( context->ldtDescriptor, context->ldt, NUM_USER_LDT_ENTRIES );
+    index = Get_Descriptor_Index(context->ldtDescriptor);
+    context->ldtSelector = Selector( KERNEL_PRIVILEGE, TRUE, index );
+</pre>
+<hr>
+<p>
+Tips on debugging:  
+
+</menu>
+<li>
+change your .bochsrc file (last line) to be panic: action=fatal.  This will cause the
+simulator to stop on an error. You need bochs 1.2 (in ~hollings/bin/bochs12 for this
+option to be abvailable).
+<li>
+You can use gdb on kernel.exe and use the disas command to find out where in
+the kernel you code crashed (by looking around the value of the eip register when
+you get a crash.  Don't forget that you also need to double check if you died in user
+mode or kernel mode (though you should get a gpf that is cleaned up by the kernel
+when a user space program crashes).
+<li>
+The dump will also give you values for all of the registers and the segment registers.
+</menu>
+
+<hr>
+<p>
+<b>Bugs in GeekOS</b>
+We have located a couple of bugs in GeekOS.  You should follow the direction at
+<a href="destroyThread.html">destroyThread.html</a> to fix a problem in kthead.c
+and replace <a href="pfat.c">pfat.c</a>.
+
+<hr>
+Submission Guidlines:  All submissions should be an <b>uncompressed</b> 
+tar file and should not contain a directory name for the top directory.
+For example, extracting your tar file should produce all of the GeekOS
+source into the current working directory, not a subdirectory (such as p2).
+To do this, run tar from the directory your are submitting (i.e. tar cvf ../proj3.tar *).
+</BODY>
+
+<hr>
+Bug found in strcpy (in string.c).  There is a bug in strcpy.  It was failing to add a null
+character to the destination string when it gets copied.  The correct version is 
+<pre>
+char *strcpy(char *dest, const char *src)
+{
+    char *ret;
+
+    ret = dest;
+    while (*src) {
+	*dest++ = *src++;
+    }
+    *dest = '\0';
+    return ret;
+}
+</pre>
+<hr>
+<p>
+4/19/02 - Bug found in bitset.c, please download a new copy.  The call to memset had the paramters
+in the wrong order.
+<hr>
+<p>
+4/19/02 - The system call function associated with SYS_STAT is Stat(...) not State(...).
+</HTML>
+<hr>
+<p>
+4/20/02 Several bugs found in vfs.c.  A mutex has been added around mount
+table operations in vfs.c to prevent a possible race condition.  Also,
+the read call for PFAT filesystem would always return the first n
+bytes of a file.
+<hr>
+<p>
+5/8/02 There were a few things that may not have been clear in the project #5 handout, and one that is out write wrong.
+<p>
+<menu>
+<li>The description of setEffectiveUid is wrong it should read
+<br>
+	"If the uid of a process is **0** when this system call is made, the 
+	uid is changed to the passed uid."
+<li>
+The limit of the number of active message queues is 20.
+<li>
+A process needs write access to a file to change it's ACLs.
+<li>
+Delete does not require write access to a directory to run, it just needs write access to the file.
+<p>
+
+

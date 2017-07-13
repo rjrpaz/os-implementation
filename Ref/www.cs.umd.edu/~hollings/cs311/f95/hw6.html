@@ -1,0 +1,77 @@
+<HTML>
+
+<HEAD>
+
+<TITLE>CMSC 311-101 (Fall 1995)</TITLE>
+
+<META NAME="GENERATOR" CONTENT="Internet Assistant for Word 2.0z Beta">
+</HEAD>
+
+<BODY>
+
+<P>
+
+<CENTER>
+<B>CMSC 311- Computer Organization</B>
+<P>
+Fall 1995 - Assignment #6
+<P>
+<I>Due (at the beginning of class) Thursday, November 2</I>
+</CENTER>
+
+<OL>
+<LI>Design a 4-bit register with the ability either to parallel
+load, to (bitwise) AND its parallel inputs with its current state,
+or to (bitwise) OR its parallel inputs with its current state.
+Your register should have two inputs, S1 and S2, to control its
+function. The function table for the register is given below:
+
+<PRE WIDTH=40>
+S0   S1   Function     
+0    0    Do Nothing   
+0    1    Parallel load         
+1    0    Parallel AND          
+1    1    Parallel OR  
+</PRE>
+
+<LI>Design a circuit that performs a right circular shift of a
+four bit number by an arbitrary number of bits. Your circuit should
+have four input bits, four output bits and two control lines (S2,
+S1) that indicate the number of bit positions the input should
+be shifted (0, 1, 2, 3). The time to shift should <B>not</B> depend
+of the number of bits positions  being shifted.
+<LI>Design a combinational circuit that can compute any of the
+first eight of the logic operations (F0 thru F7) from Table 4-5
+in Mano (page 110). Your circuit should have data inputs x and
+y, a single output z, and select inputs to determine which function
+is to be computed (how many select inputs do you need?). Show
+a circuit diagram.
+<LI>From Mano, problem 4-17.
+
+
+<LI>Given the initial state of Mano's computer shown below, trace
+through its execution, and show the memory, PC, and AC after each
+instruction has executed. Assume PC and AC are zero at the start.
+
+<PRE WIDTH=20>
+000   2009   
+001   7200   
+002   300B   
+003   200A   
+004   7200   
+005   000B   
+006   7200   
+007   300B   
+008   7001   
+009   0101   
+00A   1010   
+00B   0001   
+</PRE>
+
+<LI>
+From Mano, problem 5-1.
+<LI>From Mano, problem 5-4.
+
+</BODY>
+
+</HTML>

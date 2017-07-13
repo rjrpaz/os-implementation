@@ -1,0 +1,1293 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./Assign6SampleSolution_files/filelist.xml">
+<title>CS 3120 Operating Systems, Summer 2003</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>hawkey</o:Author>
+  <o:Template>Normal</o:Template>
+  <o:LastAuthor>hawkey</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>91</o:TotalTime>
+  <o:Created>2003-08-03T12:14:00Z</o:Created>
+  <o:LastSaved>2003-08-03T12:14:00Z</o:LastSaved>
+  <o:Pages>4</o:Pages>
+  <o:Words>919</o:Words>
+  <o:Characters>5242</o:Characters>
+  <o:Company>Dalhousie University</o:Company>
+  <o:Lines>43</o:Lines>
+  <o:Paragraphs>10</o:Paragraphs>
+  <o:CharactersWithSpaces>6437</o:CharactersWithSpaces>
+  <o:Version>9.2720</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:553679495 -2147483648 8 0 66047 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoBodyTextIndent, li.MsoBodyTextIndent, div.MsoBodyTextIndent
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:1.5in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	mso-layout-grid-align:none;
+	text-autospace:none;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	font-weight:bold;}
+p.MsoDocumentMap, li.MsoDocumentMap, div.MsoDocumentMap
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	background:navy;
+	font-size:12.0pt;
+	font-family:Tahoma;
+	mso-fareast-font-family:"Times New Roman";}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:.75in .75in .75in .75in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+@list l0
+	{mso-list-id:125314225;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-1559456498 67698703 67698713 67698703 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l0:level1
+	{mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level2
+	{mso-level-number-format:alpha-lower;
+	mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level3
+	{mso-level-tab-stop:117.0pt;
+	mso-level-number-position:left;
+	margin-left:117.0pt;
+	text-indent:-.25in;}
+@list l1
+	{mso-list-id:1535773432;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-2041276 -501191188 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l1:level1
+	{mso-level-number-format:alpha-lower;
+	mso-level-tab-stop:1.25in;
+	mso-level-number-position:left;
+	margin-left:1.25in;
+	text-indent:-.25in;}
+@list l2
+	{mso-list-id:1935941923;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-681643684 -2115873676 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l2:level1
+	{mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l2:level2
+	{mso-level-number-format:alpha-lower;
+	mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l2:level3
+	{mso-level-number-format:roman-lower;
+	mso-level-tab-stop:1.5in;
+	mso-level-number-position:right;
+	text-indent:-9.0pt;}
+@list l2:level4
+	{mso-level-tab-stop:2.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+<!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="2050"/>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout></xml><![endif]-->
+</head>
+
+<body lang=EN-US style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<p class=MsoNormal style='mso-outline-level:1'>CS 3120 Operating Systems,
+Summer 2003</p>
+
+<p class=MsoNormal>Assignment 6: Sample Solution</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<ol style='margin-top:0in' start=1 type=1>
+ <li class=MsoNormal style='mso-list:l0 level1 lfo2;tab-stops:list .5in'>[6
+     points] Write the pseudo code (including appropriate initialization) for a
+     monitor solution to the following scenario:</li>
+</ol>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><i><span
+style='font-size:11.0pt'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></i></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='font-size:11.0pt'>A group of students are
+studying for an OS midterm. The students can study only while eating pizza.
+Each student repeatedly picks up a piece of pizza and then studies while eating
+the pizza. If a student finds that all the slices of the pizza are gone, the
+student goes to sleep until another pizza arrives. The first student to
+discover that the group is out of pizza phones Pizza Hut to order another pizza
+before eating the last piece. Each pizza has <i>S </i>slices. Write code to
+synchronize the student threads and the pizza delivery thread. Your solution
+should avoid deadlock and Pizza Delight should be phoned (i.e., wake up the
+delivery thread) exactly once each time a pizza is exhausted. No piece of pizza
+may be consumed by more than one student. </span><span style="mso-spacerun:
+yes"> </span></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'>Basic solution.<span style="mso-spacerun: yes">  </span><b>Bonus
+points<span style="mso-spacerun: yes">  </span>for covering startup conditions
+(student arrives and signals, but delivery guy isn't waiting for a signal yet -
+think of it like student leaves a message on PizzaHut's answering machine -
+Pizza Guy checks for messages to see if can deliver right away)<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'>monitor pizza{</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.25in;text-indent:.25in;mso-layout-grid-align:
+none;text-autospace:none'>int numSlices = 0;</p>
+
+<p class=MsoNormal style='margin-left:.25in;text-indent:.25in;mso-layout-grid-align:
+none;text-autospace:none'>cond okToEat;</p>
+
+<p class=MsoNormal style='margin-left:.25in;text-indent:.25in;mso-layout-grid-align:
+none;text-autospace:none'>cond okToDeliver;</p>
+
+<p class=MsoNormal style='margin-left:.25in;text-indent:.25in;mso-layout-grid-align:
+none;text-autospace:none'><b>boolean FirstStudent = True;<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:.25in;text-indent:.25in;mso-layout-grid-align:
+none;text-autospace:none'><b>boolean PendingOrder = False<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">   </span><span
+style='mso-tab-count:1'>      </span>procedure DeliverPizza{</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:1'>      </span><span
+style='mso-tab-count:1'>      </span><b>if (!PendingOrder)<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:2'>                  </span><span
+style='mso-tab-count:1'>      </span>okToDeliver.wait();</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:1'>      </span><span
+style='mso-tab-count:1'>      </span><b>else<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><b><span style='mso-tab-count:2'>                  </span><span
+style='mso-tab-count:1'>      </span>PendingOrder = False;<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:1'>      </span><span
+style='mso-tab-count:1'>      </span>numSlices = S;</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">   </span><span
+style='mso-tab-count:1'>   </span><span style='mso-tab-count:1'>      </span>okToEat.signal();</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:1'>      </span>}</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:1'>      </span>procedure
+PickUpSlice{</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:1'>      </span><span
+style='mso-tab-count:1'>      </span>if (numSlices&gt;1){</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:2'>                  </span><span
+style='mso-tab-count:1'>      </span>numSlices--;</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:2'>                  </span><span
+style='mso-tab-count:1'>      </span>if (okToEat.queue) //optional to check
+whether to signal or not</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:2'>                  </span><span
+style='mso-tab-count:1'>      </span><span style='mso-tab-count:1'>      </span>okToEat.signal();</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:1'>      </span><span
+style='mso-tab-count:1'>      </span>}</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:1'>      </span><span
+style='mso-tab-count:1'>      </span>if (numSlices==1){</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:2'>                  </span><span
+style='mso-tab-count:1'>      </span>numSlices--;</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:2'>                  </span><span
+style='mso-tab-count:1'>      </span>okToDeliver.signal();</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:1'>      </span><span
+style='mso-tab-count:1'>      </span>}</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:1'>      </span><span
+style='mso-tab-count:1'>      </span>if (numSlices==0){</p>
+
+<p class=MsoNormal style='text-indent:.5in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:1'>            </span><span
+style='mso-tab-count:1'>            </span><b>if (FirstStudent == True){<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><b><span style='mso-tab-count:2'>                  </span><span
+style='mso-tab-count:1'>      </span><span style='mso-tab-count:1'>      </span>PendingOrder
+= True;<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><b><span style='mso-tab-count:2'>                  </span><span
+style='mso-tab-count:1'>      </span><span style='mso-tab-count:1'>      </span>FirstStudent
+= False;<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><b><span style='mso-tab-count:2'>                  </span><span
+style='mso-tab-count:1'>      </span>}<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:2'>                  </span><span
+style='mso-tab-count:1'>      </span>okToEat.wait();</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:2'>                  </span><span
+style='mso-tab-count:1'>      </span>numSlices--;</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:2'>                  </span><span
+style='mso-tab-count:1'>      </span>if (numSlices==0)</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:2'>                  </span><span
+style='mso-tab-count:1'>      </span><span style='mso-tab-count:1'>      </span>okToDeliver.signal();</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:2'>                  </span><span
+style='mso-tab-count:1'>      </span>else</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:2'>                  </span><span
+style='mso-tab-count:1'>      </span><span style='mso-tab-count:1'>      </span>okToEat.signal();</p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:1'>      </span><span
+style='mso-tab-count:1'>      </span>}</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'>Note that this would be used at the higher level as:</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'>Student{</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">   </span>while
+(diligent){</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-tab-count:1'>      </span><span
+style="mso-spacerun: yes"> </span>pizza.PickUpSlice()</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">       </span>study</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">   </span>}</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'>}</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'>DeliveryGuy{</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">   </span>while(employed)</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">     
+</span>pizza.DeliverPizza()</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'>}</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">       </span></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'>Semaphore solution (not part of assignment)</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'>shared data:</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">    </span>semaphore
+pizza;<span style="mso-spacerun: yes">  </span>(counting semaphore, pizza.count
+init to 0)</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">    </span>semaphore
+deliver; (basic solution: deliver.count init to1, </p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun:
+yes">                                     </span><b>bonus solution:
+deliver.count init to 0</b> )</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">    </span>semaphore mutex
+(mutex.count init to 1) // guard updating of num_slices</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">    </span>int num_slices
+= 0 ;</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">    </span><b>boolean
+first = true;<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><b><span style="mso-spacerun: yes">    </span>semaphore first_mutex
+(first_mutex.count init to 1) // guard checking/updating of first<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'>Student{</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">   </span>while
+(diligent){</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">       </span><b>wait(first_mutex)<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><b><span style="mso-spacerun: yes">       
+</span>if(first){<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><b><span style="mso-spacerun: yes">             
+</span>first = false; <o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><b><span style="mso-spacerun: yes">             
+</span>signal(deliver);<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><b><span style="mso-spacerun: yes">        </span>}<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><b><span style="mso-spacerun: yes">      
+</span>signal(first_mutex)<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">       </span>wait(pizza);</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">       </span>wait(mutex)</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">       </span>num_slices--</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">       </span>if
+(num_slices==0) //took last slice</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">           
+</span>signal(deliver) </p>
+
+<p class=MsoNormal style='margin-left:.25in;text-indent:.25in;mso-layout-grid-align:
+none;text-autospace:none'>signal(mutex)</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">      </span>study</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">   </span>}</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'>}</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'>DeliveryGuy{</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">   </span>while(employed){</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">     
+</span>wait(deliver);</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">      </span>wait(mutex);</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">      </span>num_slices=S;</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">    </span><span
+style="mso-spacerun: yes">  </span>signal(mutex);</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">      </span>for
+(signal_count =1, signal_count&lt;=S, signal_count++){</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">        
+</span>signal(pizza)</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">      </span>}</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><span style="mso-spacerun: yes">   </span>}</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'>}</p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<ol style='margin-top:0in' start=2 type=1>
+ <li class=MsoNormal style='mso-list:l0 level1 lfo2;tab-stops:list .5in;
+     mso-layout-grid-align:none;text-autospace:none'>[7 points] Given a dynamic
+     memory partition setup with current holes of (A) 100K, (B) 500K, (C) 200K,
+     (D) 300K, and (E) 600K (in order), show how each of the First-fit,
+     Best-fit and Worst-fit algorithms would place processes of size 212K,
+     417K, 112K, and 426K (in order)?<span style="mso-spacerun: yes"> 
+     </span>Indicate for each algorithm the total space left, the smallest
+     available hole, the largest available hole, and the processes (if any)
+     that are unable to be placed.<span style="mso-spacerun: yes"> 
+     </span>Which algorithm makes the most efficient use of memory? </li>
+</ol>
+
+<p class=MsoNormal>Answer:<span style="mso-spacerun: yes">  </span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<table border=1 cellspacing=0 cellpadding=0 style='border-collapse:collapse;
+ border:none;mso-border-alt:solid windowtext .5pt;mso-padding-alt:0in 5.4pt 0in 5.4pt'>
+ <tr style='height:34.5pt'>
+  <td width=148 rowspan=2 valign=top style='width:110.7pt;border:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt;height:34.5pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  <p class=MsoNormal><span style="mso-spacerun: yes">  </span>Partition</p>
+  </td>
+  <td width=148 colspan=2 valign=top style='width:110.7pt;border:solid windowtext .5pt;
+  border-left:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:34.5pt'>
+  <p class=MsoNormal>First-fit </p>
+  <p class=MsoNormal>Algorithm</p>
+  </td>
+  <td width=148 colspan=2 valign=top style='width:110.7pt;border:solid windowtext .5pt;
+  border-left:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:34.5pt'>
+  <p class=MsoNormal>Best-fit</p>
+  <p class=MsoNormal>Algorithm</p>
+  </td>
+  <td width=148 colspan=2 valign=top style='width:110.7pt;border:solid windowtext .5pt;
+  border-left:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:34.5pt'>
+  <p class=MsoNormal>Worst-Fit</p>
+  <p class=MsoNormal>Algorithm</p>
+  </td>
+ </tr>
+ <tr style='height:34.5pt'>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt;height:34.5pt'>
+  <p class=MsoNormal>Process</p>
+  <p class=MsoNormal>Placed</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt;height:34.5pt'>
+  <p class=MsoNormal>Space</p>
+  <p class=MsoNormal>Left</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt;height:34.5pt'>
+  <p class=MsoNormal>Process</p>
+  <p class=MsoNormal>Placed</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt;height:34.5pt'>
+  <p class=MsoNormal>Space</p>
+  <p class=MsoNormal>Left</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt;height:34.5pt'>
+  <p class=MsoNormal>Process</p>
+  <p class=MsoNormal>Placed</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt;height:34.5pt'>
+  <p class=MsoNormal>Space</p>
+  <p class=MsoNormal>Left</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=148 valign=top style='width:110.7pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>A.<span style="mso-spacerun: yes">  </span>100K</p>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>100</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>100</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>100</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=148 valign=top style='width:110.7pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>B.<span style="mso-spacerun: yes">  </span>500K</p>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>P1 212K</p>
+  <p class=MsoNormal>P3 112K</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>176</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>P2 417K</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style="mso-spacerun: yes"> </span>83</p>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>P2 417K</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style="mso-spacerun: yes">  </span>83</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=148 valign=top style='width:110.7pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>C.<span style="mso-spacerun: yes">  </span>200K</p>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>200</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>P3 112K </p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style="mso-spacerun: yes"> </span>88</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>200</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=148 valign=top style='width:110.7pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>D.<span style="mso-spacerun: yes">  </span>300K</p>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>300</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>P1 212K</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style="mso-spacerun: yes"> </span>88</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>300</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=148 valign=top style='width:110.7pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>E.<span style="mso-spacerun: yes">  </span>600K</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>P2 417K</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>183</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>P4 426K</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>174</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>P1 212K</p>
+  <p class=MsoNormal>P3 112K</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>276</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=148 valign=top style='width:110.7pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Unable to place</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>P4 426K</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>P4 426K</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=148 valign=top style='width:110.7pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Total space left</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><!--[if supportFields]><span style='mso-element:field-begin'></span><span
+  style="mso-spacerun: yes"> </span>=SUM(ABOVE) <span style='mso-element:field-separator'></span><![endif]-->959<!--[if supportFields]><span
+  style='mso-element:field-end'></span><![endif]--></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><!--[if supportFields]><span style='mso-element:field-begin'></span><span
+  style="mso-spacerun: yes"> </span>=SUM(ABOVE) <span style='mso-element:field-separator'></span><![endif]-->533<!--[if supportFields]><span
+  style='mso-element:field-end'></span><![endif]--></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><!--[if supportFields]><span style='mso-element:field-begin'></span><span
+  style="mso-spacerun: yes"> </span>=SUM(ABOVE) <span style='mso-element:field-separator'></span><![endif]-->959<!--[if supportFields]><span
+  style='mso-element:field-end'></span><![endif]--></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=148 valign=top style='width:110.7pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Smallest available</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>100</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style="mso-spacerun: yes">  </span>83</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style="mso-spacerun: yes"> </span>83</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=148 valign=top style='width:110.7pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Largest available</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>300</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>174</p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+  <td width=74 valign=top style='width:55.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>300</p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'>Most efficient algorithm?:<span style="mso-spacerun:
+yes">  </span>For the process list supplied, the Best-fit algorithm was the
+only one able to place all processes in memory and therefore had the smallest
+amount of total space left.<span style="mso-spacerun: yes">  </span></p>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<ol style='margin-top:0in' start=3 type=1>
+ <li class=MsoNormal style='mso-list:l0 level1 lfo2;tab-stops:list .5in;
+     mso-layout-grid-align:none;text-autospace:none'>[4 points] Consider a
+     logical address space of 8 pages of 2048 words each, mapped onto a
+     physical memory of 32 frames (assume system is word addressable).</li>
+</ol>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<ol style='margin-top:0in' start=3 type=1>
+ <ol style='margin-top:0in' start=1 type=a>
+  <li class=MsoNormal style='mso-list:l0 level2 lfo2;tab-stops:list 1.0in;
+      mso-layout-grid-align:none;text-autospace:none'>How many words does the
+      logical address space contain? How many bits are there in the logical
+      address?</li>
+ </ol>
+</ol>
+
+<p class=MsoNormal style='margin-left:1.5in'><b>Virtual address space:<span
+style="mso-spacerun: yes">   </span>max # pages * maximum page size<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:2.0in;text-indent:.5in'><b><span
+style="mso-spacerun: yes">                  </span>= 8 pages of 2048 words =
+16384 words<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:2.0in;text-indent:.5in'><b><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:1.5in'><b>(3 bit page number + 11 bit
+offset in page = 14 bit address)<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:1.5in;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<ol style='margin-top:0in' start=3 type=1>
+ <ol style='margin-top:0in' start=2 type=a>
+  <li class=MsoNormal style='mso-list:l0 level2 lfo2;tab-stops:list 1.0in;
+      mso-layout-grid-align:none;text-autospace:none'>How many words does the
+      physical address space contain?<span style="mso-spacerun: yes"> 
+      </span>How many bits are there in the physical address?</li>
+ </ol>
+</ol>
+
+<p class=MsoNormal style='margin-left:1.5in'><b>Physical address space:<span
+style="mso-spacerun: yes">  </span>max # frames * max page size<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:1.5in'><b><span style="mso-spacerun:
+yes">                                     </span>= 32 frames of 2048 words =
+65536 words<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:1.5in'><b><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:1.5in'><b>(5 bit frame reference + 11 bit
+offset in page = 16 bit address)<o:p></o:p></b></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<ol style='margin-top:0in' start=4 type=1>
+ <li class=MsoNormal style='mso-list:l0 level1 lfo2;tab-stops:list .5in;
+     mso-layout-grid-align:none;text-autospace:none'>[3<span
+     style="mso-spacerun: yes">  </span>points] The following is a core map of
+     a virtual memory system that has a page size of 100.</li>
+</ol>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<div align=center>
+
+<table border=1 cellspacing=0 cellpadding=0 style='margin-left:.25in;
+ border-collapse:collapse;border:none;mso-border-alt:solid windowtext .5pt;
+ mso-padding-alt:0in 5.4pt 0in 5.4pt'>
+ <tr>
+  <td valign=top style='border:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'>Frame
+  #</p>
+  </td>
+  <td valign=top style='border:solid windowtext .5pt;border-left:none;
+  mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'>Process
+  ID</p>
+  </td>
+  <td valign=top style='border:solid windowtext .5pt;border-left:none;
+  mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'>Page
+  #</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext .5pt;border-top:none;
+  mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'>0</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext .5pt;
+  border-right:solid windowtext .5pt;mso-border-top-alt:solid windowtext .5pt;
+  mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'>1</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext .5pt;
+  border-right:solid windowtext .5pt;mso-border-top-alt:solid windowtext .5pt;
+  mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'>2</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext .5pt;border-top:none;
+  mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'>1</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext .5pt;
+  border-right:solid windowtext .5pt;mso-border-top-alt:solid windowtext .5pt;
+  mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'>1</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext .5pt;
+  border-right:solid windowtext .5pt;mso-border-top-alt:solid windowtext .5pt;
+  mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'>1</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext .5pt;border-top:none;
+  mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'>2</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext .5pt;
+  border-right:solid windowtext .5pt;mso-border-top-alt:solid windowtext .5pt;
+  mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'>2</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext .5pt;
+  border-right:solid windowtext .5pt;mso-border-top-alt:solid windowtext .5pt;
+  mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'>1</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext .5pt;border-top:none;
+  mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'>3</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext .5pt;
+  border-right:solid windowtext .5pt;mso-border-top-alt:solid windowtext .5pt;
+  mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'>3</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext .5pt;
+  border-right:solid windowtext .5pt;mso-border-top-alt:solid windowtext .5pt;
+  mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'>0</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext .5pt;border-top:none;
+  mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'>4</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext .5pt;
+  border-right:solid windowtext .5pt;mso-border-top-alt:solid windowtext .5pt;
+  mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'>1</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext .5pt;
+  border-right:solid windowtext .5pt;mso-border-top-alt:solid windowtext .5pt;
+  mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'>3</p>
+  </td>
+ </tr>
+</table>
+
+</div>
+
+<p class=MsoNormal style='margin-left:.25in;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:1.25in;text-indent:-.25in;mso-list:l1 level1 lfo3;
+tab-stops:list 1.25in;mso-layout-grid-align:none;text-autospace:none'><![if !supportLists]>a.<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><![endif]>To
+which physical address does logical address 175 of process 1 map?<span
+style="mso-spacerun: yes">  </span>If this logical address does not map to any
+physical address, write &quot;does not map&quot;.</p>
+
+<p class=MsoNormal style='margin-left:1.5in;mso-layout-grid-align:none;
+text-autospace:none'><b>logical address of 175 of process one is located on
+page 1, offset 75<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:1.5in;mso-layout-grid-align:none;
+text-autospace:none'><b>page 1 of process 1 is currently located in frame 1<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:1.5in;mso-layout-grid-align:none;
+text-autospace:none'><b>the base address of frame 1 is 100 + offset 75 =
+physical address of 175<o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:1.0in;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:1.25in;text-indent:-.25in;mso-list:l1 level1 lfo3;
+tab-stops:list 1.25in;mso-layout-grid-align:none;text-autospace:none'><![if !supportLists]>b.<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><![endif]>To
+which physical address does logical address 38 of process 2 map?<span
+style="mso-spacerun: yes">  </span>If this logical address does not map to any
+physical adddress, write &quot;does not map&quot;.</p>
+
+<p class=MsoNormal style='margin-left:1.5in;mso-layout-grid-align:none;
+text-autospace:none'><b>logical address 38 of process 2 is located on page 0,
+offset 38 <o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-left:1.5in;mso-layout-grid-align:none;
+text-autospace:none'><b>page 0 of process 2 is not currently allocated to a
+frame<o:p></o:p></b></p>
+
+<p class=MsoBodyTextIndent>therefore, the logical address 38 of process 2, does
+not map to a physical address</p>
+
+<p class=MsoNormal style='margin-left:1.0in;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:1.25in;text-indent:-.25in;mso-list:l1 level1 lfo3;
+tab-stops:list 1.25in;mso-layout-grid-align:none;text-autospace:none'><![if !supportLists]>c.<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><![endif]>Which
+logical address of which process maps to physical address 27.</p>
+
+<p class=MsoNormal><span style='font-size:11.0pt'><span style="mso-spacerun:
+yes">             </span><span style='mso-tab-count:1'>           </span><span
+style='mso-tab-count:1'>            </span><span style='mso-tab-count:1'>            </span><b>physical
+address 27 is located at frame 0, offset 27<o:p></o:p></b></span></p>
+
+<p class=MsoNormal><b><span style='font-size:11.0pt'><span style="mso-spacerun:
+yes">                                   </span><span style='mso-tab-count:1'>            </span>frame
+0 currently holds page 2 of process 1<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:11.0pt'><span style='mso-tab-count:
+2'>                        </span><span style='mso-tab-count:1'>            </span>so
+physical address 27 maps to process 1, logical address 227 (2 * 100 + 27)<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span style='color:#99CCFF;display:none;mso-hide:all'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<ol style='margin-top:0in' start=1 type=1>
+ <li class=MsoNormal style='color:#99CCFF;mso-list:l2 level1 lfo1;display:none;
+     tab-stops:list .5in'><span style='display:none;mso-hide:all'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></li>
+ <li class=MsoNormal style='color:#99CCFF;mso-list:l2 level1 lfo1;display:none;
+     tab-stops:list .5in'><span style='display:none;mso-hide:all'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></li>
+ <li class=MsoNormal style='color:#99CCFF;mso-list:l2 level1 lfo1;display:none;
+     tab-stops:list .5in'><span style='display:none;mso-hide:all'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></li>
+</ol>
+
+</div>
+
+</body>
+
+</html>

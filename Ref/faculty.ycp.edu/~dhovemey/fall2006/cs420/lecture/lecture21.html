@@ -1,0 +1,332 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Lecture 21</title>
+</head>
+<body>
+<h1>CS 420 - Lecture 21<br>
+</h1>
+<h2>Filesystem implementation<br>
+</h2>
+<h3>Block Devices<br>
+</h3>
+<p>Generally, the data of the files and directories in a filesystem are
+stored on a block device.<br>
+</p>
+<p>A block device is an I/O device connected to the computer that
+organizes its storage as a sequence of fixed-size <span
+ style="font-style: italic;">blocks</span> of data.&nbsp; Each block is
+addressable by its sequence number, or <span
+ style="font-style: italic;">block number</span>.&nbsp; Each block
+contains a number of bytes equal to the <span
+ style="font-style: italic;">block size</span>, which is always a power
+of 2.<br>
+</p>
+<p>Disk drives are block devices.&nbsp; For magnetic hard disks, the
+block size is usually 512 bytes.&nbsp; For optical disks (such as
+CD-ROM and DVD-ROM drives), the block size is usually 2048 bytes.<br>
+</p>
+<p>The OS kernel's task is to organize a region of a block device as a
+filesystem by mapping the file and directory data onto blocks.<br>
+</p>
+<h3>Filesystem Layers<br>
+</h3>
+<p>Filesystems are generally implemented using a layered approach:<br>
+</p>
+<p style="margin-left: 40px;"><img alt=""
+ src="figures/filesystemLayers.png" style="width: 28%;"></p>
+<p><span style="font-weight: bold;">Applications</span> are the user
+processes that are using read/write or memory mapped file I/O to access
+and modify file data.<br>
+</p>
+<p>The <span style="font-weight: bold;">VFS</span>, or <span
+ style="font-style: italic;">virtual filesystem</span> layer, is
+responsible for providing a consistent interface for multiple
+filesystem drivers.<br>
+</p>
+<p>A <span style="font-weight: bold;">filesystem driver</span> is an
+implementation of filesystem operations for a particular on-disk
+filesystem format.&nbsp; There are many filesystem formats commonly
+used:<br>
+</p>
+<p style="margin-left: 40px;">NTFS: The Windows NT (and XP, Vista,
+etc.) filesystem.<br>
+</p>
+<p style="margin-left: 40px;">FAT: Originally the DOS filesystem, now
+also supported by Windows.<br>
+</p>
+<p style="margin-left: 40px;">ext3: The most common Linux filesystem.<br>
+</p>
+<p style="margin-left: 40px;">ISO 9660: A filesystem for CD-ROM and
+DVD-ROM.<br>
+</p>
+<p>The <span style="font-weight: bold;">block device layer</span>
+provides a high-level interface for the different kinds of block I/O
+devices that the OS kernel supports.&nbsp; Examples of block devices
+include hard disks, optical drives, flash media, etc.<br>
+</p>
+<p>Device drivers provide support for a particular type of disk
+controller.&nbsp; A device driver may support only a single kind of
+device, or may support a family of hardware devices that support a
+common programming model.<br>
+</p>
+<p>Examples of hardware device types are<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">ATA</span>:
+the most common hard disk and optical disk technology for PCs.&nbsp;
+Includes serial ATA (SATA) and parallel ATA (PATA).&nbsp; ATA is a
+complex technology, and there are a very large number of hardware
+chipsets supporting ATA devices.&nbsp; ATA drivers are often
+implemented using multiple layers: a generic (high-level) ATA level,
+and low-level <span style="font-style: italic;">chipset drivers</span>
+supporting a particular ATA chipset.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">SCSI</span>:
+this used to be the standard for high-performance disk I/O devices, but
+has now been largely superceded by ATA.&nbsp; (In fact, SATA is
+essentially SCSI right down to the format of commands used to
+communicate between the disk controller and disk devices.)<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">USB</span>:
+commonly used to attach flash media, but can also be used as a way of
+attaching traditional hard disks and optical drives.&nbsp; USB mass
+storage devices are controlled using the SCSI protocol with USB as the
+transport layer.<br>
+</p>
+<h2>Directories are Files</h2>
+<p>Although files and directories are used differently by applications,
+they are really quite similar internally.<br>
+</p>
+<p>A file is just a collection of bytes.&nbsp; The OS kernel allows
+user processes to read and write the data stored in the file
+directly.&nbsp; The OS kernel does not <span
+ style="font-style: italic;">interpret</span> the contents of files in
+any way: that is up to the application.<br>
+</p>
+<p>A directory is a collection of <span style="font-style: italic;">directory
+entries</span>: each directory entry is a reference to a file or
+subdirectory.&nbsp; A directory entry needs to store the following
+information:<br>
+</p>
+<p style="margin-left: 40px;">The name of the file<br>
+</p>
+<p style="margin-left: 40px;">Where the file's data is located on the
+storage medium<br>
+</p>
+<p>A directory entry may also contain metadata describing other
+information about the file or directory, such as its size, which users
+are allowed to access it, etc.<br>
+</p>
+<p>When we view a directory as a collection of directory entries, we
+can see that a filesystem implementation can use the same internal
+mechanisms to manage both files and directories.&nbsp; A directory is
+simply a file where<br>
+</p>
+<p style="margin-left: 40px;">User processes are not allowed to
+directly read and write the contents of the file.&nbsp; Instead, they
+use special system calls to work with directories, such as a system
+call that reads a directory entry from an open directory.<br>
+</p>
+<p style="margin-left: 40px;">The OS kernel interprets the file data as
+a sequence of directory entries<br>
+</p>
+<p>In all other important respects, a directory is a file.<br>
+</p>
+<h2>OS Filesystem Data Structures<br>
+</h2>
+<p>When files and directories are used by the operating system, the OS
+kernel uses a data structure to represent each file and
+directory.&nbsp; We will follow the Unix/Linux model and consider
+directories to be a special kind of file.<br>
+</p>
+<p>The PCB of each process has a file table: a data structure (often an
+array)
+containing pointers to all of the file objects that the process has
+opened.&nbsp; Within user processes, they refer to the entries in this
+table using file handles.&nbsp; Assuming that the open file table is an
+array, a file handle is simply an index into the array.&nbsp;
+(Unix/Linux refer to file handles as <span style="font-style: italic;">file
+descriptors</span>.)<br>
+</p>
+<div style="margin-left: 40px;"><img alt=""
+ src="figures/openFileTable.png" style="width: 55%;"><br>
+</div>
+<p>Note that if multiple processes have the same file open, their open
+file tables contain pointers to the same file object.<br>
+</p>
+<h2>The Virtual Filesystem</h2>
+<p>We have already mentioned that files and directories are closely
+related.&nbsp; In object-oriented terms, we can view them as subclasses
+of a common base class:<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/fileDirUML1.png"
+ style="width: 30%;"><br>
+</p>
+<p>Now consider an operating system that supports multiple filesystem
+formats.&nbsp; For example, Linux supports ext3, iso9660, and
+vfat.&nbsp; So, conceptually, we can envision concrete subclasses of
+File and Directory for each filesystem format:<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/fileDirUML2.png"
+ style="width: 60%;"><br>
+</p>
+<p>[Note: the actual implementation of files and directories in Linux
+is somewhat different, but is very similar in spirit.]<br>
+</p>
+<p>Many operating systems used this basic object-oriented model in
+order to support multiple filesystem types.&nbsp; This approach is
+known as a <span style="font-style: italic;">virtual filesystem</span>
+model.<br>
+</p>
+<p>VFS Objects and Operations<br>
+</p>
+<p>As seen above, File and Directory are two classes of VFS
+objects.&nbsp; They may be usefully defined as subclasses of an
+abstract base class FileOrDirectory.&nbsp; (Unix takes this general
+approach, because files and directories are both referred to using file
+descriptors, and the open file table in each PCB contains pointers to
+objects which may be either files or directories.)<br>
+</p>
+<p>Another kind of VFS object is a Mount, which corresponds to a
+filesystem mounted in the overall filesystem namespace.<br>
+</p>
+<p>Yet another kind of VFS object is a FilesystemDriver, which
+corresponds to an OS driver for a particular filesystem format (e.g.,
+EXT3, VFAT, NTFS, etc.)<br>
+</p>
+<p>Typical VFS operations are divided into operations supported by
+files/directories and operations supported by mounts.<br>
+</p>
+<p>File/Directory operations<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">read</span>
+- read some data from a file into a user buffer (files only)<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">write</span>
+- write some data into a file from a user buffer (files only)<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">seek</span>
+- move the current file pointer (files only)<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">truncate</span>
+- reset the size of the file to 0 (files only)<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">get_next_dir_entry</span>
+- get the next directory entry (directories only)<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">close</span>
+- called to release a process's handle on the file or directory<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">pagein</span>,
+<span style="font-weight: bold;">pageout</span> - paging routines
+allowing the file to be mapped into a virtual address space (files only)<br>
+</p>
+<p>Mount operations.&nbsp; Mainly these are concerned with creating,
+opening, and deleting files and directories.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">create</span>
+- create a new empty file in the filesystem.&nbsp; Returns a File
+object.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">open</span>
+- open an existing file in the filesystem (possibly creating a new one
+if the named file doesn't exist).&nbsp; Returns a File object.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">create_dir</span>
+- create a new empty directory in the filesystem.&nbsp; Returns a
+Directory object.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">delete</span>
+- delete a file or directory in the filesystem.<br>
+</p>
+<p>FilesystemDriver operations.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">format</span>
+- initialize the on-disk filesystem data structures on a particular
+block device or partition<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">mount</span>
+- mount a filesystem in the global filesystem namespace<br>
+</p>
+<h2>On-Disk structures<br>
+</h2>
+<h3>File Control Block</h3>
+<p>Each file or directory will need a <span style="font-style: italic;">file
+control block</span> to store metainformation about the file or
+directory.<br>
+</p>
+<p>Information stored in the FCB:<br>
+</p>
+<p style="margin-left: 40px;">Where the storage blocks for the file or
+directory are located.<br>
+</p>
+<p style="margin-left: 40px;">Who owns the file/directory.<br>
+</p>
+<p style="margin-left: 40px;">The file permissions.<br>
+</p>
+<p style="margin-left: 40px;">Who is allowed to access the file: an
+access control list.<br>
+</p>
+<h3>Storage Management</h3>
+<p><span style="font-family: sans-serif;">One of the main tasks of a
+filesystem implementation is to manage the storage space on a block
+device.&nbsp; Each logical file and directory in the filesystem uses
+particular disk blocks for its data storage.<br>
+</span></p>
+<p><span style="font-family: sans-serif;">Allocation algorithms:<br>
+</span></p>
+<p style="margin-left: 40px;"><span style="font-family: sans-serif;"><span
+ style="font-weight: bold;">Contiguous allocation</span>.&nbsp; Storage
+for files and directories is allocated by finding a contiguous sequence
+of blocks on the block device of sufficient size.&nbsp; Problems with
+this approach: internal and external fragmentation.&nbsp; Also, if a
+file needs to grow, but another file has been allocated after it, then
+the filesystem must find a new (larger) contiguous region.&nbsp; If
+none exists, then the file can grow unless we go through and defragment
+the filesystem.<br>
+</span></p>
+<p style="margin-left: 40px;"><span style="font-family: sans-serif;"><span
+ style="font-weight: bold;">Linked Allocation</span>.&nbsp; Each disk
+block allocated to a file or directory contains a "pointer" (block
+number) of the next storage block.&nbsp; Advantages: we now have no
+external fragmentation whatsoever.&nbsp; Internal fragmentation is
+minimal.&nbsp; Disadvantages: we have to store the pointer in each
+block.&nbsp; That means that the storage blocks contain both data and
+meta-information.&nbsp; That makes it more difficult to allow OS
+buffers containing file data to be mapped into virtual memory.&nbsp;
+Also, depending on how the data blocks are allocated, we may have to do
+a lot of disk seeks in order to go through a large file.<br>
+</span></p>
+<p style="margin-left: 40px;"><span style="font-family: sans-serif;">A
+special case of linked allocation is the <span
+ style="font-weight: bold;">File Allocation Table</span> (<span
+ style="font-weight: bold;">FAT</span>), commonly-used by DOS and
+(until recently) Windows.&nbsp; Each filesystem contains a file
+allocation table.&nbsp; The FAT is an array, where each entry in the
+array corresponds to a block number.&nbsp; Initially, each entry in the
+FAT is marked with a special "available" block number.&nbsp; To
+allocate a block, the filesystem just looks for an FAT entry marked as
+available. The sequence of blocks used by a file is represented by
+storing the index of the next block in the sequence in each FAT
+entry.&nbsp; The entire chain is terminated with a special "last block"
+marker.<br>
+</span></p>
+<p style="margin-left: 80px;"><span style="font-family: sans-serif;"><img
+ alt="" src="figures/fatStorageAllocation.png" style="width: 50%;"><br>
+</span></p>
+<p style="margin-left: 40px;"><span style="font-family: sans-serif;"><span
+ style="font-weight: bold;">Indexed allocation</span>.&nbsp; Index
+blocks are used to keep track of which storage blocks have been
+allocated to a file.&nbsp; An index block is simply an array of block
+numbers specifying which blocks have been allocated to a particular
+file or directory.&nbsp; When a new block is added to the end of a
+file, we just have to fill in the block number of the allocated block
+in one of the slots in the index block.<br>
+</span></p>
+<p><span style="font-family: sans-serif;">[Indexed allocation - next
+lecture.]<br>
+</span></p>
+</body>
+</html>

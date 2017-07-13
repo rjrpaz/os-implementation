@@ -1,0 +1,42 @@
+<html>
+<p>
+Here is an updated version of the Destroy_Thread function from kthread.c
+You should also update function Reaper so to delete the Disable_Interrupts 
+and Enable_Interrupts in the body of the while loop along with the call to Yield().
+<P>
+<pre>
+// Destroy given thread.
+// Called with interrupts enabled.
+static void Destroy_Thread( struct Kernel_Thread* kthread )
+{
+    struct threadItem *curr, *lag;
+
+    KASSERT(!Interrupts_Enabled());
+
+    // Detach from the thread's user context (if any).
+    Detach_User_Context( kthread );
+
+    for (lag= NULL, curr= allThreads; curr; curr=curr->next) {
+        if (curr->thread == kthread) {
+            if (curr == allThreads) {
+                KASSERT(lag == NULL);
+                allThreads = curr->next;
+            } else {
+                KASSERT(lag->next == curr);
+                lag->next = curr->next;
+            }
+            Free(curr);
+            break;
+        } else {
+            lag = curr;
+        }
+    }
+
+    // Dispose of the thread's memory.
+    Free_Page( kthread->stackPage );
+    Free_Page( kthread );
+
+    KASSERT(curr);
+}
+</pre>
+</html>

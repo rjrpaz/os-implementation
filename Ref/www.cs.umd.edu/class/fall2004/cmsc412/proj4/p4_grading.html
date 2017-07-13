@@ -1,0 +1,58 @@
+<html>
+<head><title>CMSC412 Project 4 Grading Criteria</title></head>
+
+
+<body><center><b>Project 4 Grading Criteria</b></center></p>
+
+
+
+<ol>
+<li> <b> Turning On Paging</b>:<br>
+  - Modify the line <tt>Enable_Paging()</tt>; to  be <tt>checkPaging(); Enable_Paging(); checkPaging()</tt>;</p>
+
+Launching bochs should output:</p>
+
+<pre>
+Paging on?: 0
+Paging on?: 1
+</pre>
+when bochs starts up.  Nothing should crash and the shell prompt should come up.  Enabling paging is worth <font color=blue>30</font> points.</p>
+
+<li> <b>Dynamically Growing Stack</b> using <tt>rec.c</tt>.<br>
+At the shell prompt, typing:</p>
+
+<pre> /c/rec.exe 300</pre>
+
+should output
+<pre>
+300
+349
+348
+...
+1
+%
+</pre>
+
+Correct implementation is worth <font color=blue>30</font> points. </p>
+
+<li> <b>Paging Out to a Swapfile</b> using <tt>rec.c</tt>.<br>
+At the shell prompt, typing:</p>
+
+<pre> /c/rec.exe 3300</pre>
+
+should output
+<pre>
+3300
+3299
+3298
+...
+1
+%
+</pre>
+
+Correct implementation is worth <font color=blue>40</font> points.</p>
+
+<li> <b>Extra Credit</b><br>
+You can receive <font color=red>10 points</font> of extra credit if you make page tables pageable too,
+as described in the project description in the <a href="index.html#ExtraCredit">Extra Credit section</a>.
+</ol>

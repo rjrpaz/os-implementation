@@ -1,0 +1,147 @@
+\documentclass{article}
+
+%\setlength{\oddsidemargin}{0.0 in}
+%\setlength{\evensidemargin}{0.0 in}
+%\setlength{\textwidth}{7.0 in}
+
+\oddsidemargin 0cm
+\topmargin -2.5cm     
+\textwidth 16.5cm   
+\textheight 24.0cm 
+
+\def\titledquestion#1#2{\section{ {#1} ({#2} pts.)}}
+
+\begin{document}
+\begin{center}{\large 15-410, Spring 2011, Homework Assignment 1.} \\
+%\Large{Due Wednesday, February 24, 20:59:59 p.m.}
+%\Large{Due Monday, October 6, 20:59:59 p.m.}
+%\Large{Due Tuesday, October 5, 20:59:59 p.m.}
+\Large{Due Tuesday, February 22, 20:59:59}
+\end{center}
+
+% \begin{center}
+% \fbox{{\Large You need} {\large complete only} Question~3 and one other question.}
+% \end{center}
+
+{\small Please} observe the {\large non-standard} {\Large submission} {\LARGE time}...
+%{\Large Please} {\large observe the} non-standard {\small submission time}...
+As we intend to make solutions available on the web site immediately
+thereafter for exam-study purposes, please turn your solutions
+in on time.
+
+Homework must be submitted in either PostScript or PDF format (not:
+Microsoft Word, Word Perfect, Apple Works, LaTeX, XyWrite, WordStar,
+etc.).  Submit your answers by placing them in the appropriate
+hand-in directory, e.g.,
+{\tt /afs/cs.cmu.edu/academic/class/15410-s11-users/\$USER/hw1/\$USER.ps} or
+{\tt /afs/cs.cmu.edu/academic/class/15410-s11-users/\$USER/hw1/\$USER.pdf}.
+A plain text file (.text or .txt) is also acceptable, though it must conform to Unix
+expectations,
+meaning lines of no more than 120 characters separated by newline characters
+(note that this is {\em not} the Windows convention or the MacOS convention).
+Please avoid creative filenames such as {\tt hw1/my\_15-410\_homework.PdF}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\titledquestion{Tape drives}{4}
+
+Consider a system with
+  three processes and
+  five tape drives.
+The maximal needs of each process are declared below:
+
+\begin{tabular}[b]{|l|c|l|c|l|}
+\multicolumn{5}{c}{Resource Declarations} \\
+\cline{1-1} \cline{3-3} \cline{5-5}
+Process A && Process B && Process C \\
+\cline{1-1} \cline{3-3} \cline{5-5}
+3 tape drives && 2 tape drives && 4 tape drives \\
+\cline{1-1} \cline{3-3} \cline{5-5}
+\end{tabular}
+
+Imagine the system is in the state depicted
+below.  List one request which the system should grant right
+away, and one request which the system should react to by
+blocking the process making the request.  Briefly justify
+each of your answers.
+
+\begin{tabular}[b]{|l|r|r|r|}
+\multicolumn{1}{c}{Who} &
+ \multicolumn{1}{c}{Max} &
+ \multicolumn{1}{c}{Has} &
+ \multicolumn{1}{c}{Room} \\
+\hline
+A      & 3 & 1 & 2 \\ \hline
+B      & 2 & 1 & 1 \\ \hline
+C      & 4 & 2 & 2 \\ \hline
+System & 5 & 1 & - \\ \hline
+\end{tabular}
+
+\vspace{2in}
+\begin{center}
+{\textbf{(Continued on next page)}}
+\end{center}
+
+\clearpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\titledquestion{Race conditions}{6}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Consider the two threads whose body functions are shown below (imagine
+each is invoked via \texttt{thr\_create()}):
+
+\begin{verbatim}
+int n = 1;
+
+void *thread0(void *ignored) {
+  while (n >= 0)
+    --n;
+  return (0);
+}
+
+void *thread1(void *ignored) {
+  while (n < 1)
+    ++n;
+  return (0);
+}
+
+\end{verbatim}
+
+\subsection{3 pts}
+Show an execution trace in which thread 1's loop \textit{body}
+executes exactly three times.
+
+\subsection{3 pts}
+Show an execution trace in which both thread 0 and thread 1
+run forever.
+
+When showing an execution trace, use the tabular trace format found in
+the lecture slides.
+Please be sure that your trace is clear and conclusive
+(otherwise your answer will not receive full credit).
+You may use more or fewer lines or columns than are provided
+in this sample table.
+You may change the column headings if you wish.
+
+{\large
+\begin{tabular}[b]{|r|c|c|}
+\multicolumn{3}{c}{Execution Trace} \\
+\hline
+time & Thread~0 & Thread~1 \\
+\hline
+ 0 & \hspace{1in} & \hspace{1in} \\
+\hline
+ 1 & & \\
+\hline
+ 2 & & \\
+\hline
+ 3 & & \\
+\hline
+ 4 & & \\
+\hline
+ 5 & & \\
+\hline
+\end{tabular}
+}
+
+\end{document}

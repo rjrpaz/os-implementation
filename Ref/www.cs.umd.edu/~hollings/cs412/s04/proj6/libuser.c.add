@@ -1,0 +1,71 @@
+// Project 6
+int SetAcl(char *name, int uid, int permissions)
+{
+    aclReq req;
+    int num = SYS_SET_ACL, rc;
+
+    strcpy(req.name, name);
+    req.uid = uid;
+    req.permissions = permissions;
+
+    __asm__ __volatile__ (
+	SYSCALL
+	: "=a" (rc)
+	: "a" (num), "b" (&req)
+    );
+
+    return rc;
+}
+
+int SetSetUid(char *name, int setUid)
+{
+    int num = SYS_SET_SET_UID, rc;
+    size_t len = strlen( name );
+
+    __asm__ __volatile__ (
+	SYSCALL
+	: "=a" (rc)
+	: "a" (num), "b" (name), "c" (len), "d" (setUid)
+    );
+
+    return rc;
+}
+
+int SetEffectiveUid(int uid)
+{
+    int num = SYS_SET_EFFECTIVE_UID, rc;
+
+    __asm__ __volatile__ (
+	SYSCALL
+	: "=a" (rc)
+	: "a" (num), "b" (uid)
+    );
+
+    return rc;
+}
+
+int GetUid()
+{
+    int num = SYS_GET_UID, rc;
+    __asm__ __volatile__ (
+	SYSCALL
+	: "=a" (rc)
+	: "a" (num)
+    );
+
+    return rc;
+}
+
+int MessageQueueCreate(char *name)
+{
+    int num = SYS_MQ_CREATE, rc;
+    size_t len = strlen( name );
+
+    __asm__ __volatile__ (
+	SYSCALL
+	: "=a" (rc)
+	: "a" (num), "b" (name), "c" (len)
+    );
+
+    return rc;
+}

@@ -1,0 +1,41 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1253">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<META NAME="Template" CONTENT="C:\hollings\Templates\paperDraft.dot">
+</HEAD>
+<BODY LINK="#0000ff" VLINK="#800080">
+
+<B><FONT SIZE=4><P ALIGN="CENTER">CMSC 417 Programming Assignment #2<BR>
+</B>Due October 8, 1999 (5:00 PM)</P>
+</FONT><B><P ALIGN="JUSTIFY">Introduction </P>
+</B><P ALIGN="JUSTIFY">The term project will require use of the Pthreads thread programming model. Like the socket interface, the interface to this library is rather complicated and confusing. Also, if you have never written a program with synchronization, you might find this concept difficult at first. In this project, you will create a queue abstraction that allows multiple threads to share information by placing items into queues and having other threads remove them. The background reading for this project is the Pthreads book. Chapters 1, 3 (up to pg. 97) , and 6 are worth reading.</P>
+<B><P ALIGN="JUSTIFY">The Assignment </P>
+</B><P ALIGN="JUSTIFY">You will implement a queue abstraction that has the following functions. You are free to write the assignment in either C or C++. If you write it in C, you should define a queue type and pass it as the first parameter to each of the functions. If you write it in C++, you should define a Queue class. A skeleton of the prototypes for the queue abstraction are available from the class web page (one for C and one for C++). </P><DIR>
+
+<FONT FACE="Courier" SIZE=2><P ALIGN="JUSTIFY">Queue *createQueue(int maxItems)</P><DIR>
+
+</FONT><P ALIGN="JUSTIFY">Allocate and initialize a new queue that can hold at most maxItems. If you are writing in C++, this should be the constructor function for the Queue class.</P></DIR>
+
+<FONT FACE="Courier" SIZE=2><P ALIGN="JUSTIFY">void enqueue(void *item) </P><DIR>
+
+</FONT><P ALIGN="JUSTIFY">Add item to the end of the queue. If the queue already contains maxItems, the enqueue operations should block until there is room in the queue.</P></DIR>
+
+<FONT FACE="Courier" SIZE=2><P ALIGN="JUSTIFY">void *dequeue(int timeout)</P><DIR>
+
+</FONT><P ALIGN="JUSTIFY">Remove item from the qeueue, and <B>block</B> (not busy wait) the calling thread if the queue is empty. <FONT FACE="Courier">Timeout</FONT> specifies the amount of time (in microseconds) that the dequeue operation should wait when the queue is empty before returning. If <FONT FACE="Courier">timeout</FONT> is negative, dequeue will never return unless there is an item in the queue. When the dequeue function returns due to a timeout, it should return <FONT FACE="Courier">NULL</FONT>.</P></DIR>
+
+<FONT FACE="Courier" SIZE=2><P ALIGN="JUSTIFY">void *head()</P><DIR>
+
+</FONT><P ALIGN="JUSTIFY">Return head of queue without removing the item. This function should return NULL if the queue is empty.</P></DIR>
+
+<FONT FACE="Courier" SIZE=2><P ALIGN="JUSTIFY">bool probe()</P><DIR>
+
+</FONT><P ALIGN="JUSTIFY">Test if the queue contains an item. It will return true if the queue is non-empty.</P></DIR>
+</DIR>
+
+<B><P ALIGN="JUSTIFY">Implementation Requirements</P>
+</B><P ALIGN="JUSTIFY">You should submit a tar file that contains the source code for your implementation of the queue abstraction. The entire implementation should be in the file queue.c if it is written in C, or queue.C if it is written in C++. You <B>can only add fields</B> (or private member functions if you are doing the project in C++) to the header file we supply, you may <B>not </B>change the existing functions’ parameters or return types. </P>
+<P ALIGN="JUSTIFY">Like the first program, you should submit a tar file. The tar file should include a Makefile that compiles your queue implementation, a second file driver.c that will contain the function main, the header file, and the typescript output of running your version of the driver. </P>
+<P ALIGN="JUSTIFY">The version of driver that you write should create two new threads and one queue. The first thread should enqueue the numbers 1..10 into the queue, and the second thread should remove the items and print them out as they are removed. When you create the queue, it should have a maximum of 5 items. You should also test the timeout and other features of your program (our test cases will!). When we test your program, we will substitute our own version of driver.c with additional test cases.</P></BODY>
+</HTML>

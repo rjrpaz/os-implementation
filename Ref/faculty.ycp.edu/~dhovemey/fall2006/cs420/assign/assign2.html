@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Assignment 2</title>
+</head>
+<body>
+<h1>CS 420 - Assignment 2<br>
+</h1>
+<p><span style="font-weight: bold;">Due Friday, September 15th by 11:59
+PM</span><br>
+</p>
+<p>In this assignment, you will write a file copy program using only
+OS-level API functions.<br>
+</p>
+<h2>Your Task<br>
+</h2>
+<p>Your program should take two command line arguments.<br>
+</p>
+<p>The first is the name of an input file, and the second is the name
+of the output file.&nbsp; The program should open both files (the input
+file for reading and the output file for writing) and copy the entire
+contents of the input file into the output file.<br>
+</p>
+<p>If the entire copy operating is successful, the program should exit
+with an exit code of 0.<br>
+</p>
+<p>If an error occurs, the program should print an error message to the
+standard error file descriptor and exit with a non-zero exit code.<br>
+</p>
+<h2>Restrictions<br>
+</h2>
+<p>Your program must use only OS-level API functions.&nbsp;
+Specifically, you may use any POSIX functions under Linux (or other
+Unix variant) or Win32 functions under Windows.&nbsp; [If you would
+like to use a different OS-level API, let me know.]<br>
+</p>
+<p>For POSIX, you will be using functions such as <span
+ style="font-weight: bold;">open</span>, <span
+ style="font-weight: bold;">close</span>, <span
+ style="font-weight: bold;">read</span>, and <span
+ style="font-weight: bold;">write</span>.<br>
+</p>
+<p>For Win32, you will use functions such as <span
+ style="font-weight: bold;">CreateFile</span>, <span
+ style="font-weight: bold;">ReadFile</span>, and <span
+ style="font-weight: bold;">WriteFile</span>.<br>
+</p>
+<p>You must not use any I/O functions from the standard C or C++
+libraries.&nbsp; These include functions like <span
+ style="font-weight: bold;">printf</span>, <span
+ style="font-weight: bold;">fprintf</span>, <span
+ style="font-weight: bold;">fopen</span>, <span
+ style="font-weight: bold;">fread</span>, <span
+ style="font-weight: bold;">fwrite</span>, <span
+ style="font-weight: bold;">fclose</span>, etc., and also the iostream
+facility in C++ (<span style="font-weight: bold;">cin</span>, <span
+ style="font-weight: bold;">cout</span>, <span
+ style="font-weight: bold;">cerr</span>, etc.)<br>
+</p>
+<p>You may use C, C++, or assembly language to implement your program.<br>
+</p>
+<h2>Sources of Information<br>
+</h2>
+<p><a href="http://en.wikipedia.org/wiki/Windows_API">http://en.wikipedia.org/wiki/Windows_API</a><br>
+</p>
+<p><a
+ href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winprog/winprog/windows_api_start_page.asp">http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winprog/winprog/windows_api_start_page.asp</a><br>
+</p>
+<p><a href="http://www.linuxmanpages.com/">http://www.linuxmanpages.com/</a><br>
+</p>
+<h2>Extra Credit<br>
+</h2>
+<p>You can earn 20% extra credit by writing your program so that it
+issues system calls directly instead of using API functions.&nbsp; This
+will require some assembly language programming.&nbsp; (I can give you
+more information if you are interested in trying this.)<br>
+</p>
+<h2>Report<br>
+</h2>
+<p>Please include a document explaining how you implemented your
+program, what sources of information you used, and what API functions
+you used.<br>
+</p>
+<h2>Submission<br>
+</h2>
+<p>Submit your completed program by copying all needed files into a zip
+file and submitting it via the My YCP Inbox under "Assignment 2".&nbsp;
+Don't forget to include your report.<br>
+</p>
+<p>If you are using Visual Studio, include the entire solution
+directory in the zip file.<br>
+</p>
+<p>If you are using gcc under cygwin or Linux, submit a Makefile or
+instructions how to compile your program.<br>
+</p>
+</body>
+</html>

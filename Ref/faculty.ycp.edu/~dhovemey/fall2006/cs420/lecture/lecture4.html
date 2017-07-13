@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Lecture 4</title>
+</head>
+<body>
+<h1>CS 420 - Lecture 4<br>
+</h1>
+<p>Announce: Assignment 2 posted, due 9/15 by 11:59 PM<br>
+</p>
+<p>Quiz 1 --- 15 minutes<br>
+</p>
+<p>Finish discussing read system call, system call table and dispatch,
+and security concerns.<br>
+</p>
+<p>Goal for today: finish discussion of OS concepts and structure.<br>
+</p>
+<h2>Memory management<br>
+</h2>
+<p>Each process requires some amount of memory to execute<br>
+</p>
+<p style="margin-left: 40px;">The amount of memory needed by a process
+varies over time<br>
+</p>
+<p style="margin-left: 40px;">Because in a multiprogrammed system many
+processes are running, their total demand for memory may exceed the
+amount of physical memory installed in the computer<br>
+</p>
+<p style="margin-left: 40px;">Term: <span style="font-style: italic;">address
+space</span>.&nbsp; An
+address space is the private memory space for a process.&nbsp; An
+address
+space creates the illusion that the process is the only process running
+on the computer.&nbsp; Generally, the address space for a process will
+be
+larger than the amount of physical memory.&nbsp; The obviously implies
+that
+the address space is sparse, meaning that there are parts of the
+address space that aren't mapped to physical memory.
+</p>
+<h3>Virtual memory<br>
+</h3>
+<p>Virtual memory is the term for allowing execution of a process to
+continue when its demand for memory exceeds available physical
+memory.&nbsp; [Question: how is this possible?]<br>
+</p>
+<p>First of all, virtual memory requires hardware support, the
+MMU.&nbsp; Typically, MMUs support paging, meaning that the address
+space of a process is a map of <span style="font-style: italic;">virtual
+addresses</span> to <span style="font-style: italic;">physical pages</span>
+of memory.&nbsp; A data structure known as the process's <span
+ style="font-style: italic;">page tables</span> defines this
+mapping.&nbsp; The OS kernel maintains the page tables for each process
+to determine which physical memory the process will use.<br>
+</p>
+<p style="margin-left: 40px;"><img alt="Virtual memory"
+ src="figures/virtualMemory.png" style="width: 30%;"><br>
+</p>
+<p>In an OS that supports virtual memory, part of a process's in-memory
+data may be moved to secondary storage (disk space).&nbsp; When demand
+for physical memory exceeds the amount of available memory, the OS
+kernel will select a page of physical memory from a victim process and
+steal it.&nbsp; [Question: what must happen when the kernel steals a
+page?]&nbsp; Before making the stolen page available, its data is first
+copied to disk (the <span style="font-style: italic;">paging file</span>,
+sometimes called the <span style="font-style: italic;">swap file</span>).<br>
+</p>
+<p>Question: how to select the page to steal?&nbsp; Many policies for
+selecting a page to steal are possible.&nbsp; A common policy is to
+select the least recently used page (LRU).<br>
+</p>
+<p>Question: what happens when the process generates a memory reference
+which access a page whose data has been moved to disk?&nbsp; A page
+fault occurs whenever a memory reference accesses a page that is not
+currently mapped to a physical memory frame.&nbsp; The kernel consults
+a data structure to determine where the data is stored, allocates a
+frame of physical memory (possibly stealing one from another process),
+loads the data from disk into the newly allocated frame, and maps it
+into the address space (page tables) of the faulting process.<br>
+</p>
+<p>Example scenario: User logs in and starts a command interpreter
+(shell).&nbsp; From the shell prompt, the user starts an
+application.&nbsp; The shell is now waiting for the application to
+finish: therefore, it is suspended (not using the CPU).&nbsp; The
+application program runs and eventually requires more memory than is
+physically available.&nbsp; A logical way for the OS kernel to acquire
+memory needed by the application is to steal it from the shell process
+(since the shell is suspended and not using any of the physical memory
+it has been allocated).&nbsp; When the application is finished its
+memory will be reclaimed, and the shell will be woken up.&nbsp; As the
+shell executes again, it may access stolen pages generating page faults.<br>
+</p>
+<p style="margin-left: 40px;"><img alt="Paging example"
+ src="figures/pagingExample.png" style="width: 70%;"><br>
+</p>
+<h2>Multiprocessor Systems<br>
+</h2>
+<p>So far we've talked about single-CPU systems.&nbsp; Increasingly,
+computers have multiple CPUs.&nbsp; Questions:<br>
+</p>
+<ol>
+  <li>Why are multiple CPUs useful?</li>
+  <li>What kinds of systems have multiple CPUs?<br>
+  </li>
+</ol>
+<p>Multiprocessing: general term for a system that uses multiple CPUs
+to perform computation.<br>
+</p>
+<p>Basic architecture of a multi-CPU system.<br>
+</p>
+<p style="margin-left: 40px;"><img alt="SMP architecture"
+ src="figures/smpArch.png" style="width: 40%;"><br>
+</p>
+<p>Asymmetric multiprocessing: processors are given specific
+tasks.&nbsp; For example, one CPU to handle user computation, another
+to handle kernel computation and I/O, etc.<br>
+</p>
+<p>Symmetric multiprocessing (SMP): any processor can perform any
+required task.&nbsp; This is more typical for modern OS designs.<br>
+</p>
+<p>Key issue in SMP: multiple processors may be executing kernel code
+and accessing kernel data structures at the same time.&nbsp;
+Synchronization is needed to make sure that data structures are not
+corrupted.<br>
+</p>
+<p style="margin-left: 40px;">Question: what are some examples of
+synchronization mechanisms that the kernel could use?<br>
+</p>
+<p>Other SMP issues: each processor generally has its own cache, which
+may or may not be in sync with main memory.&nbsp; Cache coherency is
+the problem of making sure that when processors need to share data that
+they are seeing a coherent picture of main memory.<br>
+</p>
+<p style="margin-left: 40px;">On some systems this is handled largely
+in hardware.&nbsp; However, the synchronization mechansms that the
+kernel uses generally need to perform special operations to ensure that
+each processor sees a consistent view of main memory.</p>
+</body>
+</html>

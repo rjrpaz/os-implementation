@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Assignment 4</title>
+</head>
+<body>
+<h1>CS 420 - Assignment 4<br>
+</h1>
+<p><span style="font-weight: bold;">Due: Tuesday, October 3rd by 11:59
+PM</span><br>
+</p>
+<h2>Keyboard I/O in GeekOS<br>
+</h2>
+<p>In this assignment you will modify a simple version of
+GeekOS to read characters typed at the keyboard and echo them to the
+screen.<br>
+</p>
+<h2>Getting Started<br>
+</h2>
+<p>You can work on the project using either Windows or Linux.&nbsp; See
+the <a
+ href="http://faculty.ycp.edu/%7Edhovemey/fall2006/cs420/tools.html">Tools
+Page</a> for complete information on what software you will need.<br>
+</p>
+<p>Start by downloading project0.zip from the course web page.&nbsp;
+This file is in the Files section in the "lecture1" folder.&nbsp; Unzip
+the file somewhere convenient.<br>
+</p>
+<p>Start a bash shell (either using cygwin or a Linux terminal
+window).&nbsp; Change directory into the "build" subdirectory and run
+the command "make".&nbsp; This should compile and link the GeekOS
+kernel image.<br>
+</p>
+<p>Edit the file "bochsrc.txt" using a text editor.&nbsp; You will need
+to change two lines of this file:<br>
+</p>
+<pre style="margin-left: 40px;">romimage: file="C:\Program Files\Bochs-2.3.pre3/BIOS-bochs-latest", address=0x00000<br>vgaromimage: file="C:\Program Files\Bochs-2.3.pre3/VGABIOS-lgpl-latest"</pre>
+<p>Change these lines so that the file paths correspond to the
+locations of the files "BIOS-bochs-latest" and "VGABIOS-lgpl-latest" on
+the computer you're working on.&nbsp; These will generally be installed
+as part of Bochs.&nbsp; For example, on a Linux system they might be
+somewhere in the directory "/usr/share/bochs" (or a similarly-named
+directory).<br>
+</p>
+<p>Once you have edited the "bochsrc.txt" file, you should be able to
+run Bochs by typing the complete path to the bochs executable in your
+bash window.&nbsp; For example, in the cygwin bash window on my Windows
+machine, I typed<br>
+</p>
+<pre style="margin-left: 40px;">/cygdrive/c/Program\ Files/Bochs-2.3.pre3/bochs.exe<br></pre>
+<p>After choosing the "Begin simulation" option, you should see a
+window that looks something like this:<br>
+</p>
+<p style="margin-left: 40px;"><img alt=""
+ src="figures/project0Screenshot.png"
+ style="width: 730px; height: 493px;"><br>
+</p>
+<h2>Your Task<br>
+</h2>
+<p>Add code to the <span style="font-weight: bold;">Main</span> method
+(in src/geekos/main.c) to read keys typed by the user and echo them to
+the screen.<br>
+</p>
+<p>For example, here is a screenshot showing what the Bochs window
+looks like after I've typed some text using the keyboard:<br>
+</p>
+<p style="margin-left: 40px;"><img alt=""
+ src="figures/project0ScreenshotTyping.png"
+ style="width: 730px; height: 493px;"><br>
+</p>
+<h2>Hints<br>
+</h2>
+<p>The functions and definitions for reading key presses are in the
+header "include/geekos/keyboard.h".<br>
+</p>
+<p>The <span style="font-weight: bold;">Keycode</span> data type is
+used to represent a single key press or release event.&nbsp; (You
+should ignore key release events, since these correspond to the user
+releasing the key rather than pressing it.)&nbsp; You will need to
+decode key events to see if they correspond to ASCII characters.<br>
+</p>
+<p>Finding if a key is a release event:<br>
+</p>
+<pre style="margin-left: 40px;">Keycode code = ...<br><br>if ((code &amp; KEY_RELEASE_FLAG) != 0) {<br>&nbsp;&nbsp;&nbsp; /* this is a key release event */<br>}<br></pre>
+<p>Finding if a key is a special (non-ASCII) character:<br>
+</p>
+<pre style="margin-left: 40px;">if ((code &amp; KEY_SPECIAL_FLAG) != 0) {<br>    /* this is a special key, not ASCII */<br>}<br></pre>
+<p>Finding the ASCII code of a key (once you have determined that it is
+not a release event and not a special key):<br>
+</p>
+<pre style="margin-left: 40px;">int asciiCode = (code &amp; 0xFF);<br></pre>
+<p>Once you have the ASCII code of a pressed key, you can print it to
+the screen using the <span style="font-weight: bold;">Print</span> or <span
+ style="font-weight: bold;">Put_Char</span> functions.&nbsp; These are
+defined in the header "include/geekos/screen.h".<br>
+</p>
+<p>If the user presses the Enter key, the ASCII code will be 13 (the
+character '\r').&nbsp; To handle that keypress you should print a
+newline character ('\n').<br>
+</p>
+<h2>Testing<br>
+</h2>
+<p>Make sure you can start compile GeekOS, execute it within Bochs,
+press keys, and see the characters corresponding to those keys echoed
+within the Bochs window.<br>
+</p>
+<h2>Extra Credit</h2>
+<p>For extra credit:<br>
+</p>
+<ul>
+  <li>Run your code to read from the keyboard in a new kernel thread
+started from the main function.</li>
+  <li>In the keyboard-reading code, if the user types two capital 'Z'
+characters in a row, the keyboard-reading thread should exit.</li>
+  <li>The main function should wait for the keyboard-reading thread to
+finish and then print the message "Done reading from keyboard".</li>
+</ul>
+<p>Here is a screenshot showing what the Bochs window should look like
+after the keyboard-reading thread has completed:<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/extraCredit.png"
+ style="width: 730px; height: 493px;"><br>
+</p>
+<p>Some hints:<br>
+</p>
+<p style="margin-left: 40px;">"include/geekos/kthread.h" and
+"src/geekos/kthread.c" contain the definitions and functions for kernel
+threads.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Start_Kernel_Thread</span>
+is the function that starts a new kernel thread.&nbsp; You will want to
+pass false for the <span style="font-weight: bold;">detached</span>
+parameter, signifying that the parent will wait for the child thread to
+exit.<br>
+</p>
+<p style="margin-left: 40px;">The <span style="font-weight: bold;">Join</span>
+function waits for a child thread to exit.<br>
+</p>
+<h2>When you are done</h2>
+<p>Submit a zip file containing your entire "project0" directory to the
+My YCP Inbox as "Assignment 4".&nbsp; (Please type "make clean" in the
+build directory before you create the zip file.)<br>
+</p>
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>CMSC 412 - Project 6</title>
+</head>
+<body lang="EN-US" link="blue" vlink="purple">
+<center><font size="+2"><b>CMSC 412 Project #6</b> </font></center>
+<p>
+</p>
+<center><font size="+1"><b>Message Passing</b>
+</font></center>
+<center><p><b>Due Thursday, May 12, 2005 (6:00 PM)</b></p></center>
+<li><b><a href="p6_grading.html">Grading Criteria</a> </b>
+</li>
+<li><b><a href="p6_submission.html">Submission Instructions</a> </b>
+</li>
+<li><b><a href="proj6.ppt">Slides used in recitation</a> </b>
+</li>
+
+<h2>New project files</h2>
+
+<p>
+A working project 3, 4 or 5 is <i>not required</i> for this project. 
+All you need is a working project 2, 
+so you are free to start building on top of whichever project (>=2) you like.
+Having implemented semaphores correctly in project 3 will make your job easier,
+since there are a lot of similarities between this project and semaphore implementation
+in project 3.
+</p>
+
+<p>There is no new project distribution. Instead, you are given some files and you'll have to copy these files
+in the indicated directories, and/or add their contents to existing files.
+</p>
+<li>Save <a href="mqueue.c">mqueue.c</a> in <tt>src/geekos</tt>, add it to <tt>KERNEL_C_SRCS</tt> 
+in the <tt>Makefile</tt>
+<li>Save <a href="mqueue.h">mqueue.h</a> in <tt>include/geekos</tt>
+<li>Save <a href="mq.h">mq.h</a> in <tt>include/libc</tt>
+<li>Save <a href="mq.c">mq.c</a> in <tt>src/libc</tt>, add it to <tt>LIBC_C_SRCS</tt> 
+in the <tt>Makefile</tt>
+<li>Save <a href="p6test.c">p6test.c</a>, 
+            <a href="ping6.c">ping6.c</a>, 
+            <a href="pong6.c">pong6.c</a>, 
+            <a href="ppstart.c">ppstart.c</a>, 
+            <a href="fsend.c">fsend.c</a>, 
+            <a href="frecv.c">frecv.c</a>, 
+            <a href="fstart.c">fstart.c</a> 
+in <tt>src/user</tt>, add them to <tt>USER_C_SRCS</tt> 
+in the <tt>Makefile</tt>
+
+<li>Add <a href="syscall.h.add">syscall.h.add</a> to <tt>include/geekos/syscall.h</tt>
+<li>Add <a href="syscall.c.add">syscall.c.add</a> to <tt>src/geekos/syscall.c</tt>
+<li>Add <a href="libuser.h.add">libuser.h.add</a> to <tt>include/libc/libuser.h</tt>
+
+
+<h1>Introduction</h1>
+<p>The purpose of this project is to add communication via message passing to GeekOS.</p>
+
+<p>To better understand the concepts behind this project, 
+you might want to review section 3.4.2 in the textbook first.</p>
+
+<p>
+Message passing allows processes to communicate by sending
+messages.&nbsp;&nbsp; In this project, those messages will be sent
+via message queues.&nbsp; You can think of the message queues as
+mailboxes (heretofore we'll use message queue and mailbox interchangeably).&nbsp;&nbsp; 
+A send to a mailbox will insert the
+message to the queue of messages corresponding to that mailbox. A
+receive reads from the queue and returns it to the
+receiver.&nbsp; The queues will be FIFO so a send should append
+message to the end of a queue.&nbsp; Correspondingly, a
+receive should read from the front of a queue. 
+In terms of implementation, a message queue is essentially a circular buffer.<br>
+
+<h2>Message_Queue_Create()</h2>
+Like semaphores, message queues have a <i>name</i> and an <i>id</i>.
+A message queue is created by <tt>Message_Queue_Create()</tt> and
+destroyed by <tt>Message_Queue_Destroy()</tt>. All the associated operations
+take a message queue id (<tt>mqid</tt>).
+<p>Message queues have variable size, set at queue creation time via the 
+<tt>queue_size</tt> parameter.</p>
+
+
+<h2>Message_Queue_Send() / Message_Queue_Receive()</h2>
+<p>Messages have arbitrary sizes, limited only by practical concerns
+(<tt>MESSAGE_MAX_SIZE</tt> in <tt>mqueue.h</tt> in our case).
+</p>
+The sender uses <tt>Message_Queue_Send()</tt> for sending and the 
+receiver uses <tt>Message_Queue_Receive</tt> for receiving; 
+so the receiver has no idea how many bytes has the sender actually written; 
+the FIFO mechanism will assure bytes are read in exactly the order they were received. 
+The kernel must copy the message from the
+process sending the message and append it to message queue.
+&nbsp;&nbsp; On a receive, the kernel
+will read from the queue and copy the message into
+the buffer passed by the receiver.&nbsp;&nbsp; If the message is longer than the buffer
+size of the receiver, part of the message (up to the buffer size) is
+given to the receiver, while the rest is left in the message queue.
+&nbsp;&nbsp;
+</P>
+An attempt
+to write to a full message queue should block the process and an
+attempt to read from an empty message queue will block the process 
+(as you might have noticed, this is the UNIX semantics for pipes, but
+the queue size varies here).&nbsp;
+The operations of message queues are defined for the case of one
+process reading from a message queue and a second process writing to
+it.&nbsp; You do not need to handle the case of more than one process
+reading from (or writing to) the same message queue <i>simultaneously</i>.</P>
+
+
+
+<h2>Message_Queue_Destroy()</h2>
+<p><tt>Message_Queue_Destroy(int mqid)</tt> will remove the passed mailbox from the list of 
+mailboxes the calling thread is allowed to use.</p>
+
+<h1>Implementation issues</h1>
+
+<p>
+You will define a structure holding the mailbox (e.g. <tt>struct Mailbox</tt>) 
+in <tt>include/geekos/mqueue.h</tt>). An easy way to model the queue
+is a circular buffer : an array <tt>queue_size</tt> large with
+two indexes, one for reading and for writing. 
+The message queue API implementation should go in <tt>src/geekos/mqueue.c</tt>.
+<br>
+You have to add a mailbox list to the user context (<tt>user.h</tt>).
+</p>
+
+<p><tt>Message_Queue_Create()</tt> is a request by the current
+thread to use a message queue. A thread can not call 
+<tt>Message_Queue_Send() / Message_Queue_Receive() / Message_Queue_Destroy()</tt> 
+unless it has called <tt>Message_Queue_Create()</tt> first.</p> 
+
+The user gives a name for
+the mailbox, as well as the mailbox's size, and will get
+back a message queue ID  <tt>mqid</tt>, an integer between 0 and N - 1. 
+Your operating system should be able to handle <b>at least</b> 20 (thus N =
+20) mailboxes whose names may be <b>up to</b> 25 characters long. If
+there are no mailboxes left
+(i.e., there were 20 mailboxes with unique names already given), an error
+must be returned. </p>
+<p> In the implementation of your kernel function <tt>Sys_MessageQueueCreate</tt>, you will
+check if another thread has made this system call with the same name.
+If so, you must return back the <tt>mqid</tt> associated
+with this name. The parameter <tt>queue_size</tt> is ignored in this case.
+The <tt>mqid</tt> value returned will allow the calling thread to tell the kernel
+which mailbox it
+wants to use later. You also need to add this <tt>mqid</tt> to the list of
+mailboxes the calling thread can use, as well increment the count of
+registered threads which are permitted to use the mailbox. So, for
+each thread
+you have to store the list of mailbox IDs it can use, and for each
+mailbox, you will store the <i>number</i> of threads using it. (This
+will be used as a reference count.)</p>
+<p> If this is the first time <tt>Message_Queue_Create()</tt> has been
+called by the name passed in, then find an unused <tt>mqid</tt>, and allocate
+<tt>message_size</tt> space associated with this mailbox. Again, add
+the <tt>mqid</tt> to the list of mailboxes the current thread can use, as well
+as incrementing the mailbox's count of authorized threads. </p>
+
+<p>Whenever a thread calls <tt>Message_Queue_Send()</tt> or <tt>Message_Queue_Receive()</tt>, 
+the kernel will check if the thread has permission to make this call. It will do so by
+checking if the thread has the <tt>mqid</tt> in its list of <tt>mqid</tt>s that it can access 
+If it is there, it will be allowed
+to execute <tt>Message_Queue_Send()</tt> or <tt>Message_Queue_Receive()</tt>. 
+If not, the kernel should return back an error.</p>
+</p>
+
+<p><tt>Message_Queue_Destroy(int mqid)</tt> will remove the passed mailbox from the list of 
+mailboxes the calling thread is allowed to use. 
+It will also keep track of how many threads have references to the mailbox, 
+and delete the mailbox from the table (i.e. mark is as an unused mailbox) 
+when the last thread that can access this mailbox calls <tt>Message_Queue_Destroy()</tt>.
+
+Note: when a thread exits, the kernel should automatically call <tt>Message_Queue_Destroy()</tt> 
+on behalf of this thread, for all the mailboxes it has in its list. 
+</p>
+
+
+<a name="table"></a>
+<h1>New System Calls</h1>
+<p>You have to implement the semantics of the new system calls
+as described below.</p>
+<p>NOTE: All user-supplied pointers (e.g. strings, buffers) must
+be checked for validity.
+</p>
+
+<p>
+<table valign="center" halign="left" border="1" width="100%">
+  <tbody>
+    <tr>
+      <td><b>Call</b></td>
+      <td><b>User Function</b></td>
+      <td><b>Return on success</b></td>
+      <td><b>Return on failure</b></td>
+      <td><b>Reasons for failure</b></td>
+      <td><b>Comment</b></td>
+    </tr>
+
+<tr>
+<td>SYS_MESSAGEQUEUE_CREATE</td>
+<td>int Message_Queue_Create(const char *name, ulong_t queue_size)</td>
+<td>new message queue id</td>
+<td>&lt 0</td>
+<td>
+<li>all mailboxes are currently in use
+<li><tt>name</tt> is an invalid pointer
+<li><tt>queue_size</tt> is larger than <tt>MQUEUE_MAX_SIZE</tt> (defined in <tt>mqueue.h</tt>) 
+</td>
+<td>
+This call should create a new message queue if it does not exist.  Otherwise, it should open it in the current process.
+</td>
+</tr>
+
+<tr>
+<td>SYS_MESSAGEQUEUE_DESTROY</td>
+<td>int Message_Queue_Destroy(int mqid)</td>
+<td>0</td>
+<td>&lt 0</td>
+<td>
+<li><tt>mqid</tt> is not an open mailbox
+</td>
+<td>
+Removes this mailbox from the current thread's list of usable mailboxes. If the refcount is 0, free
+the mailbox.
+</td>
+</tr>
+
+<tr>
+<td>SYS_MESSAGEQUEUE_SEND</td>
+<td>int Message_Queue_Send(int mqid, void * buffer, ulong_t message_size)</td>
+<td>0</td>
+<td>&lt 0</td>
+<td>
+<li><tt>mqid</tt> is not an open mailbox
+<li><tt>buffer</tt> is an invalid pointer
+<li><tt>size</tt> exceeds the maximum message size
+</td>
+<td>
+Appends <tt>buffer</tt> to the message queue. Blocks if the queue is full.</tt>
+</td>
+</tr>
+
+<tr>
+<td>SYS_MESSAGEQUEUE_RECEIVE</td>
+<td>int Message_Queue_Receive(int mqid, void * buffer, ulong_t message_size)</td>
+<td>0</td>
+<td>&lt 0</td>
+<td>
+<li><tt>mqid</tt> is not an open mailbox
+<li><tt>buffer</tt> is an invalid pointer
+<li><tt>size</tt> exceeds the maximum message size (<tt>MESSAGE_MAX_SIZE</tt> defined in <tt>mqueue.h</tt>)
+</td>
+<td>
+Reads from the message queue into <tt>buffer</tt>. Blocks until the buffer can be filled.</tt>
+</td>
+</tr>
+  </tbody>
+</table>
+</p>
+
+<h1>Requirements</h1>
+
+You need to support at least <b>20</b>
+mailboxes whose names may be up to <b>25</b> characters long.  
+If all mailboxes are currently used (i.e., all mailboxes have at least one user), an error should be 
+returned. Maximum message and mailbox sizes are defined in <tt>mqueue.h</tt>.
+
+<h1>Testing your code</h1>
+<p> Please use the files in the <a href="p6_grading.html">Grading Criteria</a></p>
+<li><b>p6test.c</b> is a test battery intended to check the requirements, in a similar fashion to 
+<tt>p5test.c</tt> used in project 5
+<li><b>ppstart.c</b> is a ping-pong test case intended to check synchronization via message passing
+<li><b>fstart.c</b> is a test case intended to check whether message fragmentation is properly implemented (message size bigger than mailbox)
+
+
+</body>
+
+  <hr>
+  <script language="JavaScript">
+          <!---//hide script from old browsers
+          var theDate = new Date(document.lastModified);
+	  var theLocalDate = theDate.toLocaleString();
+          document.write( "<i>Last updated: "+ theLocalDate +"</i>");
+          //end hiding contents --->
+  </script>
+</html>

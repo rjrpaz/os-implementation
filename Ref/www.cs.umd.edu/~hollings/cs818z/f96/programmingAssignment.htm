@@ -1,0 +1,149 @@
+<HTML>
+
+<HEAD>
+
+<TITLE>CMSC 311-101 (Fall 1995)</TITLE>
+
+<META NAME="GENERATOR" CONTENT="Internet Assistant for Microsoft Word 2.0z Beta">
+</HEAD>
+
+<BODY>
+
+<P>
+<CENTER><B>CMSC 818Z- High Performance Computing</B></CENTER>
+<P>
+<CENTER>Fall 1996 - Programming Assignment</CENTER>
+<P>
+<CENTER><I>Due (in class) Oct 3, 1996<BR>
+</I></CENTER>
+<P>
+The purpose of this programming assignment is to gain experience
+in parallel programming and PVM. For this assignment you are to
+write a parallel implementation of a program to simulate the game
+of life.  <BR>
+
+<P>
+The game of life simulates simple cellular automata.  The game
+is played on a rectangular board containing cells. At the start,
+some of the cells are occupied, the rest are empty. The game consists
+of constructing successive generations of the board.  The rules
+for constructing the next generation from the previous one are:
+<OL>
+<LI><I>death</I>: cells with 0,1,4,5,6,7, or 8 neighbors die (0,1
+of loneliness and 4-8 of over population)
+<LI><I>survival</I>: cells with 2 or 3 neighbors survive to the
+next generation.
+<LI><I>birth</I>: an unoccupied cell with 3 neighbors becomes
+occupied in the next generation.
+</OL>
+
+<P>
+
+<P>
+For this project the game board has finite size. The x-axis starts
+at 0 and ends at X_limit-1 (supplied on the command line).  Likewise,
+the y-axis start at 0 and ends at Y_limit-1 (supplied on the command
+line).<BR>
+
+<P>
+<B>INPUT</B>
+<P>
+Your program should read in a file containing the coordinates
+of the initial cells. A sample files are located in <TT><FONT SIZE=2 FACE="Courier New">~hollings/cmsc818z/prog/life.data.*
+</FONT></TT><FONT SIZE=2>on the junk food cluster. You can also
+find many other sample patterns on the web (use your favorite
+search engine on &quot;game of life&quot; and/or &quot;Conway&quot;).
+<BR>
+</FONT>
+<P>
+Your program should take five command line arguments: the name
+of the data file, the number of processes to invoke (including
+the initial one), the number of generations to iterate, X_limit,
+and Y_limit.<BR>
+
+<P>
+<B>OUTPUT</B>
+<P>
+Your program should print out one line (containing the x coordinate,
+a space, and then the y coordinate) for each occupied cell. <BR>
+
+<P>
+<B>HINTS</B>
+<P>
+The goal of is not to write the most efficient implementation
+of Life, but rather to learn parallel programs.<BR>
+
+<P>
+Figure out how you will decompose the problem for parallel execution.
+Remember that PVM does not have great communication performance
+and so you will want to make message passing infrequent.  Also,
+you will need to be concerned about load balancing.<BR>
+
+<P>
+One you have decided how to decompose the problem, write the sequential
+version first.<BR>
+
+<P>
+<B>WHAT TO TURN IN</B>
+<P>
+You should submit your program and the times to run it on the
+input file ~hollings/818/final.data (for 1, 2, and 4 processes).
+<BR>
+
+<P>
+You also must submit a short report about the results (1-2 pages)
+ that explains:
+<UL>
+<LI>what decomposition was used
+<LI>how was load balancing done
+<LI>what are the performance results, and are they what you expected
+</UL>
+
+<P>
+
+<P>
+<B>RUNNING PVM</B>
+<P>
+To run PVM, you need to set a few environment variables:
+<P>
+  <TT><FONT SIZE=2 FACE="Courier New"># setup PVM environment</FONT></TT>
+<P>
+<TT><FONT SIZE=2 FACE="Courier New">setenv PVM_ROOT $HOME/pvm3</FONT></TT>
+<P>
+<TT><FONT SIZE=2 FACE="Courier New">setenv PVM_ARCH `$PVM_ROOT/lib/pvmgetarch`</FONT></TT>
+<P>
+<TT><FONT SIZE=2 FACE="Courier New">setenv XPVM_ROOT $PVM_ROOT/xpvm
+<BR>
+</FONT></TT>
+<P>
+Also, you need to:
+<P>
+1) create the directory $home/pvm3.
+<P>
+2) create a subdirectory $home/pvm3/bin/SUN4.
+<P>
+3) ln -s /usr/imports/pvm/lib $home/pvm3/lib.<BR>
+
+<P>
+Finally, you need to add pvm to your path, I use:
+<P>
+<TT><FONT SIZE=2 FACE="Courier New">set path = ($path $HOME/pvm3/lib/$PVM_ARCH)
+<BR>
+</FONT></TT>
+<P>
+A useful resource is the PVM programmers reference card available
+from:
+<P>
+<TT><FONT SIZE=2 FACE="Courier New">http://www.netlib.org/pvm3/refcard.ps
+<BR>
+</FONT></TT>
+<P>
+By default PVM does not send the results of print statements by
+spawned processes to standard output.  You can change this behavior
+by calling pvm_catchout(stdout) just before calling pvm_spawn.
+ This will cause the output of each process to appear on standard
+output, and each line will be prefixed by the PVM task id that
+generated the output.
+</BODY>
+
+</HTML>

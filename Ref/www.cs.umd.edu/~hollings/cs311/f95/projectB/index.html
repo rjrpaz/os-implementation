@@ -1,0 +1,162 @@
+<HTML>
+
+<HEAD>
+
+<TITLE>CMSC 311-101 (Fall 1995)</TITLE>
+
+<META NAME="GENERATOR" CONTENT="Internet Assistant for Word 2.0z Beta">
+</HEAD>
+
+<BODY>
+
+<P>
+
+<CENTER>
+<B>CMSC 311- Computer Organization</B>
+<P>
+Fall 1995 - Programming Assignment Part &quot;B&quot;
+<P>
+<I>Due (at 10:30 AM) Tuesday, December 12</I>
+<P>
+<B>A Reverse Polish Notation Calculator</B>
+</CENTER>
+
+<P>
+The EZ LITE 95  calculator (EZ for short) manipulates integers
+on a stack.  It is run from a terminal.  EZ prompts you with <TT>ez&gt;
+</TT>The input is either a number or an operation followed by
+a line feed.  A line feed alone just causes the prompt to be printed
+out.
+<P>
+Numbers are entered as a string of numeric characters optionally
+preceded by  + or - and followed by a line feed. Numbers may have
+any number of leading zeros, but only numbers less that 10000
+in absolute value are permitted.  The format for printing numbers
+is<TT> +dddd</TT> for nonnegative numbers and <TT>-dddd </TT>for
+negative numbers (1 is printed as <TT>+0001</TT>).  Only one number
+to a line.
+<P>
+The stack has up to 128 entries.  Initially the stack is empty.
+Numbers are pushed onto the stack by entering them from the keyboard.
+ An attempt to enter an illegal number (e.g., 34295 or 43a2) causes
+EZ to print <TT>Bad number</TT> and leave the stack unaltered.
+An attempt to push an item onto a full stack should print <TT>Stack
+Overflow </TT>and not change the stack.  An attempt to pop an
+item from an empty stack should result in an <TT>Stack Underflow</TT>
+message and not change the stack.
+<P>
+An operation consists of a single nonnumeric character.  The arithmetic
+operations are +, -, *, /. Each of these operations pops two entries
+from the stack, computes  <TT>second op top</TT>, pushes the result
+back on the stack, and prints out the result. Division returns
+the integer part of the quotient.  On overflow (i.e., a result
+greater in absolute value than 9999) or divide by zero, EZ prints
+out  <TT>Overflow</TT> and pushes nothing on the stack.
+<P>
+The operation c changes the sign of the top entry and prints it.
+<P>
+The operation x exchanges the top and second entry of the stack.
+<P>
+The operation p prints the stack from bottom to top.
+<P>
+The operation k (for kill) pops the top item from the stack and
+prints it.
+<P>
+The operation q quits the calculator.
+<P>
+An illegal operation causes EZ to print <TT>Illegal operation</TT>.
+The stack is unchanged. An illegal operation is any input line
+that is not a valid operation and does not start with a digit,
+plus, or minus.
+<P>
+
+<CENTER>
+<I>Implementation</I>
+</CENTER>
+
+<P>
+To insure some uniformity, you must observe the following conventions.
+<P>
+There are two types of subprograms: formal and informal.  A formal
+subprogram follows the stack-frame conventions.  An informal subprogram
+is one that will never call another subroutine. In addition to
+the procedure <TT>main</TT> (which is formal), you will use four
+informal procedures, <TT>getchar</TT>, <TT>putchar</TT>, <TT>push</TT>,
+and <TT>pop</TT>, and two formal procedures, <TT>parse</TT> and
+<TT>printnum</TT>.  Here is a brief description of each:
+<MENU>
+<LI><B>push</B>: Pushes an number in $a0 onto the stack.  The
+stack resides in a global array <TT>dataStack.</TT> Numbers on
+the stack are machine integers. If a stack overflow occurs, $v0
+should be set to a 1, otherwise it should be set to 0.
+<LI><B>pop</B>:  Pops an item from the stack and puts in $v1.
+If a stack underflow occurs, a 1 should be put in $v0, otherwise
+it should be set 0.
+<LI><B>getchar</B>: Gets the next character from the input stream
+and returns it in the low order byte of  $v0.  Uses <TT>syscall
+</TT>to read input.
+<LI><B>putchar</B>: Prints the character in the low order byte
+of $a0. Uses <TT>syscall</TT>.
+<LI><B>printnum</B>: Prints the number in $a0 in the format described
+above.
+<LI><B>parse</B>: Prompts for and parses a line of input, returns
+the following in $v0.
+</MENU>
+
+<HR>
+
+<PRE WIDTH=132>
+<B>Code</B>                    <B>Result</B>                 
+
+   <B>-2</B>    Invalid operation                     
+
+   <B>-1</B>    Error in converting a number.         
+
+   <B> 0</B>    The line contains an operation.  The  
+         character code for the operation is   
+         returned in the low order byte of     
+         $v1.                                  
+
+   <B> 1</B>    The line contains a legal number,     
+         which is contained in $v1.            
+
+
+</PRE>
+
+<HR>
+
+<P>
+Thus the main program consists of a loop which calls <TT>parse</TT>
+and takes appropriate actions.
+<P>
+
+<CENTER>
+<I>Helpful Hints</I>
+</CENTER>
+
+<P>
+I <I>strongly</I>  recommend that you program this assignment
+in a high level language before you attempt assembly language
+code.  It is tricky to keep track of all the cases in parsing
+a line, and you will find life is easier if you already have a
+working algorithm in hand.
+<P>
+You will have to convert numbers, character by character from
+decimal to binary and vice verse.  Thus a good place to start
+is to write the <TT>getchar</TT>, <TT>putchar</TT>, and <TT>printnum</TT>
+subprograms. With reliable I/O you can go on to write and debug
+the rest. Remember that the character code of the decimal digit
+<TT>k</TT> is <TT>k+'0'</TT>.
+<P>
+To read and covert a number, use syscall number 8 with an argument
+of 2 in $a1 to read one character at a time.  Remember that  syscall
+8 returns its result in the <B>memory</B> indicated by the contents
+of $a0 and not directly in $a0. As you read the number, accumulate
+it in a register.  After each digit, you can multiply by ten and
+add the new digit to the result.
+<P>
+Your program should be turned in via the submit program as program
+number 3.
+</BODY>
+
+</HTML>

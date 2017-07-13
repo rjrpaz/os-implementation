@@ -1,0 +1,180 @@
+<!-- ========================================= -->
+<!-- Page title (begin it with "15-410") ===== -->
+<!-- ========================================= -->
+
+
+
+
+
+<!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 3.2//EN&quot;>
+<html>
+<head><title>15-410 Triple-Fault Advice Page</title>
+</head>
+<body bgcolor=white>
+<table width="100%" height="100%">
+
+<tr><td valign=top width=132>
+<table width=132 bgcolor=#cccccc height="100%">
+<tr><td height=140><center><font size=-1><b>Carnegie Mellon</b></font><br>
+<img alt="SCS logo" src="/~410/img/scslogo.gif"><br>
+<font size=-1><b>Computer Science Department</b></font></center></td></tr>
+<tr><td height=30><a href="/~410"><img alt="home" src="/~410/img/home.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/syllabus.html"><img alt="syllabus" src="/~410/img/syllabus.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/staff.html"><img alt="staff" src="/~410/img/staff.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/schedule.html"><img alt="schedule" src="/~410/img/schedule.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/lecture.html"><img alt="lecture" src="/~410/img/lecture.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/projects.html"><img alt="projects" src="/~410/img/projects.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/homeworks.html"><img alt="homeworks" src="/~410/img/homeworks.gif" border=0></a></td></tr>
+<tr><td>&nbsp;</td></tr></table>
+
+</td>
+
+<td width=10>&nbsp;</td>
+
+<td height="100%" valign=top>
+<br>
+
+<H1 ALIGN=CENTER>15-410 Triple-Fault Advice Page</H1>
+<HR>
+<!-- Body goes here. -->
+ 
+
+<!-- ========================================= -->
+<!-- Content Begins ========================== -->
+<!-- ========================================= -->
+
+<H2>Introduction</H2>
+
+<P>What should you do when you first experience
+the dreaded "triple fault"?  Here are some suggestions.</P>
+
+<OL>
+
+<LI><P>First, take a moment to smile.  If you had been
+running your kernel on a <EM>real</EM> PC, it would
+have suddenly cleared the screen, beeped, and rebooted.
+You would have <EM>no way</EM> to figure out what
+had happened aside from comparing your source code
+to a previous version and reasoning forward from there.
+In 15-410, you have thousands of dollars of the world's
+best PC simulation software at your beck and call.
+So maybe as you smile you should remind yourself
+how grateful you are to the guys in Sweden.</P>
+
+<LI><P>Now, take a <EM>second</EM> moment to smile.
+A triple fault means you are about to learn something!
+What's more, it's the kind of learning you can't
+get from books.  Maybe you will learn something about
+the x86, something about OS structure, or something
+about debugging strategy.</P>
+
+</OL>
+
+<P>Q: Ok, Mr. Miyagi, enough telling me how to polish
+the car, can you give me some actual
+<EM>advice about my triple fault already</EM>?</P>
+
+<P>A: Ah, grasshopper, you are in such a hurry...</P>
+
+<H2>Advice</H2>
+
+<OL>
+<LI><P>Generally, a triple fault means that you
+(the OS kernel author) told the machine to do
+something it couldn't do.  For example, you may
+have asked it to execute a trap handler that
+doesn't exist, asked it to run code which you
+didn't give it permission to run, told it to
+access memory you didn't give it permission to
+access, etc.  This condition
+is <EM>very unlikely</EM> to result from a bug
+in Simics or in the course-provided run-time
+environment.  So sending us mail of the form
+<BLOCKQUOTE>
+I have a triple fault, now what?
+</BLOCKQUOTE>
+isn't going
+to get you very far.  We genuinely don't know
+what's going wrong!</P>
+
+<P>Sending us register dumps won't help much
+either.  As you will see below, it is unlikely
+we will be able to point out one "incorrect"
+bit.  Things are right or wrong in context,
+and you (the kernel author) are responsible for
+defining the context and therefore what is right
+and wrong.</P>
+
+<LI><P>Since you have access to all processor
+state and all of memory, you should be able to
+figure out first what was happening when the
+processor ran into trouble and then what the
+problem was.</P>
+
+<UL>
+<LI><P>Use the <A HREF="simics_commands.html">15-410
+Simics Command Guide</A> to collect as much
+information as you can about the processor state.
+Collectively the registers and stack trace should
+suggest what was <EM>supposed</EM> to happen.</P>
+
+<P>Note:  though there is a command called <KBD>preg</KBD>,
+it does not print <EM>all</EM> the registers...</P>
+
+<LI>Then try to figure out why you thought that
+thing <EM>should</EM> have worked.  Your answer will probably
+consist of multiple stages, probably involving two
+or three kinds of memory and maybe a privilege level.
+
+<LI>Then try to figure out which part <EM>didn't</EM> work
+and why not.
+
+<LI><P>Don't be too eager to skip past information
+which is "odd".  If some lines on the stack trace
+are incomplete, look at the parts which <EM>are</EM>
+there and see if they tell you anything about why
+the missing parts are missing.</P>
+
+<P>For example, if the debugger
+complains at you, think about why... if it says
+"not in TLB", apply the steps of this list, i.e.,
+ask yourself</P>
+<OL>
+<LI>what things <EM>should</EM> be in the TLB (translation lookaside buffer),
+<LI>how those things are supposed to get there,
+<LI>why you think the thing should have been there,
+<LI>how you could check to see why the thing didn't get there
+</OL>
+</UL>
+
+<LI>This will probably be an iterative process.
+You may need to change your test code, add trace
+information to your kernel, come up with an innovative
+breakpoint strategy, etc.
+
+<LI>Lots of faults are somehow related to memory.
+Make sure you've gone over what we've given you related
+to memory.  For example, the textbook devotes several
+pages to x86 virtual memory, and we have written a handout
+devoted to that topic from a different angle.  The
+textbook also covers TLBs.
+
+</OL>
+
+<!-- ========================================= -->
+<!-- Content Ends ============================ -->
+<!-- ========================================= -->
+
+<!-- End body. -->
+
+
+</td></tr>
+<tr><td></td><td></td><td align=center>
+
+<HR>
+<P ALIGN=CENTER>[Last modified Wednesday September 13, 2006]</P></td></tr>
+</table>
+
+</body>
+</html>
+ 

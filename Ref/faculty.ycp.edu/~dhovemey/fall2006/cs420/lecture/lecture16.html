@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Lecture 16</title>
+</head>
+<body>
+<h1>CS 420 - Lecture 16<br>
+</h1>
+<h2>Memory Mangement, Paging, and Virtual Memory<br>
+</h2>
+<p>Recall that a single array of page table entries would be quite
+large: 4 MB for a 2^32 address space.&nbsp; In addition, most processes
+use only a small fraction of the address space: a few megabytes or
+tens/hundreds of megabytes.&nbsp; This means that a sparse data
+structure would be more appropriate.<br>
+</p>
+<p>Most CPU architectures address these concerns by using <span
+ style="font-style: italic;">hierarchical page tables</span>.&nbsp;
+This means that the page tables defining an address space look more
+like a tree.<br>
+</p>
+<p>Example: the x86 uses two-level page tables.&nbsp; The root level is
+the page directory.&nbsp; The page directory is an array of page
+directory entries, or PDEs.&nbsp; Because the page directory is one
+page (4 KB) in size, and each PDE is 4 bytes in size: so, the page
+directory contains 1024 PDEs.<br>
+</p>
+<p>Each PDE stores the frame number of a page table.&nbsp; Like the
+page directory, each page table is one page (4 KB) in size.&nbsp; A
+page table is an array of 4-byte <span style="font-style: italic;">page
+table entries</span> (PTEs).&nbsp; Each PTE contains the frame number
+of a single frame.<br>
+</p>
+<p>This leads to the following translation system [source: Intel 486
+Programmer's Reference Manual]:<br>
+</p>
+<p style="margin-left: 40px;"><img alt=""
+ src="figures/x86PageTables.png" style="width: 80%;"><br>
+</p>
+<p>The 20 bit page number in a virtual address is now divided into two
+parts: the PDE number, and the PTE number, each of which is 10 bits.<br>
+</p>
+<p>The PDE number specifies an index in the page directory.&nbsp; The
+MMU examines that entry in the page directory to determine the frame
+number of the frame containing the page directory.<br>
+</p>
+<p>The PTE number specifies an index in the page table located by the
+PDE number.&nbsp; The MMU examines the page table to look up a frame
+number.&nbsp; This frame number is then copied into the physical
+address.<br>
+</p>
+<p>This scheme would be far to slow if it had to be carried out for
+each memory reference.&nbsp; A hardware cache called the TLB
+(Translation Lookaside Buffer) stores the most recently used
+translations of virtual page numbers to frame numbers.&nbsp; Every time
+this mapping is looked up from the page tables, a TLB entry is created
+to record the mapping.&nbsp; Subsequent virtual memory addresses
+containing the same virtual page number can be looked up in the TLB,
+which is much faster than main memory.<br>
+</p>
+<h2>Paging Data Structures on the x86<br>
+</h2>
+<p>As we mentioned, page tables on the x86 are built out of several
+structures and data types: a page directory, page tables, page
+directory entries (PDEs), and page table entries (PTEs).<br>
+</p>
+<p>Let's look at the precise structure of these structures.<br>
+</p>
+<p>As mentioned the page directory is an array of 1024 PDEs.&nbsp; Each
+PDE is exactly 4 bytes in size, so the entire page directory fits in
+one frame of memory.<br>
+</p>
+<p>Each PDE defines the virtual to physical address mapping for 1/1024
+of the overall address space.&nbsp; 4G / 1024 = 4,194,304 = 4M = 2^22
+bytes.<br>
+</p>
+<p>As mentioned, each PDE contains the physical address of one page
+table.&nbsp; The page table has a format virtually identical to that of
+the page directory.&nbsp; Each PTE contains the physical address of one
+frame of memory</p>
+<p>The format of PDEs and PTEs is this [source: Intel 486 Programmer's
+Reference Manual]:</p>
+<p style="margin-left: 40px;">
+<img alt="" src="figures/x86PDEAndPTEFormat.png"
+ style="width: 522px; height: 365px;">.</p>
+<p>[Explain meaning of fields of PDE/PTE.]<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Present</span>:
+1 if the page table or page is mapped, 0 if not.&nbsp; Memory reference
+to an address with a not-present page table or frame will cause a <span
+ style="font-style: italic;">page fault</span>.<br>
+</p>
+<p style="margin-left: 80px;">Note that when a PDE or PTE is marked as
+not present, then all of the other bits of the entry are available to
+be used by the operating system.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Read/Write</span>:
+If 0, addresses represented by the page table are read-only.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">User/supervisor</span>:
+If 1, addresses covered may be accessed by user processes.&nbsp; If 0,
+may only be accessed by kernel.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Accessed</span>:
+Set to 1 if an address covered is accessed by a load or store
+instruction.&nbsp; Useful in implementing LRU schemes.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Dirty</span>:
+Set to 1 if an address covered is modified by a store
+instruction.&nbsp; Useful for deciding whether or not a page needs to
+be written to disk when stealing a page.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Avail</span>:
+these bits may be used by the operating system to store
+information.&nbsp; A good example would be a flag that is set to 1 to
+mark pages that have been written to disk.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Page
+frame address</span>: the address of a frame of physical memory.&nbsp;
+In the case of a PDE, the frame is a page table.&nbsp; In the case of a
+PTE, the frame is physical memory mapped into the address space.<br>
+</p>
+<p>The only way in which PDEs and PTEs differ is that PDEs do not
+support the dirty bit.<br>
+</p>
+<h3>x86 Paging Registers<br>
+</h3>
+<p>On the x86, several special CPU registers are used for paging.<br>
+</p>
+<p>The <span style="font-weight: bold;">CR3</span> register contains
+the address of the page directory.&nbsp; Because it is the page
+directory that ultimately determines the structure of an address space,
+you can think of CR3 as selecting which address space is currently in
+effect.<br>
+</p>
+<p>The <span style="font-weight: bold;">CR2</span> is the page fault
+address register.&nbsp; When a page fault occurs, it contains the
+memory address that was referenced by the instruction that caused the
+fault.&nbsp; When a page fault causes a transition to the kernel's page
+fault handler, the handler can look in the CR2 register to find out
+what unmapped page was accessed.&nbsp; The kernel can then consult the
+PDE or PTE of the unmapped page, and based on information stored in
+that entry, attempt to handle the fault.&nbsp; One possibility here is
+that the fault happened because of a PTE that was marked not present,
+and the kernel can use information stored in the entry to determine
+where on disk the data for the page is stored.<br>
+</p>
+<p>The <span style="font-weight: bold;">CR0</span> register contains a
+number of flags controlling the behavior of the CPU.&nbsp; The flag
+stored in bit 31 is the paging flag.&nbsp; When set to 1, the CPU uses
+page tables to translate all referenced memory addresses.<br>
+</p>
+<h2>Virtual Memory<br>
+</h2>
+<p>Basic concept of virtual memory:</p>
+<p style="margin-left: 40px;"><img alt=""
+ src="figures/virtualMemoryConcept.png" style="width: 40%;"><br>
+</p>
+<p>Each address space is divided up into <span
+ style="font-style: italic;">regions</span>.&nbsp; Each region is
+associated with a <span style="font-style: italic;">virtual memory
+object</span>, or <span style="font-style: italic;">VM object</span>.&nbsp;
+A VM object is a backing store for data strored in the corresponding
+region.<br>
+</p>
+<p>In this model, physical frames of memory simply act as a <span
+ style="font-style: italic;">cache</span> for the data in a VM
+object.&nbsp; In other words, mapping a physical page of memory into a
+region of the address space is useful to improve performance, but in
+general it is not necessary to have a full set of frames mapped into
+each region.&nbsp; The OS kernel uses page faults to detect when a
+physical page is needed for a particular address within a region.&nbsp;
+When a frame is mapped into a region for the first time, the data for
+that range of addresses is loaded from the VM object.<br>
+</p>
+<p>In this model, the OS can work perfectly well when the collective
+size of all regions in all address spaces exceeds the amount of
+physical memory.&nbsp; In this situation, the OS kernel may
+occasionally need to <span style="font-style: italic;">steal</span>
+frames from one region in order to use them in another region where a
+page fault has occurred.&nbsp; When a frame is stolen, the OS kernel
+checks to see if the frame contained any modified data.&nbsp; If so,
+the data stored in that frame is written back to the VM object.</p>
+<p>Viewed from this perspective, the most important part of a virtual
+memory system is the VM objects, since they represent the data that
+makes up the address space.&nbsp; So, what <span
+ style="font-style: italic;">are</span> VM objects?&nbsp; In general,
+there are many different kinds of VM objects.</p>
+<p>The most basic VM object is an anonymous <span
+ style="font-style: italic;">swap-backed</span> VM object.&nbsp; This
+means that the VM object corresponds to a region of the OS kernel's
+swap file.&nbsp; The swap file is a chunk of disk space that serves as
+a backing store for address space regions.&nbsp; (Note that "swap file"
+is a misnomer.&nbsp; It should really be called a "paging file", but
+it's called a swap file for historical reasons.)</p>
+<p style="margin-left: 40px;">Typical uses of an anonymous swap-backed
+VM object would be for the heap and stack regions of a process address
+space.&nbsp; The data stored in these regions need to be persistent as
+long as the process runs, but do not have any initial contents.&nbsp;
+Generally, the data for such regions will consist entirely of zeroes.<br>
+</p>
+<p>Another important VM object is a <span style="font-style: italic;">random-access
+file</span>.&nbsp; These are simply files whose data is stored in a
+filesystem on disk somewhere.&nbsp; Basically all modern operating
+systems support using files as VM objects.&nbsp; When a process creates
+a virtual memory region whose backing store is a file, we say that the
+process is doing <span style="font-style: italic;">memory-mapped</span>
+file I/O.&nbsp; Regions backed by a file can be read-only or read-write.<br>
+</p>
+</body>
+</html>

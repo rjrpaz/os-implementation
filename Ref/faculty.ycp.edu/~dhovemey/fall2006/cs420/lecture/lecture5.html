@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Lecture 5</title>
+</head>
+<body>
+<h1>CS 420 - Lecture 5<br>
+</h1>
+<h2>Processes<br>
+</h2>
+<p>Process = A Running Program<br>
+</p>
+<h3>Address space of a process (simplified)<br>
+</h3>
+<p style="margin-left: 40px;"><img alt="Process address space"
+ src="figures/processAddressSpace.png" style="width: 20%;"><br>
+</p>
+<p>Text: executable code<br>
+</p>
+<p>Data / BSS: Initialized and uninitialized global data<br>
+</p>
+<p style="margin-left: 40px;">Example C program with global variables
+describe which are in data segment and which in bss<br>
+</p>
+<p>Heap: area of memory used to satisfy requests for dynamic allocation
+(malloc, new, etc.)<br>
+</p>
+<p style="margin-left: 40px;">Heap grows as needed<br>
+</p>
+<p>Stack: the stack of activation records containing params, local
+vars, return addresses, and temporary data for function calls<br>
+</p>
+<p>Convention: heap grows up in memory (toward greater addresses),
+stack grows down from high to low memory<br>
+</p>
+<h3>Process states<br>
+</h3>
+<p>[Process state diagram]<br>
+</p>
+<p>Ready: process is ready to execute, but has not been scheduled on
+the CPU yet<br>
+</p>
+<p style="margin-left: 40px;">Question: if the process is ready, why
+isn't it scheduled immediately?<br>
+</p>
+<p>Running: process is executing on the CPU<br>
+</p>
+<p>Waiting: process is suspended, waiting for some future event.<br>
+</p>
+<h3>The Process Control Block (PCB)<br>
+</h3>
+<p>Generally, the OS maintains a data structure storing all relevant
+information about the process: the PCB.<br>
+</p>
+<p>Name of the PCB varies by OS.&nbsp; In Linux it is <span
+ style="font-weight: bold;">task_struct</span>.&nbsp; In GeekOS it is <span
+ style="font-weight: bold;">Kernel_Thread</span>.<br>
+</p>
+<p>Information contained in the PCB:<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Process
+state</span>: running, waiting, etc.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Program
+counter</span>: the next instruction to be executed when the process is
+scheduled (where execution will resume)<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">CPU
+registers</span>: the saved values that were in CPU registers when the
+process was suspended<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">CPU-scheduling
+information</span>: priority, etc.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Memory
+management information</span>: data structures describing the process's
+address space<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Accounting
+information</span>: how much CPU time has been used, etc.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">I/O
+information</span>: List of file descriptors the process has opened,
+and what files/devices they are connected to<br>
+</p>
+<p>Note that all of this information needs to be available from the
+PCB, but does not need to be stored in the PCB.&nbsp; For example, many
+OS kernels (including GeekOS and Linux on x86) keep saved program
+counter and process
+registers on the <span style="font-style: italic;">kernel stack</span>
+associated with the process.&nbsp; The memory management information is
+generally a separate data structure.<br>
+</p>
+<p>E.g., Linux: (look at <a href="http://lxr.linux.no/">kernel source
+code on-line</a>)<br>
+</p>
+<pre style="margin-left: 40px;">struct task_struct {<br>    volatile long state;<br>    struct thread_info *thread_info;<br>    ...<br>    struct mm_struct *mm;<br>}<br></pre>
+<h3>Scheduling<br>
+</h3>
+<p>Scheduling is the problem activating and suspending processes in
+order to allow the system to keep making progress.<br>
+</p>
+<p>Scheduling from the process's point of view:<br>
+</p>
+<p style="margin-left: 40px;"><img alt="Process states"
+ src="figures/processStates.png" style="width: 60%;"><br>
+</p>
+<p>The OS uses a scheduling policy to decide how to allocate time
+slices to processes.&nbsp; Many different policies are possible.&nbsp;
+Some possible considerations:<br>
+</p>
+<ol>
+  <li>Fairness - we should allow all processes to make progress<br>
+  </li>
+  <li>Priority - we may want to favor some processes over other</li>
+  <li>Boost priority of interactive processes - e.g., user running a
+word processor: try to give immediate response when a key is pressed<br>
+  </li>
+  <li>Real-time: some kinds of applications need to be able to use the
+CPU immediately when an event occurs, and be guaranteed that they can
+complete processing in a fixed amount of time..&nbsp; Examples [medical
+devices, industrial controls, etc.].</li>
+</ol>
+<h3>Context Switch<br>
+</h3>
+<p>The OS kernel must be able to suspend and resume processes in
+response to events (interrupts and system calls).&nbsp; Switching from
+one process to another is called a <span style="font-style: italic;">context
+switch</span>.<br>
+</p>
+<p>General procedure:<br>
+</p>
+<ol>
+  <li>Save the state (program counter and registers) of the suspended
+process</li>
+  <li>Restore the state (program counter and registers) of the process
+being resumed</li>
+</ol>
+<p>Important concept: User Context vs. Kernel Context<br>
+</p>
+<p>Each process may be considered to have two contexts: a User Context
+and a Kernel Context.<br>
+</p>
+<p style="margin-left: 40px;">The user context is the processor
+registers and program counter for user code: i.e., the program that is
+running in user space.<br>
+</p>
+<p style="margin-left: 40px;">The kernel context is the process
+registers and program counter for kernel code.<br>
+</p>
+<p>When an event causes a transition from user space to kernel space
+(system call, hardware interrupt), the user context is saved and a new
+kernel context is created.&nbsp; Because both the user program and the
+kernel use procedures, each needs a region of memory to use as a stack
+of activation records.<br>
+</p>
+<p>One common design is for each process to have its own kernel stack:
+a block of memory used as the activation record stack when the process
+is in kernel mode.&nbsp; So, one of the things that happens when there
+is a transition from user mode to kernel mode is a switch from using
+the user stack to the kernel stack.&nbsp; When control switches back
+from the kernel to a user process, it switches from the kernel stack to
+the user stack.<br>
+</p>
+<p>A CPU register, the <span style="font-style: italic;">stack pointer</span>,
+is used to point to the location (address) of the current activation
+record.<br>
+</p>
+<h3>Suspending and Resuming in GeekOS<br>
+</h3>
+<p>On x86 CPUs, a hardware or software interrupt pushes several values
+on the stack:<br>
+</p>
+<ol>
+  <li>The current value of the eip register (program counter)<br>
+  </li>
+  <li>The current value of the cs register (code segment)<br>
+  </li>
+  <li>The contents of the eflags register (processor flags)</li>
+</ol>
+<p>Depending on the type of interrupt, the processor may push an error
+code value onto the stack.<br>
+</p>
+<p>The GeekOS interrupt handler code (generated by Int_Err and
+Int_No_Err macros in lowlevel.asm) pushes a fake dummy code (if the
+processor didn't push a real one) and also the interrupt number, then
+jumps to the <span style="font-weight: bold;">Handle_Interrupt</span>
+code.<br>
+</p>
+<p>Handle_Interrupt then pushes the general-purpose processor registers
+on the stack.<br>
+</p>
+<p>So, when an interrupt occurs while executing a user program, the
+process's kernel stack looks like
+this:<br>
+</p>
+<p style="margin-left: 40px;"><img
+ alt="GeekOS kernel stack after an interrupt"
+ src="figures/geekosStackAfterInterrupt.png" style="width: 30%;"><br>
+</p>
+<p>Once this information has been saved, the kernel uses the interrupt
+number to locate the interrupt handler function, and calls the handler.<br>
+</p>
+<p>Key point: the above picture describes what a process's stack must
+look like any time it is in the Ready or Waiting states: in other
+words, states which may lead to the process being scheduled and
+entering the Running state.<br>
+</p>
+<p>So, when we create a process for the first time, we need to make the
+new process's kernel stack look like this picture.<br>
+</p>
+<p>Resuming a process simply reverses the procedure for suspending
+(interrupting) it.&nbsp; The contents of the general-purpose registers
+are restored, the interrupt number and error code are skipped.&nbsp;
+After this is done, the stack pointer (<span style="font-weight: bold;">esp</span>
+register) is pointing to the saved <span style="font-weight: bold;">eflags</span>/<span
+ style="font-weight: bold;">cs</span>/<span style="font-weight: bold;">eip</span>
+values.&nbsp; The final step is to execute an <span
+ style="font-weight: bold;">iret</span> (return from interrupt)
+instruction.&nbsp; This uses the saved <span style="font-weight: bold;">eflags</span>/<span
+ style="font-weight: bold;">cs</span>/<span style="font-weight: bold;">eip</span>
+values to return control to user mode.</p>
+</body>
+</html>

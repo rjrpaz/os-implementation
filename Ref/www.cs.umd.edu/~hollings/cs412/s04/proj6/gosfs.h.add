@@ -1,0 +1,10 @@
+/* add this to the struct GOSFSFileNode 
+   that is, *inside the struct*
+   not as a global declaration */
+
+unsigned int setUid:1;			/* run with owner's uid */
+aclEntry acls[4];			/* first entry is defined to be owner */
+
+int GOSFS_SetAcl(mountPoint *mp, char *file, int uid, int permissions);
+int GOSFS_SetSetUid(mountPoint *mp, char *file, int setUid);
+

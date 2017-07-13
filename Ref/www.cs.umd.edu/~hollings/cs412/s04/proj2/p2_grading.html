@@ -1,0 +1,99 @@
+<html>
+<head><title>CMSC412 Project 2 Grading Criteria</title></head>
+
+
+<body><center><b>Project 2 Grading Criteria</b></center></p>
+
+
+<b>Load program, Print_String</b><br>
+
+When your GeekOS boots, it should start shell.exe. If shell.exe loads and
+the prompt shows up and nothing crashes, you have passed this test.
+This is good for a grade of <font color=blue>70</font>.</p>
+
+<b>Alternate Load program test</b><br>
+
+If you can't get Print_String to work but you can load a program
+and call SYS_NULL, that is worth <font color=blue>60</font> points. If this is the
+case with your program, alter main.c so that null.exe is loaded
+when GeekOS boots and add a print statement to the Null syscall
+handler. Printing "Have mercy upon my soul!" might be appropriate.
+If this prints at startup and nothing crashes, you will receive
+<font color=blue>60</font> points and <font color=red>no other tests will be performed</font>.</p>
+
+<b>Get_Key()</b><br>
+
+If keys can be pressed at the shell.exe prompt and they show up properly,
+this will earn you an additional <font color=blue>5</font> points.</p>
+
+<b>Spawn_Program()</b><br>
+
+At the prompt, the grader will type:</p>
+
+<pre>  /c/a.exe</pre></p>
+
+The output should be:</p>
+
+<pre>  The first string Hi ! This is the first string
+
+  The second string Hi ! This is the second string
+
+</pre>This output will earn you an additional <font color=blue>5</font> points.</p>
+
+<b>Exit()</b><br>
+
+After a.exe finishes, control should return to shell.exe. If this
+happens without a crash, this will earn you an additional <font color=blue>5</font> points.</p>
+
+<b>Wait()</b><br>
+
+At the prompt, the grader will type:</p>
+
+<pre>  /c/long.exe</pre></p>
+
+The output should be:</p>
+
+<pre>  Start Long
+  End Long
+  %
+
+</pre>The prompt should not appear until long.exe has exited. If your
+output is something like:</p>
+
+<pre>  Start Long
+  %End Long
+
+</pre>This indicates a problem in your Wait() syscall.</p>
+
+Passing this test will earn you and additional <font color=blue>5</font> points.</p>
+
+<b>Security</b><br>
+
+There will be two security tests that will test if you are
+properly checking data passed through syscalls. These programs
+will not be made available to you until after grading is
+finished. These tests are worth <font color=blue>5</font> points each.</p>
+
+Note: In order to receive credit for the security tests, you
+must have implemented the Sys_Print and Sys_Spawn
+syscalls as follows:</p>
+<ul>
+<li>upon calling:
+  <ul>
+  <li>ebx contains a pointer to the string</li>
+  <li>ecx contains the length of the string</li>
+  </ul>
+</li>
+<li>upon return:
+  <ul>
+  <li>for Sys_Print: eax contains 0 if the call succeeded, -1 if the call failed</li>
+  <li>for Sys_Spawn: eax contains the new PID if the call succeeded, -1 if the call failed</li>
+  </ul>
+</li>
+</ul>
+If any part of a string that lies outside of user space, the
+string should not be printed and the call should fail.</p>
+</body></html>
+
+
+

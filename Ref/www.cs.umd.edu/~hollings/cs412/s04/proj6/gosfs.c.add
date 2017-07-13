@@ -1,0 +1,10 @@
+int GOSFS_SetAcl(mountPoint *mp, char *file, int uid, int permissions)
+{
+  return -1;
+}
+
+int GOSFS_SetSetUid(mountPoint *mp, char *file, int setUid)
+{
+  return -1;
+}
+

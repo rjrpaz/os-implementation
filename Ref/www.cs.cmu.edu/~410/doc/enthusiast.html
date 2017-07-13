@@ -1,0 +1,300 @@
+<!-- Page title (begin it with "15-410") ===== -->
+
+
+
+
+
+<!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 3.2//EN&quot;>
+<html>
+<head><title>15-410 Documentation For The Enthusiast</title>
+</head>
+<body bgcolor=white>
+<table width="100%" height="100%">
+
+<tr><td valign=top width=132>
+<table width=132 bgcolor=#cccccc height="100%">
+<tr><td height=140><center><font size=-1><b>Carnegie Mellon</b></font><br>
+<img alt="SCS logo" src="/~410/img/scslogo.gif"><br>
+<font size=-1><b>Computer Science Department</b></font></center></td></tr>
+<tr><td height=30><a href="/~410"><img alt="home" src="/~410/img/home.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/syllabus.html"><img alt="syllabus" src="/~410/img/syllabus.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/staff.html"><img alt="staff" src="/~410/img/staff.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/schedule.html"><img alt="schedule" src="/~410/img/schedule.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/lecture.html"><img alt="lecture" src="/~410/img/lecture.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/projects.html"><img alt="projects" src="/~410/img/projects.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/homeworks.html"><img alt="homeworks" src="/~410/img/homeworks.gif" border=0></a></td></tr>
+<tr><td>&nbsp;</td></tr></table>
+
+</td>
+
+<td width=10>&nbsp;</td>
+
+<td height="100%" valign=top>
+<br>
+
+<H1 ALIGN=CENTER>15-410 Documentation For The Enthusiast</H1>
+<HR>
+<!-- Body goes here. -->
+ 
+
+<!-- Content Begins ========================== -->
+
+<h2> Simics Environment </h2>
+
+<h3> Mouse Support </h3>
+
+If the kernel being simulated is capable of handling PS/2
+mouse events, you can request that Simics "capture" the
+X Window System mouse by pointing into the Simics console
+window, holding down the shift key, and right-clicking.
+The same sequence will release the mouse from the window
+for use by other parts of the window system.<p>
+
+<h3> Timing Details </h3>
+
+Simics can force the simulation clock to run no faster than real time
+passes on the machine running the simulation--though this is helpful
+only when the simulated system can be simulated faster than real time.
+One way to make this happen is for your application to use the
+<tt>HLT</tt> instruction when it isn't doing useful work--<tt>HLT</tt>
+can be simulated very quickly.<p>
+
+To limit the speed of the simulation clock, set the environment variable
+<tt>SIMICS_REALTIME</tt> to a nonempty string (e.g., "yes") before
+launching simics.
+This is an experimental feature, new this
+semester, so feedback would be appreciated if you make use of it.
+
+<h3> Getting Up Close And Personal With Simics </h3>
+
+There is a line between getting to know your debugger and diving in
+and being consumed by your debugger.  If you feel that you want to
+cross this line, please see
+<a href="simics_environment.html">this page</a>.
+
+<h2> Other Emulators </h2>
+
+Please note that most other emulation programs are intended to emulate
+<em>correct</em> programs, and so may not behave faithfully when running
+<em>development</em> code.
+
+<p/>Further, most other emulators are not geared towards <em>faithfulness</em>
+of the simulation, trading accuracy for speed.  In particular, they may make
+use of a JIT compiler or rewriting scheme, which may divorce simulation state
+and expectations thereof.
+
+<a name="QEMU"><h3> QEMU </h3></a>
+
+Given a <tt>bootfd.img</tt>, simply run <tt>qemu -fda bootfd.img</tt>.
+
+<p/>QEMU obtains better performance than single-instruction intepreters
+such as Bochs or sub-instruction simulators such as Simics, but this
+performance comes at the cost of reduced fidelity.  QEMU frequently
+runs correct code correctly, but it also frequently runs incorrect
+code incorrectly.
+
+<p/>In particular, the segment selector registers are not consulted
+under all circumstances, allowing broken kernels to seem correct under many
+tests.  (As of March, 2007, this is a known defect in QEMU with some limited
+acknowledgement that it should be fixed.)
+
+<p/>In addition, because QEMU translates basic blocks as one unit,
+most interrupts will appear to fire only at the end of a basic block.
+In other words, Simics (like real hardware) can deliver an interrupt
+between almost any pair of adjacent instructions, but for many pairs
+of adjacent instructions QEMU will never deliver an interrupt between
+them.  This means that QEMU will run many tests much faster than
+Simics, but the increased speed will <em>not</em> enable you to find
+certain concurrency problems, because QEMU's operation will not allow
+you to encounter them.
+
+<p/>A second consequence of QEMU's code translation is that the value
+of <tt>EFLAGS</tt> pushed onto the stack during the handling of some
+interrupt or fault may not be correct--it may be the value that was
+current a few instructions before the event was delivered.  The value
+will usually be wrong in "inconsequential" ways, such as the arithmetic
+condition code flags being stale during a page fault, but you have been
+warned.
+
+<p/>QEMU has some debugging support built in, but please do be aware that
+it is much more limited than that of Simics.
+
+<p/>Overall, if you run your kernel for a long time in QEMU and it turns up a logic error such as a memory leak, the problem is probably real.  But if you run your kernel under QEMU for a long time and it appears to have no concurrency bugs, you are probably tricking yourself.  You have been warned!
+
+<h2> Keyboard Tricks </h2>
+
+The Intel 8042, the keyboard controller chip either used, absorbed, or emulated
+on modern systems, is quite a chip, and the PS/2 protocol is capable of
+bidirectional communication with the keyboard.  Internally, the back-channel is
+used for acknowledgements, but of course it may also be used for more
+interesting things.
+
+For more detail (possibly more than you ever wanted), see
+<a href="http://www.computer-engineering.org/ps2keyboard/">
+  http://www.computer-engineering.org/ps2keyboard/
+</a>.
+
+<h3> Commanding The Keyboard </h3>
+
+The keyboard is <em>mostly</em> an input device, but that'd be entirely too
+simple to be the whole truth.  Various interesting things are possible by
+writing to <tt>KEYBOARD_PORT</tt> with <tt>outb</tt>.  All commands begin with
+a byte with the high bit turned on, and in general sending a command prefix
+during a multi-byte command will abort the current command.
+
+Note that for multibyte sequences, it is technically required that the host
+program wait for <tt>Output Buffer Full</tt> (the LSB of the controller status
+word, which may be read from port <tt>0x64</tt>) bit to be clear before
+transmitting another byte.  Whether or not one can get away without this,
+especially on Simics, is not clear.
+
+<h4> Pinging The Keyboard Controller </h4>
+
+Doing <tt>outb(KEYBOARD_PORT, 0xEE)</tt> will cause the keyboard (controller)
+to echo back <tt>0xEE</tt> as if it were a scan code.
+
+<h4> Setting LED State </h4>
+
+To set LED state, send <tt>0xED</tt> and then a byte composed of OR-ing the
+following masks, with other values being reserved (set to zero).
+
+<TABLE>
+  <TR><TH>Mask</TH> <TH>Effect</TH></TR>
+  <TR><TD><TT>0x01</TT></TD> <TD>Turns on the Scroll-lock indicator</TD></TR>
+  <TR><TD><TT>0x02</TT></TD> <TD>Turns on the Num-lock indicator</TD></TR>
+  <TR><TD><TT>0x04</TT></TD> <TD>Turns on the Caps-lock indicator</TD></TR>
+</TABLE>
+
+<h3> Enhanced Keyboard Handling Code </h3>
+
+As mentioned in the project 1 handout, there is more capability stored in
+<tt>process_scancode()</tt> than is strictly <em>necessary</em> to complete
+the assignment.  For people wishing to make use of the extended features,
+there is some additional documentation here.
+
+<h4> Internal State Tracking </h4>
+
+The state machine currently tracks the following keyboard modifiers:
+    <UL>
+      <LI>Left and right shift keys.  Shifting as usual is carried out.</LI>
+      <LI>Left and right control keys.  Full control sequence translation
+          to ASCII control codes is carried out.</LI>
+      <LI>Left and right alt keys.  This is tracked only as a modifier bit.</LI>
+      <LI>CapsLock is interpreted as usual.</LI>
+      <LI>NumLock (is tracked but only returned as a modifier bit,
+                    no interpretation is done internally)</LI>
+      <LI>The GUI modifers are currently untracked.</LI>
+    </UL>
+
+It is possible that the 410 Upper Code Page as defined thus far does not
+include some of the keys you might desire.  If that's so, please inform a TA
+(the code was born of a partial implementation from the days of yore).
+ 
+<h4> Raw Codes </h4>
+
+Whenever possible, the "raw" character result is as close as possible to the
+obvious interpretation.  For most keys, it is the unshifted variant of the
+ASCII representation; for extended keys it is the 410 Upper Code Page as you
+might expect.  For some keys, most notably enter, backspace, and escape, the
+raw code is the ASCII control code to which the key maps.
+
+<h5> Distinguishing Control Codes From Keys </h5>
+
+Since the raw result is the key that actually produced the result, distinguishing,
+for example, Ctrl+H from Backspace, can be achieved by noting that the former has
+raw result <tt>'h'</tt> and the latter has raw result <tt>0x08</tt>.
+
+<h4> Notes for Virtual Consoles </h4>
+
+Since there is only a single state machine for the keyboard, CapsLock and
+NumLock will follow the user around rather than be attributes of the virtual
+console.  Similarly, if the keystrokes used to switch consoles are independent
+of modifier keys, then modifier state will reflect the keyboard's current state
+(that is, if the switch codes are F{1,2,3} and the state of shift is ignored by
+the VC switcher, then the shift state of the state machine will reflect the
+state of the shift key on the keyboard regardless of console).
+
+<h4> Example Transcripts </h4>
+
+Here are some example transcripts using <tt>process_scancode</tt> which hopefully
+will make concrete some of the discussion.  We begin each with a keyboard with no
+keys down and no locks on.  Notice that we use a shorthand when describing the result
+code bits; the labels used are C symbols if given the prefix of <tt>KH_RESULT_</tt>
+
+<h5> Boring Key </h5>
+
+<TABLE border="1">
+  <TR><TH>Keystroke</TH> <TH>Scancode</TH> <TH><tt>kh_type</tt></TH> <TH>Status Bits</TH> <TH>Result Code Bits</TH> <TH>Raw</TH> <TH>Result</TH></TR>
+  <TR><TD>'a' Make</TD> <TD>0x1E</TD> <TD>0x000D6161</TD> <TD><I>none</I></TD> <TD>HASRAW | HASDATA | MAKE</TD> <TD>'a'</TD> <TD>'a'</TD></TR>
+  <TR><TD>'a' Break</TD> <TD>0x9E</TD> <TD>0x000C6161</TD> <TD><I>none</I></TD> <TD>HASRAW | HASDATA</TD> <TD>'a'</TD> <TD>'a'</TD></TR>
+</TABLE>
+
+<h5> Shifted Key </h5>
+
+<TABLE border="1">
+  <TR><TH>Keystroke</TH> <TH>Scancode</TH> <TH><tt>kh_type</tt></TH> <TH>Status Bits</TH> <TH>Result Code Bits</TH> <TH>Raw</TH> <TH>Result</TH></TR>
+  <TR><TD>Right Shift Make</TD> <TD>0x36</TD> <TD>0x40098a00</TD> <TD>KH_RSHIFT_KEY</TD> <TD>HASRAW | MAKE</TD> <TD>KHE_RSHIFT</TD> <TD><I>invalid</I></TD></TR>
+  <TR><TD>'a' Make</TD> <TD>0x1E</TD> <TD>0x400D6141</TD> <TD>KH_RSHIFT_KEY</TD> <TD>HASRAW | HASDATA | MAKE</TD> <TD>'a'</TD> <TD>'A'</TD></TR>
+  <TR><TD>'a' Break</TD> <TD>0x9E</TD> <TD>0x400C6141</TD> <TD>KH_RSHIFT_KEY</TD> <TD>HASRAW | HASDATA</TD> <TD>'a'</TD> <TD>'A'</TD></TR>
+  <TR><TD>Right Shift Break</TD> <TD>0xB6</TD> <TD>0x00088a00</TD> <TD><I>none</I></TD> <TD>HASRAW</TD> <TD>KHE_RSHIFT</TD> <TD><I>invalid</I></TD></TR>
+</TABLE>
+
+<h5> Arrow Key </h5>
+
+<TABLE border="1">
+  <TR><TH>Keystroke</TH> <TH>Scancode</TH> <TH><tt>kh_type</tt></TH> <TH>Status Bits</TH> <TH>Result Code Bits</TH> <TH>Raw</TH> <TH>Result</TH></TR>
+  <TR><TD rowspan="2">Right Arrow Make</TD> <TD>0xE0</TD> <TD>0x00000000</TD> <TD><I>none</I></TD> <TD><I>none</I></TD> <TD><I>invalid</I></TD> <TD><I>invalid</I></TD></TR>
+  <TR>                     <TD>0x4D</TD> <TD>0x000D8484</TD> <TD><I>none</I></TD> <TD>HASRAW | HASDATA | MAKE</TD> <TD>KHE_ARROW_RIGHT</TD> <TD>KHE_ARROW_RIGHT</TD></TR>
+  <TR><TD rowspan="2">Right Arrow Break</TD> <TD>0xE0</TD> <TD>0x00000000</TD> <TD><I>none</I></TD> <TD><I>none</I></TD> <TD><I>invalid</I></TD> <TD><I>invalid</I></TD> </TR>
+  <TR>                     <TD>0xCD</TD> <TD>0x000C8484</TD> <TD><I>none</I></TD> <TD>HASRAW | HASDATA</TD> <TD>KHE_ARROW_RIGHT</TD> <TD>KHE_ARROW_RIGHT</TD></TR>
+</TABLE>
+
+<h5> Ctrl-H vs. Backspace </h5>
+
+<TABLE border="1">
+  <TR><TH>Keystroke</TH> <TH>Scancode</TH> <TH><tt>kh_type</tt></TH> <TH>Status Bits</TH> <TH>Result Code Bits</TH> <TH>Raw</TH> <TH>Result</TH></TR>
+  <TR><TD>Left Control Make</TD> <TD>0x1D</TD> <TD>0x20098700</TD> <TD>KH_LCONTROL_KEY</TD> <TD>HASRAW | MAKE</TD> <TD>KHE_LCTL</TD> <TD><I>invalid</I></TD></TR>
+  <TR><TD>'h' Make</TD> <TD>0x23</TD> <TD>0x200D6808</TD> <TD>KH_LCONTROL_KEY</TD> <TD>HASRAW | HASDATA | MAKE</TD> <TD>'h'</TD> <TD>'\b'</TD></TR>
+  <TR><TD>'h' Break</TD> <TD>0xA3</TD> <TD>0x200C6808</TD> <TD>KH_LCONTROL_KEY</TD> <TD>HASRAW | HASDATA</TD> <TD>'h'</TD> <TD>'\b'</TD></TR>
+  <TR><TD>Left Control Break</TD> <TD>0x9D</TD> <TD>0x00088700</TD> <TD><I>none</I></TD> <TD>HASRAW</TD> <TD>KHE_LCTL</TD> <TD><I>invalid</I></TD></TR>
+  <TR><TD>'\b' Make</TD> <TD>0x0E</TD> <TD>0x000D0808</TD> <TD><I>none</I></TD> <TD>HASRAW | HASDATA | MAKE</TD> <TD>'\b'</TD> <TD>'\b'</TD></TR>
+  <TR><TD>'\b' Break</TD> <TD>0x8E</TD> <TD>0x000C0808</TD> <TD><I>none</I></TD> <TD>HASRAW | HASDATA</TD> <TD>'\b'</TD> <TD>'\b'</TD></TR>
+</TABLE>
+
+<h5> Ctrl-Alt-Delete </h5>
+
+<TABLE border="1">
+  <TR><TH>Keystroke</TH> <TH>Scancode</TH> <TH><tt>kh_type</tt></TH> <TH>Status Bits</TH> <TH>Result Code Bits</TH> <TH>Raw</TH> <TH>Result</TH></TR>
+  <TR><TD rowspan="2">Right Alt Make</TD> <TD>0xE0</TD> <TD>0x00000000</TD> <TD><I>none</I></TD> <TD><I>none</I></TD> <TD><I>invalid</I></TD> <TD><I>invalid</I></TD></TR>
+  <TR>                     <TD>0x38</TD> <TD>0x04098600</TD> <TD>KH_RALT_KEY</TD> <TD>HASRAW | MAKE</TD> <TD>KHE_RALT</TD> <TD><I>invalid</I></TD></TR>
+  <TR><TD rowspan="2">Right Control Make</TD> <TD>0xE0</TD> <TD>0x04000000</TD> <TD>KH_RALT_KEY</TD> <TD><I>none</I></TD> <TD><I>invalid</I></TD> <TD><I>invalid</I></TD></TR>
+  <TR>                     <TD>0x1D</TD> <TD>0x14098800</TD> <TD>KH_RCONTROL_KEY | KH_RALT_KEY</TD> <TD>HASRAW | MAKE</TD>
+                                                                                                                <TD>KHE_RCTL</TD> <TD><I>invalid</I></TD></TR>
+  <TR><TD rowspan="2">Delete Make</TD> <TD>0xE0</TD> <TD>0x14000000</TD> <TD>KH_RCONTROL_KEY | KH_RALT_KEY</TD> <TD><I>none</I></TD> <TD><I>invalid</I></TD> <TD><I>invalid</I></TD></TR>
+  <TR>                     <TD>0x5E</TD> <TD>0x140D7F7F</TD> <TD>KH_RCONTROL_KEY | KH_RALT_KEY</TD> <TD>HASRAW | HASDATA | MAKE</TD>
+                                                                                                                <TD>0x7F</TD> <TD>0x7F</TD></TR>
+  <TR><TD rowspan="2">Delete Break</TD> <TD>0xE0</TD> <TD>0x14000000</TD> <TD>KH_RCONTROL_KEY | KH_RALT_KEY</TD> <TD><I>none</I></TD> <TD><I>invalid</I></TD> <TD><I>invalid</I></TD></TR>
+  <TR>                     <TD>0xDE</TD> <TD>0x140C7F7F</TD> <TD>KH_RCONTROL_KEY | KH_RALT_KEY</TD> <TD>HASRAW | HASDATA</TD>
+                                                                                                                <TD>0x7F</TD> <TD>0x7F</TD></TR>
+  <TR><TD rowspan="2">Right Alt Break</TD> <TD>0xE0</TD> <TD>0x14000000</TD> <TD>KH_RCONTROL_KEY | KH_RALT_KEY</TD> <TD><I>none</I></TD>
+                                                                                                                <TD><I>invalid</I></TD> <TD><I>invalid</I></TD></TR>
+  <TR>                     <TD>0xB8</TD> <TD>0x10088600</TD> <TD>KH_RCONTROL_KEY</TD> <TD>HASRAW</TD> <TD>KHE_RALT</TD> <TD><I>invalid</I></TD></TR>
+  <TR><TD rowspan="2">Right Control Break</TD> <TD>0xE0</TD> <TD>0x10000000</TD> <TD>KH_RCONTROL_KEY</TD> <TD><I>none</I></TD> <TD><I>invalid</I></TD> <TD><I>invalid</I></TD></TR>
+  <TR>                     <TD>0x9D</TD> <TD>0x00088800</TD> <TD><I>none</I></TD> <TD>HASRAW</TD> <TD>KHE_RCTL</TD> <TD><I>invalid</I></TD></TR>
+</TABLE>
+
+<!-- Content Ends ============================ -->
+
+<!-- End body. -->
+
+
+</td></tr>
+<tr><td></td><td></td><td align=center>
+
+<HR>
+<P ALIGN=CENTER>[Last modified Thursday September 10, 2009]</P></td></tr>
+</table>
+
+</body>
+</html>
+ 

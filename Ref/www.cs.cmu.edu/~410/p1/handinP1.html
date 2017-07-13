@@ -1,0 +1,156 @@
+<!-- ========================================= -->
+<!-- Page title (begin it with "15-410") ===== -->
+<!-- ========================================= -->
+
+
+
+
+
+<!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 3.2//EN&quot;>
+<html>
+<head><title>15-410 Project 1 Hand-in</title>
+</head>
+<body bgcolor=white>
+<table width="100%" height="100%">
+
+<tr><td valign=top width=132>
+<table width=132 bgcolor=#cccccc height="100%">
+<tr><td height=140><center><font size=-1><b>Carnegie Mellon</b></font><br>
+<img alt="SCS logo" src="/~410/img/scslogo.gif"><br>
+<font size=-1><b>Computer Science Department</b></font></center></td></tr>
+<tr><td height=30><a href="/~410"><img alt="home" src="/~410/img/home.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/syllabus.html"><img alt="syllabus" src="/~410/img/syllabus.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/staff.html"><img alt="staff" src="/~410/img/staff.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/schedule.html"><img alt="schedule" src="/~410/img/schedule.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/lecture.html"><img alt="lecture" src="/~410/img/lecture.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/projects.html"><img alt="projects" src="/~410/img/projects.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/homeworks.html"><img alt="homeworks" src="/~410/img/homeworks.gif" border=0></a></td></tr>
+<tr><td>&nbsp;</td></tr></table>
+
+</td>
+
+<td width=10>&nbsp;</td>
+
+<td height="100%" valign=top>
+<br>
+
+<H1 ALIGN=CENTER>15-410 Project 1 Hand-in</H1>
+<HR>
+<!-- Body goes here. -->
+ 
+
+<!-- ========================================= -->
+<!-- Content Begins ========================== -->
+<!-- ========================================= -->
+
+<OL>
+
+<LI><P>
+Your files should be placed in your <STRONG>p1</STRONG> directory,
+<STRONG>not</STRONG> somewhere else, such as <TT>hw1</TT>.  If you
+haven't stored files in your AFS volume yet, please
+refer to <A HREF="/~410/afs.html">About your 15-410 AFS Space</A>
+for help if you run into trouble.  We are <STRONG>not responsible</STRONG>
+if you wait until 23:50 to try out your AFS volume and run into trouble.
+</P>
+
+<LI><P>
+Please do <STRONG>not</STRONG> add levels of indirection when
+turning in your files.  For example, do not place your
+<TT>game_kern_main.c</TT> in <TT>p1/proj1/kern/game_kern_main.c</TT> or
+turn in <TT>p1/my_project_one.tar</TT>.  Please use the most
+straightforward arrangement, i.e., <TT>p1/kern/game_kern_main.c</TT>.
+
+<LI><P>
+When the deadline arrives, we will write-lock your hand-in directory.
+You will continue to be able to view the contents.
+</P>
+
+<LI><P>
+When we grade your work, we will overwrite files which are not
+in kern/ with a mixture of the files which update.sh installed
+for you.  We will then add and modify some files.  This means
+that you <STRONG>must</STRONG> confine your modifications to
+files located in kern/, with the exception of config.mk.
+You should make sure you have followed all the directions in
+config.mk carefully, and that <TT>make clean</TT> followed
+by <TT>make</TT> will build both the game and the tester
+properly (we may deduct points if your assignment
+doesn't build "out of the box").  Please <TT>make veryclean</TT>
+in your handin directory after turning in your files--the
+AFS space you save will be your own!
+See
+<A HREF="/~410/p1/proj1.html#dualimage">Grading
+Makefile and Dual Images</A> for more information.
+Recall that, no matter what flavor of machine you used to prepare
+your assignment, it must build and run on Andrew cluster Linux
+machines.
+</P>
+
+<LI><P>
+You must also make sure that <TT>make html_doc</TT> and
+<TT>make print</TT> do the right thing.
+</P>
+
+<LI><P>
+Your deliverables are:
+<UL>
+<LI>Various .c and .S files (located in kern/).
+<LI>.h files (located in kern/inc/).
+<LI>README.dox
+<LI>Any *.mk files -- since you needed to configure them
+for your project to build/print/etc., if you don't turn them in,
+your project won't build/print/etc....
+</UL></P>
+<P>
+Please <STRONG>do not include</STRONG>:
+<UL>
+<LI>.o files
+<LI><EM>executable</EM> files such as <TT>game</TT>, <TT>410test</TT>
+<LI>.img files
+<LI>fake.c
+</UL>
+<!-- (so you should probably <TT>make clean</TT> before ?). -->
+</P>
+
+<P>
+Things not mentioned on either list above (the 410kern/ directory,
+ etc.) are <STRONG>at your discretion</STRONG>.
+You can assume that if
+we gave them to you once we won't mind giving them to you
+again.
+</P>
+
+<LI><P>
+If you need to take a late day for Project 1 (you shouldn't!),
+use the <A HREF="/~410/late.html">Late Day Registration Page</A>,
+by roughly 00:30.
+Assuming your message is received,
+the next morning somebody will unlock your hand-in
+directory so you can again save your work.
+Please note that the auto-response may appear like a delivery
+failure notice to some mail user agents; you will need to
+look at the "error details" inside.
+Of course, your request must be in accordance with the
+policy published in <A HREF="/~410/syllabus.html">the syllabus</A>.
+</P>
+
+</OL>
+
+<!-- ========================================= -->
+<!-- Content Ends ============================ -->
+<!-- ========================================= -->
+
+<!-- End body. -->
+
+
+</td></tr>
+<tr><td></td><td></td><td align=center>
+
+<HR>
+<P ALIGN=CENTER>[Last modified Thursday September 03, 2009]</P></td></tr>
+</table>
+
+</body>
+</html>
+ 

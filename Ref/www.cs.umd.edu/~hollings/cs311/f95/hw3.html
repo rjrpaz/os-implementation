@@ -1,0 +1,63 @@
+<!doctype html public "-//IETF//DTD HTML//EN">
+<HTML>
+
+<HEAD>
+
+<TITLE>CMSC 311-101 (Fall 1995)</TITLE>
+
+<META NAME="GENERATOR" CONTENT="Internet Assistant for Word 1.0Z">
+<META NAME="AUTHOR" CONTENT="Authorized Gateway Customer">
+<META NAME="OPERATOR" CONTENT="Authorized Gateway Customer">
+</HEAD>
+
+<BODY>
+
+<P>
+<B>CMSC 311- Computer Organization</B>
+<P>
+Fall 1995 - Assignment #3
+<P>
+<I>Due (at the beginning of class) Thursday, September 28</I>
+<OL>
+<LI>From Mano 1-21.
+<LI>Design a vending machine controller using a sequential circuit.
+It should take three inputs (NICKEL, DIME, and QUARTER). When
+the total amount of money received reaches 25 cents (or more)
+the output signal VEND should transition from 0 to 1 for one clock
+pulse. Your controller should also indicate if change is due as
+a three bit number representing the number of nickels to return
+(call the outputs C0, C1, and C2). For example, if the machine
+has received 20 cents and a quarter is placed in the machine,
+VEND should transition to 1 for one clock pulse, and the number
+<blink>four (100) </blink>should be output. You may assume that only one coin
+is deposited per clock pulse, and that no change will be inserted
+while VEND is equal to 1. The output of the circuit should only
+change on clock pulses.
+<OL>
+<LI>Draw the state diagram for your circuit.
+<LI>Show the state table for your circuit.
+</OL>
+
+<LI>From Mano 2-1.
+<LI>   
+<OL>
+<LI>Design a 4 bit adder using 4 full adders. 
+<LI>Design an 8 bit adder using the 4 bit adder from part a.
+<LI>Assume it takes time X for a signal to propagate through a
+simple gate (and, or, not). Also assume it takes time 2X and 3X
+to propagate through a full adder to outputs C and S respectively.
+How long will it take for longest propagation delay through your
+circuit in parts a and b?
+<LI>Assuming we can't change the propagation delays of individual
+gates, describe how we could change the design of the 8 bit adder
+to reduce the total propagation delay through it.
+</OL>
+
+<LI>From Mano 2-7.
+</OL>
+
+<P>
+
+</BODY>
+
+</HTML>

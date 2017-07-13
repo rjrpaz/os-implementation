@@ -1,0 +1,44 @@
+
+<HTML>
+
+<HEAD>
+
+<TITLE>CMSC 412 - Project #0</TITLE>
+
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#D7D3D2" LINK="#78021C" VLINK="#7F6666" ALINK="#FFFFFF" BACKGROUND="../marble.gif">
+
+<center>
+<h1>
+CMSC412 - Project #0 
+</h1>
+</center>
+
+<h2>Handouts</h2>
+<menu>
+    <li><a href="proj0.shtml">Programming Assingment</a>
+    <li><a href="runningGeekOS.shtml">Running GeekOS</a>
+</menu>
+
+<p>
+
+<P>
+<h2>
+Header, Source, Object, and Sample Data Files
+</h2>
+<P>
+<menu>
+<li>Bochs Files and GeeksOS kernel
+<menu>
+<li><a href="proj0.tar.gz">proj0.tar.gz</a>
+<li><a href="fonts.tar.gz">fonts</a> (These need to be on your glue/wam account)
+</menu>
+
+<p>
+There is info about running the development environment on Winwdows 
+availalbe on the <a href="http://geekos.sourceforge.net/docs/building.html">GeekOS</a> web site.  For the purposes of this class, this is an unsopported
+configuration. The professors and TAs do not have the time to help
+students getting this environment to run.
+students who whish 
+</HTML>
+

@@ -1,0 +1,6 @@
+// project 6
+int SetAcl(char *name, int uid, int permissions);
+int SetSetUid(char *name, int setUid);
+int SetEffectiveUid(int uid);
+int GetUid();
+int MessageQueueCreate(char *name);

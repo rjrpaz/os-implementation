@@ -1,0 +1,433 @@
+<!-- ----------------------------------------- -->
+<!-- Page title (begin it with "15-410") ----- -->
+<!-- ----------------------------------------- -->
+
+
+
+
+
+<!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 3.2//EN&quot;>
+<html>
+<head><title>15-410 Simics Command Guide</title>
+</head>
+<body bgcolor=white>
+<table width="100%" height="100%">
+
+<tr><td valign=top width=132>
+<table width=132 bgcolor=#cccccc height="100%">
+<tr><td height=140><center><font size=-1><b>Carnegie Mellon</b></font><br>
+<img alt="SCS logo" src="/~410/img/scslogo.gif"><br>
+<font size=-1><b>Computer Science Department</b></font></center></td></tr>
+<tr><td height=30><a href="/~410"><img alt="home" src="/~410/img/home.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/syllabus.html"><img alt="syllabus" src="/~410/img/syllabus.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/staff.html"><img alt="staff" src="/~410/img/staff.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/schedule.html"><img alt="schedule" src="/~410/img/schedule.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/lecture.html"><img alt="lecture" src="/~410/img/lecture.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/projects.html"><img alt="projects" src="/~410/img/projects.gif" border=0></a></td></tr>
+<tr><td height=30><a href="/~410/homeworks.html"><img alt="homeworks" src="/~410/img/homeworks.gif" border=0></a></td></tr>
+<tr><td>&nbsp;</td></tr></table>
+
+</td>
+
+<td width=10>&nbsp;</td>
+
+<td height="100%" valign=top>
+<br>
+
+<H1 ALIGN=CENTER>15-410 Simics Command Guide</H1>
+<HR>
+<!-- Body goes here. -->
+ 
+
+<!-- ----------------------------------------- -->
+<!-- Content Begins -------------------------- -->
+<!-- ----------------------------------------- -->
+
+<!-- ----------------------------------------- -->
+<h2><A NAME="Simics">What's Simics?</A></h2>
+<!-- ----------------------------------------- -->
+
+<P><A HREF="http://www.simics.net">Simics</A> is a
+system simulation platform originally developed by
+<A HREF="http://www.virtutech.com">Virtutech</A>,
+a spin-off of
+the
+<A HREF="http://www.sics.se">Swedish Institute
+of Computer Science (SICS)</A>,
+which was later acquired by
+<A HREF="http://www.WindRiver.com">Wind River</A>.
+Simics is an extensible simulation/debugging
+platform which can support the execution of
+networks of simulated machines running off-the-shelf
+operating systems.
+Wind River graciously supports our educational
+mission by providing CMU with a site license
+free of charge.
+Before using Simics for any non-coursework purposes,
+please contact your instructor to make sure your
+proposed use does not conflict with our Simics
+license.
+</P>
+
+<!-- ----------------------------------------- -->
+<h2>15-410 Basic Simics Commands</h2>
+<!-- ----------------------------------------- -->
+
+<P>Here is a brief listing of useful Simics commands. A more detailed
+reference is the Simics User Guide, available in the 410
+<TT>simics/doc</TT> directory.  To get more help on any of these
+commands within Simics, type <KBD>help COMMANDNAME</KBD>.  Simics
+supports tab-key command completion and command history.</P>
+
+<P>Below, anything in [] is an optional argument, while anything
+in () means you must choose one and only one option.</P>
+
+<!-- ----------------------------------------- -->
+<h2>Running Simics</h2>
+<!-- ----------------------------------------- -->
+
+<p><KBD>r</KBD><br>
+Starts the simulation. Once a simulation has been started, it may
+not be restarted. To give up on a simulation and start anew, quit
+the simulation and restart Simics.</p>
+
+<p><KBD>c</KBD><br>
+Continues the simulation after a breakpoint or error has occurred.
+Note that you may not be able to continue reliably after some types
+of errors.</p>
+
+<p><KBD>q</KBD><br>
+Exits Simics.</p>
+
+<p><KBD>ctrl-c</KBD> (control + c)<br>
+Interrupts the currently running simulation so that commands may
+be entered (debugging commands, quit, etc).</p>
+
+<p><KBD>stepi [NUM]</KBD><br>
+Steps through the next NUM instructions.  NUM defaults to 1.  If
+a breakpoint occurs while stepping, it still causes a break in
+execution.
+
+<p><KBD>n</KBD><br>
+Step to next source line and stop.
+Note that there are multiple possible meanings
+of this;
+if you find the results of this command surprising,
+think carefully about how its semantics might differ
+from your expectation and why.
+This command
+is a local Python-based debugger extension written by 410 TA Michael Berman.</p>
+
+<!-- ----------------------------------------- -->
+<h2>Accessing Registers</h2>
+<!-- ----------------------------------------- -->
+
+<p><KBD>pregs</KBD><br>
+Prints the contents of all the general purpose registers (eax, ecx, edx, ebx, esi, edi, ebp, esp), the value of the program counter (eip), the contents of EFLAGS, and various other registers.
+
+<p><KBD>%REGNAME</KBD><br>
+Prints the contents of register REGNAME.  For example, <KBD>%eax</KBD> prints the contents of the eax register.  This output will be in decimal.  To print it in hex, try <KBD>print -x %REGNAME</KBD> (see below for more information on the print command).
+
+<p><KBD>read-reg REGNAME</KBD><br>
+Same as <KBD>%REGNAME</KBD>.
+
+<p><KBD>write-reg REGNAME NEWVALUE</KBD><br>
+Sets the value stored in register REGNAME to NEWVALUE.  For example, write-reg eax 0 would put 0 into register eax.
+
+<!-- ----------------------------------------- -->
+<h2>Accessing Memory</h2>
+<!-- ----------------------------------------- -->
+
+<p><KBD>x l:ADDRESS [SIZE]</KBD> or <KBD>x p:ADDRESS [SIZE]</KBD><br>
+Prints the contents of memory starting at ADDRESS and continuing for SIZE bytes.  First lists the starting address, then the bytes in memory, and last an attempt to translate the bytes into ASCII (the ASCII will be nonsensical unless actual words are stored in the location).  l indicates the ADDRESS is a virtual/logical memory address, while p indicates the ADDRESS is a physical memory address.  If SIZE is not given, the default is 16 bytes. Remember, you are dealing with a little endian machine.
+
+<p><KBD>logical-to-physical ADDRESS</KBD><br>
+Displays the physical address that the logical/virtual address ADDRESS maps to.  The output is in decimal, but you can combine it with print to get hex output.
+The command may be abbreviated as <KBD>l2p</KBD>.
+See also <KBD>cpu0_tlb.info</KBD> and <KBD>cpu0_tlb.status</KBD>.
+
+<p><KBD>get ADDRESS [SIZE]</KBD><br>
+Gets SIZE bytes starting from physical address ADDRESS.  SIZE defaults to 4 and can be no larger than 8.
+
+<p><KBD>set ADDRESS VALUE [SIZE]</KBD><br>
+Sets SIZE bytes starting from physical address to VALUE.  SIZE defaults to 4 and can be no larger than 8.
+
+<p><KBD>stack-trace [MAXDEPTH]</KBD><br>
+Displays a stack trace up to at most MAXDEPTH (default is 64).
+The <KBD>bt</KBD> and <KBD>where</KBD> commands are synonyms for <KBD>stack-trace</KBD>.
+
+<p><KBD>list [-s] FUNCTION [LINES]</KBD><br>
+Display up to LINES lines of code of the indicated FUNCTION (you may specify the
+starting point in other ways, such as file &amp; line; see the documentation).
+If you specify <KBD>-s</KBD> the listing will interleave assembly code with
+your C source code.
+
+<!-- ----------------------------------------- -->
+<h2>The TLB</h2>
+<!-- ----------------------------------------- -->
+
+<p><KBD>cpu0_tlb.status</KBD> and <KBD>cpu0_tlb.info</KBD><br>
+Print some information about the contents of the translation
+lookaside buffer (not needed for Projects Zero through Two).
+There are additional <KBD>cpu0_tlb</KBD> commands as well.
+Also possibly useful: <KBD>cpu0.tablewalk</KBD>).
+
+<!-- ----------------------------------------- -->
+<h2>What Time Is It?</h2>
+<!-- ----------------------------------------- -->
+
+<p><KBD>cpu0.print-time</KBD><br>
+Prints the number of executed instructions and,
+more usefully for this class, the amount of
+"wall clock time" which has elapsed inside the
+virtual world.  This may be useful for verifying
+some of your driver code.
+
+<!-- ----------------------------------------- -->
+<h2>Breakpoints</h2>
+<!-- ----------------------------------------- -->
+
+<p><KBD>break ADDRESS [LENGTH] [-r] [-w] [-x]</KBD><br>
+Sets a breakpoint of the specified modes for access in the LENGTH bytes starting at ADDRESS.
+Any combination of modes can be set, with r specifying memory read, w specifying memory write,
+and x specifying execute.
+<EM>Debugging some problems is much easier if you specify a physical address.</EM>
+Some addresses are particularly useful, such as 0x100000 and 0x1000000.
+
+<p><KBD>display EXPRESSION</KBD><br>
+Specifies an expression which simics will evaluate when
+it is about to print a prompt.  This can save you from
+frequently re-typing a <KBD>psym</KBD> command.
+
+<p><KBD>list-breakpoints</KBD><br>
+Lists all breakpoints.  Information includes whether the breakpoint is a virtual or physical address, the modes to break on (read, write, execute), whether it is enabled or disabled, the start and stop address, and the number of times the breakpoint has been reached.
+
+<p><KBD>enable (-all | ID)</KBD><br>
+Enables all breakpoints or just breakpoint with id ID.
+
+<p><KBD>disable (-all | ID)</KBD><br>
+Disables all breakpoints or just breakpoint with id ID.
+
+<p><KBD>delete (-all | ID)</KBD><br>
+Deletes all breakpoints or just breakpoint with id ID.
+
+<p><KBD>break-exception ("NAME" | NUMBER | -all | -list)</KBD><br>
+Asks simics to stop when a particular exception is raised.  Since
+the built-in documentation is very coy about the supported names
+and numbers for the x86 target, here is a table.
+
+<TABLE>
+<TR><TH>Number</TH><TH>Name</TH></TR>
+<TR><TD>0</TD>  <TD>Divide_Error_Exception</TD></TR>
+<TR><TD>1</TD>  <TD>Debug_Exception</TD></TR>
+<TR><TD>2</TD>  <TD>NMI_Interrupt</TD></TR>
+<TR><TD>3</TD>  <TD>Breakpoint_Exception</TD></TR>
+<TR><TD>4</TD>  <TD>Overflow_Exception</TD></TR>
+<TR><TD>5</TD>  <TD>BOUND_Range_Exceeded_Exception</TD></TR>
+<TR><TD>6</TD>  <TD>Invalid_Opcode_Exception</TD></TR>
+<TR><TD>7</TD>  <TD>Device_Not_Available_Exception</TD></TR>
+<TR><TD>8</TD>  <TD>Double_Fault_Exception</TD></TR>
+<TR><TD>9</TD>  <TD>Coprocessor_Segment_Overrun</TD></TR>
+<TR><TD>10</TD> <TD>Invalid_TSS_Exception</TD></TR>
+<TR><TD>11</TD> <TD>Segment_Not_Present</TD></TR>
+<TR><TD>12</TD> <TD>Stack_Fault_Exception</TD></TR>
+<TR><TD>13</TD> <TD>General_Protection_Exception</TD></TR>
+<TR><TD>14</TD> <TD>Page_Fault_Exception</TD></TR>
+<TR><TD>16</TD> <TD>Floating_Point_Error_Exception</TD></TR>
+<TR><TD>17</TD> <TD>Alignment_Check_Exception</TD></TR>
+<TR><TD>18</TD> <TD>Machine_Check_Exception</TD></TR>
+</TABLE>
+
+<!-- ----------------------------------------- -->
+<h2>Printing variables, the results of expressions, and print formatting</h2>
+<!-- ----------------------------------------- -->
+
+<p><KBD>psym (VARNAME | "VARNAME" | FUNCTIONNAME)</KBD><br>
+Prints the value of variable VARNAME or function FUNCTIONNAME and
+possibly associated type information. You can perform more complex
+operations such as casting and dereferencing if you use the quote
+version.  Note that the symbols must have been loaded for this
+command to work properly (we have taken care of this for you).</p>
+
+<p>Observe that <KBD>psym "&amp;(thr_cb->exitstatus)"</KBD>
+lets you determine the address of a particular
+item in a data structure.  Also, if you are patient you can print
+an entire linked list from the debugger via a sequence of commands
+like<BR>
+<KBD>psym "*(head)"</KBD><BR>
+<KBD>psym "*(head->next)"</KBD><BR>
+<KBD>psym "*(head->next->next)"</KBD><BR>
+
+<p><KBD>sym (VARNAME | FUNCTIONNAME)</KBD><br>
+Similar to psym, except can be used in combination with other commands.  For example, any command calling for an ADDRESS can use (sym FUNCTIONNAME) instead.  If you had a function called test, you could do <KBD>break -x (sym test)</KBD> rather than having to determine the memory location of test.
+
+<p><KBD>print [(-x | -o | -b | -s)] VALUE [SIZE]</KBD><br>
+Allows for printing in different formats and can print any value that can be expressed as an integer.  Arithmetic operations are allowed to create VALUE and the results of other commands can be used.  Outputs types are -x for hex, -o for octal, -b for binary, and -s for signed integer.
+
+
+<!-- ----------------------------------------- -->
+<h2>HindSight Reverse Execution Support</h2>
+<!-- ----------------------------------------- -->
+
+<h3>Disclaimer!</h3>
+
+<P><strong>This works only sometimes!  It is not to be considered a replacement
+for other debugging techniques and thought.</strong>  In particular, we have
+seen simulation state corruption, usually resulting in very strange kernel
+panics, but not always.  If you see the world getting stranger and stranger,
+and are using HindSight, consider repeating your tests without reversing.</P>
+
+<P>Use of HindSight is, as said in class, new this semester; as such, the course
+staff may not be able to provide insight into its behavior.  If it breaks, you
+get to keep the pieces.</P>
+
+<h3>OK, OK, I get it...</h3>
+
+<P>HindSight is not enabled by default, and will subject your simulation to
+something like a 2x slowdown as well as eat gobs of memory at times, so you
+should only enable it for certain parts of your testing.</P>
+
+<P>
+To enable HindSight, we must set a "bookmark" at the first time we are
+interested in, which we might name "first".</P>
+
+<P><KBD>set-bookmark first</KBD></P>
+
+<P>If any bookmarks are set, HindSight is running.
+Note that Simics can't back up earlier than the first
+bookmark.</P>
+
+<P>At any point you can list bookmarks by saying</P>
+<P><KBD>list-bookmarks</KBD></P>
+
+<P>Bookmarks may be deleted via</P>
+<P><KBD>delete-bookmark <i>name</i></KBD></P>
+
+<P>
+There are several reversing functions, corresponding to their forward-going
+symmetric partners.</P>
+
+  <TABLE>
+    <TR>
+      <TD><KBD>rstepi <i>count</i></KBD></TD>
+      <TD>Steps backwards <i>count</i> instructions, or 1 if <i>count</i> is omitted.</TD>
+    </TR>
+    <TR>
+      <TD><KBD>rnext</KBD></TD>
+      <TD>Steps backwards one source line, not entering subroutine calls ("unreturns" ?).</TD>
+    </TR>
+    <TR>
+      <TD><KBD>uncall</KBD></TD>
+      <TD>Runs backwards until just before the current function was called.
+          Note that this has been observed to frequently bail out early for
+          somewhat mysterious reasons, so your mileage may vary.
+      </TD>
+    </TR>
+    <TR>
+      <TD><KBD>reverse-to <i>bookmark</i></KBD></TD>
+      <TD>Jumps the simulation state backward to the bookmark named <i>bookmark</i>.</TD>
+    </TR>
+    <TR>
+      <TD><KBD>skip-to <i>bookmark</i></KBD></TD>
+      <TD>Jumps the simulation state forward to the bookmark named <i>bookmark</i>.</TD>
+    </TR>
+  </TABLE>
+
+<!-- ----------------------------------------- -->
+<h2>Special Reference-Kernel Support for Thread Debugging</h2>
+<!-- ----------------------------------------- -->
+
+<h3>Disclaimer!</h3>
+
+<P><strong>This works only sometimes!  It is not to be considered a replacement
+for other debugging techniques and thought.</strong>  In particular, we have
+only lightly tested these codepaths.  If it breaks for you, please tell
+us and we'll do our best.</P>
+
+  <TABLE>
+    <TR>
+      <TD><KBD>tidinfo <i>tid</i></KBD></TD>
+	  <TD>Dumps the user-mode state of thread <i>tid</i></TD>
+    </TR>
+  </TABLE>
+
+<P>
+The output of <KBD>tidinfo</KBD> is approximately:
+</P>
+
+<PRE>
+REGISTER DUMP FOLLOWS
+ CS = 0x00000043, EFLAGS = 0x00010246, SS = 0x0000004b
+ EIP = 0x0100004a, ESP = 0xffffffa0, EBP = 0xffffffcc
+ EDI = 0x00000000, ESI = 0x00000000, EAX = 0x31337000
+ EBX = 0x00000000, ECX = 0x00000000, EDX = 0x01000c0a
+</PRE>
+
+<P>The output describes the state of the thread <EM>the last time
+it executed an instruction in user mode</EM>.  Producing this
+output involves some cooperation between Simics and the reference
+kernel, so it is possible for you to observe side effects after
+using it.  However, you can generally assume that the same thread
+is running in the same mode after <KBD>tidinfo</KBD> as before.</P>
+
+<!-- ----------------------------------------- -->
+<h2>Getting More Help</h2>
+<!-- ----------------------------------------- -->
+
+<p><KBD>help</KBD><br>
+Prints a list of different categories of commands.
+
+<p><KBD>help CATEGORY</KBD><br>
+Prints a list of commands within the CATEGORY.
+
+<p><KBD>help COMMNAD</KBD><br>
+Prints help information about the COMMAND
+
+<p><KBD>list-namespaces</KBD><br>
+Displays a list of all objects (parts of the simulation
+environment).  If you don't know where some piece of
+simulation state is stored, this may help you find it.
+To learn more about a namespace of interest, type its
+name and hit the <KBD>Tab</KBD> key one or more times.
+For example, you may inspect the real-time clock
+(calendar chip) object by typing <KBD>rtc0</KBD>
+and hitting <KBD>Tab</KBD> twice.  Then you can use
+the <KBD>help</KBD> command to learn more about the
+indicated methods of the rtc0 object.
+
+<!-- ----------------------------------------- -->
+<h2>Reality Check</h2>
+<!-- ----------------------------------------- -->
+
+<p>By the time you're working on the kernel project,
+you should be using at least these commands,
+or you are wasting precious debugging time.</P>
+
+<UL>
+<LI><KBD>stack-trace</KBD>
+<LI><KBD>psym</KBD>
+<LI><KBD>pregs</KBD>
+<LI><KBD>break</KBD>
+<LI><KBD>x</KBD>
+<LI><KBD>list -s</KBD>
+<LI><KBD>cpu0_tlb.info</KBD> and <KBD>cpu0_tlb.status</KBD>
+</UL>
+
+
+<!-- ----------------------------------------- -->
+<!-- Content Ends ---------------------------- -->
+<!-- ----------------------------------------- -->
+
+<!-- End body. -->
+
+
+</td></tr>
+<tr><td></td><td></td><td align=center>
+
+<HR>
+<P ALIGN=CENTER>[Last modified Monday February 21, 2011]</P></td></tr>
+</table>
+
+</body>
+</html>
+ 

@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/6/project2/src/libc
+END
+process.c
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/6/project2/src/libc/process.c
+END
+entry.c
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/6/project2/src/libc/entry.c
+END
+compat.c
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/6/project2/src/libc/compat.c
+END
+conio.c
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/6/project2/src/libc/conio.c
+END
+libuser.h
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/a3K6KsNpqr3lphabIlDkbG/!svn/ver/6/project2/src/libc/libuser.h
+END

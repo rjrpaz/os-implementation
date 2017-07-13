@@ -1,0 +1,161 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./PracticeMonitors_files/filelist.xml">
+<title>Here are a couple of classic synchronization problems</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>hawkey</o:Author>
+  <o:Template>Normal</o:Template>
+  <o:LastAuthor>hawkey</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>5</o:TotalTime>
+  <o:Created>2003-07-12T01:30:00Z</o:Created>
+  <o:LastSaved>2003-07-12T01:30:00Z</o:LastSaved>
+  <o:Pages>1</o:Pages>
+  <o:Company>Dalhousie University</o:Company>
+  <o:Lines>1</o:Lines>
+  <o:Paragraphs>1</o:Paragraphs>
+  <o:Version>9.2720</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+@list l0
+	{mso-list-id:919951277;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-2142324228 2075404334 -967037246 67698703 -53209664 -863589050 -645504770 -2091214968 -708560990 -1481051702;}
+@list l0:level1
+	{mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level2
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	mso-ansi-font-size:10.0pt;
+	font-family:"Courier New";
+	mso-bidi-font-family:"Times New Roman";}
+@list l1
+	{mso-list-id:1375352498;
+	mso-list-type:hybrid;
+	mso-list-template-ids:328890178 67698703 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l1:level1
+	{mso-level-tab-stop:.25in;
+	mso-level-number-position:left;
+	margin-left:.25in;
+	text-indent:-.25in;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+</head>
+
+<body lang=EN-US style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+margin-left:.25in'>Here are a couple of synchronization problems for
+practice.<span style="mso-spacerun: yes">  </span>Solve each using a semaphore
+solution.<span style="mso-spacerun: yes">  </span>Solve using a monitor
+solution.<span style="mso-spacerun: yes">  </span>Solutions will be discussed
+Monday, July 14th, after class.</p>
+
+<ol start=1 type=1>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l0 level1 lfo1;tab-stops:list .5in'>Larry, Moe, and Curly are
+     planting seeds. Larry digs the holes. Moe then places a seed in each hole.
+     Curly then fills the hole up. </li>
+</ol>
+
+<p style='margin-left:.5in'>There are several synchronization constraints: </p>
+
+<ol start=1 type=1>
+ <ul type=circle>
+  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+      auto;mso-list:l0 level2 lfo1;tab-stops:list 1.0in'>Moe cannot plant a
+      seed unless at least one empty hole exists, but Moe does not care how far
+      Larry gets ahead of Moe. </li>
+  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+      auto;mso-list:l0 level2 lfo1;tab-stops:list 1.0in'>Curly cannot fill a
+      hole unless at least one hole exists in which Moe has planted a seed, but
+      the hole has not yet been filled. Curly does not care how far Moe gets
+      ahead of Curly. </li>
+  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+      auto;mso-list:l0 level2 lfo1;tab-stops:list 1.0in'>Curly does care that
+      Larry does not get more than MAX holes ahead of Curly. Thus, if there are
+      MAX unfilled holes, Larry has to wait. </li>
+  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+      auto;mso-list:l0 level2 lfo1;tab-stops:list 1.0in'>There is only one
+      shovel with which both Larry and Curly need to dig and fill the holes,
+      respectively.</li>
+ </ul>
+</ol>
+
+<p style='margin-left:.5in'>Sketch out the pseudocode for the 3 processes which
+represent Larry, Curly, and Moe using semaphores as the synchronization
+mechanism. </p>
+
+<ol style='margin-top:0in' start=2 type=1>
+ <li class=MsoNormal style='mso-list:l0 level1 lfo1;tab-stops:list .5in;
+     mso-layout-grid-align:none;text-autospace:none'><span style='mso-bidi-font-size:
+     11.0pt'>A student majoring in anthropology and minoring in computer
+     science has embarked on a research project to see if African baboons can
+     be taught about deadlocks. He locates a deep canyon and fastens a rope
+     across it, so the baboons can cross hand-over-hand. Several baboons can
+     cross at the same time, provided that they are all going in the same
+     direction. If eastward moving and westward moving baboons ever get onto
+     the rope at the same time, a deadlock will result (the baboons will get
+     stuck in the middle) because it is impossible for one baboon to climb over
+     another one while suspended over the canyon. If a baboon wants to cross
+     the canyon, it must check to see that no other baboon is currently
+     crossing in the opposite direction. Write a program that avoids deadlock.
+     Do </span>not worry about a series of eastward moving baboons holding up
+     the westward moving baboons indefinitely (starvation).</li>
+</ol>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+</body>
+
+</html>

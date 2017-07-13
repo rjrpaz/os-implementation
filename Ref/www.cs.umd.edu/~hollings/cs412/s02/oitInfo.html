@@ -1,0 +1,225 @@
+<html>
+<pre>
+The OIT Unix cluster systems (details below) share a common  file
+system,  common  news  and mail systems, and common users.  This means
+users can login to whichever of the systems they want and  their  same
+login  id  and  password  will work and their files will be available.
+This also means users can do their own "load balancing" by logging  in
+to whichever system seems to be best for them at the time.
+
+                      -----  System Details  -----
+
+The cluster machines (known as session servers) are as follows:
+
+           Session Servers
+           ---------------
+           holmes.umd.edu
+           marlowe.umd.edu
+           marple.umd.edu
+           tracy.umd.edu
+           wolfe.umd.edu
+
+To  make  all this easier, users of the OIT Unix cluster can just
+login to the generic address dc.umd.edu (dc = detective cluster).
+
+All  mail  sent  to  the   cluster   should   be   addressed   to
+<login-id>@umd5.umd.edu  (which  is  the address that is placed on all
+outgoing cluster mail).  Mail sent in this manner can be read from any
+cluster system.  The machine known as umd5.umd.edu is also part of the
+cluster but acts as a server for the cluster.   DO NOT  USE  UMD5  for
+anything other than your EMAIL address.  Never login to umd5.
+
+Games, IRC, and MUDs are not allowed on the OIT Unix cluster.
+
+The  home directories contain default .login, .cshrc, and .logout
+files.  In addition, the access mode on the home directories has  been
+set  to 700.  This means that a student will not be able to copy files
+from an unsuspecting student, unless the owner changes the mode of his
+home directory to something  that  allows  such  access.    
+
+User  files  are  NFS mounted on various servers.  Symbolic links
+are used to create the file names found in the system  password  file.
+This  means  the  names  returned by the pwd command may not match the
+names found in the system password file.  Users should always refer to
+home directories by the ~loginid or $HOME methods.
+
+
+                          University of Maryland
+          Guidelines for the Acceptable Use of Computing Resources
+
+Primary Principles:  Freedom of Expression and Personal Responsibility
+
+Freedom of expression and an open environment to pursue scholarly inquiry
+and for sharing of information are encouraged, supported, and protected at
+the University of Maryland.  These values lie at the core of our academic
+community.  Censorship is not compatible with the tradition and goals of the
+University.  While some computing resources may be dedicated to specific
+research, teaching, or administrative tasks that would limit their use,
+freedom of expression must, in general, be protected.  The University does
+not limit access to information due to its content when it meets the
+standard of legality.  The University's policy of freedom of expression
+applies to computing resources.
+
+Concomitant with free expression are personal obligations of each member of
+our community to use computing resources responsibly, ethically, and in a
+manner which accords both with the law and the rights of others.  The campus
+depends first upon a spirit of mutual respect and cooperation to create and
+maintain an open community of responsible users.
+
+General
+
+These guidelines set forth standards for responsible and acceptable use of
+University computing resources.  They supplement existing University
+policies, agreements, and state and federal laws and regulations.  Computing
+resources include host computer systems, University-sponsored computers and
+workstations, communications networks, software, and files.
+
+Computing resources are provided to support the academic research,
+instructional, and administrative objectives of the University.  These
+resources are extended for the sole use of University faculty, staff,
+students, and other authorized users ("users") to accomplish tasks related
+to the user's status at the University, and consistent with University's
+mission.
+
+Users are responsible for safeguarding their identification (ID) codes and
+passwords, and for using them for their intended purposes only.  Each user
+is responsible for all transactions made under the authorization of his or
+her ID, and for all network activity originating from his or her data jack.
+Users are solely responsible for their personal use of computing resources
+and are prohibited from representing or implying that the content
+constitutes the views or policies of the University.
+
+Violation of these guidelines constitutes unacceptable use of computing
+resources, and may violate other University policies and/or state and
+federal law.  Suspected or known violations should be reported to the
+appropriate University computing unit.  Violations will be processed by the
+appropriate University authorities and/or law enforcement agencies.
+Violations may result in revocation of computing resource privileges,
+academic dishonesty or Honor Council proceedings, faculty, staff or student
+disciplinary action, or legal action.
+
+User Responsibilities
+
+The following provisions describe conduct prohibited under these guidelines:
+
+1.      Altering system software or hardware configurations without
+authorization, or disrupting or interfering with the delivery or
+administration of computing resources.
+
+2.      Attempting to access or accessing another's account, private files,
+or e-mail without the owner's permission; or misrepresenting oneself as
+another individual in electronic communication.
+
+3.      Installing, copying, distributing or using software in violation of:
+copyright and/or software agreements; applicable state and federal laws; or
+the principles described in Using Software, A Guide to the Ethical and Legal
+Use of Software for Members of the Academic Community, available at
+www.inform.umd.edu/software-guide.
+
+4.      Using computing resources to engage in conduct which interferes with
+others' use of shared computing resources and/or the activities of other
+users, including studying, teaching, research, and University
+administration.
+
+5.      Using computing resources for commercial or profit-making purposes
+without written authorization from the University.
+
+6.      Failing to adhere to individual departmental or unit lab and system
+policies, procedures, and protocols.
+
+7.      Allowing access to computing resources by unauthorized users.
+
+8.      Using computing resources for illegal activities.  Criminal and
+illegal use may include obscenity, child pornography, threats, harassment,
+copyright infringement, defamation, theft, and unauthorized access.
+
+Administration
+
+The maintenance, operation, and security of computing resources require
+responsible University personnel to monitor and access the system.  To the
+extent possible in the electronic environment and in a public setting, a
+user's privacy will be preserved.  Nevertheless, that privacy is subject to
+the Maryland Access to Public Records Act, other applicable state and
+federal laws, and the needs of the University to meet its administrative,
+business, and legal obligations.
+
+August 1996, Revised July 1997
+
+                      ----------  Help  ----------
+
+      OIT  provides  First-Aid and general consulting services to those
+who use Unix computing systems on campus.  OIT Unix machines  run  the
+Digital  Unix  version  of Unix.   With the realization that there are
+other versions of Unix being used on campus,  First-Aid  and  the  OIT
+Help  Desk  will  address questions based on their experience with the
+OIT Unix cluster.
+
+      Students should use the First-Aid service  (located  in  all
+WAM  workstation  laboratories).    They  may  also  use the First-Aid
+Hotline for phone-in questions ((301) 405-6941), which is answered  by
+First-Aiders in the PGII WAM lab.
+
+      Exact hours of service are posted at each First-Aid station.
+
+      OIT  has  replaced the stock lpr program with a shell script that
+calls MDQS to print a file on prl, which is  the  3800  laser  printer
+attached to the campus IBM system.
+
+      The call is   lpr <file>   to initiate printing of file <file>.
+
+      Output  may be retrieved at the OIT dispatch counter in room 1299
+of the A.V. Williams I building.
+
+                 ----------  File Recovery  ----------
+
+      A dump of all files is taken every week.  These file backups  are
+for recovery from catastrophic loss.  Individual user file recovery is
+not available at this time.
+
+                   ----------  Passwords  ----------
+
+      Unix  systems do not have the concept of an account manager; this
+means that if a user forgets their password, OIT must  change  it  for
+the user.
+
+      Requests for change of password should be made to Ira Gold at the
+address  above.    Requests  to  change student passwords will only be
+honored when they are made by the instructor.   Instructors  can  make
+such requests via electronic mail.  Requests must include login id and
+may include a suggested new password (must be 6 - 8 characters long).
+
+                   ----------  Disk Quota  ----------
+
+      All  user  login  ids  on  the OIT Unix cluster have a disk quota
+associated with them.  When the disk quota is exceeded, the user  will
+not  be able to create new files until the amount of disk space in use
+has been reduced, or the disk quota has been increased.
+
+      Requests for change of disk quota should be made to Ira  Gold  at
+the  address above.   Requests to change student disk quotas will only
+be honored when they are made by the instructor.  Instructors can make
+such requests via electronic mail.   Requests must include  login  id,
+desired  new disk quota (expressed in megabytes), and system name.  In
+all cases, requests for higher disk quotas will be  evaluated  against
+system resources and system load.
+
+               ----------  /tmp and /var/tmp  ----------
+
+      /tmp is a small directory used by system utilities for short term
+scratch  files.    Users  should  not place their files in /tmp.  User
+files should be placed in user directories (every  user  has  one)  or
+/var/tmp (again, short term storage).
+
+      Files residing in /tmp and /var/tmp can be deleted without notice
+if   disk  space  becomes  critical.    See  "Disk  Quota"  above  for
+information about requesting disk quota changes.
+
+      /tmp and /var/tmp are local to each system in the cluster.
+
+                    ----------  Software  ----------
+
+      The cluster file /usr/local/doc/cluster contains cluster details,
+including a table showing software availability.    Please  read  this
+file for full cluster details.
+</pre>
+</html>

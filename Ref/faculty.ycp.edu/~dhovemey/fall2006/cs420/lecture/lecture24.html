@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Lecture 24</title>
+</head>
+<body>
+<h1>CS 420 - Lecture 24<br>
+</h1>
+<p>First: talk about Assignment 6.<br>
+</p>
+<h2>I/O Systems<br>
+</h2>
+<h3>I/O Devices</h3>
+<p>Typical computer organization (Silberschatz Fig. 13.1)</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/compArchIO.png"
+ style="width: 60%;"><br>
+</p>
+<p>I/O devices are connected to the processor(s) via a bus, typically a
+PCI bus.<br>
+</p>
+<p>Each device connected to the bus has a set of hardware
+registers.&nbsp; By writing values to and reading values from the
+hardware registers, the host CPU communicates with the device.<br>
+</p>
+<p>Device registers can be accessed via special hardware instructions,
+or by ordinary memory access instructions.&nbsp; An x86 PC typically
+uses both approaches.&nbsp; Most device registers are accessed using
+the I/O instructions (inb, outb, etc.), while some devices are <span
+ style="font-style: italic;">memory-mapped</span>.&nbsp; Video cards
+generally use a large chunk of memory to buffer the displayed image;
+this memory is typically accessed using memory-mapped I/O.<br>
+</p>
+<p>Many architectures do not have special instructions for accessing
+I/O device registers and use memory-mapped I/O for all device-level
+access.&nbsp; E.g., PowerPC Macs.<br>
+</p>
+<h3>Polling vs. Interrupt-Driven I/O<br>
+</h3>
+<p>As we have seen, some I/O takes a long time to complete.&nbsp; E.g.,
+disk reads.&nbsp; Some period of time may elapse between the time an
+I/O request is made and when the request is complete.<br>
+</p>
+<p>There are three general approaches to waiting for I/O:<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Busy-waiting</span>.&nbsp;
+The kernel just spins in a loop.&nbsp; This is obviously a big waste of
+time, since the time waiting for the I/O request completes is not benig
+used for anything useful.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Polled</span>.&nbsp;
+The kernel periodically checks the device to see whether or not the
+request has completed.&nbsp; Generally, a timer is used to regulate the
+polling interval.&nbsp; Between checks, other threads can be run.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">Interrupt-Driven</span>.&nbsp;
+The hardware device raises a hardware interrupt when the request is
+complete.<br>
+</p>
+<p>In general, interrupt-driven I/O will result in lower request
+latency, since the kernel is notified immediately upon completion of
+the request.&nbsp; However, there is nothing inherently bad about
+polling.<br>
+</p>
+<p style="margin-left: 40px;">Interesting fact: Recent versions of
+Linux automatically switch from interrupt-driven to pollen I/O for
+network device drivers when the rate of interrupts being received
+becomes too high.&nbsp; E.g., if each incoming network packet causes an
+interrupt, the kernel spends too much CPU time dealing with the
+interrupts and not enough dealing with the packet data.&nbsp; Each time
+the kernel polls, it can process a number of packets, resulting in less
+kernel processing overhead.<br>
+</p>
+<h3>Interrupt Controllers, Masked Interrupts<br>
+</h3>
+<p>Hardware interrupts are managed by a device called the <span
+ style="font-style: italic;">interrupt controller</span>.&nbsp; This
+may be a separate chip, or (more likely) is integrated into the
+CPU.&nbsp; Its job is to handle interrupt requests (IRQs) from hardware
+devices and notify the host CPU.<br>
+</p>
+<p>What happens when a hardware device signals an IRQ:<br>
+</p>
+<p style="margin-left: 40px;">Something happens that the device wants
+to notify the CPU about.&nbsp; E.g., completion of a disk read.<br>
+</p>
+<p style="margin-left: 40px;">The device asserts its interrupt request
+line.<br>
+</p>
+<p style="margin-left: 40px;">The interrupt controller waits until the
+IRQ is unmasked.<br>
+</p>
+<p style="margin-left: 40px;">Once the IRQ is unmasked, the interrupt
+controller signals the CPU and masks the IRQ.<br>
+</p>
+<p style="margin-left: 40px;">The the CPU reaches a state where
+interrupts are enabled, a dispatch to the appropriate interrupt handler
+occurs.<br>
+</p>
+<p style="margin-left: 40px;">The interrupt handler communicates with
+the device to find out what happened.&nbsp; Often, if substantial work
+needs to be done to complete an I/O request, the work is deferred to a <span
+ style="font-style: italic;">bottom-half function</span> which runs at
+a later time.<br>
+</p>
+<p style="margin-left: 40px;">When the interrupt handler is done, it
+sends an <span style="font-style: italic;">end-of-interrupt</span>
+(EOI) command to the interrupt controller.&nbsp; This causes the
+interrupt controller to unmask the IRQ.<br>
+</p>
+<p>The ability to mask and unmask IRQs is necessary to prevent an
+interrupt handler from being interrupted by another occurrence of the
+same interrupt.&nbsp; In theory, the CPU could avoid this problem by
+leaving interrupts disabled while a handler for a hardware interrupt is
+running.&nbsp; In otherw ords, hardware interrupts for a particular IRQ
+are serialized, meaning they occur one after another, and two cannot be
+happening at the same time.&nbsp; However, some OS kernels use the
+concept of <span style="font-style: italic;">interrupt levels</span>
+to allow higher-priority IRQs to interrupt lower-priority IRQs.&nbsp;
+Operating systems using this approach will run interrupt handlers with
+interrupts enabled.<br>
+</p>
+</body>
+</html>

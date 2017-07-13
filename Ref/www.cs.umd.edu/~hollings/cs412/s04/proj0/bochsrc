@@ -1,0 +1,32 @@
+# An example .bochsrc file.
+
+# Setup for Linuxlab
+vgaromimage: /usr/local/bochs/latest/VGABIOS-elpin-2.40
+romimage: file=/usr/local/bochs/latest/BIOS-bochs-latest, address=0xf0000
+
+# Setup for win32/citrix
+#vgaromimage: w:\Bochs-1.2.1\VGABIOS-elpin-2.40
+#romimage: file=w:\Bochs-1.2.1\BIOS-bochs-latest, address=0xf0000
+
+# Setup for my account on poole
+#vgaromimage: /home/daveho/local/bochs/1.2.1/VGABIOS-elpin-2.40
+#romimage: file=/home/daveho/local/bochs/1.2.1/BIOS-bochs-latest, address=0xf0000
+
+megs: 8
+boot: a
+diskc: file=hd.img, cyl=64, heads=4, spt=16
+diskd: file=diskd.img, cyl=40, heads=8, spt=64
+floppya: 1_44=fd.img, status=inserted
+log: ./bochs.out
+keyboard_serial_delay: 200
+floppy_command_delay: 500
+vga_update_interval: 300000
+ips:  1000000
+mouse: enabled=0
+private_colormap: enabled=0
+i440fxsupport: enabled=0
+newharddrivesupport: enabled=1
+
+# Bochs panics when an empty stack is popped; i.e., esp == limit.
+# Since buggy user processes may do this. we don't want bochs to exit.
+panic: action=report

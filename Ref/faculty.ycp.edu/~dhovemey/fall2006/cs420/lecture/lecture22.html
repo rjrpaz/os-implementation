@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Lecture 22</title>
+</head>
+<body>
+<h1>CS 420 - Lecture 22<br>
+</h1>
+<h2>Filesystem Implementation (continued)<br>
+</h2>
+<h3><span style="font-family: sans-serif;">Indexed Allocation<br>
+</span></h3>
+<p><span style="font-family: sans-serif;">Most OSes use indexed
+allocation.&nbsp; Issues with indexed allocation:<br>
+</span></p>
+<p style="margin-left: 40px;"><span style="font-family: sans-serif;">A
+single index block probably won't have enough entries to allow very
+large files to created.&nbsp; This problem can be solved by making some
+of the entries in the index block indirect.&nbsp; An indirect entry in
+an index block contains the block number of another index block rather
+than a data block.&nbsp; (This is pretty much the same idea as
+multi-level page tables.)&nbsp; Indirect blocks can be single-indirect,
+double indirect, triple indirect, etc.&nbsp; By using indirect blocks a
+filesystem can store very large files (terabytes or more of data).<br>
+</span></p>
+<p style="margin-left: 40px;"><span style="font-family: sans-serif;"><img
+ alt="" src="figures/indexedStorageAllocation.png" style="width: 60%;"><br>
+</span></p>
+<h3><span style="font-family: sans-serif;">Clustering<br>
+</span></h3>
+<p><span style="font-family: sans-serif;">On many block devices, the
+blocks are quite small.&nbsp; For example, hard drives generally use
+512 bytes as the block size.&nbsp; (Note that hard disks often refer to
+a block as a "sector".)<br>
+</span></p>
+<p><span style="font-family: sans-serif;">Rather than allocating
+storage on a block device at the granularity of individual blocks, most
+filesystems allocate <span style="font-style: italic;">clusters</span>
+of blocks.&nbsp; A typical cluster might contain 4KB or 8KB of disk
+blocks.&nbsp; Clustering improves performance because more data can be
+located with a single disk seek.&nbsp; A disadvantage is internal
+fragmentation: small files might occupy an entire cluster while using
+only a small part of it.<br>
+</span></p>
+<h3><span style="font-family: sans-serif;">Free Space Management<br>
+</span></h3>
+<p><span style="font-family: sans-serif;">Another important task that
+must be handled by a filesystem implementation is keeping track of
+which disk blocks are available to be allocated, and which are in-use.<br>
+</span></p>
+<p><span style="font-family: sans-serif;">Bitmap:<br>
+</span></p>
+<p style="margin-left: 40px;"><span style="font-family: sans-serif;">A
+simple scheme is to use a <span style="font-style: italic;">bitmap</span>.&nbsp;
+A bitmap is an array of bits: the index of each bit corresponds to one
+disk block.&nbsp; A 0 in the bitmap indicates that the corresponding
+block is available, while a 1 indicates that the block is in-use.<br>
+</span></p>
+<p style="margin-left: 40px;"><span style="font-family: sans-serif;">When
+the filesystem needs to allocate a block to a file or directory, it
+checks the bitmap.&nbsp; The first available block is marked as in-use
+and its block number is returned.<br>
+</span></p>
+<p style="margin-left: 40px;"><span style="font-family: sans-serif;">Freeing
+a block (e.g., when a file is deleted) simply sets the block's bit in
+the bitmap back to 0.<br>
+</span></p>
+<p style="margin-left: 40px;"><span style="font-family: sans-serif;">The
+bitmap will generally be kept in memory so that it can be quickly
+accessed.<br>
+</span></p>
+<p><span style="font-family: sans-serif;">Linked list (freelist):<br>
+</span></p>
+<p style="margin-left: 40px;"><span style="font-family: sans-serif;">The
+free blocks (or clusters) can be arranged in a linked list.&nbsp;
+Simple.<br>
+</span></p>
+<h2><span style="font-family: sans-serif;">Filesystem Performance and
+Buffering<br>
+</span></h2>
+<p><span style="font-family: sans-serif;">If every read or write to a
+file required disk access, it would be extremely slow.&nbsp; The OS
+kernel speeds up disk I/O by caching recently-used data in memory.<br>
+</span></p>
+<h3><span style="font-family: sans-serif;">Virtual Memory and
+Filesystem Buffer Unification<br>
+</span></h3>
+<p><span style="font-family: sans-serif;">Recall that we have spoken of
+files as being VM objects (persistent data stores that can be mapped
+into process virtual address spaces).<br>
+</span></p>
+<p><span style="font-family: sans-serif;">In operating systems that
+were developed before virtual memory was a common hardware feature,
+support for memory-mapped file I/O was "bolted on" in the following
+manner:<br>
+</span></p>
+<p style="margin-left: 40px;"><span style="font-family: sans-serif;"><img
+ alt="" src="figures/separateCache.png" style="width: 40%;"><br>
+</span></p>
+<p><span style="font-family: sans-serif;">Because the disk buffer cache
+and the virtual memory page cache were separated, data had to be copied
+between them to support memory-mapped disk I/O.<br>
+</span></p>
+<p><span style="font-family: sans-serif;">In a unified VM and disk
+buffer cache, the memory used to cache file data is directly mapped
+into virtual memory, eliminating unnecessary copying.<br>
+</span></p>
+<p><span style="font-family: sans-serif;"><img alt=""
+ src="figures/unifiedCache.png" style="width: 40%;"></span></p>
+<p><span style="font-family: sans-serif;"></span></p>
+<h2>Mass Storage, RAID<br>
+</h2>
+<p>See <a href="lecture22slides.pdf">presentation slides</a>.<br>
+</p>
+<span style="font-family: sans-serif;"></span>
+</body>
+</html>

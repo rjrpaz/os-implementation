@@ -1,0 +1,127 @@
+<HTML>
+
+<HEAD>
+
+<TITLE>412--East West Bridge Problem</TITLE>
+
+</HEAD>
+
+<BODY>
+
+<H1>East-West Bridge Problem</H1>
+
+<h2>
+Problem
+</h2>
+   There is a bridge which is aligned along the east-west direction.   This
+bridge is too narrow to allow cars to go in both directions.  Hence,
+cars must alternate going across the bridge.   The bridge is also
+not strong enough to hold more than three cars at a time.   Find 
+a solution to this problem which does not cause starvation.  That
+is, cars that want to get across should eventually get across.
+However, we want to maximize use of the bridge.  Cars
+should travel across to the maximum capacity of the bridge (that
+is, three cars should go at one time).   If a car leaves the bridge
+going east and there are no westbound cars, then the next eastbound
+car should be allowed to cross.  We don't want a solution which
+moves cars across the bridge three at a time, i.e., eastbound
+cars that are waiting should not wait until all three cars that
+are eastboung and crossing the bridge have crossed before
+being permitted to cross.
+
+<h2>
+Solution
+</h2>
+  I believe this problem can be recast as a multiple readers
+writers problem.   Here's how it works.  Intuitively, if you
+are a reader coming to the room, and you see writers in the 
+room, you sit on the bench (if you are an eastbound car, and
+westbound cars are going across, you wait).   If you are a reader, 
+and there are fewer than three readers, and there are no writers 
+waiting, you enter the room.   If you are a reader, and there 
+are already three readers, then you wait.   If you are reader, 
+and are exiting the room, then if there are no writers, but there 
+are readers waiting, you let a single reader in.   If there are 
+writers waiting, but you are not the last reader to leave, you 
+just leave.  If you are the last reader to leave, there should be 
+no waiting readers unless there are waiting writers.  In either 
+case, you let up to three writers into the room.
+<P>
+  The main difference between the multiple readers-multiple writers
+problem (the exam problem) is that at most three readers or writers
+can be in the room at the same time.   We still have the last reader
+potentially letting up to three writers in and vice versa.
+<P>
+  Below is code for the reader processes.   The writer process
+is analogous.   Just replace "r" for "w" and vice-versa.  As
+a reminder, <tt>r_active</tt> is the number of active readers
+(readers in critical section, <tt>r_waiting</tt> is the
+number of readers waiting to go into the critical section.
+<tt>r_sem</tt> is the semaphore that waiting readers sleep
+on.   The writers have analogous variables. <tt>lock</tt> is 
+a mutex semaphore used by both readers and writers.  
+
+<PRE>
+ 1   P( lock ); // lock is a mutex and is initializes to 1.
+ 2   if (( nw_active + nw_waiting == 0 ) && ( nr_active < 3 ))
+ 3     {
+ 4        nr_active++; // Notify we are active
+ 5        V( r_sem );  // Allow ourself to get through
+ 6     }
+ 7   else
+ 8     nr_waiting++;  // We are waiting
+ 9   V( lock );
+10   P( r_sem );  // Readers will wait here, if they must wait.
+11
+12   READING...
+13
+14   P( lock );
+15   nr_active--;
+16   if (( nr_active == 0 ) && ( nw_waiting > 0 )) 
+17     { // If we are the last reader
+18        count = 0;  // Makes sure we only at most 3 writers in
+19        while (( nw_waiting > 0 ) && ( count < 3 ))  
+20        {
+21           V( w_sem );  // wake a writer;
+22           w_active++;  // one more active writer
+23           w_waiting--; // one less waiting writer.
+24           count++;     
+25        }
+26      }
+27    else if (( nw_waiting == 0 ) && ( nr_waiting > 0 ))
+28      {  // allow another waiting reader to go in, if no waiting writers
+29        V( r_sem );
+30        w_active++;  // one more active reader
+31        w_waiting--; // one less waiting reader.          
+32      }
+33    V( lock );
+</PRE>
+
+
+     Some invariants that hold:
+<UL>
+  <LI>   Safety conditions:  Readers and writers can not be active at
+               the same time.
+  <UL>
+  <LI> <tt>     nr_active <= 3  </tt>
+  <LI> <tt>     nw_active <= 3  </tt>
+  <LI> <tt>     nr_active > 0 -> nw_active == 0  </tt>
+  <LI> <tt>     nw_active > 0 -> nr_active == 0  </tt>
+  </UL>
+
+  <LI>    Other conditions.
+  <UL>
+  <LI> <tt>     nr_active > 0 & nr_waiting > 0 -> nw_waiting > 0 </tt>
+  <LI> <tt>     nw_active > 0 & nw_waiting > 0 -> nr_waiting > 0 </tt>
+  </UL>
+
+</UL>
+
+   In case you are interested, this problem was on a grad level
+Ph.D. exam.   There is a certain lack of realism here.   When the
+three cars are going across, this implementation doesn't really
+force the first process that enters the bridge to complete first.
+I.e., if we have three cars, A, B, and C, and they enter in that
+order, they will also leave in that order.   The above basically
+lets three in, and they can leave in any order.
+</HTML>

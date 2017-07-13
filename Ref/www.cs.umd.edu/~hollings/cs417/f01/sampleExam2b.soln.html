@@ -1,0 +1,682 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns:dt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./sampleExam2b.soln_files/filelist.xml">
+<title>CMSC 417 (Fall 1997) Exam #2 - Solutions</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Jeff Hollingsworth</o:Author>
+  <o:LastAuthor>hollings</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>2</o:TotalTime>
+  <o:Created>2001-11-05T18:13:00Z</o:Created>
+  <o:LastSaved>2001-11-05T18:13:00Z</o:LastSaved>
+  <o:Pages>1</o:Pages>
+  <o:Words>795</o:Words>
+  <o:Characters>4536</o:Characters>
+  <o:Company>University of Maryland</o:Company>
+  <o:Bytes>7401</o:Bytes>
+  <o:Lines>37</o:Lines>
+  <o:Paragraphs>9</o:Paragraphs>
+  <o:CharactersWithSpaces>5570</o:CharactersWithSpaces>
+  <o:Version>9.2720</o:Version>
+ </o:DocumentProperties>
+ <o:CustomDocumentProperties>
+  <o:Generator dt:dt="string">Microsoft Word 97</o:Generator>
+ </o:CustomDocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:DoNotHyphenateCaps/>
+  <w:DrawingGridHorizontalSpacing>0 pt</w:DrawingGridHorizontalSpacing>
+  <w:DrawingGridVerticalSpacing>0 pt</w:DrawingGridVerticalSpacing>
+  <w:DisplayHorizontalDrawingGridEvery>0</w:DisplayHorizontalDrawingGridEvery>
+  <w:DisplayVerticalDrawingGridEvery>0</w:DisplayVerticalDrawingGridEvery>
+  <w:UseMarginsForDrawingGridOrigin/>
+  <w:DrawingGridHorizontalOrigin>0 pt</w:DrawingGridHorizontalOrigin>
+  <w:DrawingGridVerticalOrigin>0 pt</w:DrawingGridVerticalOrigin>
+  <w:DoNotShadeFormData/>
+  <w:Compatibility>
+   <w:FootnoteLayoutLikeWW8/>
+   <w:ShapeLayoutLikeWW8/>
+   <w:AlignTablesRowByRow/>
+   <w:ForgetLastTabAlignment/>
+   <w:LayoutRawTableWidth/>
+   <w:LayoutTableRowsApart/>
+  </w:Compatibility>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin-top:5.0pt;
+	margin-right:0in;
+	margin-bottom:5.0pt;
+	margin-left:0in;
+	mso-pagination:none;
+	font-size:12.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	layout-grid-mode:line;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+strong
+	{mso-bidi-font-weight:normal;}
+em
+	{mso-bidi-font-style:normal;}
+p.DefinitionTerm, li.DefinitionTerm, div.DefinitionTerm
+	{mso-style-name:"Definition Term";
+	mso-style-next:"Definition List";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:none;
+	font-size:12.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	layout-grid-mode:line;}
+p.DefinitionList, li.DefinitionList, div.DefinitionList
+	{mso-style-name:"Definition List";
+	mso-style-next:"Definition Term";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.25in;
+	margin-bottom:.0001pt;
+	mso-pagination:none;
+	font-size:12.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	layout-grid-mode:line;}
+span.Definition
+	{mso-style-name:Definition;
+	mso-style-parent:"";
+	font-style:italic;}
+p.H1, li.H1, div.H1
+	{mso-style-name:H1;
+	mso-style-next:Normal;
+	margin-top:5.0pt;
+	margin-right:0in;
+	margin-bottom:5.0pt;
+	margin-left:0in;
+	mso-pagination:none;
+	page-break-after:avoid;
+	mso-outline-level:2;
+	font-size:24.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	mso-font-kerning:18.0pt;
+	layout-grid-mode:line;
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.H2, li.H2, div.H2
+	{mso-style-name:H2;
+	mso-style-next:Normal;
+	margin-top:5.0pt;
+	margin-right:0in;
+	margin-bottom:5.0pt;
+	margin-left:0in;
+	mso-pagination:none;
+	page-break-after:avoid;
+	mso-outline-level:3;
+	font-size:18.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	layout-grid-mode:line;
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.H3, li.H3, div.H3
+	{mso-style-name:H3;
+	mso-style-next:Normal;
+	margin-top:5.0pt;
+	margin-right:0in;
+	margin-bottom:5.0pt;
+	margin-left:0in;
+	mso-pagination:none;
+	page-break-after:avoid;
+	mso-outline-level:4;
+	font-size:14.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	layout-grid-mode:line;
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.H4, li.H4, div.H4
+	{mso-style-name:H4;
+	mso-style-next:Normal;
+	margin-top:5.0pt;
+	margin-right:0in;
+	margin-bottom:5.0pt;
+	margin-left:0in;
+	mso-pagination:none;
+	page-break-after:avoid;
+	mso-outline-level:5;
+	font-size:12.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	layout-grid-mode:line;
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.H5, li.H5, div.H5
+	{mso-style-name:H5;
+	mso-style-next:Normal;
+	margin-top:5.0pt;
+	margin-right:0in;
+	margin-bottom:5.0pt;
+	margin-left:0in;
+	mso-pagination:none;
+	page-break-after:avoid;
+	mso-outline-level:6;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	layout-grid-mode:line;
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.H6, li.H6, div.H6
+	{mso-style-name:H6;
+	mso-style-next:Normal;
+	margin-top:5.0pt;
+	margin-right:0in;
+	margin-bottom:5.0pt;
+	margin-left:0in;
+	mso-pagination:none;
+	page-break-after:avoid;
+	mso-outline-level:7;
+	font-size:8.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	layout-grid-mode:line;
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+p.Address, li.Address, div.Address
+	{mso-style-name:Address;
+	mso-style-next:Normal;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:none;
+	font-size:12.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	layout-grid-mode:line;
+	font-style:italic;
+	mso-bidi-font-style:normal;}
+p.Blockquote, li.Blockquote, div.Blockquote
+	{mso-style-name:Blockquote;
+	margin-top:5.0pt;
+	margin-right:.25in;
+	margin-bottom:5.0pt;
+	margin-left:.25in;
+	mso-pagination:none;
+	font-size:12.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	layout-grid-mode:line;}
+span.CITE
+	{mso-style-name:CITE;
+	mso-style-parent:"";
+	font-style:italic;}
+span.CODE
+	{mso-style-name:CODE;
+	mso-style-parent:"";
+	mso-ansi-font-size:10.0pt;
+	mso-ascii-font-family:"Courier New";
+	mso-hansi-font-family:"Courier New";}
+span.Keyboard
+	{mso-style-name:Keyboard;
+	mso-style-parent:"";
+	mso-ansi-font-size:10.0pt;
+	mso-ascii-font-family:"Courier New";
+	mso-hansi-font-family:"Courier New";
+	font-weight:bold;}
+p.Preformatted, li.Preformatted, div.Preformatted
+	{mso-style-name:Preformatted;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:none;
+	tab-stops:0in 47.95pt 95.9pt 143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt 479.5pt;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	layout-grid-mode:line;}
+span.Sample
+	{mso-style-name:Sample;
+	mso-style-parent:"";
+	mso-ascii-font-family:"Courier New";
+	mso-hansi-font-family:"Courier New";}
+span.Typewriter
+	{mso-style-name:Typewriter;
+	mso-style-parent:"";
+	mso-ansi-font-size:10.0pt;
+	mso-ascii-font-family:"Courier New";
+	mso-hansi-font-family:"Courier New";}
+span.Variable
+	{mso-style-name:Variable;
+	mso-style-parent:"";
+	font-style:italic;}
+span.HTMLMarkup
+	{mso-style-name:"HTML Markup";
+	mso-style-parent:"";
+	color:red;
+	display:none;
+	mso-hide:all;}
+span.Comment
+	{mso-style-name:Comment;
+	mso-style-parent:"";
+	display:none;
+	mso-hide:all;}
+ /* Page Definitions */
+@page
+	{mso-page-border-surround-header:no;
+	mso-page-border-surround-footer:no;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;
+	mso-header-margin:1.0in;
+	mso-footer-margin:1.0in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+@list l0
+	{mso-list-id:1;
+	mso-list-template-ids:0;}
+@list l0:level1
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level2
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level3
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level4
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level5
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level6
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level7
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level8
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level9
+	{mso-level-start-at:0;
+	mso-level-text:"";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:0in;
+	text-indent:0in;}
+@list l1
+	{mso-list-id:2;
+	mso-list-template-ids:0;}
+@list l1:level1
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1:level2
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1:level3
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1:level4
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1:level5
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1:level6
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1:level7
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1:level8
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1:level9
+	{mso-level-start-at:0;
+	mso-level-text:"";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:0in;
+	text-indent:0in;}
+@list l1:level2 lfo2
+	{mso-level-start-at:73700932;}
+@list l1:level2 lfo2
+	{mso-level-number-format:alpha-lower;
+	mso-level-numbering:continue;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:0in;
+	text-indent:0in;}
+@list l1:level2 lfo3
+	{mso-level-start-at:73701056;}
+@list l1:level2 lfo3
+	{mso-level-number-format:alpha-lower;
+	mso-level-numbering:continue;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:0in;
+	text-indent:0in;}
+@list l1:level2 lfo4
+	{mso-level-start-at:73701180;}
+@list l1:level2 lfo4
+	{mso-level-number-format:alpha-lower;
+	mso-level-numbering:continue;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:0in;
+	text-indent:0in;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+<!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="2050"/>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout></xml><![endif]-->
+</head>
+
+<body lang=EN-US link=blue vlink=purple style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<p class=MsoNormal align=center style='text-align:center'><b style='mso-bidi-font-weight:
+normal'><span style='font-size:18.0pt;mso-bidi-font-size:10.0pt'>CMSC 417
+Midterm #2 (Fall 1997)- Solutions<o:p></o:p></span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b style='mso-bidi-font-weight:
+normal'><span style='font-size:18.0pt;mso-bidi-font-size:10.0pt'>&nbsp;<o:p></o:p></span></b></p>
+
+<ol style='margin-top:0in' start=1 type=1>
+ <li class=MsoNormal style='text-align:justify;mso-outline-level:1;mso-list:
+     l1 level1 lfo1;tab-stops:list .5in'><span style='font-size:10.0pt;
+     font-family:Arial;mso-bidi-font-family:"Times New Roman"'>(15 points)
+     Define <b style='mso-bidi-font-weight:normal'>and</b> explain the
+     following terms:<o:p></o:p></span></li>
+</ol>
+
+<ol style='margin-top:0in' start=1 type=1>
+ <ol style='margin-top:0in' start=1 type=1>
+  <li class=MsoNormal style='mso-outline-level:2;mso-list:l1 level2 lfo2;
+      tab-stops:list 1.0in'><span style='font-size:10.0pt;font-family:Arial;
+      mso-bidi-font-family:"Times New Roman"'>forbidden region<o:p></o:p></span></li>
+ </ol>
+</ol>
+
+<p class=MsoNormal style='margin-left:1.0in;mso-outline-level:2'><i
+style='mso-bidi-font-style:normal'><span style='font-size:10.0pt'>Values of a
+packet sequence numbers that are not permitted since it is impossible to
+distinguish a new packet from and old one. (3 points)<o:p></o:p></span></i></p>
+
+<ol style='margin-top:0in' start=1 type=1>
+ <ol style='margin-top:0in' start=2 type=1>
+  <li class=MsoNormal style='mso-outline-level:2;mso-list:l1 level2 lfo2;
+      tab-stops:list 1.0in'><span style='font-size:10.0pt;font-family:Arial;
+      mso-bidi-font-family:"Times New Roman"'>TSAP<o:p></o:p></span></li>
+ </ol>
+</ol>
+
+<p class=MsoNormal style='margin-left:1.0in;mso-outline-level:2'><i
+style='mso-bidi-font-style:normal'><span style='font-size:10.0pt'>Transport
+service access point. A end-point for communication at the transport layer.
+This is generally specified with a host name and port. (3 points)<o:p></o:p></span></i></p>
+
+<ol style='margin-top:0in' start=1 type=1>
+ <ol style='margin-top:0in' start=3 type=1>
+  <li class=MsoNormal style='mso-outline-level:2;mso-list:l1 level2 lfo2;
+      tab-stops:list 1.0in'><span style='font-size:10.0pt;font-family:Arial;
+      mso-bidi-font-family:"Times New Roman"'>two army problem<o:p></o:p></span></li>
+ </ol>
+</ol>
+
+<p class=MsoNormal style='margin-left:1.0in;mso-outline-level:2'><i
+style='mso-bidi-font-style:normal'><span style='font-size:10.0pt'>The problem
+that two generals can’t agree when to attack over a channel that looses messages.
+This is analogous to the problem of having two parties agree to shutdown a
+transport level connection. (3 points)<o:p></o:p></span></i></p>
+
+<ol style='margin-top:0in' start=1 type=1>
+ <ol style='margin-top:0in' start=4 type=1>
+  <li class=MsoNormal style='mso-outline-level:2;mso-list:l1 level2 lfo2;
+      tab-stops:list 1.0in'><span style='font-size:10.0pt;font-family:Arial;
+      mso-bidi-font-family:"Times New Roman"'>CIDR<o:p></o:p></span></li>
+ </ol>
+</ol>
+
+<p class=MsoNormal style='margin-left:1.0in;mso-outline-level:2'><i
+style='mso-bidi-font-style:normal'><span style='font-size:10.0pt'>Classless
+Inter-Domain Routing: A replacement for the class A,B,C networks used on the
+Internet. It is designed to reduce routing table size and internal
+fragmentation of the IP address space. (3 points)<o:p></o:p></span></i></p>
+
+<ol style='margin-top:0in' start=1 type=1>
+ <ol style='margin-top:0in' start=5 type=1>
+  <li class=MsoNormal style='mso-outline-level:2;mso-list:l1 level2 lfo2;
+      tab-stops:list 1.0in'><span style='font-size:10.0pt;font-family:Arial;
+      mso-bidi-font-family:"Times New Roman"'>Exponential average<o:p></o:p></span></li>
+ </ol>
+</ol>
+
+<p class=MsoNormal style='margin-left:1.0in;mso-outline-level:1'><i
+style='mso-bidi-font-style:normal'><span style='font-size:10.0pt'>A way to
+combine multiple samples that assigns a greater weight to recent values than
+older ones. Avg = </span></i><i style='mso-bidi-font-style:normal'><span
+style='font-size:10.0pt;font-family:Symbol'>a</span></i><i style='mso-bidi-font-style:
+normal'><span style='font-size:10.0pt'> Sample + (1- </span></i><i
+style='mso-bidi-font-style:normal'><span style='font-size:10.0pt;font-family:
+Symbol'>a</span></i><i style='mso-bidi-font-style:normal'><span
+style='font-size:10.0pt'> ) Avg (3 points)<o:p></o:p></span></i></p>
+
+<ol style='margin-top:0in' start=2 type=1>
+ <li class=MsoNormal style='text-align:justify;mso-outline-level:1;mso-list:
+     l1 level1 lfo1;tab-stops:list .5in'><span style='font-size:10.0pt;
+     font-family:Arial;mso-bidi-font-family:"Times New Roman"'>(12 points) An
+     alternative to having a separate timer thread for a packet level
+     re-transmission timeouts is to have each connection thread call the UNIX
+     sleep function (which suspends a thread for a specified amount of time)
+     whenever the thread needs a time-based pause. Why would using sleep make
+     it more difficult to process ACK packets?<o:p></o:p></span></li>
+</ol>
+
+<p class=MsoNormal style='margin-left:.5in;mso-outline-level:1'><i
+style='mso-bidi-font-style:normal'><span style='font-size:10.0pt'>The problem
+is that sleep is a blocking call, and it would be difficult to wakeup a
+sleeping process when the ack arrives. It is a specific instance of the problem
+that is experienced when trying to have a thread wait on the OR of two or more
+conditions.<o:p></o:p></span></i></p>
+
+<ol style='margin-top:0in' start=3 type=1>
+ <li class=MsoNormal style='text-align:justify;mso-outline-level:1;mso-list:
+     l1 level1 lfo1;tab-stops:list .5in'><span style='font-size:10.0pt;
+     font-family:Arial;mso-bidi-font-family:"Times New Roman"'>(20 points)
+     Connection Management<o:p></o:p></span></li>
+</ol>
+
+<ol style='margin-top:0in' start=3 type=1>
+ <ol style='margin-top:0in' start=1 type=1>
+  <li class=MsoNormal style='mso-outline-level:2;mso-list:l1 level2 lfo3;
+      tab-stops:list 1.0in'><span style='font-size:10.0pt;font-family:Arial;
+      mso-bidi-font-family:"Times New Roman"'>Explain why using a timestamp as
+      an initial sequence number for a three-way handshake and then incrementing
+      the sequence number with each packet limits the number of connections per
+      unit time, but not the number of bytes/sec. <o:p></o:p></span></li>
+ </ol>
+</ol>
+
+<p class=MsoNormal style='margin-left:1.0in;mso-outline-level:2'><i
+style='mso-bidi-font-style:normal'><span style='font-size:10.0pt'>The initial
+time stamp is used in the connect request and connect ack packets. Once the
+initial sequence number has been agreed upo,. it can’t be re-used until the
+maximum lifetime of the packet on the network has been exceeded to prevent a
+stale packet form being confused with a new one. However, once the connection
+is established, any sequence number can be used for each packet as long as the
+sequence number is not repeated within the maximum lifetime of a packet. (10
+points)<o:p></o:p></span></i></p>
+
+<ol style='margin-top:0in' start=3 type=1>
+ <ol style='margin-top:0in' start=2 type=1>
+  <li class=MsoNormal style='mso-outline-level:2;mso-list:l1 level2 lfo3;
+      tab-stops:list 1.0in'><span style='font-size:10.0pt;font-family:Arial;
+      mso-bidi-font-family:"Times New Roman"'>Why should the tick rate of the
+      clock from part a be neither too fast nor too slow.<o:p></o:p></span></li>
+ </ol>
+</ol>
+
+<p class=MsoNormal style='margin-left:1.0in;mso-outline-level:1'><i
+style='mso-bidi-font-style:normal'><span style='font-size:10.0pt'>If the tick
+rate is too fast, it will role over before the maximum packet lifetime and
+could cause an old connection request to be confused with a current one. If it
+is too slow, it will limit the rate at which connections can be made (10
+points)<o:p></o:p></span></i></p>
+
+<ol style='margin-top:0in' start=4 type=1>
+ <li class=MsoNormal style='text-align:justify;mso-outline-level:1;mso-list:
+     l1 level1 lfo1;tab-stops:list .5in'><span style='font-size:10.0pt;
+     font-family:Arial;mso-bidi-font-family:"Times New Roman"'>(18 points)
+     Bandwidth is growing faster than latency (and we are getting very close to
+     speed of light latencies for some networks). Describe two specific changes
+     that have either been made, or will likely be required to adapt existing
+     networking systems to accommodate this trend. <o:p></o:p></span></li>
+</ol>
+
+<p class=MsoNormal style='margin-left:.5in;mso-outline-level:1'><i
+style='mso-bidi-font-style:normal'><span style='font-size:10.0pt'>To
+efficiently use the network, a protocol must be able to have a window size at
+least as large as the end-to-end delay bandwidth product. The TCP option to
+shift the bits of the window size to permit more outstanding bytes is one way
+to meet this need. (9 points)<o:p></o:p></span></i></p>
+
+<p class=MsoNormal style='margin-left:.5in;mso-outline-level:1'><i
+style='mso-bidi-font-style:normal'><span style='font-size:10.0pt'>Since more
+data can be transferred in the same roundtrip time, making requests and
+responses larger can reduce the apparent latency of a message. For example, a
+directory protocol could request the contents of the entire directory rather
+than one file at a time. (9 points)<o:p></o:p></span></i></p>
+
+<ol style='margin-top:0in' start=5 type=1>
+ <li class=MsoNormal style='text-align:justify;mso-outline-level:1;mso-list:
+     l1 level1 lfo1;tab-stops:list .5in'><span style='font-size:10.0pt;
+     font-family:Arial;mso-bidi-font-family:"Times New Roman"'>(20 points)
+     Traffic Shaping <o:p></o:p></span></li>
+</ol>
+
+<ol style='margin-top:0in' start=5 type=1>
+ <ol style='margin-top:0in' start=1 type=1>
+  <li class=MsoNormal style='mso-outline-level:2;mso-list:l1 level2 lfo4;
+      tab-stops:list 1.0in'><span style='font-size:10.0pt;font-family:Arial;
+      mso-bidi-font-family:"Times New Roman"'>Token bucket and leaky bucket are
+      ways to limit traffic data rates. Explain how they are different in terms
+      of their ability to permit bursts onto the network, and ensure the
+      average data rate. <o:p></o:p></span></li>
+ </ol>
+</ol>
+
+<p class=MsoNormal style='margin-left:1.0in;mso-outline-level:2'><i
+style='mso-bidi-font-style:normal'><span style='font-size:10.0pt'>Leaky bucket
+permits a network device to accept a large burst of data and then slowly
+transmit it onto the network. A token bucket permits the burst to go directly
+onto the network (if there are tokens available). Either approach will ensure
+that the average traffic rate will be maintained. (108 points)<o:p></o:p></span></i></p>
+
+<ol style='margin-top:0in' start=5 type=1>
+ <ol style='margin-top:0in' start=2 type=1>
+  <li class=MsoNormal style='mso-outline-level:2;mso-list:l1 level2 lfo4;
+      tab-stops:list 1.0in'><span style='font-size:10.0pt;font-family:Arial;
+      mso-bidi-font-family:"Times New Roman"'>Traffic shaping can be performed
+      on a per connection or per host basis, give one example where you would
+      want to do it each way.<o:p></o:p></span></li>
+ </ol>
+</ol>
+
+<p class=MsoNormal style='margin-left:1.0in;mso-outline-level:1'><i
+style='mso-bidi-font-style:normal'><span style='font-size:10.0pt'>Per
+connection traffic shaping is useful when there are several different classes
+of traffic using the same link and hosts. By performing shaping on a per
+connection basis, applications with different (even conflicting) resource
+requirements can be accommodated. (5 points)<o:p></o:p></span></i></p>
+
+<p class=MsoNormal style='margin-left:1.0in;mso-outline-level:1'><i
+style='mso-bidi-font-style:normal'><span style='font-size:10.0pt'>Per host
+traffic shaping is useful when two connections represent traffic that must
+travel over the same resource constrained link. By shaping the traffic as a
+unit, we can ensure that the capacity of the single link is not exceeded. (5
+points)<o:p></o:p></span></i></p>
+
+<ol style='margin-top:0in' start=6 type=1>
+ <li class=MsoNormal style='text-align:justify;mso-outline-level:1;mso-list:
+     l1 level1 lfo1;tab-stops:list .5in'><span style='font-size:10.0pt;
+     font-family:Arial;mso-bidi-font-family:"Times New Roman"'>(15 points) <i
+     style='mso-bidi-font-style:normal'>go-back-n</i> and <i style='mso-bidi-font-style:
+     normal'>selective-repeat</i> are retransmission strategies used with
+     sliding window protocols. Describe and discuss the relative advantages of
+     each. How does using one or the other change the requirements for buffers
+     in the sending and receiving windows?<o:p></o:p></span></li>
+</ol>
+
+<p class=MsoNormal style='margin-left:.5in'><i style='mso-bidi-font-style:normal'><span
+style='font-size:10.0pt'>Selective-repeat is good for communication channels
+with high probability of packet corruption or loss since it conserves bandwidth
+by only re-transmitting the damaged packet. Go-back-n is useful for more
+reliable links since it permits the receiver side to have only one buffer since
+all packets will arrive in order even after a loss. Go-back-n has less
+efficient utilization of link bandwidth since packets that were received
+correctly may still need to be re-transmitted. With go-back-n, packets will
+arrive in-order so the receive window is reduced to one.<o:p></o:p></span></i></p>
+
+</div>
+
+</body>
+
+</html>

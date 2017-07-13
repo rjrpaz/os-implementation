@@ -1,0 +1,5 @@
+10.00 Probability of discarding a signalling or data cell 
+12.00 Probability of corrupting a signalling or data cell 
+0.00 Probability of dropping an AAL7 trailer cell 
+0.00 Probability of dropping a routing cell 
+0.00 Probability of corrupting a routing cell 

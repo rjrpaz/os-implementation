@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Lecture 3</title>
+</head>
+<body>
+<h1>CS 420 - Lecture 3<br>
+</h1>
+<p>Goals: OS services.&nbsp; System calls.<br>
+</p>
+<h2>OS Services<br>
+</h2>
+<p>Services provided by the OS to the user (Silberschatz, pg. 40).<br>
+</p>
+<p>User-oriented services:<br>
+</p>
+<ol>
+  <li>User interface</li>
+  <li>Program execution</li>
+  <li>I/O operations</li>
+  <li>File-system manipulation</li>
+  <li>Communications</li>
+  <li>Error detection<br>
+  </li>
+</ol>
+<p>System-oriented services:<br>
+</p>
+<ol>
+  <li>Resource allocation</li>
+  <li>Accounting</li>
+  <li>Protection and security</li>
+</ol>
+<h3>User Services<br>
+</h3>
+<p>For each category, ask for suggestions of specific services.<span
+ style="font-weight: bold;"><br>
+</span></p>
+<p><span style="font-weight: bold;">User interface</span>: mechanisms
+by which user (human) interacts with the computer and prorgrams running
+on the computer.&nbsp; Examples:<br>
+</p>
+<ol>
+  <li>Terminal/command line</li>
+  <li>Windows/GUI</li>
+  <li>Web server</li>
+</ol>
+<p><span style="font-weight: bold;">Program execution</span>: execute
+programs (creating processes).&nbsp; The started process may be <span
+ style="font-style: italic;">interactive</span>, or could be run in <span
+ style="font-style: italic;">batch mode</span>.<br>
+</p>
+<p><span style="font-weight: bold;">I/O</span>: allow processes to read
+input and write output to files and devices.<br>
+</p>
+<p style="margin-left: 40px;">Important: I/O polymorphism.&nbsp; A
+unified model by which processes may interact with devices and
+files.&nbsp; So, the same program can accept input from the keyboard, a
+file, a network connection, etc.<br>
+</p>
+<p><span style="font-weight: bold;">File-system manipulation</span>.&nbsp;
+Search for files and directories in a filesystem.&nbsp; Create and
+delete files.&nbsp; Format devices to create new filesystems on them.<br>
+</p>
+<p><span style="font-weight: bold;">Communications</span>: facilities
+to allow processes to communicate with other processes.&nbsp; (And by
+extension, users to communicate with other users.)<br>
+</p>
+<p style="margin-left: 40px;">Question: what are some OS services that
+allow processes to communicate with each other?<br>
+</p>
+<p><span style="font-weight: bold;">Error detection</span>: determine
+when attached devices are not operating correctly, and when a process
+cannot complete its task.<br>
+</p>
+<h3>System Services<br>
+</h3>
+<p>Resource allocation: [Question: what are some resources that the OS
+must allocate?]&nbsp; Memory, disk space, device access, etc.&nbsp; OS
+must allow resource allocation policies to be put into effect.<br>
+</p>
+<p>Accounting: keep track of important events, which users logged on,
+what resources they used.<br>
+</p>
+<p>Protection and security: make sure that the available resources are
+only used by authorized users.<br>
+</p>
+<h2>User Interfaces<br>
+</h2>
+<p>This is obviously an important category of service.&nbsp; Although,
+for an OS for a server or embedded system this may be less important.<br>
+</p>
+<p>Command Interpreter<br>
+</p>
+<p style="margin-left: 40px;">[Question: What are some examples of
+command interpreters?]&nbsp; bash, csh, cmd.exe, Monad shell, etc.<br>
+</p>
+<p>GUI<br>
+</p>
+<p>Window system: is this really part of the OS?&nbsp; Why or why not?<br>
+</p>
+<h2>System Calls and API Functions<br>
+</h2>
+<p>[Question: what is a system call?]&nbsp; Have talked about these
+already.&nbsp; Also known as software interrupts (and on many CPUs that
+is literally how they are implemented).<br>
+</p>
+<p>System calls are how processes request services (e.g., I/O) from the
+OS kernel.&nbsp; Results in a transfer of control from the user process
+to the kernel.<br>
+</p>
+<p>Example: a program that copies data from one file to another.&nbsp;
+(E.g., Unix <span style="font-weight: bold;">cp</span> program,
+Windows <span style="font-weight: bold;">copy</span> command.)&nbsp;
+Requirements:<br>
+</p>
+<ul>
+  <li>Names of source and destination file (could read from keyboard,
+user could choose with mouse in GUI window, read from command line)<br>
+  </li>
+  <li>Access to named files on a filesystem.&nbsp; Create destination
+file if necessary.</li>
+  <li>Read data from and write data to named files.</li>
+  <li>Detect and report errors.</li>
+</ul>
+<p>System calls used (e.g., on Unix/Linux):<br>
+</p>
+<ul>
+  <li>open and/or create a file in the filesystem</li>
+  <li>read and write to read/write file data (and possibly prompt user
+for filenames)</li>
+  <li>exit to cause the program to terminate with an error code
+indicating success or failure<br>
+  </li>
+</ul>
+<p>Invoking a system call inherently processor and OS-specific.&nbsp;
+E.g., on Linux for x86 systems, put system call parameters in processor
+registers, issue <span style="font-weight: bold;">int 0x80</span>
+instruction.&nbsp; Return value will be in the eax register.<br>
+</p>
+<p>Most programs use <span style="font-weight: bold;">API</span>
+(Application Programming Interface) functions, which build higher-level
+functions on top of system calls.<br>
+</p>
+<p>Why use API functions?<br>
+</p>
+<ol>
+  <li>Portability: system call interface inherently processor-specific,
+also same API may be implemented by many operating systems<br>
+  </li>
+  <li>They are easier to use</li>
+</ol>
+<p>Examples of common APIs:<br>
+</p>
+<ul>
+  <li>ISO C, C99 (fopen, printf, scanf, fread, fwrite, etc.)</li>
+  <li>POSIX: a library of C functions, most of which simply invoke a
+system call --- implemented by Unix and similar (Linux) systems<br>
+  </li>
+  <li>Windows API: like POSIX, but for Windows systems</li>
+  <li>Java API, .NET API: functions that may be used by programs
+running on Java and .NET virtual machines<br>
+  </li>
+</ul>
+<p>Observations:<br>
+</p>
+<ul>
+  <li>POSIX is generally a very thin wrapper around the underlying
+system calls.</li>
+  <li>Win32 is a mix of very low level (system call wrappers) and high
+level (GUI, etc.) functions<br>
+  </li>
+  <li>The ISO C API is very basic: generally limited to file access.</li>
+  <li>Java and .NET APIs are very high-level and include functions for
+almost every conceivable function</li>
+</ul>
+<h3>How system calls work<br>
+</h3>
+<p>Generally, each system call has a wrapper function in a library that
+is available (linked by) every program on the system.<br>
+</p>
+<p>The wrapper function has 3 main tasks:<br>
+</p>
+<ol>
+  <li>Collect all of the parameters to the system call.&nbsp; E.g., the
+read system call to read data from a file.&nbsp; [Question: what are
+the parameters needed to invoke this system call?]&nbsp; These
+parameters are placed in CPU registers, or may be placed in a data
+structure whose address is placed in a CPU register.<br>
+  </li>
+  <li>Invoke the system call.&nbsp; Uses a special instruction that
+causes a trap to the operating system kernel.</li>
+  <li>When the kernel finishes processing the system call, it returns
+control to the process.&nbsp; The wrapper function finishes by getting
+the return code from the system call and returning it to the caller.</li>
+</ol>
+<p>Generally, each system call supported by the operating system is
+assigned a unique number.&nbsp; The system call number is an index into
+a table of system call handler functions inside the operating system
+kernel.&nbsp; Recall that a system call appears to the OS kernel like a
+hardware interrupt.&nbsp; The kernel has a system call interrupt
+handler whose task is to inspect the CPU registers (system call
+parameters) to find out which system call has been invoked, and then
+dispatch the system call to the appropriate handler function in the
+system call handler table.&nbsp; This is known as <span
+ style="font-style: italic;">demultiplexing</span> the system call.<br>
+</p>
+<p style="margin-left: 40px;"><img alt="System call table"
+ src="figures/syscallTable.png" style="width: 30%;"><br>
+</p>
+<p>An important issue in handling a system call is transferring between
+the process (user space) and the kernel (kernel space).&nbsp; E.g., the
+read system call requests that data from a file be copied into the
+process's memory.&nbsp; The read system call wrapper function in Unix
+looks like this:<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">int
+read(int fd, char *buf, size_t len);</span><br>
+</p>
+<p>The buf parameter contains the address of the memory buffer where
+the process would like the file data to be copied.<br>
+</p>
+<p>Question: what kind of checking must the kernel do on the system
+call parameters?&nbsp; What could happen if the kernel does not
+properly check the system call parameters?<br>
+</p>
+<p>Copying data into and out of the kernel's address space is known as
+copyin and copyout.&nbsp; These must be done with extreme care to avoid
+allowing a malicious process from accessing unauthorized data, or
+overwriting kernel data structures.<br>
+</p>
+<p style="margin-left: 40px;">E.g., a kernel data structure associated
+with each process describes what user account the process belongs
+to.&nbsp; Overwriting this kernel data structure could allow the
+process to masqurade under a different user account, thus expanding its
+privileges.&nbsp; E.g., copy the id of the admin account into this data
+structure.<br>
+</p>
+<p style="margin-left: 40px;"><img
+ alt="Interaction diagram of system call dispatch"
+ src="figures/syscallInteraction.png" style="width: 80%;"><br>
+</p>
+<h2>Types of system calls<br>
+</h2>
+<p>Generally, system calls exist to allow processes to request OS
+services.&nbsp; Therefore, one or more system calls generally exists
+for each OS service.<br>
+</p>
+<p>[Question: ask for examples of possible system calls in each
+category of service.]<br>
+</p>
+</body>
+</html>

@@ -1,0 +1,283 @@
+<HTML>
+<TITLE>CMSC 417 (Fall 1997)</TITLE>
+<BODY>
+<P>
+<CENTER>
+<H3>CMSC 417-0201 Midterm #1 solution (Fall 1997)</H3>
+<I> SOLUTION AND GRADING POLICY IN ITALICS </I>
+</CENTER>
+
+<P>
+1.) (12 points) Define or explain the following terms:
+<P>
+ATM cell
+<P>
+<I>
+The packet used in ATM.
+Has fixed size of 53 bytes, consisting of 5 byte header and 48 byte payload.
+</I>
+
+<P><I>GRADING. Need a reference to a "packet". A "block" is fine. </I>
+
+<P>
+virtual circuit vs. packet switched
+<P>
+<I>
+Virtual circuit the path in connection-oriented packet switching:
+the path is established by the connection request
+and all packets of the connection use that path.
+Packet-switched means the network transfers packets from source
+to destination by store-and-forward routing.
+The routing can be either along a virtual circuit,
+or each packet can be routed independently (datagram or connectionless).
+</I>
+
+<P><I> GRADING. A complete answer should include a reference to the
+difference in path organization. A correct description of each term
+(only) costs 1 point each. </I>
+
+<P>
+POTS
+<P>
+<I>
+Plain Old Telephone Service:
+the usual telephone dialing and voice (3Khz analog) service.
+</I>
+
+<P><I> GRADING. Any reference to the traditional telephone goes.</I>
+
+<P>
+Frequence Division Multiplexing
+<P>
+<I>
+Providing multiple channels on the same physical media (wired or wireless)
+by shifting the channels to distinct carrier frequencies
+separated by a sufficient gap to accomodate the signals on the channels.
+</I>
+
+<P><I> GRADING. A correct illustration (picture only) gets 1 point. A
+reference to "shifting" (only) gets 1 point. A vague reference to
+"assign frequency" (only) gets 1 point. </I>
+
+<P>
+2.) (18 points) Limits on information exchange.
+
+<P>
+a)
+If we wish to send 1,000 octets per second through a 800hz channel, what
+is the minimum signal to noise ratio in decibels?
+
+<P>
+<I>
+1000 octets per second is equivalent to 8000 kb/s.
+Shannon's result for a noisy channel states:
+<center>
+data rate = bandwidth * log<sub>2</sub>(1 + S/N)
+Thus 8000 = 800 log<sub>2</sub>(1+S/N). <br>
+Hence log<sub>2</sub>(1+S/N)=10. <br>
+Hence 1+S/N = 2**10=1024. <br>
+Hence S/N=1023, <br>
+which in decibels is 10*log<sub>10</sub>(1023), <br>
+or 10*log<sub>10</sub>(1000) approximately,
+which is 10*log<sub>10</sub>(10<sup>3</sup>). <br>
+Hence approx. 30 db. <br>
+</center>
+</I>
+
+<P><I> GRADING. Using Shannon's formula: 3 points. 
+Correct formula for dB: 3 points. 
+Octets are 8 bits: 3 points.
+Correctly plugged in values including taking the
+log<sub>10</sub>1023: 2 points. (The latter turned out to be a
+challenge.) Total 11 maximum. </I>
+
+<P>
+b)
+Explain why using additional bits per baud will not increase the
+maximum transmission rate through a channel with a fixed bandwidth and
+signal to noise ratio?
+<P>
+<I>
+Obviously, Shannon's result makes it clear that using additional bits
+per baud does not increase the data rate.
+The question is why.
+To increase the data rate by increasing the bits per baud,
+(1) we need more more signal levels in order to encode more bits per baud,
+and
+(2) we need to make sure that the bauds per second does not decrease.
+This means having more levels in the same time interval.
+But this is not possible because
+the bandwidth constrains the magnitude of a level change in a given
+interval of time,
+and the noise imposes a minimum distance between levels
+(otherwise the levels cannot be distinguished).
+</I>
+
+<P><I> GRADING. Reference to Shannon's rule (only) gets 3 points.
+Explanation why it does not depend on the "bits per baud" packing
+factor gets the rest. (Maximum 7). 
+
+<P>
+3.) (15 points)
+Layering: What is the difference between a protocol and a service interface?
+Explain your answer in terms of a the ISO seven layer model.
+<P>
+<I>
+<PRE>
+        | ^                       | ^
+        V |                       V |
+    -------------------------------------------  SERVICE
+        | ^                       | ^
+        V |                       V |
+      _____                      _____
+     |     |     PROTOCOL       |     |
+     |     |  <------------->   |     |
+     |_____|                    |_____|
+        | ^                       | ^
+        V |                       V |
+    -------------------------------------------  SERVICE
+        | ^                       | ^
+        V |                       V |
+      _____                      _____
+     |     |                    |     |
+     |     |     PROTOCOL       |     |
+     |_____|                    |_____|
+        | ^                       | ^
+        V |                       V |
+    -------------------------------------------  SERVICE
+        | ^                       | ^
+        V |                       V |
+</PRE>
+A protocol is the rules (message formats and semantics)
+followed by peer entities,
+ie, entities in the same layer at different sites,
+for communicating with each other.
+A service is the rules (service primitive formats and semantics)
+followed by entities in adjacent layers
+for communicating with each other at the same site.
+</I>
+
+<P><I> GRADING. Definition of each (only) gets 7 points (each). Both,
+15 points. An example of each (only) gets 2 points. 
+<P>
+4.) (20 points)
+A proposed way to fix the count-to-infinity problem
+in distance-vector routing is that on a link failure
+the two routers at either end of the link immediately broadcast
+(via flooding) that the link between the two routers has failed.
+Will this solve the problem? Explain your answer.
+<P>
+<I>
+No.
+In distance-vector routing,
+each router A maintains for every other router B
+the distance to B via every neighbor of A.
+Thus A cannot make use of the information that
+the link between two remote routers, say X and Y.
+</I>
+
+<P><I> GRADING. The negative answer gets 5 points. A correct
+explanation gets 15 points. Total 20. </I>
+
+<P>
+5.) (20 points)
+The following C program runs two threads,
+t1 and t2,
+that share two integer variables, x and y.
+Thread t1 executes xdec()
+and thread t2 executes ydec().
+xdec() should repeatedly do the following:
+decrement x by 2 and increment y by 1 if x is at least 2,
+otherwise block until x is at least 2.
+ydec() should repeatedly do the following:
+decrement y by 1 and increment x by 2 if y is at least 1,
+otherwise block until y is at least 1.
+
+<P>
+Using Pthreads,
+supply the MISSING CODE to achieve this:
+<P>
+<PRE>
+int x = 10 ;
+int y = 10 ;
+MISSING CODE    <I>  pthread_mutex_t xyMutex ;
+                  pthread_cond_t xGe2 ;
+                  pthread_cond_t yGe1 ;</I>
+
+xdec() {
+ while (1) {
+   MISSING CODE  <I> pthread_mutex_lock( &xyMutex ) ;
+                  while (x &lt 2) pthread_cond_wait( &xGe2, &xyMutex ) ; </I>
+   x = x-2 ;
+   y = y+1 ;
+   MISSING CODE  <I> if (y = 1) pthread_cond_signal( &yGe1 ) ;
+                  pthread_mutex_lock( &xyMutex ) ; </I>
+ }
+}
+
+ydec() {
+ while (1) {
+   MISSING CODE  <I> pthread_mutex_lock( &xyMutex ) ;
+                  while (y &lt 1) pthread_cond_wait( &yGe1, &xyMutex ) ; </I>
+   y = y-1 ;
+   x = x+2 ;
+   MISSING CODE  <I> if (x = 2) pthread_cond_signal( &xGe2 ) ;
+                  pthread_mutex_lock( &xyMutex ) ; </I>
+ }
+}
+
+main() {
+ pthread_t t1, t2 ;
+ pthread_init( &t1, NULL ) ;
+ pthread_init( &t2, NULL ) ;
+ MISSING CODE   <I>  pthread_mutex_init_t( &xyMutex , NULL);
+                  pthread_cond_init_t( &xGe2, NULL) ;
+                  pthread_cond_init_t( &yGe1, NULL) ; </I>
+ pthread_create( &t1, NULL, xdec , NULL ) ;
+ pthread_create( &t2, NULL, ydec , NULL ) ;
+}
+
+</PRE>
+<P>
+<I>
+GRADING.
+There are two parts:
+8-10 points for ensuring that x and y are accessed mutually exclusively
+and 10-12 points for implementing the waiting.
+<P>
+COMMON MISTAKES:
+Using two mutexes and getting into deadlock.
+Busy waiting.
+Accessing shared variables without first ensuring mutual exclusion.
+Locking and unlocking threads.
+Using "if" instead of "while" in the check for waiting.
+</I>
+
+<P>
+6.) (15 points)
+Consider a time division switch for circuit switching.
+The switch has 8 input lines and 8 output lines,
+with each line delivering an octet every 2 microseconds.
+What is the acess time of the switch memory?
+<P>
+<I>
+Every 2 microseconds,
+an octet (= byte) has to be read from each input line
+and written to each output line.
+Thus 16 octets per 2 microseconds,
+which leads to an access time of
+one octet every 2/16 microseconds,
+that is, one octet every 125 nanoseconds.
+The memory word size should be at least one octet.
+
+<P>
+GRADING.
+12 points for only considering inputs and not outputs,
+ie, getting 250 nanoseconds.
+</I>
+
+<P>
+END OF EXAM
+
+</BODY>
+</HTML>

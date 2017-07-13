@@ -1,0 +1,47 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>CMSC 417 (Fall 1997) Exam #2 - Solutions</TITLE>
+</HEAD>
+<BODY LINK="#0000ff" VLINK="#800080">
+
+<B><FONT SIZE=5><P ALIGN="CENTER">CMSC 417 Midterm #2 (Fall 1997)</P>
+<P ALIGN="CENTER">&nbsp;</P>
+<OL>
+
+</B></FONT><FONT FACE="Arial,Helvetica" SIZE=2><P ALIGN="JUSTIFY"><LI>(15 points) Define <B>and</B> explain the following terms:</LI></P>
+<OL TYPE="a">
+
+<LI>forbidden region</LI>
+</I></FONT><FONT FACE="Arial,Helvetica" SIZE=2><LI>TSAP</LI>
+</I></FONT><FONT FACE="Arial,Helvetica" SIZE=2><LI>two army problem</LI>
+</I></FONT><FONT FACE="Arial,Helvetica" SIZE=2><LI>CIDR</LI>
+</I></FONT><FONT FACE="Arial,Helvetica" SIZE=2><LI>Exponential average</LI></OL>
+
+</I></FONT><FONT FACE="Arial,Helvetica" SIZE=2><P ALIGN="JUSTIFY"><LI>(12 points) An alternative to having a separate timer thread for a packet level re-transmission timeouts is to have each connection thread call the UNIX sleep function (which suspends a thread for a specified amount of time) whenever the thread needs a time-based pause. Why would using sleep make it more difficult to process ACK packets?</LI></P>
+</I></FONT><FONT FACE="Arial,Helvetica" SIZE=2><P ALIGN="JUSTIFY"><LI>(20 points) Connection Management</LI></P>
+<OL TYPE="a">
+
+<LI>Explain why using a timestamp as an initial sequence number for a three-way handshake and then incrementing the sequence number with each packet limits the number of connections per unit time, but not the number of bytes/sec. </LI>
+</I></FONT><FONT FACE="Arial,Helvetica" SIZE=2><LI>Why should the tick rate of the clock from part a be neither too fast nor too slow.</LI></OL>
+
+</I></FONT><FONT FACE="Arial,Helvetica" SIZE=2><P ALIGN="JUSTIFY"><LI>(18 points) Bandwidth is growing faster than latency (and we are getting very close to speed of light latencies for some networks). Describe two specific changes that have either been made, or will likely be required to adapt existing networking systems to accommodate this trend. </LI></P>
+</I></FONT><FONT FACE="Arial,Helvetica" SIZE=2><P ALIGN="JUSTIFY"><LI>(20 points) Traffic Shaping </LI></P>
+<OL TYPE="a">
+
+<LI>Token bucket and leaky bucket are ways to limit traffic data rates. Explain how they are different in terms of their ability to permit bursts onto the network, and ensure the average data rate. </LI>
+</I></FONT><FONT FACE="Arial,Helvetica" SIZE=2><LI>Traffic shaping can be performed on a per connection or per host basis, give one example where you would want to do it each way.</LI></OL>
+
+</I></FONT><FONT FACE="Arial,Helvetica" SIZE=2><P ALIGN="JUSTIFY"><LI>(15 points
+) <I>go-back-n</I> and <I>selective-repeat</I> are retransmission strategies use
+d with sliding window protocols. Describe and discuss the relative advantages of
+ each. How does using one or the other change the requirements for buffers in 
+ the sending and receiving windows?</LI></P></OL>
+
+<DIR>
+<DIR>
+
+</DIR>
+</I></FONT></BODY>
+</HTML>

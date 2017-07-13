@@ -1,0 +1,191 @@
+<HTML>
+
+<HEAD>
+
+<TITLE>Operating Systems (412)</TITLE>
+
+</HEAD>
+
+<BODY TEXT="#000000" BGCOLOR="#D7D3D2" LINK="#78021C" VLINK="#7F6666"
+ALINK="#FF FFFF" BACKGROUND="marble.gif">
+
+
+<H2 align=center>CMSC 412 (Spring 2010)</h2>
+<h1 align=center>Operating Systems</H1>
+
+<center>
+<table>
+<tr>
+    <td width = 250><b>Professor:</b>
+    <td width = 250><b>TAs:</b>
+    <td wdith = 250> 
+</tr>
+<tr>
+<td width = 250><a href="http://www.cs.umd.edu/~hollings">Dr. Jeff Hollingsworth</a>
+<td width = 200><a href="http://www.cs.umd.edu/~rpgove">Robert Grove</a>
+<td width = 200><a href="http://www.cs.umd.edu/~ntg">Nikolaos Frangiadakis</a>
+</tr>
+<tr>
+<td>      4155 AV Williams      
+</tr><tr>
+<td>      301 405-2708          
+</tr><tr>
+<td><a href="mailto:hollings@cs.umd.edu?subject=CMSC 412">hollings@cs.umd.edu</a>
+<td><a href="mailto:rpgove@cs.umd.edu?subject=CMSC 412">rpgove@cs.umd.edu</a>
+<td><a href="mailto:ntg@cs.umd.edu?subject=CMSC 412">ntg@cs.umd.edu</a>
+</tr><tr>
+    <td>      Office Hours:         
+</tr><tr>
+    <td>	Tu 11-12	
+    <td>Monday 1-3
+    <td>Monday 9-11
+</tr><tr>
+    <td>	Th 11-12
+    <td>Friday 1-3
+    <td>Wed 11-1
+</table>
+</center>
+
+<center>
+<table>
+<tr>
+    <td wdith = 250> 
+</tr>
+<tr>
+</tr>
+<tr>
+
+</table>
+<br>
+Note: All office hours are held in the linux lab <a href="http://www.inform.umd.edu/CampusInfo/Facilities/Buildings/CSIC/">(room 3107 in the CSIC)</a>.
+</center>
+
+<TABLE>
+<TR VALIGN=CENTER>
+<TD ALIGN=RIGHT>
+<A HREF="index.shtml"><IMG SRC="smallHotNews.gif" ALT="Hot News" BORDER=0
+HEIGHT=103 WIDTH=90></A>
+</TD><TD>
+<H2><U>Hot News</U></H2>
+<p>
+<font color="blue" size=-1><b>
+<ul>
+</ul>
+</font>
+
+</table>
+
+<P>
+This page contains information relating to the Course CS412 on
+operating systems offered during the Spring 2010 semester. 
+<P>
+
+<p>
+<B>Academic Integrity:</B>
+
+<P>&quot;Integrity without knowledge is weak and useless, and knowledge
+without integrity is dangerous and dreadful.&quot; Samuel Johnson (The
+History of Rasselas, ch. 41 - 1759). 
+Please read the statement on <A href="integrity.html">academic integrity. </A>
+<P>
+
+<B>Handouts:</B> 
+<MENU>
+<LI><A href="syllabus.pdf">Syllabus</A>
+<LI><A href="synch-soln.pdf">Handout from Section 3/3/10</A>
+</MENU>
+
+<B>Exams:</B> 
+<MENU>
+<LI>Midterm #1 -  3/11/10 (in class) (<a href="exam1soln.pdf">Solution</a>)
+<menu>
+<li><a href="sampleExam1a.html">Sample Exam #1</a>
+<li><a href="sampleExam1b.html">Sample Exam #2</a>,
+(<a href="sampleExam1b.soln.html">Solution</a>)
+<li><a href="sampleExam1c.html">Sample Exam #3</a>,
+(<a href="sampleExam1c.soln.html">Solution</a>)
+<li><a href="sampleExam1d.html">Sample Exam #4</a>,
+(<a href="sampleExam1d.soln.html">Solution</a>)
+<li><a href="sampleExam1e.html">Sample Exam #5</a>
+</menu>
+<LI>Midterm #2 - 4/13/10 (in class) (<a href="exam2.soln.pdf">Solution</a>)
+<menu>
+<li><a href="sampleExam2a.html">Sample Exam #1</a>
+<li><a href="sampleExam2b.html">Sample Exam #2</a>,
+(<a href="sampleExam2b.soln.html">Solution</a>)
+<li><a href="sampleExam2c.html">Sample Exam #3</a>
+<li><a href="sampleExam2d.html">Sample Exam #4</a>,
+(<a href="sampleExam2d.soln.html">Solution</a>)
+<li><a href="sampleExam2e.html">Sample Exam #5</a>,
+(<a href="sampleExam2e.soln.html">Solution</a>)
+</menu>
+<li>Final - (5/14/10 8:00-10:00 AM)
+<menu>
+<li><a href="sampleFinal1.shtml">Sample Final #1</a>
+<li><a href="sampleFinal2.shtml">Sample Final #2</a>
+<li><a href="sampleFinal3.html">Sample Final #3</a>
+<li><a href="sampleFinal4.html">Sample Final #4</a>
+<li><a href="sampleFinal5.html">Sample Final #5</a>
+</menu>
+
+</menu>
+
+<B>Dr. Hollingsworth's Lectures:</B> 
+<MENU>
+<li><a href="lectures/lect01/index.shtml">Lecture 1 (1/26/2010)</a>
+<li><a href="lectures/lect02/index.shtml">Lecture 2 (1/28/2010)</a>
+<li><a href="lectures/lect03/index.shtml">Lecture 3 (2/2/2010)</a>
+<li><a href="lectures/lect04/index.shtml">Lecture 4 (2/4/2010)</a>
+<li><a href="lectures/lect05/index.shtml">Lecture 5 (2/16/2010)</a>
+<li><a href="lectures/lect06/index.shtml">Lecture 6 (2/18/2010)</a>
+<li><a href="lectures/lect07/index.shtml">Lecture 7 (2/23/2010)</a>
+<li><a href="lectures/lect08/index.shtml">Lecture 8 (2/25/2010)</a>
+<li><a href="lectures/lect09/index.shtml">Lecture 9 (3/2/2010)</a>
+<li><a href="lectures/lect10/index.shtml">Lecture 10 (3/4/2010)</a>
+<li><a href="lectures/lect11/index.shtml">Lecture 11 (3/9/2010)</a>
+<li><a href="lectures/lect12/index.shtml">Lecture 12 (3/23/2010)</a>
+<li><a href="lectures/lect13/index.shtml">Lecture 13 (2/25/2010)</a>
+<li><a href="lectures/lect14/index.shtml">Lecture 14 (3/30/2010)</a>
+<li><a href="lectures/lect15/index.shtml">Lecture 15 (4/1/2010)</a>
+<li><a href="lectures/lect16/index.shtml">Lecture 16 (4/6/2010)</a>
+<li><a href="lectures/lect17/index.shtml">Lecture 17 (4/8/2010)</a>
+<li><a href="lectures/lect18/index.shtml">Lecture 18 (4/15/2010)</a>
+<li><a href="lectures/lect19/index.shtml">Lecture 19 (4/20/2010)</a>
+<li><a href="lectures/lect20/index.shtml">Lecture 20 (4/22/2010)</a>
+<li><a href="lectures/lect21/index.shtml">Lecture 21 (4/27/2010)</a>
+<li><a href="lectures/lect22/index.shtml">Lecture 22 (4/29/2010)</a>
+<li><a href="lectures/lect23/index.shtml">Lecture 23 (5/4/2010)</a>
+<li><a href="lectures/lect24/index.shtml">Lecture 24 (5/6/2010)</a>
+<li><a href="lectures/lect25/index.shtml">Lecture 25 (5/11/2010)</a>
+<!--- XXLECTNUM --->
+</menu>
+
+<B>Projects </B>(<A href="latePolicy.shtml">late policy</a>): 
+
+<MENU>
+<li><a href="cmsc412-debug.pdf"> Debugging using gdb handount</a>
+<li><a href="project0/index.html">Project #0 (Due Fri 2/5/10 - 6:00 PM)</a>
+<menu>
+<a href="project0/project0_sectionNotes.pdf">Notes From Discussion on 1/27/10</a>
+</menu>
+<li><a href="project1/index.html">Project #1 (Due Fri 2/19/10 - 6:00 PM) - <font color="red">Extended until 2/21/10 - 6:00 PM due to snow</font></a>
+<li><a href="project2/index.html">Project #2 (Due Fri 3/05/10 - 6:00 PM) </a>
+<li><a href="project3/index.html">Project #3 (Due Tue 3/23/10 - 6:00 PM) </a>
+<li><a href="project4/index.html">Project #4 (Due Sunday 4/11/10 - <b>6:00 PM</b>) </a>
+<li><a href="project5/index.html">Project #5 (Due Friday 5/07/10 - 6:00 PM) </a>
+<li><a href="project6/index.html">Project #6 (Due Tuesday 5/11/10 - 6:00 PM) </a>
+</MENU>
+
+<P>
+This page will be updated throughout the class to provide online
+access to course materials. 
+This page and all problem sets, lecture notes, and exams linked to it
+are copyrighted.
+Use of these pages for the class CMSC412 at the University of Maryland is
+permitted.
+Any other use requires permission of the author (Jeffrey K. Hollingsworth,
+<a href="mailto:hollings@cs.umd.edu?subject=CMSC 412">hollings@cs.umd.edu</a>).
+
+</BODY>
+</HTML>
+

@@ -1,0 +1,356 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>CMSC 412 - Project 4</title>
+</head>
+<body lang="EN-US" link="blue" vlink="purple">
+<center><font size="+2"><b>CMSC 412 Project #4</b> </font></center>
+<p>
+</p>
+<center><font size="+1"><b>Paging</b>
+</font></center>
+<center>
+<p><font color=red>Deadline extended thru Monday, April 11th, 2005 at 9:00 AM, no late submission accepted</font></p>
+
+</center>
+<li><b><a href="p4_grading.html">Grading Criteria</a> </b>
+</li>
+<li><b><a href="p4_submission.html">Submission Instructions</a> </b>
+  <li><b>Recitation material: <a href="proj4.ppt">proj4.ppt</a>
+  <li><b>Excerpt from Dave Hovemeyer's hacking guide GeekOS : <a href="paging.pdf">paging.pdf</a></b>
+<li><b>The IA-32 Intel(R) Architecture Software Developer's <a
+ name="IntelDoc"
+ href="ftp://download.intel.com/design/Pentium4/manuals/25366814.pdf">
+Manual</a>,Volume 3
+<br>&nbsp;&nbsp;&nbsp;Sections : 3.1, 3.6 (without subsections 3.6.1 and 3.6.2), 3.7.1, 3.7.6 (Figure 3-14 and associated bits only)
+</b>
+  <h2>New project files</h2>
+</li>
+<li> <a href="project4.tgz">project4.tgz</a></b> - new project distribution
+</li>
+<li> Updated <a href=".bochsrc">.bochrsc</a></b> - save in your project4/build directory
+</li>
+<li> <font color=red>NEW</font> Updated <a href="rec.c">rec.c</a></b> - save in your project4/src/user directory
+</li>
+<br>
+  <br>
+  <h1>Introduction</h1>
+  <p>The purpose of this project is to add paging to your project. This
+will require many small, but difficult changes to your project. More
+than any previous project, it will be important to implement one thing,
+test it and then move to the next one. A successful implementation of 
+Project 3 is <font size+1><b>not required</b></font> for this project. You 
+can implement 
+Project 4 on top of either your Project 2, sample solution for 
+Project 2, or your Project 3.</p>
+  <p>This project will involve an intermediate submission and a final poject submission. 
+The intermediate submission should be your implementation of the 
+<a href="#KernelMap">kernel mapping</a>. It must be a 'best effort' 
+submission or up to  <font color=blue>10%</font> may be taken off 
+the final grade. To submit the intermediate submission just follow the 
+same submission instructions as the final submission of <a 
+href="p4_submission.html">project 4</a>. For details, check the <i>Intermediate submission</i>
+section in the grading criteria. </p>
+
+  <a name="Intro"></a><h1>Paging Introduction</h1>
+  <p>In this project you will add paging to the GeekOS kernel. You will be implementing a two-level paging system 
+that includes page tables and directories. Each page directory and page table are themselves pages in the system. 
+Each page directory/page table entry is 4 bytes and each table contains 1024 entries (4096 bytes / 4 bytes).  Each page 
+directory contains a pointer to a page table which in turn contains pointers to the physical memory. The purpose of 
+paging is to provide a mapping from a user address to a physical address. Paging is similar to 
+segmentation because it allows each process to run in its own memory space. However, paging allows a much finer 
+granularity of control by specifiying per-page mappings rather than a constant value offset.</p>
+<p>This project will combine paging that you will implement in this project with the segmentation implemented in project 
+2. Each memory access by a user process will involve two steps. First, the base address of the user process
+will be added to the user memory address. Finally, the resulting linear 
+address will be mapped to the physical address using the page directory
+and page tables.</p>
+<p>Each memory address in the x86 system is 32 bits long.  When the system sees an access to a virtual address, it will first find the page 
+directory currently in use (this is analagous to finding an LDT for a 
+process).  It will then use the most 
+significant 10 bits to index into the page directory (10 bits allows you to write numbers between 0 and 1023 thus the 
+page directory has 1024 entries).  The page directory entry is used to find the appropriate page table.  The next 10 
+bits are used to index the page table (again 10 bits allows you to write numbers between 0 and 1023 thus the page table 
+has 1024 entries).  Finally, the page table entry is used to find the base of the physical memory page. The last 12 
+bits of the virtual memory address is used to index into the physical page (12 bits allows you to write numbers 
+between 0 and 4095 thus a page is 4096 bytes in size). For more information on paging please review your texbook 
+(section 9.4) as well as the sections of the Intel 
+documentation specified above.</p>
+  <h1>Changing the Project to Use Page Tables</h1>
+  <p>The first step is to modify your project to use page tables and
+segmentation rather than just segments to provide memory protection. To
+enable using page tables, every region of memory your access (both
+kernel and data segment) must have an entry in a page table.
+The way
+this will work is that there will be a single page table for all kernel
+only threads, and a page table for each user process. In addition, the
+page tables for user mode processes will also contain entries to
+address the kernel mode memory. The memory layout for this is shown
+below. </p>
+  <br>
+  <br>
+  <table style="text-align: left; width: 50%;" border="0"
+ cellspacing="2" cellpadding="2">
+    <tbody>
+      <tr>
+        <td style="vertical-align: top;">VA 0x0000 0000</td>
+        <td style="vertical-align: top;">Kernel Memory</td>
+        <td style="vertical-align: top;">
+        <p style="page-break-after: avoid;" class="MsoNormal">Start of
+kernel memory</p>
+        <p style="page-break-after: avoid;" class="MsoNormal">(map all
+physical memory here)</p>
+        </td>
+      </tr>
+      <tr>
+        <td style="vertical-align: top;">VA 0x8000 0000</td>
+        <td style="vertical-align: top;">User Memory</td>
+        <td style="vertical-align: top;">Data/Text start here<br>
+        </td>
+      </tr>
+      <tr>
+        <td style="vertical-align: top;"><br>
+        </td>
+        <td style="vertical-align: top;"><br>
+&lt;gap&gt;<br>
+        <br>
+        </td>
+        <td style="vertical-align: top;"><br>
+        </td>
+      </tr>
+      <tr>
+        <td style="vertical-align: top;">VA 0xFFFF E000</td>
+        <td style="vertical-align: top;">User Memory</td>
+        <td style="vertical-align: top;">Initial stack at top of this page</td>
+      </tr>
+      <tr>
+        <td style="vertical-align: top;">VA 0xFFFF F000</td>
+        <td style="vertical-align: top;">User Memory</td>
+        <td style="vertical-align: top;">Args in this page</td>
+      </tr>
+      <tr>
+        <td style="vertical-align: top;"><font size=-1>VA 0xFFFF FFFF</font></td>
+        <td style="vertical-align: top;">&nbsp</td>
+        <td style="vertical-align: top;"><font size=-1>Memory space ends here</font></td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+  <h2><a name=KernelMap></a>Kernel Memory Mapping</h2>
+
+  <p>The kernel memory should be a one to one mapping of all of the
+physical memory in the processor (this limits the physical memory of
+the processor to 2GB, but this is not a critical limit for this
+project). The page table entries for this memory should be marked so
+that this memory is only accessible from kernel mode (i.e. the <tt>flags</tt>
+bit in the page directory and page table should not contain <tt>VM_USER</tt>). To make this
+change, you should start by creating a page directory and page table
+entries for the kernel threads by filling in the <tt>Init_VM</tt> in the
+<tt>paging.c</tt>.
+</p>
+  <p>To setup page tables, you will need to allocate a page directory
+(via <tt>Alloc_Page</tt>) and then allocate page tables for the entire region
+that will be mapped into this memory context. You will need to fill out
+the appropriate fields in the page tables and page directories.
+The definition of paging tables and directories are to be found in
+<tt>paging.h</tt> (structs <tt>pte_t</tt> and <tt>pde_t</tt>).
+Finally, to enable paging for the first time, you will need to call
+the routine <tt>Enable_Paging(pdbr)</tt> which is already defined for you in
+<tt>lowlevel.asm</tt>. It takes the base address
+of your page directory as a parameter.
+<p>The final step of this function is to add
+a handler for page faults.  A default one named <tt>Page_Fault_Handler</tt> in <tt>paging.c</tt> has been provided
+for you.  You should install it by calling <tt>Install_Interrupt_Handler</tt>.  You need to register this as a handler for interrupt 14.
+You should then add a call the <tt>Init_VM</tt> function from your <tt>main.c</tt> (after <tt>Init_Interrupts</tt>).</p>
+<p>
+You should be able to do this step and test it by itself (by
+temporarily giving user mode access to the kernel pages - set the
+<tt>flags</tt> fields to include <tt>VM_USER</tt>)</p>
+
+<h2>User Memory Mapping</h2>
+
+  <p>The next step is to modify your user processes to use pages in
+the
+user region. To help you do this, there is a new file called <tt>uservm.c</tt> which will
+replace your <tt>userseg.c</tt> from previous projects.  You should start by taking the implementations
+from <tt>userseg.c</tt> and copying them to <tt>uservm.c</tt> and then modifying them for paging.
+There is a line in the <tt>Makefile</tt> in the build directory which specifies whether it should
+use <tt>userseg.c</tt> or <tt>uservm.c</tt>.  You can switch between them by
+modifying <tt>USER_IMP_C := uservm.c</tt> to be <tt>USER_IMP_C := userseg.c</tt> and vice versa.
+
+</p>
+<p>
+Setting up paging for user processes is a two-step process. This is done when you load the user program in 
+<tt>Load_User_Program</tt>. First, you need to allocate a
+page directory for this user space. You should copy all of the
+entries from the kernel page directory you've set up in <tt>Init_VM</tt>.
+(This makes interrupt handling easy because you don't have
+to change the page tables when you switch back and forth).
+</p>
+<p>
+Next you need to allocate page table
+entries for the user processes text and data regions.
+When you create the executable image don't include space for the stack
+(but do round to PAGE_SIZE, though). Allocate (a page at a time)
+as many pages as needed to hold the executable image. Then copy
+the image, page by page into the newly allocated pages.
+Do not forget to add an entry for each newly allocated page in your process'
+s page table.
+</p>
+<p>
+Finally, you should allocate space for
+two pages of memory at the end of the virtual address range (i.e.
+the last two entries in the last page table). One is for the
+parameters, the other one is for stack.
+For the user space page
+mappings, make sure the <tt>flags</tt> bits in both the page
+directory and page table entries allow user mode access (contain <tt>VM_USER</tt> flag).</p>
+<p>
+Contrast this with what was done in project 2.  There, one big chunk of memory was allocated for the
+entire user process. Paging allows per-page mappings for user memory as described in the <a 
+href="#Intro">introduction</a>.  Therefore, each page of the user process is now allocated and mapped individually.
+</p>
+  <p>You will also need to change some aspects of how the code from
+project
+#2 sets things up. The base address for the user mode process should be
+0x8000 0000 (<tt>USER_VM_START</tt> in <tt>paging.h</tt>), and the limit should be 0xFFFF FFFF
+(<tt>USER_VM_END</tt> in <tt>paging.h</tt>). Segmentation, as described in the <a 
+href="#Intro">introduction</a> will allow the user space process 
+to think that its virtual location 0 is the 2GB point in the page layout and will greatly simplify your kernel compared
+to traditional paged systems. You will also need to add code to switch
+the PDBR register. For this, in <tt>Switch_To_Address_Space</tt>
+you should add a call to <tt>Set_PDBR</tt>
+(provided for you in <tt>lowlevel.asm</tt>) as part of a context switch,
+after you load the LDT. You will use the <tt>pageDir</tt> field in the userContext
+structure that will store the address of the process's page directory).</p>
+
+  <p>You have been provided with a second version of <tt>Alloc_Page</tt> (in
+<tt>mem.c</tt>).
+This version is called <tt>Alloc_Pageable_Page</tt>. The primary
+difference is that any page allocated by this routine should have a
+special flag PAGE_PAGEABLE set in the flags field of its entry in the
+struct Page data structure (see mem.h). All pages (but not page
+directories and page tables) for a user space process should be
+allocated using this routine. </p>
+
+<p>At this point, you should test your memory mapping by running bochs. If you are able to load and run shell, you 
+have completed this correctly.</p>
+
+  <h1>Handling Page Faults</h1>
+  <p>This step involves modifying the default page fault handler that has been used until now.  One of the key features 
+of using paging is to have the operating system handle page faults. To do this you will use a page
+fault interrupt handler. The provided default page fault handler figures out the address of the page fault and prints 
+it out. You will modify it to
+determine an appropriate action to take based on the address. Possible reasons for a
+page fault, and the action to take are shown in the table below. </p>
+  <br>
+  <table cellpadding="2" cellspacing="2" border="1"
+ style="text-align: left; width: 50%;">
+    <tbody>
+      <tr>
+        <td style="vertical-align: top;"><b>Cause</b></td>
+        <td style="vertical-align: top;"><b>Indication</b></td>
+        <td style="vertical-align: top;"><b>Action</b></td>
+      </tr>
+      <tr>
+        <td style="vertical-align: top;">Stack growing to new page</td>
+        <td style="vertical-align: top;">Fault is within one page of
+the current stack limit</td>
+        <td style="vertical-align: top;">Allocate a new page and
+continue.</td>
+      </tr>
+      <tr>
+        <td style="vertical-align: top;">Fault for paged out page</td>
+        <td style="vertical-align: top;">Bits in page table indicate
+page is on disk</td>
+        <td style="vertical-align: top;">Read page from paging device
+(sector indicated in PTE) and continue.</td>
+      </tr>
+      <tr>
+        <td style="vertical-align: top;">Fault for invalid address</td>
+        <td style="vertical-align: top;">None of the other conditions
+apply</td>
+        <td style="vertical-align: top;">Terminate user process</td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+<p>You should already have installed a default page fault handler when setting up the <a href="#KernelMap">kernel mapping</a>.
+In order to test the page fault handler, run the provided program <tt>rec.c</tt>.
+</p>
+
+  <p>The fault handler reads register cr2 to determine the
+faulting address. It also prints the errorCode field defined in
+the struct <tt>pageFaultErrorCode</tt> in <tt>paging.h</tt>
+</p>
+
+  <h1>Paging Out Pages</h1>
+  <p>At some point, your operating system will run out of pages
+to assign to processes. In this case, you will need to pick a page to
+evict from memory and write it to the backing store (paging file). You
+should implement a version of pseudo-LRU (see section 9.4.5 in textbook). Use the 
+<tt>accessed</tt> bit in the page tables to keep track of how frequently pages are accessed. To do
+this, use the clock field in the struct <tt>Page</tt> in <tt>mem.h</tt>.
+You should update the clock on every page fault for all pages that were accessed since the last fault. <i>
+Alternatively, you can update the clocks in the body of the <tt>Idle</tt> thread, i.e.  walk thru the allocated
+pages and for ones that were accessed, update their clocks. This will avoid a heavy-weight page fault handler.</i></p>
+  <p>You will also need to manage the use of the paging file. The
+paging file consists of a group of consecutive 512 (<tt>SECTOR_SIZE</tt>) bytes disk blocks.
+Calling the routine <tt>Get_Paging_Device</tt> in <tt>vfs.h</tt>, will return
+a <tt>Paging_Device</tt> structure containing the first disk block number of the paging file and the number of disk
+blocks in the paging file. Each page will consume 8 consecutive disk
+blocks (<tt>PAGE_SIZE/SECTOR_SIZE</tt>). To read/write the paging file, use the functions <tt>Block_Read</tt> and
+<tt>Block_Write</tt> provided in <tt>blockdev.h</tt>. These functions write <tt>SECTOR_SIZE</tt> bytes at a time. How you manage your paging file is completely up to you.  A good idea would be to write
+a <tt>Init_Pagefile</tt> function in <tt>paging.c</tt> and call it from <tt>main.c</tt></p>
+  <p>The following paragraph
+describes what is done whenever a page is paged out. However, the high level code to page out a page is
+implemented for you in <tt>Alloc_Pageable_Page</tt> in <tt>mem.c</tt>. The function will do the following:
+<li>Find a page to page out using <tt>Find_Page_To_Page_Out</tt> which you will implement in <tt>mem.c</tt>. (This function relies on the 
+<tt>clock</tt> 
+field in the <tt>Page</tt> structure which you must manage).</li>
+<li>Find space on the paging file using <tt>Find_Space_On_Paging_File</tt> which you will implement in <tt>paging.c</tt></li>
+<li>Write the page to the paging file using <tt>Write_To_Paging_File</tt> which you will implement in <tt>paging.c</tt></li>
+<li>Update the page table entry for the page to clear the <tt>present</tt> bit.</li>
+<li>Update the <tt>pageBaseAddr</tt> in the page table entry to be the first disk block that contains the page.</li>
+<li>Update the <tt>kernelInfo</tt> bits (3 bits holding a number
+from 0-7) in the page table entry to be <tt>KINFO_PAGE_ON_DISK</tt> (used to indicate that the page is on disk rather than
+not valid).</li>
+<li>Flush the TLB using <tt>Flush_TLB</tt> from <tt>lowlevel.asm</tt></li>
+</p>
+  <h1>Page Ins</h1>
+  <p>In the previous section on page outs, it was described how a page is picked and stored on disk to make space 
+for another page. Eventually, the page that was put on disk will be needed by some process again. At this point you 
+will have to read it back off disk into memory (possibly while paging out 
+another page to fit it into memory). Since the page 
+that is paged out has its <tt>present</tt> bit set to 0, an access to it will cause a page fault.  Your page fault 
+handler should then realize that this page is actually stored on disk and bring it back from disk (the 
+<tt>kernelInfo</tt> field in the page table entry). When you bring 
+a page in off disk, you may discard its disk version (i.e. free the disk space used by the page). This will simplify
+your paging system, but will require that when a page is removed from
+memory it must always be written to the backing store (since even clean
+pages no longer have a version on disk).  You will rely on the information stored when a page
+is paged out to find it on disk and page it back in.</p>
+  <h1>Process Termination</h1>
+  <p>As part of process termination, you will need to free the memory
+associated with a process. This includes freeing the pages used
+by the process, freeing the page tables and page directories. In
+addition, you will need to release the backing store space used by any
+pages of the terminating process.  You should modify your <tt>Destroy_User_Context</tt> function in <tt>uservm.c</tt> to
+do this.</p>
+  <h1><a name=ExtraCredit>Extra Credit</h1>
+  <p>As mentioned in recitation (and in recitation slides), you should use
+<tt>Alloc_Page()</tt> for allocating page tables and page directories and
+<tt>Alloc_Pageable_Page()</tt> for everything else (program memory, arguments, stack).
+This is intended to make your task easier, 
+since you know the page tables are always in memory. For extra credit (<font color=red>10 points</font>), try to make page tables pageable too, i.e. use <tt>Alloc_Pageable_Page()</tt> for page tables.
+
+</p>
+<script language="JavaScript">
+          <!---//hide script from old browsers
+          var theDate = new Date(document.lastModified);
+	  var theLocalDate = theDate.toLocaleString();
+          document.write( "<hr><i>Last updated: "+ theLocalDate +"</i>");
+          //end hiding contents --->
+  </script>
+  </body>
+</html>

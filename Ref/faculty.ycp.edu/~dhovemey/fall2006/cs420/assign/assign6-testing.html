@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>CS 420 - Testing Pipes</title>
+</head>
+<body>
+<h1>CS 420 - Testing Pipes</h1>
+<p>This document explains how to test to make sure that pipes are
+working properly in GeekOS.<br>
+</p>
+<h3>Step 0: Replace src/common/string.c with an updated version<br>
+</h3>
+<p>There is a bug in this file that prevents the GOSFS filesystem from
+working correctly.&nbsp; Replace it with the following file:<br>
+</p>
+<p style="margin-left: 40px;"><a href="string.c">string.c</a><br>
+</p>
+<h3>Step 1: Make sure that your console device handles control sequences<br>
+</h3>
+<p>One thing that you will probably need to do before proceeding is to
+make sure that reading from the console device correctly translates
+control-key sequences into the corresponding ASCII control
+characters.&nbsp; Your code to read a single keypress should look
+something like this.<br>
+</p>
+<pre style="margin-left: 40px;">Keycode code;<br><br>while ((code = Wait_For_Key()) &amp; KEY_RELEASE_FLAG) {<br>    /* key release event: discard */<br>}<br><br>bool isControlSequence = (code &amp; KEY_CTRL_FLAG) != 0;<br>char asciiValue = (code &amp; 0xFF);<br></pre>
+<p>If a pressed key has the control flag set, and if the ASCII value is
+in the range 'a'..'z', then the character value you place in the
+caller's buffer should be a control character.&nbsp; The following code
+translates a control key sequence into a control character:<br>
+</p>
+<pre style="margin-left: 40px;">if (isControlSequence &amp;&amp;<br>    ( (asciiValue &gt;= 'a' &amp;&amp; asciiValue &lt;= 'z') || (asciiValue &gt;= 'A' &amp;&amp; asciiValue &lt;= 'Z') )) {<br><br>    asciiValue = 1 + (TOLOWER(asciiValue) - 'a');<br>}<br></pre>
+<p>This code works because the control character control-A is ASCII
+code 1, control-B is ASCII code 2, etc.<br>
+</p>
+<h3>Step 2: Format and mount a GOSFS filesystem on the ide1 device,
+then start the "ae" editor program within GeekOS<br>
+</h3>
+<p>This screenshot shows the commands to use:<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/startEditor.png"
+ style="width: 730px; height: 493px;"><br>
+</p>
+<p>When you hit enter after the third command, you will be running the <a
+ href="http://www0.us.ioccc.org/years.html#1991_ant">ae editor</a>.&nbsp;
+This is a very simple text editor, similar to vi.&nbsp; Use it to type
+in a simple text document.&nbsp; You must start out by pressing the "i"
+key to enter insert mode (just like vi!).&nbsp; Type a few sentences;
+for example<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/ae.png"
+ style="width: 730px; height: 493px;"><br>
+</p>
+<p>When you are done, press the following sequence of keys:<br>
+</p>
+<p style="margin-left: 40px;">control-L<br>
+</p>
+<p style="margin-left: 40px;">W<br>
+</p>
+<p style="margin-left: 40px;">Q<br>
+</p>
+<p>You should be returned to a shell prompt.&nbsp; You can confirm the
+existence of the file as follows:<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/catTest.png"
+ style="width: 730px; height: 493px;"><br>
+</p>
+<p>Now you can use a pipe to feed this text file to the "wc" (word
+count) program:<br>
+</p>
+<p style="margin-left: 40px;"><img alt="" src="figures/pipeTest.png"
+ style="width: 730px; height: 493px;"><br>
+</p>
+<p>Now you have implemented an inter-process communication
+mechanism.&nbsp; Congratulations!<br>
+</p>
+</body>
+</html>

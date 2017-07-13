@@ -1,0 +1,259 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./mpi-project_files/filelist.xml">
+<title>CMSC 818S - Fall 2002 MPI Program</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Jeff Hollingsworth, with mods by Alan Sussman</o:Author>
+  <o:LastAuthor>hollings</o:LastAuthor>
+  <o:Revision>4</o:Revision>
+  <o:TotalTime>132</o:TotalTime>
+  <o:Created>2002-09-17T19:55:00Z</o:Created>
+  <o:LastSaved>2002-09-17T20:01:00Z</o:LastSaved>
+  <o:Pages>2</o:Pages>
+  <o:Words>527</o:Words>
+  <o:Characters>3007</o:Characters>
+  <o:Company>University of Maryland</o:Company>
+  <o:Lines>25</o:Lines>
+  <o:Paragraphs>6</o:Paragraphs>
+  <o:CharactersWithSpaces>3692</o:CharactersWithSpaces>
+  <o:Version>9.3821</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+p
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+@list l0
+	{mso-list-id:95516008;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-708945796 -53454628 1126985214 462082462 862642716 -448915360 1542647482 335965866 -233922538 85887470;}
+@list l0:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l0:level2
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	mso-ansi-font-size:10.0pt;
+	font-family:"Courier New";
+	mso-bidi-font-family:"Times New Roman";}
+@list l1
+	{mso-list-id:152914763;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-1569787164 -1471356436 -623844230 -1474275932 160304648 -2092294432 -332216212 2108323150 -1372145436 -1891719378;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+<!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="1027"/>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout></xml><![endif]-->
+<meta name=Template content="C:\Program Files\Microsoft Office\Office\html.dot">
+</head>
+
+<body lang=EN-US link=blue vlink=purple style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<p align=center style='text-align:center'><b>CMSC 714 – High Performance
+Computing<o:p></o:p></b></p>
+
+<p align=center style='text-align:center'>Fall 2002 - Programming Assignment</p>
+
+<p align=center style='text-align:center'><b>Due<span style="mso-spacerun:
+yes">  </span>Tuesday, October 8, 2002 @ 11:00 AM<o:p></o:p></b></p>
+
+<p>The purpose of this programming assignment is to gain experience in parallel
+programming and MPI. For this assignment you are to write a parallel
+implementation of a program to simulate the game of life. </p>
+
+<p>The game of life simulates simple cellular automata. The game is played on a
+rectangular board containing cells. At the start, some of the cells are
+occupied, the rest are empty. The game consists of constructing successive
+generations of the board. The rules for constructing the next generation from
+the previous one are:</p>
+
+<ol start=1 type=1>
+ <ol start=1 type=1>
+  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+      auto;mso-list:l1 level2 lfo3;tab-stops:list 1.0in'><i>death</i>: cells
+      with 0,1,4,5,6,7, or 8 neighbors die (0,1 of loneliness and 4-8 of over
+      population)</li>
+  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+      auto;mso-list:l1 level2 lfo3;tab-stops:list 1.0in'><i>survival</i>: cells
+      with 2 or 3 neighbors survive to the next generation.</li>
+  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+      auto;mso-list:l1 level2 lfo3;tab-stops:list 1.0in'><i>birth</i>: an
+      unoccupied cell with 3 neighbors becomes occupied in the next generation.</li>
+ </ol>
+</ol>
+
+<p>For this project the game board has finite size. The x-axis starts at 0 and
+ends at <i>X_limit</i>-1 (supplied on the command line). Likewise, the y-axis
+start at 0 and ends at <i>Y_limit</i>-1 (supplied on the command line).</p>
+
+<p><b>INPUT<o:p></o:p></b></p>
+
+<p style='margin-left:.5in'>Your program should read in a file containing the
+coordinates of the initial cells. Sample files are located <a
+href="http://www.cs.umd.edu/~hollings/cs714/f02/life.data.1">life.data.1</a>
+and <a href="http://www.cs.umd.edu/~hollings/cs714/f02/life.data.2">life.data.2</a>.
+You can also find many other sample patterns on the web (use your favorite
+search engine on &quot;game of life&quot; and/or &quot;Conway&quot;).</p>
+
+<p style='margin-left:.5in'>Your program should take five command line
+arguments: the name of the data file, the number of processes to invoke
+(including the initial one), the number of generations to iterate, <i>X_limit</i>,
+and <i>Y_limit</i>.</p>
+
+<p><b>OUTPUT<o:p></o:p></b></p>
+
+<p style='margin-left:.5in'>Your program should print out one line (containing
+the x coordinate, a space, and then the y coordinate) for each occupied cell at
+the end of the last iteration. </p>
+
+<p><b>HINTS<o:p></o:p></b></p>
+
+<p style='margin-left:.5in'>The goal is not to write the most efficient
+implementation of Life, but rather to learn parallel programming with MPI.</p>
+
+<p style='margin-left:.5in'>Figure out how you will decompose the problem for
+parallel execution. Remember that MPI (at least the mpich implementation) does
+not have great communication performance and so you will want to make message
+passing infrequent. Also, you will need to be concerned about load balancing.</p>
+
+<p style='margin-left:.5in'>One you have decided how to decompose the problem,
+write the sequential version first.</p>
+
+<p><b>WHAT TO TURN IN<o:p></o:p></b></p>
+
+<p style='margin-left:.5in'>You should submit your program and the times to run
+it on the input file <a
+href="http://www.cs.umd.edu/~hollings/cs714/f02/final.data">final.data</a> (for
+1, 2, and 4 processes).</p>
+
+<p style='margin-left:.5in'>You also must submit a short report about the results
+(1-2 pages) that explains:</p>
+
+<ul type=disc>
+ <ul type=circle>
+  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+      auto;mso-list:l0 level2 lfo6;tab-stops:list 1.0in'>what decomposition was
+      used </li>
+  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+      auto;mso-list:l0 level2 lfo6;tab-stops:list 1.0in'>how was load balancing
+      done </li>
+  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+      auto;mso-list:l0 level2 lfo6;tab-stops:list 1.0in'>what are the
+      performance results, and are they what you expected</li>
+ </ul>
+</ul>
+
+<p><b>RUNNING MPI with MPICH<o:p></o:p></b></p>
+
+<p>To run MPI, you need to set a few environment variables:</p>
+
+<p style='margin-left:.5in'>setenv MPI_ROOT /usr/local/stow/mpich</p>
+
+<p style='margin-left:.5in'>setenv MPI_LIB<span style="mso-spacerun: yes"> 
+</span>$MPI_ROOT/lib</p>
+
+<p style='margin-left:.5in'>setenv MPI_INC<span style="mso-spacerun: yes"> 
+</span>$MPI_ROOT/include</p>
+
+<p style='margin-left:.5in'>setenv MPI_BIN $MPI_ROOT/bin</p>
+
+<p style='margin-left:.5in'># add MPICH commands to your path (includes mpirun
+and mpicc)</p>
+
+<p style='margin-left:.5in'>set path=($MPI_BIN $path)</p>
+
+<p style='margin-left:.5in'># add MPICH man pages to your manpath</p>
+
+<p style='margin-left:.5in'>if ( $?MANPATH ) then</p>
+
+<p style='margin-left:.5in'><span style="mso-spacerun: yes">     </span>setenv
+MANPATH<span style="mso-spacerun: yes">  </span>$MPI_ROOT/man:$MANPATH </p>
+
+<p style='margin-left:.5in'>else</p>
+
+<p style='margin-left:.5in'><span style="mso-spacerun: yes">     </span>setenv
+MANPATH<span style="mso-spacerun: yes">  </span>$MPI_ROOT/man</p>
+
+<p style='margin-left:.5in'>endif</p>
+
+<p style='margin-left:.5in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p><b>ADDITIONAL RESOURCES<o:p></o:p></b></p>
+
+<p>For additional MPI information, see <a href="http://www.mpi-forum.org/">http://www.mpi-forum.org</a>
+(MPI API) and <a href="http://www-unix.mcs.anl.gov/mpi">http://www-unix.mcs.anl.gov/mpi</a>
+(for MPICH)</p>
+
+<p>For more information about using the Maryland cluster PBS scheduler, see <a
+href="http://umiacs.umd.edu/labs/LPDC/plc/user-manual.html">http://umiacs.umd.edu/labs/LPDC/plc/user-manual.html</a>
+.<br>
+This page needs to be updated (path names are not correct for the current Linux
+environment), which should happen soon.</p>
+
+<p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+</body>
+
+</html>
