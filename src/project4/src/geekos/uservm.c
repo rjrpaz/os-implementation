@@ -109,6 +109,9 @@ int Load_User_Program(char *exeFileData, ulong_t exeFileLength,
     for (i = 0; i < exeFormat->numSegments; ++i) {
         struct Exe_Segment *segment = &exeFormat->segmentList[i];
         ulong_t topva = segment->startAddress + segment->sizeInMemory;
+if (i==0) {
+    DebugVM("Asi arrancar el programa: %s\n", (char *) segment->startAddress);
+}
 
         if (topva > maxva)
             maxva = topva;
@@ -126,6 +129,7 @@ int Load_User_Program(char *exeFileData, ulong_t exeFileLength,
 
     /* Reset memory with zeros */
     memset(mem, '\0', virtSize);
+    DebugVM("Direccion donde almacena temporalmente los segmentos del programa: @%lx\n", (unsigned long) mem);
  
     /* Copia segmentos en la memoria temporal */
     for (i = 0; i < exeFormat->numSegments; i++) {
@@ -143,13 +147,17 @@ int Load_User_Program(char *exeFileData, ulong_t exeFileLength,
 
     /* Copia Page Directory de kernel al proceso */
     userContext->pageDir = Alloc_Page();
+    DebugVM("Direccion del Pagedir del kernel: @%lx\n", (unsigned long) pageDirectory);
     memcpy(userContext->pageDir, pageDirectory, PAGE_SIZE);
+    DebugVM("Direccion del Pagedir del hilo, arranca en: @%lx\n", (unsigned long) userContext->pageDir);
 
     /* Crea las Page Tables del proceso */
     pde_t *ppde = userContext->pageDir + (NUM_PAGE_DIR_ENTRIES / 2);
-    DebugVM("Direccion de la pagedir: @%lx\n", (unsigned long) ppde);
+    DebugVM("Direccion del Pagedir del hilo mas media pagina: @%lx\n", (unsigned long) ppde);
+
     numberOfPages = virtSize / PAGE_SIZE;
     DebugVM("Cant. de paginas necesarias para paginar: %d\n", numberOfPages);
+
     vaddr = USER_VM_START;
     for (i=0; i<NUM_PAGE_DIR_ENTRIES/2; i++) {
 //        DebugVM("Direccion de la entrada %i de la pagedir: @%lx\n", i, (unsigned long) ppde);
@@ -161,30 +169,33 @@ int Load_User_Program(char *exeFileData, ulong_t exeFileLength,
 
             /* Reserva pÃ¡gina para la tabla de pÃ¡ginas */
             pte_t *ppte = (pte_t *)Alloc_Page();
-            DebugVM("Direccion de la primer entrada en la tabla de paginas @%lx. PageNumber %d\n", (unsigned long) ppte, pageNumber);
+            DebugVM("Direccion de la page table %d del hilo: @%lx\n", i, (unsigned long) ppte);
             memset(ppte, 0x0, PAGE_SIZE);
             ppde->pageTableBaseAddr = PAGE_ALLIGNED_ADDR(ppte);
             for (j=0; j<NUM_PAGE_TABLE_ENTRIES; j++) {
                 /* Evita posiciÃ³n 0 para NULL pointer */
+/*
                 if ((i==0) && (j==0))
                     ppte->present = 0;
                 else {
+*/
                     (pageNumber<numberOfPages) ? (ppte->present = 1) : (ppte->present = 0);
                     if (ppte->present == 1) {
                         ppte->flags = VM_READ | VM_WRITE | VM_USER;
 
                         void *page = Alloc_Pageable_Page(ppte, vaddr);
-                        DebugVM("Direccion de la pagina nro. %d asignada al programa @%lx\n", pageNumber, (unsigned long) page);
+                        DebugVM("-> Direccion de la pagina nro. %d asignada al programa @%lx, asociada a la dirección virtual @%lx\n", pageNumber, (unsigned long) page, (unsigned long) vaddr);
                         ppte->pageBaseAddr = PAGE_ALLIGNED_ADDR(page);
 
                         /* Copia el programa desde la memoria temporal a la pÃ¡gina */
                         memcpy(page, mem+(pageNumber*PAGE_SIZE), PAGE_SIZE);
+                        DebugVM("--> Copio pagina desde direccion @%lx a direccion @%lx\n", (unsigned long) mem+(pageNumber*PAGE_SIZE), (unsigned long) page);
 
                         pageNumber++;
                     }
 
                     ppte++;
-                }
+//                }
                 vaddr += PAGE_SIZE;
             }
         }
@@ -208,7 +219,8 @@ int Load_User_Program(char *exeFileData, ulong_t exeFileLength,
     }
     /* Obtengo direccion de la tabla de paginas de la Ãºltima entrada del page directory */
     ulong_t ultima = ppde->pageTableBaseAddr << 12;
-    DebugVM("Dirección de la tabla de páginas de la última entrada del page directory @%lx @%lx\n", ultima, (unsigned long) ppde->pageTableBaseAddr);
+    DebugVM("Dirección de la ultima tabla de páginas del hilo (corresponde a la última entrada del page directory): @%lx\n", ultima);
+
 
     /* Obtengo penúltima entrada del page table - STACK */
     pte_t *ppte = (pte_t *) (ultima) + NUM_PAGE_TABLE_ENTRIES - 2;
@@ -219,8 +231,10 @@ int Load_User_Program(char *exeFileData, ulong_t exeFileLength,
     ppte->present = 1;
     ppte->flags = VM_READ | VM_WRITE | VM_USER;
     void *page = Alloc_Pageable_Page(ppte, 0xFFFFE000);
+    memset(page, 0x0, PAGE_SIZE);
     DebugVM("Direccion de la pagina asignada al stack @%lx\n", (unsigned long) page);
     ppte->pageBaseAddr = PAGE_ALLIGNED_ADDR(page);
+
 
     /* Obtengo última entrada del page table - ARGS */
     ppte++;
@@ -233,15 +247,16 @@ int Load_User_Program(char *exeFileData, ulong_t exeFileLength,
     ppte->present = 1;
     ppte->flags = VM_READ | VM_WRITE | VM_USER;
     page = Alloc_Pageable_Page(ppte, 0xFFFFF000);
+    memset(page, 0x0, PAGE_SIZE);
     DebugVM("Direccion de la pagina asignada a los args @%lx\n", (unsigned long) page);
     ppte->pageBaseAddr = PAGE_ALLIGNED_ADDR(page);
-
     Format_Argument_Block(page, numArgs, stackAddr, command);
 
     /* Create the user context */
     userContext->entryAddr          = USER_VM_START + exeFormat->entryAddr;
+    DebugVM("Direccion de entrada del programa: @%lx\n", (unsigned long) userContext->entryAddr);
     userContext->argBlockAddr       = USER_VM_END - PAGE_SIZE;
-    userContext->stackPointerAddr   = USER_VM_END - 2 * PAGE_SIZE;
+    userContext->stackPointerAddr   = USER_VM_END - 2*PAGE_SIZE;
 
     /* Completo la información para segmentación, con los valores virtuales */
 
@@ -255,8 +270,8 @@ int Load_User_Program(char *exeFileData, ulong_t exeFileLength,
     ushort_t ldt_selector = Selector(KERNEL_PRIVILEGE, true, Get_Descriptor_Index(ldt_desc)); 
 
     /* Inicializo los segmentos */
-    Init_Code_Segment_Descriptor(&(userContext->ldt[0]), (ulong_t)mem, (USER_VM_END-USER_VM_START)/PAGE_SIZE, USER_PRIVILEGE);
-    Init_Data_Segment_Descriptor(&(userContext->ldt[1]), (ulong_t)mem, (USER_VM_END-USER_VM_START)/PAGE_SIZE, USER_PRIVILEGE);
+    Init_Code_Segment_Descriptor(&(userContext->ldt[0]), (ulong_t)USER_VM_START, (USER_VM_END-USER_VM_START)/PAGE_SIZE, USER_PRIVILEGE);
+    Init_Data_Segment_Descriptor(&(userContext->ldt[1]), (ulong_t)USER_VM_START, (USER_VM_END-USER_VM_START)/PAGE_SIZE, USER_PRIVILEGE);
 
     /* Creo los selectores */
     ushort_t cs_selector = Selector(USER_PRIVILEGE, false, 0);
@@ -267,14 +282,15 @@ int Load_User_Program(char *exeFileData, ulong_t exeFileLength,
     userContext->ldtSelector = ldt_selector;
     userContext->csSelector = cs_selector;
     userContext->dsSelector = ds_selector;
-    userContext->size = 0x80000000;
-    userContext->memory = NULL;
+    userContext->size = (USER_VM_END-USER_VM_START);
+    userContext->memory = (char *) USER_VM_START;
     userContext->refCount = 0;
 
     if (userContext == NULL)
         ret = ENOMEM;
 
     *pUserContext = userContext;
+
     goto success;
 
 error:
@@ -286,7 +302,7 @@ error:
     return -1;
 
 success:
-//    DebugVM("SUCESS\n");
+    DebugVM("SUCESS\n");
     return ret;
 }
 
@@ -356,7 +372,7 @@ void Switch_To_Address_Space(struct User_Context *userContext)
         : "a" (userContext->ldtSelector)
     );
 
-//    Set_PDBR(userContext->pageDir);
+Set_PDBR(userContext->pageDir);
 return;
 }
 
